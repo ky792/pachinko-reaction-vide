@@ -2,3 +2,6 @@ work/
 cache/
 output/
 __pycache__/
+generator/temp/
+generator/output/
+generator/audio/generated/
