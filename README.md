@@ -25,7 +25,7 @@ GitHubアプリ／ブラウザで **Actions → Add voice (edge-tts) → Run wor
   名無しさんは3人の担当（通常＝落ち着いた男性 / ツッコミ＝テンポのいい男性 / リアクション＝女性）。
   レスを A（主役）/ B（通常）/ C（合いの手）に分け、1レスの中でも文ごとに速さ・高さ・音量を変え、レスの間に本当の無音を入れる。
   無音は削らず、収まらない時は少し速める→それでも無理なCレスは読み上げを省略（画面には残る）。
-  ディレクションが無い行は dynamic で自動。テスト出力は `output/voice_directed_test.mp4`。
+  全編の演出は `scripts/directions/directed_full.json`（冒頭90秒のテスト用は directed_90s.json）。ディレクションが無い行は dynamic で自動。テスト出力は `output/voice_directed_test.mp4`。
   「319」は「さんいちきゅう」と読む（config の `tts.replace`）。
 
 

@@ -267,7 +267,7 @@
   "output_directed_full": "output/1000010320_voice_directed.mp4",
   "directed": {
     "_note": "手動ディレクション（scripts/directions/*.json）。無音は削らない。収まらない時は少し速める→Cレスは読み上げ省略（画面には残る）",
-    "file": "scripts/directions/directed_90s.json",
+    "file": "scripts/directions/directed_full.json",
     "voice_offset": 0.1,
     "speedup_soft": 1.2,
     "speedup_hard": 1.35,
