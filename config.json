@@ -4,21 +4,53 @@
   "output_test": "output/1000010320_voice_test{seconds}s.mp4",
   "timeline": "scripts/timeline.json",
   "cache_dir": "cache/tts",
-
   "tts": {
     "engine": "edge-tts",
     "concurrency": 4,
     "retries": 4,
     "voices": {
-      "board":    {"voice": "ja-JP-KeitaNeural",  "rate": "+15%", "pitch": "+0Hz",  "volume": "+0%"},
-      "rabbit":   {"voice": "ja-JP-NanamiNeural", "rate": "+5%",  "pitch": "+15Hz", "volume": "+0%"},
-      "cat":      {"voice": "ja-JP-KeitaNeural",  "rate": "+10%", "pitch": "+25Hz", "volume": "+0%"},
-      "narrator": {"voice": "ja-JP-NanamiNeural", "rate": "+10%", "pitch": "+0Hz",  "volume": "+0%"}
+      "board": {
+        "voice": "ja-JP-KeitaNeural",
+        "rate": "+15%",
+        "pitch": "+0Hz",
+        "volume": "+0%"
+      },
+      "rabbit": {
+        "voice": "ja-JP-NanamiNeural",
+        "rate": "+5%",
+        "pitch": "+15Hz",
+        "volume": "+0%"
+      },
+      "cat": {
+        "voice": "ja-JP-KeitaNeural",
+        "rate": "+10%",
+        "pitch": "+25Hz",
+        "volume": "+0%"
+      },
+      "narrator": {
+        "voice": "ja-JP-NanamiNeural",
+        "rate": "+10%",
+        "pitch": "+0Hz",
+        "volume": "+0%"
+      }
     },
-    "read_kinds": ["res", "talk", "title", "ending", "subscribe"],
+    "read_kinds": [
+      "res",
+      "talk",
+      "title",
+      "ending",
+      "subscribe"
+    ],
     "replace": {
       "↓": "、",
-      "①": "いち", "②": "に", "③": "さん", "④": "よん", "⑤": "ご", "⑥": "ろく", "⑦": "なな", "⑧": "はち",
+      "①": "いち",
+      "②": "に",
+      "③": "さん",
+      "④": "よん",
+      "⑤": "ご",
+      "⑥": "ろく",
+      "⑦": "なな",
+      "⑧": "はち",
       "LT": "エルティー",
       "RUSH": "ラッシュ",
       "CU": "シーユー",
@@ -27,13 +59,11 @@
       "ワイ": "ワイ"
     }
   },
-
   "timing": {
     "voice_offset": 0.12,
     "slot_margin": 0.08,
     "max_speedup": 1.5
   },
-
   "mix": {
     "original_volume": 0.32,
     "voice_volume": 1.0,
@@ -42,5 +72,193 @@
     "true_peak": -1.5,
     "sample_rate": 44100,
     "audio_bitrate": "192k"
+  },
+  "output_dynamic_test": "output/voice_dynamic_test.mp4",
+  "output_dynamic_full": "output/1000010320_voice_dynamic.mp4",
+  "style": {
+    "_note": "音声演出（dynamic）。rate=% / pitch=Hz / gain_db=dB / pause=秒。[a,b] はその範囲でランダム",
+    "board_voices": {
+      "A": {
+        "label": "男性・標準",
+        "voice": "ja-JP-KeitaNeural",
+        "pitch": 0,
+        "rate_offset": 0
+      },
+      "B": {
+        "label": "男性・やや低め",
+        "voice": "ja-JP-KeitaNeural",
+        "pitch": -9,
+        "rate_offset": -4
+      },
+      "C": {
+        "label": "女性・標準",
+        "voice": "ja-JP-NanamiNeural",
+        "pitch": 0,
+        "rate_offset": 0
+      },
+      "D": {
+        "label": "男性・やや軽め",
+        "voice": "ja-JP-KeitaNeural",
+        "pitch": 9,
+        "rate_offset": 5
+      }
+    },
+    "chapter_head_voice": "A",
+    "class_voice_preference": {
+      "despair": "B",
+      "joke": "D",
+      "agreement": "D",
+      "surprise": "C"
+    },
+    "classes": {
+      "normal": {
+        "rate": [
+          10,
+          15
+        ],
+        "pitch": 0,
+        "gain_db": 0,
+        "pause_before": 0,
+        "pause_after": [
+          0.15,
+          0.25
+        ]
+      },
+      "agreement": {
+        "rate": [
+          20,
+          30
+        ],
+        "pitch": [
+          4,
+          8
+        ],
+        "gain_db": 1,
+        "pause_after": 0.15
+      },
+      "surprise": {
+        "rate": [
+          15,
+          20
+        ],
+        "pitch": [
+          6,
+          10
+        ],
+        "gain_db": [
+          1,
+          2
+        ],
+        "pause_after": 0.3
+      },
+      "anger": {
+        "rate": [
+          20,
+          25
+        ],
+        "pitch": [
+          3,
+          6
+        ],
+        "gain_db": 2,
+        "pause_after": 0.2
+      },
+      "despair": {
+        "rate": [
+          -5,
+          5
+        ],
+        "pitch": [
+          -12,
+          -6
+        ],
+        "gain_db": 0,
+        "pause_before": 0.2,
+        "pause_after": [
+          0.4,
+          0.6
+        ]
+      },
+      "joke": {
+        "rate": [
+          15,
+          25
+        ],
+        "pitch": [
+          3,
+          8
+        ],
+        "gain_db": 0.5,
+        "pause_after": 0.35
+      },
+      "punchline": {
+        "rate": [
+          10,
+          20
+        ],
+        "pitch": 0,
+        "gain_db": 1,
+        "pause_before": [
+          0.25,
+          0.4
+        ],
+        "pause_after": [
+          0.5,
+          0.7
+        ]
+      }
+    },
+    "ratio": {
+      "strong": 0.15,
+      "mild": 0.25
+    },
+    "inner_gap": [
+      0.12,
+      0.22
+    ],
+    "ochi_gap": [
+      0.25,
+      0.4
+    ],
+    "chapter_head_pause": [
+      0.4,
+      0.7
+    ],
+    "talk_gap": [
+      0.15,
+      0.35
+    ],
+    "finale_ochi_pause": 0.55,
+    "characters": {
+      "rabbit": {
+        "voice": "ja-JP-NanamiNeural",
+        "rate": -3,
+        "pitch": 15,
+        "inner_gap": [
+          0.18,
+          0.28
+        ]
+      },
+      "cat": {
+        "voice": "ja-JP-KeitaNeural",
+        "rate": 18,
+        "pitch": 25,
+        "inner_gap": [
+          0.12,
+          0.2
+        ]
+      },
+      "narrator": {
+        "voice": "ja-JP-NanamiNeural",
+        "rate": 8,
+        "pitch": 0,
+        "inner_gap": [
+          0.25,
+          0.35
+        ]
+      }
+    },
+    "min_gap_between_lines": 0.12,
+    "clip_target_rms": 0.08
   }
 }

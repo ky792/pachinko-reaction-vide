@@ -19,6 +19,18 @@ GitHubアプリ／ブラウザで **Actions → Add voice (edge-tts) → Run wor
 終わったら、その実行ページ下の **Artifacts**（`voice-test` / `voice-full`）からダウンロードします（zipの中にmp4）。
 `save_to_repo`（既定ON）の場合、完成動画は `outputs` ブランチにも保存されます（毎回上書き。最新の1本だけ残ります）。
 
+## 読み方（style）
+
+- **dynamic**（既定）… 緩急あり。名無しさんは4種類の声（A 男性標準 / B 男性やや低め / C 女性標準 / D 男性やや軽め）を、同じ声が3連続しないように使い分けます。
+  レスを normal / agreement / surprise / anger / despair / joke / punchline に自動分類し、速さ・高さ・音量・前後の間を変えます。
+  演出の強さは「普通 約60% / 少し変化 約25% / 強い 約15%」に抑え、「草」「無理」「正論やめろ」など短いレスは必ず強めに読みます。
+  文・行ごとにクリップを分けて間を入れ、最後の短い一言（オチ）の前は少し長めに空けます。設定は config.json の `style`、分類ルールは `src/voice_style.py`。
+  実行後の `work/voice_plan.json`（Artifactにも同梱）で、各レスの分類・声・読み上げ位置を確認できます。
+  ※ edge-tts の日本語の声は男性(Keita)・女性(Nanami)の2種のため、4種類は高さ・速さで作り分けています。
+- **flat** … 以前の一定の読み方
+
+テスト（冒頭90秒）の出力は `output/voice_dynamic_test.mp4`、フルは `output/1000010320_voice_dynamic.mp4`。
+
 ## 3. 調整（config.json）
 
 - `tts.voices` … 声の種類・速さ・高さ。掲示板レス=Keita(+15%)、うさぎ=Nanami(+5%)、ねこ=Keita(高め)、ナレーション=Nanami

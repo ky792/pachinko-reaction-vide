@@ -11,7 +11,12 @@ on:
       test_seconds:
         description: "テストで書き出す秒数"
         type: string
-        default: "60"
+        default: "90"
+      style:
+        description: "dynamic = 緩急あり（声4種・分類・間） / flat = 以前の一定の読み方"
+        type: choice
+        options: [dynamic, flat]
+        default: dynamic
       save_to_repo:
         description: "完成動画を outputs ブランチにも保存する"
         type: boolean
@@ -77,16 +82,18 @@ jobs:
         id: run
         run: |
           if [ "${{ inputs.mode }}" = "full" ]; then
-            python src/add_voice.py
+            python src/add_voice.py --style "${{ inputs.style }}"
           else
-            python src/add_voice.py --test "${{ inputs.test_seconds }}"
+            python src/add_voice.py --style "${{ inputs.style }}" --test "${{ inputs.test_seconds }}"
           fi
 
       - name: Upload result
         uses: actions/upload-artifact@v4
         with:
-          name: voice-${{ inputs.mode }}
-          path: ${{ steps.run.outputs.output_path }}
+          name: voice-${{ inputs.style }}-${{ inputs.mode }}
+          path: |
+            ${{ steps.run.outputs.output_path }}
+            work/voice_plan.json
           retention-days: 7
           if-no-files-found: error
 
@@ -97,6 +104,7 @@ jobs:
           TOKEN: ${{ github.token }}
         run: |
           mkdir -p /tmp/outbranch && cp "$OUT" /tmp/outbranch/
+          if [ -f work/voice_plan.json ]; then cp work/voice_plan.json /tmp/outbranch/; fi
           cd /tmp/outbranch
           git init -q -b outputs
           git config user.name "github-actions[bot]"
