@@ -65,20 +65,25 @@ class Renderer:
         return self._hdr[key]
 
     # ---------- 画像差し込み ----------
-    def _img(self, name, w, h):
-        key = (name, w, h)
-        if key not in self._img_cache:
+    def _img(self, name):
+        """画像を読み込む（無ければ None）。縦長・横長どちらもそのままの比率で使う。"""
+        if name not in self._img_cache:
             p = self.img_dir / name
             im = None
             if p.exists():
                 try:
-                    src = Image.open(p).convert("RGB")
-                    s = max(w / src.width, h / src.height) * (1 + self.cfg["images"].get("zoom", 0.06))
-                    im = src.resize((int(src.width * s) + 1, int(src.height * s) + 1), Image.LANCZOS)
+                    im = Image.open(p).convert("RGB")
+                    if im.height > 1100:
+                        im = im.resize((int(im.width * 1100 / im.height), 1100), Image.LANCZOS)
                 except Exception as e:
                     log(f"  [警告] 画像を読めません {p.name}: {e}")
-            self._img_cache[key] = im
-        return self._img_cache[key]
+            self._img_cache[name] = im
+        return self._img_cache[name]
+
+    @staticmethod
+    def _fit(src, max_w, max_h):
+        s = min(max_w / src.width, max_h / src.height)
+        return max(1, int(src.width * s)), max(1, int(src.height * s))
 
     def active_cue(self, t):
         for c in self.cues:
@@ -92,30 +97,35 @@ class Renderer:
         fade = min(1.0, (t - c["time"]) / 0.25, (c["time"] + c["duration"] - t) / 0.25)
         files = list(c["files"])
         if c["layout"] == "sequence" and files:
-            idx = min(len(files) - 1, int(p * len(files)))
-            p = p * len(files) - idx
-            fade = min(fade, 1.0) if idx == 0 else min(1.0, (c["time"] + c["duration"] - t) / 0.25, p * c["duration"] / len(files) / 0.15 + 0.3)
+            n = len(files)
+            idx = min(n - 1, int(p * n))
+            seg = c["duration"] / n
+            local = t - c["time"] - idx * seg
+            fade = min(1.0, local / 0.2 + (0.0 if idx == 0 else 0.4), (seg - local) / 0.2 + (0.0 if idx == n - 1 else 0.4))
+            p = local / seg
             files = [files[idx]]
+        P = self.cfg["images"]["panel"]
         if c["layout"] == "row":
-            pw, ph = 520, 293
-            x0 = (self.W - (pw * 3 + 40 * 2)) // 2
-            y0 = 360
-            shown = 0
-            for k, f in enumerate(files[:3]):
-                src = self._img(f, pw, ph)
-                if src is not None:
-                    R.image_panel(im, src, x0 + k * (pw + 40), y0, pw, ph, p, z, fade, self.machine_labels.get(f, ""), self.cfg)
-                    shown += 1
+            srcs = [(f, self._img(f)) for f in files[:3]]
+            srcs = [(f, s_) for f, s_ in srcs if s_ is not None]
+            if srcs:   # 3台並びの間は背景を暗くして主役にする
+                ov = Image.new("RGBA", (self.W, self.H), (5, 3, 12, int(170 * fade)))
+                im.paste(ov, (0, 0), ov)
+                gap, bw, bh = 50, 540, 560
+                sizes = [self._fit(s_, bw, bh) for _, s_ in srcs]
+                total = sum(w for w, _ in sizes) + gap * (len(sizes) - 1)
+                x = (self.W - total) // 2
+                for (f, s_), (w, h) in zip(srcs, sizes):
+                    R.image_panel(im, s_, x, 330 + (bh - h) // 2, w, h, p, z, fade, self.machine_labels.get(f, ""), self.cfg)
+                    x += w + gap
             if c.get("telop"):
-                R.telop(self.cfg, im, c["telop"], y0 - 130 if shown else 440, fade)
+                R.telop(self.cfg, im, c["telop"], 196 if srcs else 440, fade)
             return
         label = c.get("label") or (self.machine_labels.get(files[0], "") if files else "")
-        P = self.cfg["images"]["panel"]
-        pw, ph = P["w"], P["h"]
-        x0, y0 = self.W - P["right"] - pw, self.H - P["bottom"] - ph
-        src = self._img(files[0], pw, ph) if files else None
+        src = self._img(files[0]) if files else None
         if src is not None:
-            R.image_panel(im, src, x0, y0, pw, ph, p, z, fade, label, self.cfg)
+            w, h = self._fit(src, P["max_w"], P["max_h"])
+            R.image_panel(im, src, self.W - P["right"] - w, P["top"], w, h, p, z, fade, label, self.cfg)
         elif label and not c.get("label"):
             # 画像なし：機種名だけ右上に出す（画面端ラベルがある場合はそちらが常時出ている）
             R.corner_label(self.cfg, im, label, alpha=fade, y=196)

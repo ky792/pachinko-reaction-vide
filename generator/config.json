@@ -151,11 +151,11 @@
     "sequence_each": 1.4,
     "row": 3.6,
     "panel": {
-      "w": 680,
-      "h": 383,
-      "right": 40,
-      "bottom": 330
+      "max_w": 720,
+      "max_h": 560,
+      "right": 48,
+      "top": 196
     },
-    "zoom": 0.06
+    "zoom": 0.05
   }
 }

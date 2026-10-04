@@ -235,24 +235,28 @@ def corner_label(cfg, im, text, alpha=1.0, y=128):
 
 
 def image_panel(im, src, x, y, w, h, p, zoom, fade, label, cfg):
-    """実機画像パネル（軽いズーム＋左右パン）。src は枠より zoom 分大きく縮小済み。"""
-    z = 1 + zoom * (1 - p)               # だんだん寄る
-    cw = min(src.width, max(1, int(src.width / (1 + zoom) * z)))
-    ch = min(src.height, max(1, int(src.height / (1 + zoom) * z)))
-    ox = int((src.width - cw) * (0.35 + 0.3 * p))
-    oy = (src.height - ch) // 2
-    pic = src.crop((ox, oy, ox + cw, oy + ch)).resize((w, h), Image.BILINEAR)
+    """実機画像パネル（比率そのまま・軽いズーム＋パン）。x, y は枠の左上、w, h は枠の中の画像サイズ。"""
+    z = 1 + zoom * p                     # だんだん寄る
+    rw, rh = max(w, int(w * z)), max(h, int(h * z))
+    big = src.resize((rw, rh), Image.BILINEAR)
+    ox = int((rw - w) * (0.5 + 0.3 * (p - 0.5)))
+    oy = (rh - h) // 2
+    pic = big.crop((ox, oy, ox + w, oy + h))
     frame = Image.new("RGBA", (w + 16, h + 16), (0, 0, 0, 0))
     d = ImageDraw.Draw(frame)
     d.rounded_rectangle([0, 0, w + 15, h + 15], 14, fill=(255, 205, 60, 255))
     frame.paste(pic, (8, 8))
     if label:
-        f = font(cfg, "black", 28)
-        while f.getlength(label) > w - 40 and f.size > 18:
-            f = font(cfg, "black", f.size - 2)
-        tw = int(f.getlength(label)) + 30
-        d.rectangle([8, h - 36, 8 + tw, h + 7], fill=(0, 0, 0, 200))
-        d.text((22, h - 36), label, font=f, fill=(255, 255, 255))
+        fs = 28
+        f = font(cfg, "black", fs)
+        lines = wrap(label, f, w - 30)
+        while len(lines) > 2 and fs > 18:
+            fs -= 2; f = font(cfg, "black", fs); lines = wrap(label, f, w - 30)
+        lh = int(fs * 1.3)
+        bh = lh * len(lines) + 12
+        d.rectangle([8, h + 8 - bh, w + 7, h + 7], fill=(0, 0, 0, 200))
+        for i, ln in enumerate(lines):
+            d.text((20, h + 8 - bh + 6 + i * lh), ln, font=f, fill=(255, 255, 255))
     if fade < 1:
         frame = dim(frame, max(0.0, fade))
     im.paste(frame, (x - 8, y - 8), frame)
