@@ -1,0 +1,1471 @@
+{
+ "video": "1000010320.mp4",
+ "video_duration": 497.1,
+ "note": "start/end は動画上でそのセリフ（レス）が表示される秒数。end は次の表示が始まる時刻。",
+ "lines": [
+  {
+   "id": 1,
+   "start": 0.0,
+   "end": 3.13,
+   "speaker": "board",
+   "kind": "res",
+   "text": "最近のパチンコ、さすがにキツくないか？"
+  },
+  {
+   "id": 2,
+   "start": 3.13,
+   "end": 7.13,
+   "speaker": "board",
+   "kind": "res",
+   "text": "回らない\n当たらない\n右に入らない\n入っても続かない"
+  },
+  {
+   "id": 3,
+   "start": 7.13,
+   "end": 10.004,
+   "speaker": "board",
+   "kind": "res",
+   "text": "それでも店に行く俺らが一番おかしい"
+  },
+  {
+   "id": 4,
+   "start": 10.004,
+   "end": 11.343,
+   "speaker": "board",
+   "kind": "res",
+   "text": "正論やめろ"
+  },
+  {
+   "id": 5,
+   "start": 11.343,
+   "end": 15.936,
+   "speaker": "narrator",
+   "kind": "title",
+   "text": "最近のパチンコ、さすがにキツすぎる件。パチンコ民の反応集"
+  },
+  {
+   "id": 6,
+   "start": 15.936,
+   "end": 17.236,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その①、とにかく回らない"
+  },
+  {
+   "id": 7,
+   "start": 17.236,
+   "end": 20.622,
+   "speaker": "board",
+   "kind": "res",
+   "text": "千円で12回とか普通になってるのヤバいだろ"
+  },
+  {
+   "id": 8,
+   "start": 20.622,
+   "end": 23.112,
+   "speaker": "board",
+   "kind": "res",
+   "text": "12回ならまだ回ってる方やぞ"
+  },
+  {
+   "id": 9,
+   "start": 23.112,
+   "end": 24.707,
+   "speaker": "board",
+   "kind": "res",
+   "text": "それが一番怖い"
+  },
+  {
+   "id": 10,
+   "start": 24.707,
+   "end": 28.348,
+   "speaker": "board",
+   "kind": "res",
+   "text": "1万円入れて150回転いかない台とか普通にある"
+  },
+  {
+   "id": 11,
+   "start": 28.348,
+   "end": 30.711,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319引く以前の問題なんよ"
+  },
+  {
+   "id": 12,
+   "start": 30.711,
+   "end": 34.791,
+   "speaker": "board",
+   "kind": "res",
+   "text": "保留すら途切れると\n何のために座ってるのか分からなくなる"
+  },
+  {
+   "id": 13,
+   "start": 34.791,
+   "end": 37.026,
+   "speaker": "board",
+   "kind": "res",
+   "text": "スマホ見る時間の方が長い"
+  },
+  {
+   "id": 14,
+   "start": 37.026,
+   "end": 40.923,
+   "speaker": "board",
+   "kind": "res",
+   "text": "パチンコ打ちに来たのに\nYouTube見て帰ってる"
+  },
+  {
+   "id": 15,
+   "start": 40.923,
+   "end": 43.797,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ヘソに玉入っただけで嬉しくなる遊技"
+  },
+  {
+   "id": 16,
+   "start": 43.797,
+   "end": 47.797,
+   "speaker": "board",
+   "kind": "res",
+   "text": "昔\n「19回しか回らん」\n今\n「17回も回るやん！」"
+  },
+  {
+   "id": 17,
+   "start": 47.797,
+   "end": 49.797,
+   "speaker": "board",
+   "kind": "res",
+   "text": "完全に調教されてて草"
+  },
+  {
+   "id": 18,
+   "start": 49.797,
+   "end": 52.926,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ボーダーとか期待値以前に\n遊ばせてくれ"
+  },
+  {
+   "id": 19,
+   "start": 52.926,
+   "end": 56.567,
+   "speaker": "board",
+   "kind": "res",
+   "text": "千円で10回前後は\nもう遊技じゃなくて募金だろ"
+  },
+  {
+   "id": 20,
+   "start": 56.567,
+   "end": 60.776,
+   "speaker": "board",
+   "kind": "res",
+   "text": "でも千円で20回回ると\nめちゃくちゃいい台に見えるんだよな"
+  },
+  {
+   "id": 21,
+   "start": 60.776,
+   "end": 62.776,
+   "speaker": "board",
+   "kind": "res",
+   "text": "なお当たらない模様"
+  },
+  {
+   "id": 22,
+   "start": 62.776,
+   "end": 67.017,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "回らないと当たる当たらない以前に\n普通に退屈だよね。"
+  },
+  {
+   "id": 23,
+   "start": 67.017,
+   "end": 69.89,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "千円入れてデモ画面出た時の虚無よ。"
+  },
+  {
+   "id": 24,
+   "start": 69.89,
+   "end": 72.731,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "それはさすがに席立ちたくなるね。"
+  },
+  {
+   "id": 25,
+   "start": 72.731,
+   "end": 74.668,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "立たないんだけどな。"
+  },
+  {
+   "id": 26,
+   "start": 74.668,
+   "end": 75.968,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その②、図柄揃いまでが遠すぎる"
+  },
+  {
+   "id": 27,
+   "start": 75.968,
+   "end": 80.888,
+   "speaker": "board",
+   "kind": "res",
+   "text": "最近の台\n1/399とか1/499とか普通に書いてあって感覚バグる"
+  },
+  {
+   "id": 28,
+   "start": 80.888,
+   "end": 82.995,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319が軽く見える時代"
+  },
+  {
+   "id": 29,
+   "start": 82.995,
+   "end": 85.613,
+   "speaker": "board",
+   "kind": "res",
+   "text": "昔の俺らに聞かせたら笑われるぞ"
+  },
+  {
+   "id": 30,
+   "start": 85.613,
+   "end": 88.998,
+   "speaker": "board",
+   "kind": "res",
+   "text": "「319重すぎ」\nって言ってた頃が懐かしい"
+  },
+  {
+   "id": 31,
+   "start": 88.998,
+   "end": 91.233,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今\n319？\n良心的やん"
+  },
+  {
+   "id": 32,
+   "start": 91.233,
+   "end": 92.956,
+   "speaker": "board",
+   "kind": "res",
+   "text": "完全に麻痺してる"
+  },
+  {
+   "id": 33,
+   "start": 92.956,
+   "end": 95.957,
+   "speaker": "board",
+   "kind": "res",
+   "text": "しかも初当たり引いても\nチャージです"
+  },
+  {
+   "id": 34,
+   "start": 95.957,
+   "end": 99.957,
+   "speaker": "board",
+   "kind": "res",
+   "text": "分母重いのに\n当たったと思ったら出玉だけもらって終了"
+  },
+  {
+   "id": 35,
+   "start": 99.957,
+   "end": 104.038,
+   "speaker": "board",
+   "kind": "res",
+   "text": "「大当たり！」\nワイ「うおおお！」\n台\n「300発です」"
+  },
+  {
+   "id": 36,
+   "start": 104.038,
+   "end": 105.377,
+   "speaker": "board",
+   "kind": "res",
+   "text": "当たりとは"
+  },
+  {
+   "id": 37,
+   "start": 105.377,
+   "end": 109.377,
+   "speaker": "board",
+   "kind": "res",
+   "text": "図柄揃い確率と\n大当たり確率を分けるのマジでやめてくれ"
+  },
+  {
+   "id": 38,
+   "start": 109.377,
+   "end": 113.377,
+   "speaker": "board",
+   "kind": "res",
+   "text": "スペック表見ても\n結局何分の1引けばいいのか分からん"
+  },
+  {
+   "id": 39,
+   "start": 113.377,
+   "end": 117.586,
+   "speaker": "board",
+   "kind": "res",
+   "text": "1/399を引いて\nさらに50％とか60％突破してください"
+  },
+  {
+   "id": 40,
+   "start": 117.586,
+   "end": 120.076,
+   "speaker": "board",
+   "kind": "res",
+   "text": "無理ゲーのチュートリアルかな"
+  },
+  {
+   "id": 41,
+   "start": 120.076,
+   "end": 128.632,
+   "speaker": "board",
+   "kind": "res",
+   "text": "500回転\n「まだいける」\n800回転\n「まあ319ならある」\n1000回転\n「そろそろ来るだろ」\n1200回転\n「帰りたい」"
+  },
+  {
+   "id": 42,
+   "start": 128.632,
+   "end": 131.123,
+   "speaker": "board",
+   "kind": "res",
+   "text": "なおそこから追加投資する模様"
+  },
+  {
+   "id": 43,
+   "start": 131.123,
+   "end": 135.332,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "1000ハマり超えると\n逆にやめられなくなるの何なん？"
+  },
+  {
+   "id": 44,
+   "start": 135.332,
+   "end": 139.434,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "「ここまで来たら当たるはず」って思っちゃうんだね。"
+  },
+  {
+   "id": 45,
+   "start": 139.434,
+   "end": 141.371,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "確率に感情はないぞ。"
+  },
+  {
+   "id": 46,
+   "start": 141.371,
+   "end": 143.171,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "自分で言うんだ。"
+  },
+  {
+   "id": 47,
+   "start": 143.171,
+   "end": 144.471,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その③、やっと当ててもRUSHに入らない"
+  },
+  {
+   "id": 48,
+   "start": 144.471,
+   "end": 146.194,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319引きました"
+  },
+  {
+   "id": 49,
+   "start": 146.194,
+   "end": 147.661,
+   "speaker": "board",
+   "kind": "res",
+   "text": "おめでとう！"
+  },
+  {
+   "id": 50,
+   "start": 147.661,
+   "end": 149.767,
+   "speaker": "board",
+   "kind": "res",
+   "text": "50％取れませんでした"
+  },
+  {
+   "id": 51,
+   "start": 149.767,
+   "end": 150.967,
+   "speaker": "board",
+   "kind": "res",
+   "text": "終了"
+  },
+  {
+   "id": 52,
+   "start": 150.967,
+   "end": 152.691,
+   "speaker": "board",
+   "kind": "res",
+   "text": "これが一番キツい"
+  },
+  {
+   "id": 53,
+   "start": 152.691,
+   "end": 154.925,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通常時2時間\n右打ち0秒"
+  },
+  {
+   "id": 54,
+   "start": 154.925,
+   "end": 158.822,
+   "speaker": "board",
+   "kind": "res",
+   "text": "初当たり引いたのに\n何も始まらず終わるの虚無すぎる"
+  },
+  {
+   "id": 55,
+   "start": 158.822,
+   "end": 162.335,
+   "speaker": "board",
+   "kind": "res",
+   "text": "50％って絶対嘘だろって\n負けてる時だけ思う"
+  },
+  {
+   "id": 56,
+   "start": 162.335,
+   "end": 164.953,
+   "speaker": "board",
+   "kind": "res",
+   "text": "3連続通常とか普通にあるからな"
+  },
+  {
+   "id": 57,
+   "start": 164.953,
+   "end": 167.572,
+   "speaker": "board",
+   "kind": "res",
+   "text": "50％を3回外す確率12.5％"
+  },
+  {
+   "id": 58,
+   "start": 167.572,
+   "end": 169.039,
+   "speaker": "board",
+   "kind": "res",
+   "text": "意外とあるな"
+  },
+  {
+   "id": 59,
+   "start": 169.039,
+   "end": 171.273,
+   "speaker": "board",
+   "kind": "res",
+   "text": "数字出すな\n余計ムカつく"
+  },
+  {
+   "id": 60,
+   "start": 171.273,
+   "end": 173.636,
+   "speaker": "board",
+   "kind": "res",
+   "text": "突入70％でも外す時は外す"
+  },
+  {
+   "id": 61,
+   "start": 173.636,
+   "end": 177.149,
+   "speaker": "board",
+   "kind": "res",
+   "text": "70％外した直後の\n「次こそは」が一番危ない"
+  },
+  {
+   "id": 62,
+   "start": 177.149,
+   "end": 179.149,
+   "speaker": "board",
+   "kind": "res",
+   "text": "また当てるまでに3万"
+  },
+  {
+   "id": 63,
+   "start": 179.149,
+   "end": 180.488,
+   "speaker": "board",
+   "kind": "res",
+   "text": "そして通常"
+  },
+  {
+   "id": 64,
+   "start": 180.488,
+   "end": 181.828,
+   "speaker": "board",
+   "kind": "res",
+   "text": "美しい流れ"
+  },
+  {
+   "id": 65,
+   "start": 181.828,
+   "end": 185.597,
+   "speaker": "board",
+   "kind": "res",
+   "text": "LT機って\nLTまで何個関門突破すればいいんだよ"
+  },
+  {
+   "id": 66,
+   "start": 185.597,
+   "end": 188.727,
+   "speaker": "board",
+   "kind": "res",
+   "text": "初当たり\n↓\nRUSH突入\n↓\n上位突入\n↓\n継続"
+  },
+  {
+   "id": 67,
+   "start": 188.727,
+   "end": 190.727,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ゲームの隠しボスかよ"
+  },
+  {
+   "id": 68,
+   "start": 190.727,
+   "end": 195.528,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "やっと当たったのに\nスタート地点にすら立てないのはつらいね。"
+  },
+  {
+   "id": 69,
+   "start": 195.528,
+   "end": 199.069,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "最近は当たり引いた後に\nもう一回祈るからな。"
+  },
+  {
+   "id": 70,
+   "start": 199.069,
+   "end": 202.19,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "当たった瞬間くらい喜ばせてほしいね。"
+  },
+  {
+   "id": 71,
+   "start": 202.19,
+   "end": 203.49,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その④、右打ちに入れても安心できない"
+  },
+  {
+   "id": 72,
+   "start": 203.49,
+   "end": 208.41,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通常時あんだけ苦労して右入れたのに\n3分後には通常画面おるの何なん"
+  },
+  {
+   "id": 73,
+   "start": 208.41,
+   "end": 211.029,
+   "speaker": "board",
+   "kind": "res",
+   "text": "LT入った瞬間が今日一番楽しい"
+  },
+  {
+   "id": 74,
+   "start": 211.029,
+   "end": 212.624,
+   "speaker": "board",
+   "kind": "res",
+   "text": "その後は知らん"
+  },
+  {
+   "id": 75,
+   "start": 212.624,
+   "end": 214.219,
+   "speaker": "board",
+   "kind": "res",
+   "text": "継続率80％！"
+  },
+  {
+   "id": 76,
+   "start": 214.219,
+   "end": 217.221,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ワイ\n「勝ったな」\n台\n「2連です」"
+  },
+  {
+   "id": 77,
+   "start": 217.221,
+   "end": 220.478,
+   "speaker": "board",
+   "kind": "res",
+   "text": "80％ってこんな簡単に20％引けるんやな"
+  },
+  {
+   "id": 78,
+   "start": 220.478,
+   "end": 222.585,
+   "speaker": "board",
+   "kind": "res",
+   "text": "パチンコで確率を学ぶ男"
+  },
+  {
+   "id": 79,
+   "start": 222.585,
+   "end": 229.351,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ST残り100\n余裕\n残り50\nまだ大丈夫\n残り20\nそろそろ来て\n残り5\n頼む頼む頼む頼む\n終了"
+  },
+  {
+   "id": 80,
+   "start": 229.351,
+   "end": 232.097,
+   "speaker": "board",
+   "kind": "res",
+   "text": "駆け抜ける時だけ消化速度速すぎる"
+  },
+  {
+   "id": 81,
+   "start": 232.097,
+   "end": 235.738,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通常時1000回転は3時間\n右100回転は5分"
+  },
+  {
+   "id": 82,
+   "start": 235.738,
+   "end": 237.738,
+   "speaker": "board",
+   "kind": "res",
+   "text": "時間の流れおかしい"
+  },
+  {
+   "id": 83,
+   "start": 237.738,
+   "end": 239.973,
+   "speaker": "board",
+   "kind": "res",
+   "text": "隣は20連\nワイはスルー"
+  },
+  {
+   "id": 84,
+   "start": 239.973,
+   "end": 242.079,
+   "speaker": "board",
+   "kind": "res",
+   "text": "同じスペックとは思えん"
+  },
+  {
+   "id": 85,
+   "start": 242.079,
+   "end": 245.465,
+   "speaker": "board",
+   "kind": "res",
+   "text": "継続率90％でも\n終わる時は一瞬だから怖い"
+  },
+  {
+   "id": 86,
+   "start": 245.465,
+   "end": 248.978,
+   "speaker": "board",
+   "kind": "res",
+   "text": "一度終わると\n残り10％だけ異常に信じられる"
+  },
+  {
+   "id": 87,
+   "start": 248.978,
+   "end": 252.939,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "でも20連とかした時は\n全部忘れちゃうんでしょ？"
+  },
+  {
+   "id": 88,
+   "start": 252.939,
+   "end": 254.739,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "そう。"
+  },
+  {
+   "id": 89,
+   "start": 254.739,
+   "end": 256.74,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "じゃあまた行くんだ。"
+  },
+  {
+   "id": 90,
+   "start": 256.74,
+   "end": 258.543,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "その話はやめよう。"
+  },
+  {
+   "id": 91,
+   "start": 258.543,
+   "end": 259.843,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑤、出玉が荒すぎる"
+  },
+  {
+   "id": 92,
+   "start": 259.843,
+   "end": 264.179,
+   "speaker": "board",
+   "kind": "res",
+   "text": "最近のパチンコ\n5万負けて10万勝ち狙うゲームになってない？"
+  },
+  {
+   "id": 93,
+   "start": 264.179,
+   "end": 266.542,
+   "speaker": "board",
+   "kind": "res",
+   "text": "1万円で遊ぶって概念消えた"
+  },
+  {
+   "id": 94,
+   "start": 266.542,
+   "end": 270.542,
+   "speaker": "board",
+   "kind": "res",
+   "text": "昔\n「今日は1万だけ」\n今\n「3万入れてから考える」"
+  },
+  {
+   "id": 95,
+   "start": 270.542,
+   "end": 273.671,
+   "speaker": "board",
+   "kind": "res",
+   "text": "3万円使って\n何も起きないのが一番怖い"
+  },
+  {
+   "id": 96,
+   "start": 273.671,
+   "end": 276.673,
+   "speaker": "board",
+   "kind": "res",
+   "text": "LTで5万発出てる画像見ると夢はある"
+  },
+  {
+   "id": 97,
+   "start": 276.673,
+   "end": 279.163,
+   "speaker": "board",
+   "kind": "res",
+   "text": "その後ろで何人死んでるんだよ"
+  },
+  {
+   "id": 98,
+   "start": 279.163,
+   "end": 282.805,
+   "speaker": "board",
+   "kind": "res",
+   "text": "10万負ける可能性ある代わりに\n20万勝てます"
+  },
+  {
+   "id": 99,
+   "start": 282.805,
+   "end": 285.039,
+   "speaker": "board",
+   "kind": "res",
+   "text": "投資商品の説明みたいで草"
+  },
+  {
+   "id": 100,
+   "start": 285.039,
+   "end": 288.041,
+   "speaker": "board",
+   "kind": "res",
+   "text": "4時間で5万負けて\n20分で5万出る"
+  },
+  {
+   "id": 101,
+   "start": 288.041,
+   "end": 290.041,
+   "speaker": "board",
+   "kind": "res",
+   "text": "時間の概念が壊れる"
+  },
+  {
+   "id": 102,
+   "start": 290.041,
+   "end": 293.299,
+   "speaker": "board",
+   "kind": "res",
+   "text": "仕事8時間分の給料が\n1時間で消える遊び"
+  },
+  {
+   "id": 103,
+   "start": 293.299,
+   "end": 296.556,
+   "speaker": "board",
+   "kind": "res",
+   "text": "財布の中身だけ\nコンプリート機能発動する"
+  },
+  {
+   "id": 104,
+   "start": 296.556,
+   "end": 298.279,
+   "speaker": "board",
+   "kind": "res",
+   "text": "強制終了してくれ"
+  },
+  {
+   "id": 105,
+   "start": 298.279,
+   "end": 302.279,
+   "speaker": "board",
+   "kind": "res",
+   "text": "5万負けた後のコンビニで\n200円のおにぎり買うか悩む"
+  },
+  {
+   "id": 106,
+   "start": 302.279,
+   "end": 304.897,
+   "speaker": "board",
+   "kind": "res",
+   "text": "パチンコ屋では1万円入れるのに"
+  },
+  {
+   "id": 107,
+   "start": 304.897,
+   "end": 307.132,
+   "speaker": "board",
+   "kind": "res",
+   "text": "金銭感覚どうなってんだよ"
+  },
+  {
+   "id": 108,
+   "start": 307.132,
+   "end": 310.94,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "5万円負けた後の牛丼って\n異常に高く感じるよな。"
+  },
+  {
+   "id": 109,
+   "start": 310.94,
+   "end": 314.201,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "最初の5万円を使わなければいいのでは？"
+  },
+  {
+   "id": 110,
+   "start": 314.201,
+   "end": 316.272,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "正論は禁止カードです。"
+  },
+  {
+   "id": 111,
+   "start": 316.272,
+   "end": 317.572,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑥、演出も疲れる"
+  },
+  {
+   "id": 112,
+   "start": 317.572,
+   "end": 320.19,
+   "speaker": "board",
+   "kind": "res",
+   "text": "先バレ待ちしてる時間が長すぎる"
+  },
+  {
+   "id": 113,
+   "start": 320.19,
+   "end": 322.808,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通知待ちアプリみたいになってる"
+  },
+  {
+   "id": 114,
+   "start": 322.808,
+   "end": 324.915,
+   "speaker": "board",
+   "kind": "res",
+   "text": "鳴った！\n↓\n弱い\n↓\nハズレ"
+  },
+  {
+   "id": 115,
+   "start": 324.915,
+   "end": 326.51,
+   "speaker": "board",
+   "kind": "res",
+   "text": "一番悲しいやつ"
+  },
+  {
+   "id": 116,
+   "start": 326.51,
+   "end": 330.407,
+   "speaker": "board",
+   "kind": "res",
+   "text": "激アツ重ねて外すくらいなら\n何も起こらず外れてくれ"
+  },
+  {
+   "id": 117,
+   "start": 330.407,
+   "end": 333.153,
+   "speaker": "board",
+   "kind": "res",
+   "text": "金\nレバブル\n次回予告\n強リーチ"
+  },
+  {
+   "id": 118,
+   "start": 333.153,
+   "end": 336.155,
+   "speaker": "board",
+   "kind": "res",
+   "text": "これで外した時は\n店員呼びそうになる"
+  },
+  {
+   "id": 119,
+   "start": 336.155,
+   "end": 338.155,
+   "speaker": "board",
+   "kind": "res",
+   "text": "呼んでどうするんだよ"
+  },
+  {
+   "id": 120,
+   "start": 338.155,
+   "end": 340.155,
+   "speaker": "board",
+   "kind": "res",
+   "text": "信頼度95％外した時"
+  },
+  {
+   "id": 121,
+   "start": 340.155,
+   "end": 342.155,
+   "speaker": "board",
+   "kind": "res",
+   "text": "残り5％引いた引き強"
+  },
+  {
+   "id": 122,
+   "start": 342.155,
+   "end": 343.75,
+   "speaker": "board",
+   "kind": "res",
+   "text": "その引きいらん"
+  },
+  {
+   "id": 123,
+   "start": 343.75,
+   "end": 345.75,
+   "speaker": "board",
+   "kind": "res",
+   "text": "「確定じゃないから」"
+  },
+  {
+   "id": 124,
+   "start": 345.75,
+   "end": 347.345,
+   "speaker": "board",
+   "kind": "res",
+   "text": "分かっとるわ！"
+  },
+  {
+   "id": 125,
+   "start": 347.345,
+   "end": 350.603,
+   "speaker": "board",
+   "kind": "res",
+   "text": "外れた直後だけ\nみんな数学者になるの好き"
+  },
+  {
+   "id": 126,
+   "start": 350.603,
+   "end": 354.683,
+   "speaker": "board",
+   "kind": "res",
+   "text": "昔はスーパーリーチ行っただけで\nちょっとワクワクしたよな"
+  },
+  {
+   "id": 127,
+   "start": 354.683,
+   "end": 358.197,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今は途中で\nCU足りないからハズレって分かる"
+  },
+  {
+   "id": 128,
+   "start": 358.197,
+   "end": 360.303,
+   "speaker": "board",
+   "kind": "res",
+   "text": "でも復活演出だけは好き"
+  },
+  {
+   "id": 129,
+   "start": 360.303,
+   "end": 361.503,
+   "speaker": "board",
+   "kind": "res",
+   "text": "分かる"
+  },
+  {
+   "id": 130,
+   "start": 361.503,
+   "end": 364.377,
+   "speaker": "board",
+   "kind": "res",
+   "text": "完全に諦めてからの復活は脳焼かれる"
+  },
+  {
+   "id": 131,
+   "start": 364.377,
+   "end": 365.677,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑦、昔の319って良かったよな"
+  },
+  {
+   "id": 132,
+   "start": 365.677,
+   "end": 370.013,
+   "speaker": "board",
+   "kind": "res",
+   "text": "昔の319も普通にハマったけど\n今ほど絶望感なかった気がする"
+  },
+  {
+   "id": 133,
+   "start": 370.013,
+   "end": 372.013,
+   "speaker": "board",
+   "kind": "res",
+   "text": "思い出補正もあるぞ"
+  },
+  {
+   "id": 134,
+   "start": 372.013,
+   "end": 376.013,
+   "speaker": "board",
+   "kind": "res",
+   "text": "でも319引けば\nちゃんと大当たりした台多かったしな"
+  },
+  {
+   "id": 135,
+   "start": 376.013,
+   "end": 378.376,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今は当たりの種類が多すぎる"
+  },
+  {
+   "id": 136,
+   "start": 378.376,
+   "end": 379.587,
+   "speaker": "board",
+   "kind": "res",
+   "text": "チャージ"
+  },
+  {
+   "id": 137,
+   "start": 379.587,
+   "end": 381.055,
+   "speaker": "board",
+   "kind": "res",
+   "text": "下位RUSH"
+  },
+  {
+   "id": 138,
+   "start": 381.055,
+   "end": 382.522,
+   "speaker": "board",
+   "kind": "res",
+   "text": "上位RUSH"
+  },
+  {
+   "id": 139,
+   "start": 382.522,
+   "end": 383.722,
+   "speaker": "board",
+   "kind": "res",
+   "text": "LT"
+  },
+  {
+   "id": 140,
+   "start": 383.722,
+   "end": 385.828,
+   "speaker": "board",
+   "kind": "res",
+   "text": "どんだけ階層あるんだよ"
+  },
+  {
+   "id": 141,
+   "start": 385.828,
+   "end": 387.424,
+   "speaker": "board",
+   "kind": "res",
+   "text": "会社の役職かよ"
+  },
+  {
+   "id": 142,
+   "start": 387.424,
+   "end": 390.809,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319\n突入70％\n継続80％くらいでいい"
+  },
+  {
+   "id": 143,
+   "start": 390.809,
+   "end": 394.067,
+   "speaker": "board",
+   "kind": "res",
+   "text": "結局シンプルなスペックが一番分かりやすい"
+  },
+  {
+   "id": 144,
+   "start": 394.067,
+   "end": 396.941,
+   "speaker": "board",
+   "kind": "res",
+   "text": "エヴァ15が長生きした理由分かるわ"
+  },
+  {
+   "id": 145,
+   "start": 396.941,
+   "end": 400.71,
+   "speaker": "board",
+   "kind": "res",
+   "text": "399とか499見た後に319見ると\n甘く感じる"
+  },
+  {
+   "id": 146,
+   "start": 400.71,
+   "end": 403.967,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319が甘デジ扱いされる未来が来るとはな"
+  },
+  {
+   "id": 147,
+   "start": 403.967,
+   "end": 406.202,
+   "speaker": "board",
+   "kind": "res",
+   "text": "そのうち\n1/999出て"
+  },
+  {
+   "id": 148,
+   "start": 406.202,
+   "end": 408.202,
+   "speaker": "board",
+   "kind": "res",
+   "text": "399？\n遊べるやん"
+  },
+  {
+   "id": 149,
+   "start": 408.202,
+   "end": 409.797,
+   "speaker": "board",
+   "kind": "res",
+   "text": "とか言ってそう"
+  },
+  {
+   "id": 150,
+   "start": 409.797,
+   "end": 411.008,
+   "speaker": "board",
+   "kind": "res",
+   "text": "怖すぎる"
+  },
+  {
+   "id": 151,
+   "start": 411.008,
+   "end": 414.549,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "319重すぎって文句言ってた時代に戻りたい。"
+  },
+  {
+   "id": 152,
+   "start": 414.549,
+   "end": 417.951,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "戻ったら戻ったで\nまた文句言うと思うよ。"
+  },
+  {
+   "id": 153,
+   "start": 417.951,
+   "end": 419.754,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "人間そんなもんや。"
+  },
+  {
+   "id": 154,
+   "start": 419.754,
+   "end": 421.054,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑧、それでも何で打つの？"
+  },
+  {
+   "id": 155,
+   "start": 421.054,
+   "end": 424.439,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ここまで文句言っといて\n明日も朝から並ぶ奴"
+  },
+  {
+   "id": 156,
+   "start": 424.439,
+   "end": 425.639,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ワイ"
+  },
+  {
+   "id": 157,
+   "start": 425.639,
+   "end": 426.839,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ワイも"
+  },
+  {
+   "id": 158,
+   "start": 426.839,
+   "end": 428.179,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ワイもです"
+  },
+  {
+   "id": 159,
+   "start": 428.179,
+   "end": 431.564,
+   "speaker": "board",
+   "kind": "res",
+   "text": "結局当たった瞬間が\n気持ち良すぎるんだよな"
+  },
+  {
+   "id": 160,
+   "start": 431.564,
+   "end": 434.949,
+   "speaker": "board",
+   "kind": "res",
+   "text": "先バレ鳴った瞬間だけは\n嫌なこと全部忘れる"
+  },
+  {
+   "id": 161,
+   "start": 434.949,
+   "end": 437.312,
+   "speaker": "board",
+   "kind": "res",
+   "text": "RUSH入った瞬間の万能感"
+  },
+  {
+   "id": 162,
+   "start": 437.312,
+   "end": 438.651,
+   "speaker": "board",
+   "kind": "res",
+   "text": "なお5分後"
+  },
+  {
+   "id": 163,
+   "start": 438.651,
+   "end": 439.863,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通常画面"
+  },
+  {
+   "id": 164,
+   "start": 439.863,
+   "end": 443.632,
+   "speaker": "board",
+   "kind": "res",
+   "text": "万発出したら\n昨日の5万負けを無かったことにする"
+  },
+  {
+   "id": 165,
+   "start": 443.632,
+   "end": 445.632,
+   "speaker": "board",
+   "kind": "res",
+   "text": "勝った日は自分の実力"
+  },
+  {
+   "id": 166,
+   "start": 445.632,
+   "end": 447.632,
+   "speaker": "board",
+   "kind": "res",
+   "text": "負けた日は店が悪い"
+  },
+  {
+   "id": 167,
+   "start": 447.632,
+   "end": 449.632,
+   "speaker": "board",
+   "kind": "res",
+   "text": "完璧なメンタル管理"
+  },
+  {
+   "id": 168,
+   "start": 449.632,
+   "end": 451.099,
+   "speaker": "board",
+   "kind": "res",
+   "text": "もう引退する"
+  },
+  {
+   "id": 169,
+   "start": 451.099,
+   "end": 452.438,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今年8回目"
+  },
+  {
+   "id": 170,
+   "start": 452.438,
+   "end": 455.824,
+   "speaker": "board",
+   "kind": "res",
+   "text": "引退宣言した日の夜に\n新台スペック調べてる"
+  },
+  {
+   "id": 171,
+   "start": 455.824,
+   "end": 460.744,
+   "speaker": "board",
+   "kind": "res",
+   "text": "行かないって決めた日に限って\nSNSで5万発報告流れてくるの腹立つ"
+  },
+  {
+   "id": 172,
+   "start": 460.744,
+   "end": 462.744,
+   "speaker": "board",
+   "kind": "res",
+   "text": "それ見て次の日行く"
+  },
+  {
+   "id": 173,
+   "start": 462.744,
+   "end": 464.083,
+   "speaker": "board",
+   "kind": "res",
+   "text": "養分の完成"
+  },
+  {
+   "id": 174,
+   "start": 464.083,
+   "end": 467.469,
+   "speaker": "board",
+   "kind": "res",
+   "text": "結局\nパチンコ嫌いになれない奴が一番苦しい"
+  },
+  {
+   "id": 175,
+   "start": 467.469,
+   "end": 471.23,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "じゃあ今日の結論は、\n最近のパチンコは\n回らない。"
+  },
+  {
+   "id": 176,
+   "start": 471.23,
+   "end": 472.432,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "当たらない。"
+  },
+  {
+   "id": 177,
+   "start": 472.432,
+   "end": 474.233,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "RUSHに入らない。"
+  },
+  {
+   "id": 178,
+   "start": 474.233,
+   "end": 475.836,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "入っても続かない。"
+  },
+  {
+   "id": 179,
+   "start": 475.836,
+   "end": 477.216,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "お金もかかる。"
+  },
+  {
+   "id": 180,
+   "start": 477.216,
+   "end": 478.552,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "でも明日行く。"
+  },
+  {
+   "id": 181,
+   "start": 479.552,
+   "end": 481.392,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "なんでだよ。"
+  },
+  {
+   "id": 182,
+   "start": 481.392,
+   "end": 493.605,
+   "speaker": "narrator",
+   "kind": "ending",
+   "text": "最近のパチンコについて\nみんなが一番キツいと思っていることは何？。回らない。LTが重い。継続しない。演出がしんどい。それ以外でもOK。。コメント欄で教えてください。"
+  },
+  {
+   "id": 183,
+   "start": 493.905,
+   "end": 497.105,
+   "speaker": "narrator",
+   "kind": "subscribe",
+   "text": "チャンネル登録と高評価、よろしくお願いします！"
+  }
+ ]
+}

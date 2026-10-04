@@ -1,0 +1,87 @@
+name: Add voice (edge-tts)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "test = 冒頭だけ / full = フル"
+        type: choice
+        options: [test, full]
+        default: test
+      test_seconds:
+        description: "テストで書き出す秒数"
+        type: string
+        default: "60"
+      video_url:
+        description: "動画を input/ に置けない場合のダウンロードURL（空なら input/1000010320.mp4 を使用）"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  add-voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version | head -n 1
+
+      - name: Install Python packages (edge-tts, numpy)
+        run: pip install -r requirements.txt
+
+      - name: Get input video
+        env:
+          VIDEO_URL: ${{ inputs.video_url }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p input
+          if [ -n "$VIDEO_URL" ]; then
+            echo "Downloading video from URL"
+            curl -L --fail -o input/1000010320.mp4 "$VIDEO_URL"
+          fi
+          if [ ! -f input/1000010320.mp4 ]; then
+            echo "input/ に無いので、Releases の添付ファイルから探します"
+            gh release download --repo "$GITHUB_REPOSITORY" --pattern "1000010320.mp4" --dir input || true
+          fi
+          if [ ! -f input/1000010320.mp4 ]; then
+            echo "::error::1000010320.mp4 が見つかりません。input/ に置く・Releases に添付する・video_url を指定する、のどれかをしてください。"
+            exit 1
+          fi
+          ls -la input/
+
+      - name: Restore TTS cache
+        uses: actions/cache@v4
+        with:
+          path: cache/tts
+          key: tts-${{ hashFiles('scripts/timeline.json', 'config.json') }}
+          restore-keys: tts-
+
+      - name: Add voice
+        id: run
+        run: |
+          if [ "${{ inputs.mode }}" = "full" ]; then
+            python src/add_voice.py
+          else
+            python src/add_voice.py --test "${{ inputs.test_seconds }}"
+          fi
+
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-${{ inputs.mode }}
+          path: ${{ steps.run.outputs.output_path }}
+          retention-days: 7
+          if-no-files-found: error
