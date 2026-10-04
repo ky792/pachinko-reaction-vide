@@ -12,13 +12,17 @@ on:
         description: "テストで書き出す秒数"
         type: string
         default: "60"
+      save_to_repo:
+        description: "完成動画を outputs ブランチにも保存する"
+        type: boolean
+        default: true
       video_url:
         description: "動画を input/ に置けない場合のダウンロードURL（空なら input/1000010320.mp4 を使用）"
         type: string
         default: ""
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   add-voice:
@@ -85,3 +89,18 @@ jobs:
           path: ${{ steps.run.outputs.output_path }}
           retention-days: 7
           if-no-files-found: error
+
+      - name: Save result to outputs branch
+        if: ${{ inputs.save_to_repo }}
+        env:
+          OUT: ${{ steps.run.outputs.output_path }}
+          TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/outbranch && cp "$OUT" /tmp/outbranch/
+          cd /tmp/outbranch
+          git init -q -b outputs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "完成動画: $(basename "$OUT") (run ${{ github.run_id }})"
+          git push -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" outputs

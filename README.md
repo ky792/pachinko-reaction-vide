@@ -17,6 +17,7 @@ GitHubアプリ／ブラウザで **Actions → Add voice (edge-tts) → Run wor
 - `mode: full` … 全編 → `output/1000010320_voice.mp4`
 
 終わったら、その実行ページ下の **Artifacts**（`voice-test` / `voice-full`）からダウンロードします（zipの中にmp4）。
+`save_to_repo`（既定ON）の場合、完成動画は `outputs` ブランチにも保存されます（毎回上書き。最新の1本だけ残ります）。
 
 ## 3. 調整（config.json）
 
