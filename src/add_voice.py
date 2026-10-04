@@ -232,10 +232,97 @@ def build_voice_dynamic(lines, cfg, sr, N, dur, mode):
     return voice, mask
 
 
+def apply_replace(text, cfg):
+    t = text
+    for a, b in cfg["tts"].get("replace", {}).items():
+        if a != "↓":
+            t = t.replace(a, b)
+    return t.replace("「", "").replace("」", "")
+
+
+def build_voice_directed(lines, cfg, sr, N, dur, mode):
+    """手動ディレクション（scripts/directions/*.json）どおりに演じ分ける。
+    - 無音（gap_before / silence_after / pause_before）は削らない
+    - 枠に収まらない時は少し速める → それでも無理ならCレス（合いの手）は読み上げを省略（画面には残る）
+    - 音量は均一化しすぎない（部分的な正規化のみ）"""
+    D = cfg["directed"]
+    doc = json.loads((ROOT / D["file"]).read_text(encoding="utf-8"))
+    P, LD = doc["personas"], doc["lines"]
+    missing = [l["id"] for l in lines if str(l["id"]) not in LD]
+    if missing:
+        print(f"[演出] ディレクションが無い行 {len(missing)} 件は自動（dynamic）で読みます: {missing[:10]}", flush=True)
+    jobs, items = [], []
+    for l in lines:
+        d = LD.get(str(l["id"]))
+        if not d:
+            continue
+        per = P[d["persona"]]
+        adj = D["tier_adjust"].get(d["tier"], {})
+        segs = []
+        for sg in d["segments"]:
+            text = apply_replace(sg.get("read", sg["text"]), cfg)
+            rate = f"{int(round(sg['rate'] + adj.get('rate', 0))):+d}%"
+            pitch = f"{int(round(per['pitch'] + sg['pitch'])):+d}Hz"
+            k = clip_key(cfg["tts"]["engine"], per["voice"], rate, pitch, "+0%", text)
+            job = dict(voice=per["voice"], rate=rate, pitch=pitch, volume="+0%", text=text,
+                       path=ROOT / cfg["cache_dir"] / (("dummy_" if mode == "dummy" else "") + k + ".mp3"))
+            jobs.append(job)
+            segs.append({"job": job, "gap": sg["gap_before"], "gain": sg["gain_db"] + adj.get("gain_db", 0)})
+        items.append({"line": l, "d": d, "segs": segs})
+    asyncio.run(synth_all(jobs, cfg, mode))
+
+    voice, mask = np.zeros(N, np.float32), np.zeros(N, np.float32)
+    prev_end, prev_sil = 0.0, 0.0
+    report, skipped, sped, spill = [], 0, 0, 0
+    for it in items:
+        l, d = it["line"], it["d"]
+        parts = []
+        for j, sg in enumerate(it["segs"]):
+            x = trim(decode(sg["job"]["path"], sr), sr)
+            rms = float(np.sqrt(np.mean(x ** 2))) if len(x) else 0.0
+            if rms > 1e-4:   # 部分的な正規化（声ごとの自然な強弱は残す）
+                x = x * (D["target_rms"] / rms) ** D["partial_normalize"]
+            x = x * (10 ** (sg["gain"] / 20))
+            if j > 0 and sg["gap"] > 0:
+                parts.append(np.zeros(int(sg["gap"] * sr), np.float32))
+            parts.append(x.astype(np.float32))
+        clip = np.concatenate(parts) if parts else np.zeros(0, np.float32)
+        if not len(clip):
+            continue
+        start = max(l["start"] + D["voice_offset"] + d["pause_before"], prev_end + max(prev_sil, d["pause_before"]))
+        hard_end = min(l["end"], dur) + D["allow_spill"]
+        avail = hard_end - start
+        status = "ok"
+        if len(clip) / sr > avail:
+            f = len(clip) / sr / max(avail, 0.2)
+            if f <= D["speedup_soft"]:
+                clip = tempo(clip, f, sr); status = f"x{f:.2f}"; sped += 1
+            elif d["tier"] == "C":
+                skipped += 1
+                report.append({"id": l["id"], "status": "省略（画面のみ）", "tier": d["tier"], "persona": d["persona"], "text": l["text"]})
+                continue
+            else:
+                g = min(f, D["speedup_hard"])
+                clip = tempo(clip, g, sr); status = f"x{g:.2f}"; sped += 1
+                if len(clip) / sr > avail + 0.05:
+                    spill += 1; status += " はみ出し"
+        s0 = int(start * sr); e0 = min(N, s0 + len(clip))
+        if s0 >= N:
+            break
+        voice[s0:e0] += clip[: e0 - s0]
+        mask[s0:e0] = 1.0
+        prev_end, prev_sil = start + len(clip) / sr, d["silence_after"]
+        report.append({"id": l["id"], "start": round(start, 2), "end": round(prev_end, 2), "slot": [l["start"], l["end"]],
+                       "tier": d["tier"], "persona": d["persona"], "status": status, "text": l["text"], "note": d.get("note", "")})
+    print(f"[同期] 読み上げ {len(report) - skipped} 件 / 速めた {sped} / 省略(Cレス) {skipped} / はみ出し {spill}", flush=True)
+    (ROOT / "work" / "voice_plan.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+    return voice, mask
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--test", type=float, default=None, help="冒頭N秒だけ書き出す")
-    ap.add_argument("--style", default="dynamic", choices=["dynamic", "flat"])
+    ap.add_argument("--style", default="dynamic", choices=["directed", "dynamic", "flat"])
     ap.add_argument("--tts", default="edge", choices=["edge", "dummy"])
     ap.add_argument("--config", default=str(ROOT / "config.json"))
     ap.add_argument("--input", default=None, help="入力動画（configより優先）")
@@ -249,8 +336,8 @@ def main():
         raise Fail(f"入力動画がありません: {src}\n  → input/ に動画を置くか、workflow の video_url を指定してください")
     if args.output:
         out = Path(args.output)
-    elif args.style == "dynamic":
-        out = ROOT / (cfg["output_dynamic_test"] if args.test else cfg["output_dynamic_full"])
+    elif args.style in ("dynamic", "directed"):
+        out = ROOT / (cfg[f"output_{args.style}_test"] if args.test else cfg[f"output_{args.style}_full"])
     else:
         out = ROOT / (cfg["output_test"].format(seconds=int(args.test)) if args.test else cfg["output_full"])
     if out.resolve() == src.resolve():
@@ -272,7 +359,9 @@ def main():
     sr = m["sample_rate"]
     N = int(dur * sr) + 1
     mode = "dummy" if args.tts == "dummy" else "edge"
-    if args.style == "dynamic":
+    if args.style == "directed":
+        voice, mask = build_voice_directed(lines, cfg, sr, N, dur, mode)
+    elif args.style == "dynamic":
         voice, mask = build_voice_dynamic(lines, cfg, sr, N, dur, mode)
     else:
         voice, mask = build_voice_flat(lines, cfg, sr, N, dur, mode)

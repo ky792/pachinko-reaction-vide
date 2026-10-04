@@ -42,6 +42,8 @@
       "subscribe"
     ],
     "replace": {
+      "1/319": "さんいちきゅう分の1",
+      "319": "さんいちきゅう",
       "↓": "、",
       "①": "いち",
       "②": "に",
@@ -260,5 +262,29 @@
     },
     "min_gap_between_lines": 0.12,
     "clip_target_rms": 0.08
+  },
+  "output_directed_test": "output/voice_directed_test.mp4",
+  "output_directed_full": "output/1000010320_voice_directed.mp4",
+  "directed": {
+    "_note": "手動ディレクション（scripts/directions/*.json）。無音は削らない。収まらない時は少し速める→Cレスは読み上げ省略（画面には残る）",
+    "file": "scripts/directions/directed_90s.json",
+    "voice_offset": 0.1,
+    "speedup_soft": 1.2,
+    "speedup_hard": 1.35,
+    "allow_spill": 0.3,
+    "partial_normalize": 0.35,
+    "target_rms": 0.08,
+    "tier_adjust": {
+      "A": {
+        "gain_db": 0.5
+      },
+      "B": {
+        "gain_db": 0
+      },
+      "C": {
+        "gain_db": -1,
+        "rate": 4
+      }
+    }
   }
 }

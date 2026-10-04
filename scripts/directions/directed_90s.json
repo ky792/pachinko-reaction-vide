@@ -1,0 +1,677 @@
+{
+ "_note": "冒頭90秒の手動ディレクション。rate=%（絶対値）/ pitch=担当の基本ピッチからの差(Hz) / gain_db=dB / gap_before=文中の無音(秒) / silence_after=次の読み上げまでの無音(秒) / read=読み方だけ変える場合",
+ "personas": {
+  "calm": {
+   "label": "通常担当：落ち着いた男性",
+   "voice": "ja-JP-KeitaNeural",
+   "pitch": -4
+  },
+  "tsukkomi": {
+   "label": "ツッコミ担当：テンポのいい男性",
+   "voice": "ja-JP-KeitaNeural",
+   "pitch": 6
+  },
+  "reaction": {
+   "label": "リアクション担当：女性",
+   "voice": "ja-JP-NanamiNeural",
+   "pitch": 0
+  },
+  "rabbit": {
+   "label": "うさぎ",
+   "voice": "ja-JP-NanamiNeural",
+   "pitch": 14
+  },
+  "cat": {
+   "label": "ねこ",
+   "voice": "ja-JP-KeitaNeural",
+   "pitch": 22
+  },
+  "narrator": {
+   "label": "ナレーション",
+   "voice": "ja-JP-NanamiNeural",
+   "pitch": 0
+  }
+ },
+ "lines": {
+  "1": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "最近のパチンコ、",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "さすがにキツくないか？",
+     "rate": 4,
+     "pitch": -4,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": "問いかけ。落ち着いて"
+  },
+  "2": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "回らない",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "当たらない",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "右に入らない",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "入っても続かない",
+     "rate": 0,
+     "pitch": -6,
+     "gain_db": -2,
+     "gap_before": 0.4
+    }
+   ],
+   "note": "リズムよく3つ並べて、最後だけ間を置いて低く"
+  },
+  "3": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "それでも店に行く俺らが",
+     "rate": 6,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "一番おかしい",
+     "rate": 2,
+     "pitch": -8,
+     "gain_db": -1,
+     "gap_before": 0.18
+    }
+   ],
+   "note": "自嘲。言い切りは低く"
+  },
+  "4": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.25,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "正論やめろ",
+     "rate": 24,
+     "pitch": 6,
+     "gain_db": 3,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ。即ツッコミ→長めの無音"
+  },
+  "5": {
+   "tier": "A",
+   "persona": "narrator",
+   "pause_before": 0.0,
+   "silence_after": 1.0,
+   "segments": [
+    {
+     "text": "最近のパチンコ、",
+     "rate": 5,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "さすがにキツすぎる件。",
+     "rate": 5,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.25
+    },
+    {
+     "text": "パチンコ民の反応集",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.5
+    }
+   ],
+   "note": "タイトル"
+  },
+  "7": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "千円で12回とか",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "普通になってるの",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "ヤバいだろ",
+     "rate": 12,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.12
+    }
+   ],
+   "note": "章の頭。本題を置く"
+  },
+  "8": {
+   "tier": "C",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "12回ならまだ回ってる方やぞ",
+     "rate": 18,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "すかさず返す"
+  },
+  "9": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.3,
+   "silence_after": 0.8,
+   "segments": [
+    {
+     "text": "それが一番怖い",
+     "rate": 0,
+     "pitch": -10,
+     "gain_db": -3,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ（静かに言うパターン）"
+  },
+  "10": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "1万円入れて150回転いかない台とか",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "普通にある",
+     "rate": 8,
+     "pitch": -3,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "11": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "319引く以前の問題なんよ",
+     "rate": 8,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "12": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "保留すら途切れると",
+     "rate": 8,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "何のために座ってるのか分からなくなる",
+     "rate": 2,
+     "pitch": -8,
+     "gain_db": -2,
+     "gap_before": 0.28
+    }
+   ],
+   "note": "後半でテンションを落とす"
+  },
+  "13": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "スマホ見る時間の方が長い",
+     "rate": 18,
+     "pitch": 0,
+     "gain_db": -1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "合いの手。軽く"
+  },
+  "14": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.45,
+   "segments": [
+    {
+     "text": "パチンコ打ちに来たのに",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "ユーチューブ見て帰ってる",
+     "rate": 14,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.32
+    }
+   ],
+   "note": "ボケ。間を置いて淡々と"
+  },
+  "15": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "ヘソに玉入っただけで嬉しくなる遊技",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "16": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.45,
+   "segments": [
+    {
+     "text": "昔",
+     "rate": 4,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "19回しか回らん",
+     "rate": 8,
+     "pitch": -6,
+     "gain_db": -1,
+     "gap_before": 0.1
+    },
+    {
+     "text": "今",
+     "rate": 4,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.38
+    },
+    {
+     "text": "17回も回るやん！",
+     "rate": 22,
+     "pitch": 12,
+     "gain_db": 2,
+     "gap_before": 0.1
+    }
+   ],
+   "note": "昔はぼやき、今は嬉しそうに（調教ネタのフリ）"
+  },
+  "17": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.25,
+   "silence_after": 0.8,
+   "segments": [
+    {
+     "text": "完全に調教されてて草",
+     "rate": 20,
+     "pitch": 5,
+     "gain_db": 2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "18": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "ボーダーとか期待値以前に",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "遊ばせてくれ",
+     "rate": 0,
+     "pitch": -6,
+     "gain_db": -1,
+     "gap_before": 0.2
+    }
+   ],
+   "note": "懇願っぽく"
+  },
+  "19": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.45,
+   "segments": [
+    {
+     "text": "千円で10回前後は",
+     "rate": 15,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "もう遊技じゃなくて募金だろ",
+     "rate": 20,
+     "pitch": 4,
+     "gain_db": 2,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "20": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "でも千円で20回回ると",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "めちゃくちゃいい台に見えるんだよな",
+     "rate": 14,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": "オチのフリ"
+  },
+  "21": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.4,
+   "silence_after": 0.8,
+   "segments": [
+    {
+     "text": "なお当たらない模様",
+     "rate": 2,
+     "pitch": -10,
+     "gain_db": -2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ（淡々と静かに）"
+  },
+  "22": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.2,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "回らないと、当たる当たらない以前に",
+     "rate": 4,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "普通に退屈だよね。",
+     "rate": 0,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.25
+    }
+   ],
+   "note": ""
+  },
+  "23": {
+   "tier": "B",
+   "persona": "cat",
+   "pause_before": 0.25,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "千円入れて、デモ画面出た時の",
+     "rate": 15,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "虚無よ。",
+     "rate": 0,
+     "pitch": -8,
+     "gain_db": -1,
+     "gap_before": 0.3
+    }
+   ],
+   "note": "最後の一言は低く"
+  },
+  "24": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.3,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "それはさすがに席立ちたくなるね。",
+     "rate": 2,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "25": {
+   "tier": "A",
+   "persona": "cat",
+   "pause_before": 0.45,
+   "silence_after": 1.0,
+   "segments": [
+    {
+     "text": "立たないんだけどな。",
+     "rate": 6,
+     "pitch": -4,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ。間を取ってから言い切る"
+  },
+  "27": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "最近の台",
+     "rate": 5,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "1/399とか1/499とか普通に書いてあって",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.3,
+     "read": "399分の1とか、499分の1とか、普通に書いてあって"
+    },
+    {
+     "text": "感覚バグる",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.12
+    }
+   ],
+   "note": "章の頭"
+  },
+  "28": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "319が軽く見える時代",
+     "rate": 15,
+     "pitch": 2,
+     "gain_db": -1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "29": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "昔の俺らに聞かせたら笑われるぞ",
+     "rate": 10,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "30": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "「319重すぎ」",
+     "rate": 10,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "って言ってた頃が懐かしい",
+     "rate": 4,
+     "pitch": -4,
+     "gain_db": 0,
+     "gap_before": 0.1
+    }
+   ],
+   "note": ""
+  },
+  "31": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.45,
+   "segments": [
+    {
+     "text": "今",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "319？",
+     "rate": 10,
+     "pitch": 8,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "良心的やん",
+     "rate": 16,
+     "pitch": 3,
+     "gain_db": 1,
+     "gap_before": 0.28
+    }
+   ],
+   "note": ""
+  }
+ }
+}

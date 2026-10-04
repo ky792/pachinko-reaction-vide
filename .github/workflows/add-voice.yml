@@ -13,10 +13,10 @@ on:
         type: string
         default: "90"
       style:
-        description: "dynamic = 緩急あり（声4種・分類・間） / flat = 以前の一定の読み方"
+        description: "directed = 手動ディレクション（冒頭90秒） / dynamic = 自動の緩急 / flat = 一定の読み方"
         type: choice
-        options: [dynamic, flat]
-        default: dynamic
+        options: [directed, dynamic, flat]
+        default: directed
       save_to_repo:
         description: "完成動画を outputs ブランチにも保存する"
         type: boolean
