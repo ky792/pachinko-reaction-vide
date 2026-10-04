@@ -1,0 +1,2256 @@
+[
+ {
+  "id": 1,
+  "start": 0.1,
+  "end": 2.17,
+  "slot": [
+   0.0,
+   3.299
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "昔ワイ\n「319とか重すぎだろ」",
+  "note": "当時のぼやき"
+ },
+ {
+  "id": 2,
+  "start": 3.4,
+  "end": 5.63,
+  "slot": [
+   3.299,
+   6.748
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今ワイ\n「319？全然打てるやん」",
+  "note": "今は余裕そうに"
+ },
+ {
+  "id": 3,
+  "start": 7.1,
+  "end": 8.22,
+  "slot": [
+   6.748,
+   8.847
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "感覚壊されてて草",
+  "note": "オチ"
+ },
+ {
+  "id": 4,
+  "start": 8.95,
+  "end": 10.77,
+  "slot": [
+   8.847,
+   11.696
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "ユニコーン\nエヴァ\nリゼロ",
+  "note": "ひとつずつ置く"
+ },
+ {
+  "id": 5,
+  "start": 11.8,
+  "end": 15.88,
+  "slot": [
+   11.696,
+   16.544
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "この3台が同時期に選べたの\n今考えると普通に贅沢だったよな",
+  "note": ""
+ },
+ {
+  "id": 6,
+  "start": 16.64,
+  "end": 19.19,
+  "slot": [
+   16.544,
+   20.142
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "しかもライトミドルも甘も選択肢あった",
+  "note": ""
+ },
+ {
+  "id": 7,
+  "start": 20.24,
+  "end": 22.99,
+  "slot": [
+   20.142,
+   24.191
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "もしかしてあの頃って\n結構いい時代だった？",
+  "note": "しみじみ問いかけてタイトルへ"
+ },
+ {
+  "id": 8,
+  "start": 24.29,
+  "end": 30.21,
+  "slot": [
+   24.191,
+   29.9
+  ],
+  "tier": "A",
+  "persona": "narrator",
+  "status": "x1.03",
+  "text": "昔の319って今思えば神スペックだったよな。パチンコ民の反応集",
+  "note": ""
+ },
+ {
+  "id": 10,
+  "start": 31.4,
+  "end": 34.59,
+  "slot": [
+   31.3,
+   35.9
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "当時は319ハマるたびに\nこんなん無理って言ってたよな",
+  "note": ""
+ },
+ {
+  "id": 11,
+  "start": 36.0,
+  "end": 37.94,
+  "slot": [
+   35.9,
+   39.049
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "1000ハマり見たら絶望してた",
+  "note": ""
+ },
+ {
+  "id": 12,
+  "start": 39.15,
+  "end": 40.89,
+  "slot": [
+   39.049,
+   41.748
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今\n「まあ319だしな」",
+  "note": "余裕ぶって"
+ },
+ {
+  "id": 13,
+  "start": 42.1,
+  "end": 42.93,
+  "slot": [
+   41.748,
+   43.547
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "慣れって怖い",
+  "note": "オチ（静かに）"
+ },
+ {
+  "id": 14,
+  "start": 43.65,
+  "end": 48.87,
+  "slot": [
+   43.547,
+   49.395
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "399とか図柄揃い重い台見たあとだと\n319の数字に安心感あるの草",
+  "note": ""
+ },
+ {
+  "id": 15,
+  "start": 49.5,
+  "end": 52.74,
+  "slot": [
+   49.395,
+   53.593
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "319が甘く見える時代が来るとは思わなかった",
+  "note": ""
+ },
+ {
+  "id": 16,
+  "start": 53.69,
+  "end": 57.3,
+  "slot": [
+   53.593,
+   58.291
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "しかも昔は\n319引いたらちゃんと大当たりって感じだった",
+  "note": ""
+ },
+ {
+  "id": 17,
+  "start": 58.39,
+  "end": 62.31,
+  "slot": [
+   58.291,
+   63.289
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今は当ててから\nRUSH\n上位\nLT\nとかまだ関門あるからな",
+  "note": "関門が増えていく"
+ },
+ {
+  "id": 18,
+  "start": 63.39,
+  "end": 65.51,
+  "slot": [
+   63.289,
+   66.887
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "当たり引いてスタートラインはしんどい",
+  "note": ""
+ },
+ {
+  "id": 19,
+  "start": 66.99,
+  "end": 69.74,
+  "slot": [
+   66.887,
+   70.486
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "昔の319\n重いけど分かりやすかった",
+  "note": "章の締め"
+ },
+ {
+  "id": 20,
+  "start": 70.79,
+  "end": 73.45,
+  "slot": [
+   70.486,
+   73.963
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "319って今でも普通に重いよね？",
+  "note": ""
+ },
+ {
+  "id": 21,
+  "start": 74.36,
+  "end": 74.71,
+  "slot": [
+   73.963,
+   75.763
+  ],
+  "tier": "B",
+  "persona": "cat",
+  "status": "ok",
+  "text": "重い。",
+  "note": "即答"
+ },
+ {
+  "id": 22,
+  "start": 76.11,
+  "end": 77.92,
+  "slot": [
+   75.763,
+   78.748
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "じゃあなんで軽く感じるの？",
+  "note": ""
+ },
+ {
+  "id": 23,
+  "start": 79.15,
+  "end": 81.0,
+  "slot": [
+   78.748,
+   82.106
+  ],
+  "tier": "B",
+  "persona": "cat",
+  "status": "ok",
+  "text": "もっと重いものを見せられたから。",
+  "note": ""
+ },
+ {
+  "id": 24,
+  "start": 82.66,
+  "end": 84.74,
+  "slot": [
+   82.106,
+   85.255
+  ],
+  "tier": "A",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "完全に感覚壊されてるじゃん。",
+  "note": "オチ"
+ },
+ {
+  "id": 26,
+  "start": 86.75,
+  "end": 87.59,
+  "slot": [
+   86.655,
+   88.754
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "まずユニコーンな",
+  "note": "章の頭"
+ },
+ {
+  "id": 27,
+  "start": 88.85,
+  "end": 90.88,
+  "slot": [
+   88.754,
+   91.603
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "あれ出た時の右打ちの衝撃よ",
+  "note": ""
+ },
+ {
+  "id": 28,
+  "start": 91.7,
+  "end": 95.49,
+  "slot": [
+   91.603,
+   96.751
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "転落式嫌いだったけど\n覚醒HYPER入った時の速さは好きだった",
+  "note": "前半渋く→後半好き"
+ },
+ {
+  "id": 29,
+  "start": 96.85,
+  "end": 99.42,
+  "slot": [
+   96.751,
+   100.499
+  ],
+  "tier": "B",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "右の出玉感と継続感\nそりゃ脳焼かれるわ",
+  "note": ""
+ },
+ {
+  "id": 30,
+  "start": 100.6,
+  "end": 101.12,
+  "slot": [
+   100.499,
+   102.449
+  ],
+  "tier": "A",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "「それでも！」",
+  "note": "叫ぶ"
+ },
+ {
+  "id": 31,
+  "start": 102.55,
+  "end": 104.19,
+  "slot": [
+   102.449,
+   106.048
+  ],
+  "tier": "B",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "これ聞きたいだけで打ってた奴おるやろ",
+  "note": ""
+ },
+ {
+  "id": 32,
+  "start": 106.15,
+  "end": 109.19,
+  "slot": [
+   106.048,
+   110.396
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "先読みカスタムも含めて\n当時かなり完成されてた",
+  "note": ""
+ },
+ {
+  "id": 33,
+  "start": 110.5,
+  "end": 112.31,
+  "slot": [
+   110.396,
+   113.095
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "通常時は修行だったけどな",
+  "note": ""
+ },
+ {
+  "id": 34,
+  "start": 113.44,
+  "end": 114.62,
+  "slot": [
+   113.095,
+   115.395
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "それは今も変わらん",
+  "note": "オチ（静かに）"
+ },
+ {
+  "id": 35,
+  "start": 115.49,
+  "end": 119.14,
+  "slot": [
+   115.395,
+   121.392
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "ユニコーンで高速RUSH慣れしたせいで\n遅い右打ち耐えられなくなった",
+  "note": ""
+ },
+ {
+  "id": 36,
+  "start": 121.49,
+  "end": 123.45,
+  "slot": [
+   121.392,
+   124.991
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "メーカー\n「じゃあもっと速くします」",
+  "note": "メーカーは得意げに"
+ },
+ {
+  "id": 37,
+  "start": 125.29,
+  "end": 126.09,
+  "slot": [
+   124.991,
+   127.09
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "違うそうじゃない",
+  "note": "オチ・章の締め"
+ },
+ {
+  "id": 39,
+  "start": 128.59,
+  "end": 131.49,
+  "slot": [
+   128.49,
+   132.539
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "結局一番長く打ったの\nエヴァ15かもしれん",
+  "note": "しみじみ"
+ },
+ {
+  "id": 40,
+  "start": 132.64,
+  "end": 134.76,
+  "slot": [
+   132.539,
+   135.538
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "スペック見た時の安心感すごい",
+  "note": ""
+ },
+ {
+  "id": 41,
+  "start": 135.64,
+  "end": 139.29,
+  "slot": [
+   135.538,
+   138.987
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "x1.17",
+  "text": "319\nST\n約81％\n右1500",
+  "note": "スペックを一つずつ"
+ },
+ {
+  "id": 42,
+  "start": 139.64,
+  "end": 140.91,
+  "slot": [
+   138.987,
+   141.536
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "もうこれでいいんだよ感",
+  "note": ""
+ },
+ {
+  "id": 43,
+  "start": 141.64,
+  "end": 145.75,
+  "slot": [
+   141.536,
+   147.383
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "変に上位とかなくて\nST入れたら最後まで同じゲーム性なのが良かった",
+  "note": ""
+ },
+ {
+  "id": 44,
+  "start": 147.48,
+  "end": 149.73,
+  "slot": [
+   147.383,
+   150.682
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "通常引いても時短あるのも偉かった",
+  "note": ""
+ },
+ {
+  "id": 45,
+  "start": 150.78,
+  "end": 154.41,
+  "slot": [
+   150.682,
+   155.38
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "エヴァ15って\n派手な新機能より普通に完成度高かったよな",
+  "note": ""
+ },
+ {
+  "id": 46,
+  "start": 155.48,
+  "end": 156.83,
+  "slot": [
+   155.38,
+   158.529
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "ホール行ったらとりあえずエヴァ",
+  "note": ""
+ },
+ {
+  "id": 47,
+  "start": 158.63,
+  "end": 159.87,
+  "slot": [
+   158.529,
+   161.078
+  ],
+  "tier": "C",
+  "persona": "calm",
+  "status": "ok",
+  "text": "空いてなかったら他の台",
+  "note": ""
+ },
+ {
+  "id": 48,
+  "start": 161.18,
+  "end": 162.6,
+  "slot": [
+   161.078,
+   163.627
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "そして結局エヴァに戻る",
+  "note": ""
+ },
+ {
+  "id": 49,
+  "start": 163.98,
+  "end": 164.99,
+  "slot": [
+   163.627,
+   165.727
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "パチンコ界の実家",
+  "note": "オチ"
+ },
+ {
+  "id": 50,
+  "start": 166.03,
+  "end": 168.91,
+  "slot": [
+   165.727,
+   170.189
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "派手なスペックじゃないのに人気だったんだね。",
+  "note": ""
+ },
+ {
+  "id": 51,
+  "start": 170.59,
+  "end": 172.41,
+  "slot": [
+   170.189,
+   174.017
+  ],
+  "tier": "B",
+  "persona": "cat",
+  "status": "ok",
+  "text": "毎日ステーキ食いたいわけじゃないんよ。",
+  "note": ""
+ },
+ {
+  "id": 52,
+  "start": 174.42,
+  "end": 176.35,
+  "slot": [
+   174.017,
+   177.002
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "エヴァは白米みたいな感じ？",
+  "note": ""
+ },
+ {
+  "id": 53,
+  "start": 177.55,
+  "end": 178.54,
+  "slot": [
+   177.002,
+   179.262
+  ],
+  "tier": "A",
+  "persona": "cat",
+  "status": "ok",
+  "text": "例えが地味すぎる。",
+  "note": "オチ"
+ },
+ {
+  "id": 55,
+  "start": 180.76,
+  "end": 181.49,
+  "slot": [
+   180.662,
+   182.462
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "そしてリゼロ",
+  "note": "章の頭"
+ },
+ {
+  "id": 56,
+  "start": 182.56,
+  "end": 184.86,
+  "slot": [
+   182.462,
+   186.211
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "初当たり3000のインパクトやばかった",
+  "note": ""
+ },
+ {
+  "id": 57,
+  "start": 186.31,
+  "end": 189.32,
+  "slot": [
+   186.211,
+   190.559
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "あれで3000って数字が\n完全に定着した感ある",
+  "note": ""
+ },
+ {
+  "id": 58,
+  "start": 190.66,
+  "end": 193.99,
+  "slot": [
+   190.559,
+   195.706
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "鬼がかりRUSH入った時の\n「勝てるかもしれん」感がすごかった",
+  "note": "高揚"
+ },
+ {
+  "id": 59,
+  "start": 196.11,
+  "end": 196.89,
+  "slot": [
+   195.706,
+   197.206
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "なお突入",
+  "note": "冷や水"
+ },
+ {
+  "id": 60,
+  "start": 197.31,
+  "end": 197.61,
+  "slot": [
+   197.206,
+   198.706
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "やめろ",
+  "note": "即ツッコミ"
+ },
+ {
+  "id": 61,
+  "start": 198.81,
+  "end": 201.12,
+  "slot": [
+   198.706,
+   202.005
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "通常でもちゃんと出玉あるのは良心",
+  "note": ""
+ },
+ {
+  "id": 62,
+  "start": 202.1,
+  "end": 204.63,
+  "slot": [
+   202.005,
+   205.454
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今考えると\nそこ結構大事だったよな",
+  "note": ""
+ },
+ {
+  "id": 63,
+  "start": 205.55,
+  "end": 207.37,
+  "slot": [
+   205.454,
+   208.603
+  ],
+  "tier": "C",
+  "persona": "calm",
+  "status": "ok",
+  "text": "当たって数百発終了とかじゃない",
+  "note": ""
+ },
+ {
+  "id": 64,
+  "start": 208.7,
+  "end": 211.47,
+  "slot": [
+   208.603,
+   212.501
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "3000取ってRUSH入った時の安心感よ",
+  "note": ""
+ },
+ {
+  "id": 65,
+  "start": 212.6,
+  "end": 213.9,
+  "slot": [
+   212.501,
+   215.051
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "そして右で3000引く",
+  "note": ""
+ },
+ {
+  "id": 66,
+  "start": 215.35,
+  "end": 216.47,
+  "slot": [
+   215.051,
+   216.551
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "脳終了",
+  "note": "オチ"
+ },
+ {
+  "id": 67,
+  "start": 217.27,
+  "end": 219.15,
+  "slot": [
+   216.551,
+   219.4
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "ユニコーン\nエヴァ\nリゼロ",
+  "note": "3台並び"
+ },
+ {
+  "id": 68,
+  "start": 219.5,
+  "end": 221.56,
+  "slot": [
+   219.4,
+   222.548
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "この3択あった時期は普通に強い",
+  "note": "章の締め"
+ },
+ {
+  "id": 70,
+  "start": 224.05,
+  "end": 225.98,
+  "slot": [
+   223.948,
+   227.247
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "別にこの3台だけじゃなかったしな",
+  "note": "章の頭"
+ },
+ {
+  "id": 71,
+  "start": 227.35,
+  "end": 228.54,
+  "slot": [
+   227.247,
+   229.547
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "その後に炎炎も出た",
+  "note": ""
+ },
+ {
+  "id": 72,
+  "start": 229.65,
+  "end": 232.52,
+  "slot": [
+   229.547,
+   232.996
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "炎炎は右のゲーム性\n結構好きだった",
+  "note": ""
+ },
+ {
+  "id": 73,
+  "start": 233.1,
+  "end": 234.4,
+  "slot": [
+   232.996,
+   235.845
+  ],
+  "tier": "B",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "あの頃のSANKYO強すぎ",
+  "note": ""
+ },
+ {
+  "id": 74,
+  "start": 235.94,
+  "end": 237.85,
+  "slot": [
+   235.845,
+   239.294
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "からくりも荒かったけど人気あったし",
+  "note": ""
+ },
+ {
+  "id": 75,
+  "start": 239.39,
+  "end": 242.1,
+  "slot": [
+   239.294,
+   243.342
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "からくりはもう\n319の顔したギャンブル台",
+  "note": ""
+ },
+ {
+  "id": 76,
+  "start": 243.44,
+  "end": 244.76,
+  "slot": [
+   243.342,
+   246.341
+  ],
+  "tier": "B",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "パチンコは全部ギャンブルだろ",
+  "note": ""
+ },
+ {
+  "id": 77,
+  "start": 246.69,
+  "end": 247.41,
+  "slot": [
+   246.341,
+   248.141
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "それを言うな",
+  "note": "オチ（小声で）"
+ },
+ {
+  "id": 78,
+  "start": 248.24,
+  "end": 250.14,
+  "slot": [
+   248.141,
+   251.589
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "SEEDもめちゃくちゃ期待されてた",
+  "note": "少し含みを持たせて"
+ },
+ {
+  "id": 79,
+  "start": 251.89,
+  "end": 253.06,
+  "slot": [
+   251.589,
+   253.889
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "急に空気重くするな",
+  "note": "オチ"
+ },
+ {
+  "id": 80,
+  "start": 253.99,
+  "end": 255.03,
+  "slot": [
+   253.889,
+   256.289
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "ゴジエヴァもあったな",
+  "note": ""
+ },
+ {
+  "id": 81,
+  "start": 256.39,
+  "end": 260.08,
+  "slot": [
+   256.289,
+   260.889
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今思うと\n319って一括りでもゲーム性かなり違った",
+  "note": ""
+ },
+ {
+  "id": 82,
+  "start": 260.99,
+  "end": 261.51,
+  "slot": [
+   260.889,
+   262.389
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "ST",
+  "note": ""
+ },
+ {
+  "id": 83,
+  "start": 262.49,
+  "end": 262.92,
+  "slot": [
+   262.389,
+   263.889
+  ],
+  "tier": "C",
+  "persona": "calm",
+  "status": "ok",
+  "text": "転落",
+  "note": ""
+ },
+ {
+  "id": 84,
+  "start": 263.99,
+  "end": 264.43,
+  "slot": [
+   263.889,
+   265.389
+  ],
+  "tier": "C",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "高速",
+  "note": ""
+ },
+ {
+  "id": 85,
+  "start": 265.49,
+  "end": 266.22,
+  "slot": [
+   265.389,
+   267.038
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "3000系",
+  "note": "4人で畳みかける"
+ },
+ {
+  "id": 86,
+  "start": 267.14,
+  "end": 268.34,
+  "slot": [
+   267.038,
+   269.338
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "選ぶ楽しさはあった",
+  "note": "章の締め"
+ },
+ {
+  "id": 88,
+  "start": 270.84,
+  "end": 272.69,
+  "slot": [
+   270.738,
+   273.587
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "その前の時代も面白いんよな",
+  "note": "章の頭"
+ },
+ {
+  "id": 89,
+  "start": 273.69,
+  "end": 276.44,
+  "slot": [
+   273.587,
+   276.886
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "源さん出た時\n右速すぎて笑ったわ",
+  "note": ""
+ },
+ {
+  "id": 90,
+  "start": 276.99,
+  "end": 278.39,
+  "slot": [
+   276.886,
+   279.186
+  ],
+  "tier": "B",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "あの高継続の破壊力",
+  "note": ""
+ },
+ {
+  "id": 91,
+  "start": 279.29,
+  "end": 280.91,
+  "slot": [
+   279.186,
+   281.486
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "数十分で景色変わる",
+  "note": ""
+ },
+ {
+  "id": 92,
+  "start": 281.89,
+  "end": 282.48,
+  "slot": [
+   281.486,
+   283.286
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "なおRUSH",
+  "note": "冷や水"
+ },
+ {
+  "id": 93,
+  "start": 283.39,
+  "end": 284.56,
+  "slot": [
+   283.286,
+   285.235
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "そこが一番の壁",
+  "note": ""
+ },
+ {
+  "id": 94,
+  "start": 285.34,
+  "end": 286.92,
+  "slot": [
+   285.235,
+   287.934
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "でもあの速さは革命だった",
+  "note": ""
+ },
+ {
+  "id": 95,
+  "start": 288.03,
+  "end": 290.0,
+  "slot": [
+   287.934,
+   291.233
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "後の高速RUSHに繋がった感ある",
+  "note": ""
+ },
+ {
+  "id": 96,
+  "start": 291.33,
+  "end": 292.04,
+  "slot": [
+   291.233,
+   292.883
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "一方とある",
+  "note": "切り替え"
+ },
+ {
+  "id": 97,
+  "start": 292.98,
+  "end": 295.58,
+  "slot": [
+   292.883,
+   295.282
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "x1.05",
+  "text": "319で100％ST",
+  "note": ""
+ },
+ {
+  "id": 98,
+  "start": 295.88,
+  "end": 297.17,
+  "slot": [
+   295.282,
+   297.831
+  ],
+  "tier": "A",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "こういうのでいいんだよ",
+  "note": ""
+ },
+ {
+  "id": 99,
+  "start": 297.93,
+  "end": 300.41,
+  "slot": [
+   297.831,
+   301.43
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "当てた瞬間ST確定ってだけで安心する",
+  "note": ""
+ },
+ {
+  "id": 100,
+  "start": 301.53,
+  "end": 303.05,
+  "slot": [
+   301.43,
+   304.129
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "しかも遊タイムまであった",
+  "note": ""
+ },
+ {
+  "id": 101,
+  "start": 304.23,
+  "end": 306.3,
+  "slot": [
+   304.129,
+   307.278
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今見ると別の意味で時代感じるな",
+  "note": ""
+ },
+ {
+  "id": 102,
+  "start": 307.38,
+  "end": 308.45,
+  "slot": [
+   307.278,
+   308.927
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "源ととある",
+  "note": ""
+ },
+ {
+  "id": 103,
+  "start": 309.03,
+  "end": 312.38,
+  "slot": [
+   308.927,
+   312.976
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "同じ319帯なのに\n方向性真逆で面白かった",
+  "note": "章の締め"
+ },
+ {
+  "id": 105,
+  "start": 314.48,
+  "end": 316.98,
+  "slot": [
+   314.376,
+   318.274
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "個人的にはライトミドルの方が好きだったわ",
+  "note": "章の頭"
+ },
+ {
+  "id": 106,
+  "start": 318.37,
+  "end": 321.87,
+  "slot": [
+   318.274,
+   322.874
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "319疲れた時に\n199とか239打つのちょうどいい",
+  "note": ""
+ },
+ {
+  "id": 107,
+  "start": 322.97,
+  "end": 325.28,
+  "slot": [
+   322.874,
+   325.873
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "超電磁砲239めっちゃ打った",
+  "note": ""
+ },
+ {
+  "id": 108,
+  "start": 325.97,
+  "end": 327.48,
+  "slot": [
+   325.873,
+   328.272
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "239って絶妙なんよ",
+  "note": ""
+ },
+ {
+  "id": 109,
+  "start": 328.37,
+  "end": 329.44,
+  "slot": [
+   328.272,
+   330.222
+  ],
+  "tier": "C",
+  "persona": "calm",
+  "status": "ok",
+  "text": "199より重い",
+  "note": ""
+ },
+ {
+  "id": 110,
+  "start": 330.32,
+  "end": 331.9,
+  "slot": [
+   330.222,
+   332.771
+  ],
+  "tier": "C",
+  "persona": "calm",
+  "status": "ok",
+  "text": "319より全然行けそう",
+  "note": ""
+ },
+ {
+  "id": 111,
+  "start": 333.02,
+  "end": 334.19,
+  "slot": [
+   332.771,
+   334.421
+  ],
+  "tier": "A",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "謎の安心感",
+  "note": "オチ"
+ },
+ {
+  "id": 112,
+  "start": 334.79,
+  "end": 336.56,
+  "slot": [
+   334.421,
+   337.57
+  ],
+  "tier": "B",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "ジャギ199とか頭おかしかった",
+  "note": ""
+ },
+ {
+  "id": 113,
+  "start": 337.67,
+  "end": 339.66,
+  "slot": [
+   337.57,
+   340.119
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "199であの右は夢ある",
+  "note": ""
+ },
+ {
+  "id": 114,
+  "start": 340.47,
+  "end": 341.79,
+  "slot": [
+   340.119,
+   342.218
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "突入の壁がすべて",
+  "note": "冷や水"
+ },
+ {
+  "id": 115,
+  "start": 342.39,
+  "end": 345.22,
+  "slot": [
+   342.218,
+   346.417
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "ジャギでRUSH入った時の\nやったった感好き",
+  "note": ""
+ },
+ {
+  "id": 116,
+  "start": 346.52,
+  "end": 348.27,
+  "slot": [
+   346.417,
+   349.415
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "シンフォギアもやっぱ199よ",
+  "note": ""
+ },
+ {
+  "id": 117,
+  "start": 349.52,
+  "end": 351.83,
+  "slot": [
+   349.415,
+   352.414
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "199とシンフォの相性いいわ",
+  "note": ""
+ },
+ {
+  "id": 118,
+  "start": 352.51,
+  "end": 354.12,
+  "slot": [
+   352.414,
+   355.114
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "最終決戦やりたいから打つ",
+  "note": ""
+ },
+ {
+  "id": 119,
+  "start": 355.21,
+  "end": 355.63,
+  "slot": [
+   355.114,
+   356.614
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "分かる",
+  "note": ""
+ },
+ {
+  "id": 120,
+  "start": 356.71,
+  "end": 359.52,
+  "slot": [
+   356.614,
+   361.214
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "大海BLACKみたいな\nオーソドックス寄りもあったし",
+  "note": ""
+ },
+ {
+  "id": 121,
+  "start": 361.31,
+  "end": 364.58,
+  "slot": [
+   361.214,
+   365.814
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "ライトミドルだけでも\n荒い台と遊びやすい台選べたよな",
+  "note": "章の締め"
+ },
+ {
+  "id": 122,
+  "start": 366.11,
+  "end": 369.95,
+  "slot": [
+   365.814,
+   370.276
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "319が怖い日は\n199に逃げられたんだね。",
+  "note": ""
+ },
+ {
+  "id": 123,
+  "start": 370.68,
+  "end": 372.66,
+  "slot": [
+   370.276,
+   372.85
+  ],
+  "tier": "B",
+  "persona": "cat",
+  "status": "ok",
+  "text": "なお199で4万負け。",
+  "note": ""
+ },
+ {
+  "id": 124,
+  "start": 373.4,
+  "end": 374.58,
+  "slot": [
+   372.85,
+   375.506
+  ],
+  "tier": "A",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "逃げられてないじゃん。",
+  "note": "オチ"
+ },
+ {
+  "id": 126,
+  "start": 377.01,
+  "end": 378.29,
+  "slot": [
+   376.906,
+   379.206
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "そして金ない時の甘",
+  "note": "章の頭"
+ },
+ {
+  "id": 127,
+  "start": 379.31,
+  "end": 379.68,
+  "slot": [
+   379.206,
+   380.706
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "言い方",
+  "note": "即ツッコミ"
+ },
+ {
+  "id": 128,
+  "start": 380.81,
+  "end": 383.57,
+  "slot": [
+   380.706,
+   384.755
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "でも甘デジ座る時って\nだいたい金ない時やろ",
+  "note": ""
+ },
+ {
+  "id": 129,
+  "start": 385.11,
+  "end": 385.8,
+  "slot": [
+   384.755,
+   386.404
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "否定できん",
+  "note": "オチ（小声）"
+ },
+ {
+  "id": 130,
+  "start": 386.5,
+  "end": 388.11,
+  "slot": [
+   386.404,
+   389.104
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "とある129好きだったわ",
+  "note": ""
+ },
+ {
+  "id": 131,
+  "start": 389.2,
+  "end": 392.41,
+  "slot": [
+   389.104,
+   392.552
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "129で100％STなの安心感ある",
+  "note": ""
+ },
+ {
+  "id": 132,
+  "start": 392.71,
+  "end": 394.1,
+  "slot": [
+   392.552,
+   395.251
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "遊びたい日にちょうどいい",
+  "note": ""
+ },
+ {
+  "id": 133,
+  "start": 395.35,
+  "end": 398.57,
+  "slot": [
+   395.251,
+   400.249
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "ユニコーンLIGHTも\n別物だけどちゃんとユニコーン感あった",
+  "note": ""
+ },
+ {
+  "id": 134,
+  "start": 400.35,
+  "end": 403.35,
+  "slot": [
+   400.249,
+   403.848
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "甘で高継続見ると\n一回は打ちたくなる",
+  "note": ""
+ },
+ {
+  "id": 135,
+  "start": 403.95,
+  "end": 406.23,
+  "slot": [
+   403.848,
+   406.697
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "シンフォ2の77も良かった",
+  "note": ""
+ },
+ {
+  "id": 136,
+  "start": 406.8,
+  "end": 409.37,
+  "slot": [
+   406.697,
+   410.146
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "77って当たりそうで\n全然当たらん",
+  "note": ""
+ },
+ {
+  "id": 137,
+  "start": 410.4,
+  "end": 411.15,
+  "slot": [
+   410.146,
+   412.095
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "甘デジあるある",
+  "note": "オチ"
+ },
+ {
+  "id": 138,
+  "start": 412.2,
+  "end": 413.52,
+  "slot": [
+   412.095,
+   414.395
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "アグネスも結局強い",
+  "note": ""
+ },
+ {
+  "id": 139,
+  "start": 414.5,
+  "end": 415.56,
+  "slot": [
+   414.395,
+   416.195
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "困った時の海",
+  "note": ""
+ },
+ {
+  "id": 140,
+  "start": 416.3,
+  "end": 416.93,
+  "slot": [
+   416.195,
+   417.695
+  ],
+  "tier": "C",
+  "persona": "calm",
+  "status": "ok",
+  "text": "319",
+  "note": ""
+ },
+ {
+  "id": 141,
+  "start": 417.8,
+  "end": 418.63,
+  "slot": [
+   417.695,
+   419.195
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "199",
+  "note": ""
+ },
+ {
+  "id": 142,
+  "start": 419.3,
+  "end": 419.87,
+  "slot": [
+   419.195,
+   420.695
+  ],
+  "tier": "C",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "129",
+  "note": ""
+ },
+ {
+  "id": 143,
+  "start": 420.8,
+  "end": 421.34,
+  "slot": [
+   420.695,
+   422.195
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "99",
+  "note": "4人で順番に"
+ },
+ {
+  "id": 144,
+  "start": 422.3,
+  "end": 424.08,
+  "slot": [
+   422.195,
+   425.343
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "予算で選べたのはデカかったよな",
+  "note": ""
+ },
+ {
+  "id": 145,
+  "start": 425.44,
+  "end": 428.1,
+  "slot": [
+   425.343,
+   428.792
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今は甘でも荒い台普通にあるから怖い",
+  "note": "章の締め（静かに）"
+ },
+ {
+  "id": 147,
+  "start": 430.29,
+  "end": 432.64,
+  "slot": [
+   430.192,
+   433.341
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "結局昔の319が神っていうより",
+  "note": "章の頭"
+ },
+ {
+  "id": 148,
+  "start": 433.44,
+  "end": 434.93,
+  "slot": [
+   433.341,
+   436.19
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "選択肢が多かったんじゃね？",
+  "note": ""
+ },
+ {
+  "id": 149,
+  "start": 436.29,
+  "end": 437.81,
+  "slot": [
+   436.19,
+   438.439
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "今日は勝負\n319",
+  "note": ""
+ },
+ {
+  "id": 150,
+  "start": 438.54,
+  "end": 440.49,
+  "slot": [
+   438.439,
+   440.839
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "ちょっと軽く\n199",
+  "note": ""
+ },
+ {
+  "id": 151,
+  "start": 440.94,
+  "end": 441.91,
+  "slot": [
+   440.839,
+   442.638
+  ],
+  "tier": "B",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "遊びたい\n甘",
+  "note": "3人で順番に"
+ },
+ {
+  "id": 152,
+  "start": 442.74,
+  "end": 443.41,
+  "slot": [
+   442.638,
+   444.438
+  ],
+  "tier": "A",
+  "persona": "calm",
+  "status": "ok",
+  "text": "これが出来た",
+  "note": ""
+ },
+ {
+  "id": 153,
+  "start": 444.54,
+  "end": 447.27,
+  "slot": [
+   444.438,
+   448.486
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "319の中でも\nユニコーン\nエヴァ\nリゼロ",
+  "note": ""
+ },
+ {
+  "id": 154,
+  "start": 448.59,
+  "end": 450.45,
+  "slot": [
+   448.486,
+   450.885
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "全部方向性違ったしな",
+  "note": ""
+ },
+ {
+  "id": 155,
+  "start": 450.99,
+  "end": 452.51,
+  "slot": [
+   450.885,
+   453.584
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "源みたいな高速機もあれば",
+  "note": ""
+ },
+ {
+  "id": 156,
+  "start": 453.68,
+  "end": 456.43,
+  "slot": [
+   453.584,
+   456.883
+  ],
+  "tier": "B",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "とあるみたいな100％STもある",
+  "note": ""
+ },
+ {
+  "id": 157,
+  "start": 456.98,
+  "end": 458.93,
+  "slot": [
+   456.883,
+   460.182
+  ],
+  "tier": "B",
+  "persona": "calm",
+  "status": "ok",
+  "text": "あの頃も普通に文句言ってたけどな",
+  "note": "空気が変わる"
+ },
+ {
+  "id": 158,
+  "start": 460.28,
+  "end": 460.79,
+  "slot": [
+   460.182,
+   461.682
+  ],
+  "tier": "C",
+  "persona": "calm",
+  "status": "ok",
+  "text": "回らない",
+  "note": ""
+ },
+ {
+  "id": 159,
+  "start": 461.78,
+  "end": 462.21,
+  "slot": [
+   461.682,
+   463.182
+  ],
+  "tier": "C",
+  "persona": "reaction",
+  "status": "ok",
+  "text": "ハマる",
+  "note": ""
+ },
+ {
+  "id": 160,
+  "start": 463.28,
+  "end": 463.79,
+  "slot": [
+   463.182,
+   464.682
+  ],
+  "tier": "C",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "続かない",
+  "note": ""
+ },
+ {
+  "id": 161,
+  "start": 464.98,
+  "end": 466.68,
+  "slot": [
+   464.682,
+   467.681
+  ],
+  "tier": "A",
+  "persona": "tsukkomi",
+  "status": "ok",
+  "text": "結局ずっと同じこと言ってて草",
+  "note": "オチ・章の締め"
+ },
+ {
+  "id": 162,
+  "start": 468.03,
+  "end": 470.4,
+  "slot": [
+   467.681,
+   470.544
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "つまり昔は最高だったってこと？",
+  "note": ""
+ },
+ {
+  "id": 163,
+  "start": 470.84,
+  "end": 472.72,
+  "slot": [
+   470.544,
+   473.609
+  ],
+  "tier": "B",
+  "persona": "cat",
+  "status": "ok",
+  "text": "いや、当時も死ぬほど文句言ってた。",
+  "note": ""
+ },
+ {
+  "id": 164,
+  "start": 473.71,
+  "end": 475.21,
+  "slot": [
+   473.609,
+   475.815
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "じゃあ何が変わったの？",
+  "note": ""
+ },
+ {
+  "id": 165,
+  "start": 476.17,
+  "end": 477.14,
+  "slot": [
+   475.815,
+   477.469
+  ],
+  "tier": "B",
+  "persona": "cat",
+  "status": "ok",
+  "text": "今の台を知った。",
+  "note": ""
+ },
+ {
+  "id": 166,
+  "start": 477.57,
+  "end": 478.21,
+  "slot": [
+   477.469,
+   478.69
+  ],
+  "tier": "B",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "なるほど。",
+  "note": ""
+ },
+ {
+  "id": 167,
+  "start": 478.79,
+  "end": 480.3,
+  "slot": [
+   478.69,
+   480.814
+  ],
+  "tier": "A",
+  "persona": "cat",
+  "status": "ok",
+  "text": "319なら全然やれる。",
+  "note": ""
+ },
+ {
+  "id": 168,
+  "start": 482.61,
+  "end": 484.47,
+  "slot": [
+   481.814,
+   484.784
+  ],
+  "tier": "A",
+  "persona": "rabbit",
+  "status": "ok",
+  "text": "やっぱり感覚壊れてるね。",
+  "note": "無音のあとツッコミ"
+ },
+ {
+  "id": 169,
+  "start": 485.67,
+  "end": 497.89,
+  "slot": [
+   484.784,
+   497.947
+  ],
+  "tier": "A",
+  "persona": "narrator",
+  "status": "ok",
+  "text": "あなたが一番好きだった319は？。ユニコーン。エヴァ15。リゼロ鬼がかり。それとも別の台。ライトミドル・甘デジの\n思い出の機種もコメントで教えてください",
+  "note": ""
+ },
+ {
+  "id": 170,
+  "start": 498.39,
+  "end": 501.45,
+  "slot": [
+   498.247,
+   501.447
+  ],
+  "tier": "B",
+  "persona": "narrator",
+  "status": "ok",
+  "text": "チャンネル登録と高評価、よろしくお願いします！",
+  "note": ""
+ }
+]

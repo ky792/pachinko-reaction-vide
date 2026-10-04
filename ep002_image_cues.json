@@ -1,0 +1,218 @@
+{
+ "_note": "time=表示開始(秒) duration=表示秒数 files=assets/machines内の画像 label=機種名 layout=single/sequence/row telop=中央テロップ。手で直したら --cues-in で指定",
+ "cues": [
+  {
+   "time": 16.544,
+   "duration": 4.199999999999999,
+   "files": [
+    "unicorn.jpg",
+    "eva15.jpg",
+    "rezero_onigakari.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "sequence",
+   "file": "assets/machines/unicorn.jpg"
+  },
+  {
+   "time": 86.655,
+   "duration": 40.435,
+   "files": [
+    "unicorn.jpg"
+   ],
+   "label": "ガンダムユニコーン",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/unicorn.jpg"
+  },
+  {
+   "time": 128.49,
+   "duration": 37.237,
+   "files": [
+    "eva15.jpg"
+   ],
+   "label": "未来への咆哮",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/eva15.jpg"
+  },
+  {
+   "time": 180.662,
+   "duration": 35.889,
+   "files": [
+    "rezero_onigakari.jpg"
+   ],
+   "label": "鬼がかりver.",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/rezero_onigakari.jpg"
+  },
+  {
+   "time": 216.551,
+   "duration": 3.6,
+   "files": [
+    "unicorn.jpg",
+    "eva15.jpg",
+    "rezero_onigakari.jpg"
+   ],
+   "label": "",
+   "telop": "今日はどれ打つ？",
+   "layout": "row",
+   "file": "assets/machines/unicorn.jpg"
+  },
+  {
+   "time": 229.547,
+   "duration": 9.747,
+   "files": [
+    "enen.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/enen.jpg"
+  },
+  {
+   "time": 239.294,
+   "duration": 8.847,
+   "files": [
+    "karakuri.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/karakuri.jpg"
+  },
+  {
+   "time": 248.141,
+   "duration": 8.148,
+   "files": [
+    "seed.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/seed.jpg"
+  },
+  {
+   "time": 256.289,
+   "duration": 13.049,
+   "files": [
+    "godzilla_eva.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/godzilla_eva.jpg"
+  },
+  {
+   "time": 273.587,
+   "duration": 17.646,
+   "files": [
+    "gen_chouidaten.jpg"
+   ],
+   "label": "大工の源さん 超韋駄天",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/gen_chouidaten.jpg"
+  },
+  {
+   "time": 291.233,
+   "duration": 21.743,
+   "files": [
+    "toaru_original.jpg"
+   ],
+   "label": "初代 とある魔術の禁書目録",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/toaru_original.jpg"
+  },
+  {
+   "time": 322.874,
+   "duration": 11.547,
+   "files": [
+    "railgun.jpg"
+   ],
+   "label": "Pとある科学の超電磁砲",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/railgun.jpg"
+  },
+  {
+   "time": 334.421,
+   "duration": 11.996,
+   "files": [
+    "jagi.jpg"
+   ],
+   "label": "ジャギの逆襲",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/jagi.jpg"
+  },
+  {
+   "time": 346.417,
+   "duration": 10.197,
+   "files": [
+    "symphogear3.jpg"
+   ],
+   "label": "シンフォギア3 黄金絶唱",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/symphogear3.jpg"
+  },
+  {
+   "time": 356.614,
+   "duration": 9.2,
+   "files": [
+    "oumi_black.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/oumi_black.jpg"
+  },
+  {
+   "time": 386.404,
+   "duration": 8.847,
+   "files": [
+    "toaru_129.jpg"
+   ],
+   "label": "とある Light PREMIUM",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/toaru_129.jpg"
+  },
+  {
+   "time": 395.251,
+   "duration": 8.597,
+   "files": [
+    "unicorn_light.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/unicorn_light.jpg"
+  },
+  {
+   "time": 403.848,
+   "duration": 8.247,
+   "files": [
+    "symphogear2_77.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/symphogear2_77.jpg"
+  },
+  {
+   "time": 412.095,
+   "duration": 16.697,
+   "files": [
+    "agnes.jpg"
+   ],
+   "label": "",
+   "telop": "",
+   "layout": "single",
+   "file": "assets/machines/agnes.jpg"
+  }
+ ]
+}
