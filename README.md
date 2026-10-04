@@ -1,3 +1,23 @@
+# パチンコ反応集 動画づくり（GitHub Actions）
+
+## 新しい回を作る（映像＋読み上げをまとめて）
+
+1. `episodes/<回>/` を作り、台本を `script.txt` として置く（【冒頭フック】【タイトル】【その① …】【IMAGE】【うさぎ＆ねこ】【最後のうさぎ＆ねこ】【エンディング】の形式）
+2. 読み方の演出 `directions.json` を置く（無ければ自動の読み方）
+3. **Actions → Make episode (video + voice) → Run workflow**
+   - `episode`: 回のフォルダ名（例 `ep002`） / `mode`: test（冒頭90秒）か full
+4. 完成動画は Artifact と `outputs` ブランチに保存されます
+
+### 実機画像（任意）
+`generator/assets/machines/` に、台本の【IMAGE】で指定した名前（例 `unicorn.jpg`）で画像を置くと、右下にズーム付きで表示されます。
+画像が無い場合はエラーにならず、機種名のラベルだけ出して続行します。機種名は `generator/assets/machines/machines.json` で変更できます。
+画像は自分で撮影したもの・利用条件を確認したものを使ってください。
+
+画像の表示タイミングは台本から自動計算され、`image_cues.json`（Artifact / outputs ブランチ）に書き出されます。
+手で直したい場合は `episodes/<回>/image_cues.manual.json` として置くと、そちらが使われます。
+
+---
+
 # 完成動画に読み上げ音声を付ける（GitHub Actions）
 
 完成済みの `1000010320.mp4` に、台本どおりのタイミングで日本語の読み上げ（edge-tts・無料）を重ねます。

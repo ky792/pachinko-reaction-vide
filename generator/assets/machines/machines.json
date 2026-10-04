@@ -1,0 +1,20 @@
+{
+ "_note": "画像ファイル名 → 機種名。画像が無い時もこの名前を画面右上に出します。画像はこのフォルダ（generator/assets/machines/）に同じ名前で置いてください。",
+ "unicorn.jpg": "Pフィーバー機動戦士ガンダムユニコーン",
+ "eva15.jpg": "P新世紀エヴァンゲリオン ～未来への咆哮～",
+ "rezero_onigakari.jpg": "P Re:ゼロから始める異世界生活 鬼がかりver.",
+ "enen.jpg": "P炎炎ノ消防隊",
+ "karakuri.jpg": "Pからくりサーカス",
+ "seed.jpg": "PフィーバーガンダムSEED",
+ "godzilla_eva.jpg": "Pゴジラ対エヴァンゲリオン",
+ "gen_chouidaten.jpg": "P大工の源さん 超韋駄天",
+ "toaru_original.jpg": "Pとある魔術の禁書目録",
+ "railgun.jpg": "Pとある科学の超電磁砲",
+ "jagi.jpg": "P真・北斗無双 第3章 ジャギの逆襲",
+ "symphogear3.jpg": "Pフィーバー戦姫絶唱シンフォギア3 黄金絶唱",
+ "oumi_black.jpg": "大海BLACK",
+ "toaru_129.jpg": "Pとある魔術の禁書目録 Light PREMIUM ver.",
+ "unicorn_light.jpg": "Pフィーバー機動戦士ガンダムユニコーン LIGHT ver.",
+ "symphogear2_77.jpg": "Pフィーバー戦姫絶唱シンフォギア2 1/77ver.",
+ "agnes.jpg": "海物語 アグネス"
+}

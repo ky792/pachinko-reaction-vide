@@ -248,6 +248,8 @@ def build_voice_directed(lines, cfg, sr, N, dur, mode):
     D = cfg["directed"]
     doc = json.loads((ROOT / D["file"]).read_text(encoding="utf-8"))
     P, LD = doc["personas"], doc["lines"]
+    if doc.get("replace"):   # 回ごとの読み方（例: 199→いちきゅうきゅう）
+        cfg = {**cfg, "tts": {**cfg["tts"], "replace": {**cfg["tts"]["replace"], **doc["replace"]}}}
     missing = [l["id"] for l in lines if str(l["id"]) not in LD]
     if missing:
         print(f"[演出] ディレクションが無い行 {len(missing)} 件は自動（dynamic）で読みます: {missing[:10]}", flush=True)
@@ -327,15 +329,19 @@ def main():
     ap.add_argument("--config", default=str(ROOT / "config.json"))
     ap.add_argument("--input", default=None, help="入力動画（configより優先）")
     ap.add_argument("--output", default=None, help="出力先（configより優先）")
+    ap.add_argument("--timeline", default=None, help="読み上げタイムライン（configより優先）")
+    ap.add_argument("--directions", default=None, help="手動ディレクションJSON（directed用。configより優先）")
     args = ap.parse_args()
 
     cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
-    tl = json.loads((ROOT / cfg["timeline"]).read_text(encoding="utf-8"))
+    tl = json.loads((Path(args.timeline) if args.timeline else ROOT / cfg["timeline"]).read_text(encoding="utf-8"))
+    if args.directions:
+        cfg["directed"]["file"] = str(Path(args.directions).resolve())
     src = Path(args.input) if args.input else ROOT / cfg["input_video"]
     if not src.exists():
         raise Fail(f"入力動画がありません: {src}\n  → input/ に動画を置くか、workflow の video_url を指定してください")
     if args.output:
-        out = Path(args.output)
+        out = Path(args.output).resolve()
     elif args.style in ("dynamic", "directed"):
         out = ROOT / (cfg[f"output_{args.style}_test"] if args.test else cfg[f"output_{args.style}_full"])
     else:

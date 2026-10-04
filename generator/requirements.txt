@@ -1,0 +1,8 @@
+Pillow>=10.0
+numpy>=1.24
+scipy>=1.10
+# 任意: YAML台本を使う場合のみ
+# PyYAML>=6.0
+# 外部ツール（pipではなく別途インストール）:
+#   ffmpeg（PATHが通っていること）
+#   VOICEVOX ENGINE（音声を入れる場合。https://voicevox.hiroshiba.jp/）

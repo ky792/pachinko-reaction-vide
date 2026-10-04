@@ -1,0 +1,3150 @@
+{
+ "_note": "ep002 全編の手動ディレクション。rate=%（絶対値）/ pitch=担当の基本ピッチからの差(Hz) / gain_db=dB / gap_before=文中の無音(秒) / silence_after=次の読み上げまでの無音(秒) / read=読み方だけ変える場合",
+ "personas": {
+  "calm": {
+   "label": "通常担当：落ち着いた男性",
+   "voice": "ja-JP-KeitaNeural",
+   "pitch": -4
+  },
+  "tsukkomi": {
+   "label": "ツッコミ担当：テンポのいい男性",
+   "voice": "ja-JP-KeitaNeural",
+   "pitch": 6
+  },
+  "reaction": {
+   "label": "リアクション担当：女性",
+   "voice": "ja-JP-NanamiNeural",
+   "pitch": 0
+  },
+  "rabbit": {
+   "label": "うさぎ",
+   "voice": "ja-JP-NanamiNeural",
+   "pitch": 14
+  },
+  "cat": {
+   "label": "ねこ",
+   "voice": "ja-JP-KeitaNeural",
+   "pitch": 22
+  },
+  "narrator": {
+   "label": "ナレーション",
+   "voice": "ja-JP-NanamiNeural",
+   "pitch": 0
+  }
+ },
+ "replace": {
+  "319": "さんいちきゅう",
+  "239": "にさんきゅう",
+  "199": "いちきゅうきゅう",
+  "129": "いちにきゅう",
+  "1000ハマり": "せんハマり",
+  "大当たり": "おおあたり",
+  "ST": "エスティー",
+  "SANKYO": "サンキョー",
+  "HYPER": "ハイパー",
+  "LIGHT": "ライト",
+  "SEED": "シード",
+  "BLACK": "ブラック"
+ },
+ "lines": {
+  "1": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "昔ワイ",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "319とか重すぎだろ",
+     "rate": 14,
+     "pitch": 2,
+     "gain_db": 1,
+     "gap_before": 0.15
+    }
+   ],
+   "note": "当時のぼやき"
+  },
+  "2": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "今ワイ",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "319？",
+     "rate": 10,
+     "pitch": 6,
+     "gain_db": 0,
+     "gap_before": 0.15
+    },
+    {
+     "text": "全然打てるやん",
+     "rate": 18,
+     "pitch": 6,
+     "gain_db": 1,
+     "gap_before": 0.12
+    }
+   ],
+   "note": "今は余裕そうに"
+  },
+  "3": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.25,
+   "silence_after": 0.7,
+   "segments": [
+    {
+     "text": "感覚壊されてて草",
+     "rate": 20,
+     "pitch": 5,
+     "gain_db": 2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "4": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "ユニコーン",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "エヴァ",
+     "rate": 10,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.15
+    },
+    {
+     "text": "リゼロ",
+     "rate": 8,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": "ひとつずつ置く"
+  },
+  "5": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "この3台が同時期に選べたの",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "今考えると普通に贅沢だったよな",
+     "rate": 6,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.25
+    }
+   ],
+   "note": ""
+  },
+  "6": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "しかもライトミドルも甘も選択肢あった",
+     "rate": 14,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "7": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.8,
+   "segments": [
+    {
+     "text": "もしかしてあの頃って",
+     "rate": 4,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "結構いい時代だった？",
+     "rate": 2,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.3
+    }
+   ],
+   "note": "しみじみ問いかけてタイトルへ"
+  },
+  "8": {
+   "tier": "A",
+   "persona": "narrator",
+   "pause_before": 0.0,
+   "silence_after": 1.0,
+   "segments": [
+    {
+     "text": "昔の319って、",
+     "rate": 5,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "今思えば神スペックだったよな。",
+     "rate": 5,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.2
+    },
+    {
+     "text": "パチンコ民の反応集",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.5
+    }
+   ],
+   "note": ""
+  },
+  "10": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "当時は319ハマるたびに",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "こんなん無理って言ってたよな",
+     "rate": 8,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "11": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "1000ハマり見たら",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "絶望してた",
+     "rate": 0,
+     "pitch": -8,
+     "gain_db": -2,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "12": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "今",
+     "rate": 4,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "まあ319だしな",
+     "rate": 6,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.3
+    }
+   ],
+   "note": "余裕ぶって"
+  },
+  "13": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.25,
+   "silence_after": 0.7,
+   "segments": [
+    {
+     "text": "慣れって怖い",
+     "rate": 0,
+     "pitch": -10,
+     "gain_db": -2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ（静かに）"
+  },
+  "14": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "399とか図柄揃い重い台見たあとだと",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "さんきゅうきゅうとか、図柄揃い重い台見たあとだと"
+    },
+    {
+     "text": "319の数字に安心感あるの草",
+     "rate": 16,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "15": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "319が甘く見える時代が来るとは思わなかった",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "16": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "しかも昔は",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "319引いたら",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "ちゃんと大当たりって感じだった",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.12
+    }
+   ],
+   "note": ""
+  },
+  "17": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "今は当ててから",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "RUSH",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.15
+    },
+    {
+     "text": "上位",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "LT",
+     "rate": 16,
+     "pitch": 6,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "とかまだ関門あるからな",
+     "rate": 8,
+     "pitch": -4,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": "関門が増えていく"
+  },
+  "18": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "当たり引いてスタートラインは",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "しんどい",
+     "rate": 0,
+     "pitch": -8,
+     "gain_db": -2,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "19": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "昔の319",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "重いけど分かりやすかった",
+     "rate": 4,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.25
+    }
+   ],
+   "note": "章の締め"
+  },
+  "20": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.2,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "319って今でも普通に重いよね？",
+     "rate": 2,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "21": {
+   "tier": "B",
+   "persona": "cat",
+   "pause_before": 0.3,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "重い。",
+     "rate": 4,
+     "pitch": -6,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "即答"
+  },
+  "22": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.25,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "じゃあなんで軽く感じるの？",
+     "rate": 2,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "23": {
+   "tier": "B",
+   "persona": "cat",
+   "pause_before": 0.3,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "もっと重いものを",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "見せられたから。",
+     "rate": 6,
+     "pitch": -6,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "24": {
+   "tier": "A",
+   "persona": "rabbit",
+   "pause_before": 0.45,
+   "silence_after": 1.0,
+   "segments": [
+    {
+     "text": "完全に感覚壊されてるじゃん。",
+     "rate": 4,
+     "pitch": 0,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "26": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "まずユニコーンな",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の頭"
+  },
+  "27": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "あれ出た時の右打ちの衝撃よ",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "28": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "転落式嫌いだったけど",
+     "rate": 8,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "覚醒HYPER入った時の速さは好きだった",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": "前半渋く→後半好き"
+  },
+  "29": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "右の出玉感と継続感",
+     "rate": 14,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "そりゃ脳焼かれるわ",
+     "rate": 18,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "30": {
+   "tier": "A",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "それでも！",
+     "rate": 20,
+     "pitch": 10,
+     "gain_db": 3,
+     "gap_before": 0.0,
+     "read": "それでもっ！"
+    }
+   ],
+   "note": "叫ぶ"
+  },
+  "31": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "これ聞きたいだけで打ってた奴おるやろ",
+     "rate": 18,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "32": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "先読みカスタムも含めて",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "当時かなり完成されてた",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "33": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "通常時は修行だったけどな",
+     "rate": 6,
+     "pitch": -6,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "34": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.25,
+   "silence_after": 0.7,
+   "segments": [
+    {
+     "text": "それは今も変わらん",
+     "rate": 2,
+     "pitch": -10,
+     "gain_db": -2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ（静かに）"
+  },
+  "35": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "ユニコーンで高速RUSH慣れしたせいで",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "遅い右打ち耐えられなくなった",
+     "rate": 8,
+     "pitch": -4,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "36": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "メーカー",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "じゃあもっと速くします",
+     "rate": 14,
+     "pitch": 6,
+     "gain_db": 1,
+     "gap_before": 0.25
+    }
+   ],
+   "note": "メーカーは得意げに"
+  },
+  "37": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.2,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "違うそうじゃない",
+     "rate": 20,
+     "pitch": 4,
+     "gain_db": 2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ・章の締め"
+  },
+  "39": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "結局一番長く打ったの",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "エヴァ15かもしれん",
+     "rate": 4,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.2,
+     "read": "エヴァじゅうごかもしれん"
+    }
+   ],
+   "note": "しみじみ"
+  },
+  "40": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "スペック見た時の安心感すごい",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "41": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "319",
+     "rate": 4,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "ST",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "約81％",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "右1500",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.12,
+     "read": "みぎ、せんごひゃく"
+    }
+   ],
+   "note": "スペックを一つずつ"
+  },
+  "42": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.15,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "もうこれでいいんだよ感",
+     "rate": 4,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "43": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "変に上位とかなくて",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "ST入れたら最後まで同じゲーム性なのが良かった",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "44": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "通常引いても時短あるのも偉かった",
+     "rate": 14,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "45": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "エヴァ15って",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "エヴァじゅうごって"
+    },
+    {
+     "text": "派手な新機能より普通に完成度高かったよな",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "46": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "ホール行ったらとりあえずエヴァ",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "47": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "空いてなかったら他の台",
+     "rate": 10,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "48": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "そして結局エヴァに戻る",
+     "rate": 6,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "49": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.25,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "パチンコ界の実家",
+     "rate": 16,
+     "pitch": 4,
+     "gain_db": 2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "50": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.2,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "派手なスペックじゃないのに",
+     "rate": 2,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "人気だったんだね。",
+     "rate": 0,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "51": {
+   "tier": "B",
+   "persona": "cat",
+   "pause_before": 0.3,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "毎日ステーキ食いたいわけじゃないんよ。",
+     "rate": 14,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "52": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.3,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "エヴァは白米みたいな感じ？",
+     "rate": 2,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "53": {
+   "tier": "A",
+   "persona": "cat",
+   "pause_before": 0.45,
+   "silence_after": 1.0,
+   "segments": [
+    {
+     "text": "例えが地味すぎる。",
+     "rate": 8,
+     "pitch": -4,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "55": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "そしてリゼロ",
+     "rate": 6,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の頭"
+  },
+  "56": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "初当たり3000のインパクトやばかった",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "はつあたりさんぜんのインパクトやばかった"
+    }
+   ],
+   "note": ""
+  },
+  "57": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "あれで3000って数字が",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "あれでさんぜんって数字が"
+    },
+    {
+     "text": "完全に定着した感ある",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "58": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "鬼がかりRUSH入った時の",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "おにがかりラッシュ入った時の"
+    },
+    {
+     "text": "勝てるかもしれん",
+     "rate": 16,
+     "pitch": 6,
+     "gain_db": 1,
+     "gap_before": 0.15
+    },
+    {
+     "text": "感がすごかった",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.08
+    }
+   ],
+   "note": "高揚"
+  },
+  "59": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.3,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "なお突入",
+     "rate": 0,
+     "pitch": -10,
+     "gain_db": -2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "冷や水"
+  },
+  "60": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.7,
+   "segments": [
+    {
+     "text": "やめろ",
+     "rate": 22,
+     "pitch": 6,
+     "gain_db": 3,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "即ツッコミ"
+  },
+  "61": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "通常でもちゃんと出玉あるのは良心",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "62": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "今考えると",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "そこ結構大事だったよな",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "63": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "当たって数百発終了とかじゃない",
+     "rate": 12,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "当たってすうひゃっぱつ終了とかじゃない"
+    }
+   ],
+   "note": ""
+  },
+  "64": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "3000取ってRUSH入った時の安心感よ",
+     "rate": 12,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "さんぜん取ってラッシュ入った時の安心感よ"
+    }
+   ],
+   "note": ""
+  },
+  "65": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "そして右で3000引く",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.0,
+     "read": "そして右でさんぜん引く"
+    }
+   ],
+   "note": ""
+  },
+  "66": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.2,
+   "silence_after": 0.8,
+   "segments": [
+    {
+     "text": "脳終了",
+     "rate": 16,
+     "pitch": 2,
+     "gain_db": 2,
+     "gap_before": 0.0,
+     "read": "のう、終了"
+    }
+   ],
+   "note": "オチ"
+  },
+  "67": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "ユニコーン",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "エヴァ",
+     "rate": 10,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.18
+    },
+    {
+     "text": "リゼロ",
+     "rate": 10,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.18
+    }
+   ],
+   "note": "3台並び"
+  },
+  "68": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "この3択あった時期は普通に強い",
+     "rate": 6,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の締め"
+  },
+  "70": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "別にこの3台だけじゃなかったしな",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の頭"
+  },
+  "71": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "その後に炎炎も出た",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "その後にえんえんも出た"
+    }
+   ],
+   "note": ""
+  },
+  "72": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "炎炎は右のゲーム性",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "えんえんは右のゲーム性"
+    },
+    {
+     "text": "結構好きだった",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "73": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "あの頃のSANKYO強すぎ",
+     "rate": 18,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.0,
+     "read": "あの頃のサンキョー強すぎ"
+    }
+   ],
+   "note": ""
+  },
+  "74": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "からくりも荒かったけど人気あったし",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "75": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "からくりはもう",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "319の顔したギャンブル台",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 1,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "76": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "パチンコは全部ギャンブルだろ",
+     "rate": 18,
+     "pitch": 3,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "77": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.25,
+   "silence_after": 0.7,
+   "segments": [
+    {
+     "text": "それを言うな",
+     "rate": 0,
+     "pitch": -8,
+     "gain_db": -1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ（小声で）"
+  },
+  "78": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "SEEDもめちゃくちゃ期待されてた",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "シードもめちゃくちゃ期待されてた"
+    }
+   ],
+   "note": "少し含みを持たせて"
+  },
+  "79": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.2,
+   "silence_after": 0.7,
+   "segments": [
+    {
+     "text": "急に空気重くするな",
+     "rate": 20,
+     "pitch": 4,
+     "gain_db": 2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "80": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "ゴジエヴァもあったな",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "81": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "今思うと",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "319って一括りでもゲーム性かなり違った",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "82": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.12,
+   "segments": [
+    {
+     "text": "ST",
+     "rate": 14,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "83": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.12,
+   "segments": [
+    {
+     "text": "転落",
+     "rate": 14,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "84": {
+   "tier": "C",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.12,
+   "segments": [
+    {
+     "text": "高速",
+     "rate": 16,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "85": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "3000系",
+     "rate": 16,
+     "pitch": 6,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "さんぜんけい"
+    }
+   ],
+   "note": "4人で畳みかける"
+  },
+  "86": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "選ぶ楽しさはあった",
+     "rate": 4,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の締め"
+  },
+  "88": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "その前の時代も面白いんよな",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の頭"
+  },
+  "89": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "源さん出た時",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "げんさん出た時"
+    },
+    {
+     "text": "右速すぎて笑ったわ",
+     "rate": 16,
+     "pitch": 6,
+     "gain_db": 1,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "90": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "あの高継続の破壊力",
+     "rate": 16,
+     "pitch": 3,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "91": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "数十分で景色変わる",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "92": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.3,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "なおRUSH",
+     "rate": 0,
+     "pitch": -10,
+     "gain_db": -2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "冷や水"
+  },
+  "93": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "そこが一番の壁",
+     "rate": 2,
+     "pitch": -8,
+     "gain_db": -1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "94": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "でもあの速さは革命だった",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "95": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "後の高速RUSHに繋がった感ある",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "96": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "一方とある",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "切り替え"
+  },
+  "97": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "319で100％ST",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "さんいちきゅうで、百パーセント、エスティー"
+    }
+   ],
+   "note": ""
+  },
+  "98": {
+   "tier": "A",
+   "persona": "reaction",
+   "pause_before": 0.15,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "こういうのでいいんだよ",
+     "rate": 6,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "99": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "当てた瞬間ST確定ってだけで安心する",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "100": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "しかも遊タイムまであった",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "101": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "今見ると別の意味で時代感じるな",
+     "rate": 4,
+     "pitch": -4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "102": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.15,
+   "segments": [
+    {
+     "text": "源ととある",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "げんと、とある"
+    }
+   ],
+   "note": ""
+  },
+  "103": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "同じ319帯なのに",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "方向性真逆で面白かった",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": "章の締め"
+  },
+  "105": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "個人的にはライトミドルの方が好きだったわ",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の頭"
+  },
+  "106": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "319疲れた時に",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "199とか239打つのちょうどいい",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "107": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "超電磁砲239めっちゃ打った",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "レールガン、にさんきゅう、めっちゃ打った"
+    }
+   ],
+   "note": ""
+  },
+  "108": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "239って絶妙なんよ",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "109": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.12,
+   "segments": [
+    {
+     "text": "199より重い",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "110": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "319より全然行けそう",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "111": {
+   "tier": "A",
+   "persona": "reaction",
+   "pause_before": 0.15,
+   "silence_after": 0.6,
+   "segments": [
+    {
+     "text": "謎の安心感",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "112": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "ジャギ199とか頭おかしかった",
+     "rate": 18,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "113": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "199であの右は夢ある",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "114": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.25,
+   "silence_after": 0.6,
+   "segments": [
+    {
+     "text": "突入の壁がすべて",
+     "rate": 0,
+     "pitch": -10,
+     "gain_db": -2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "冷や水"
+  },
+  "115": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "ジャギでRUSH入った時の",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "やったった感好き",
+     "rate": 16,
+     "pitch": 6,
+     "gain_db": 1,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "116": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "シンフォギアもやっぱ199よ",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "117": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "199とシンフォの相性いいわ",
+     "rate": 14,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "118": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "最終決戦やりたいから打つ",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "119": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "分かる",
+     "rate": 18,
+     "pitch": 6,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "120": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "大海BLACKみたいな",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "おおうみブラックみたいな"
+    },
+    {
+     "text": "オーソドックス寄りもあったし",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "121": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "ライトミドルだけでも",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "荒い台と遊びやすい台選べたよな",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": "章の締め"
+  },
+  "122": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.2,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "319が怖い日は",
+     "rate": 2,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "199に逃げられたんだね。",
+     "rate": 2,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "123": {
+   "tier": "B",
+   "persona": "cat",
+   "pause_before": 0.3,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "なお199で",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "4万負け。",
+     "rate": 0,
+     "pitch": -8,
+     "gain_db": 0,
+     "gap_before": 0.3
+    }
+   ],
+   "note": ""
+  },
+  "124": {
+   "tier": "A",
+   "persona": "rabbit",
+   "pause_before": 0.45,
+   "silence_after": 1.0,
+   "segments": [
+    {
+     "text": "逃げられてないじゃん。",
+     "rate": 4,
+     "pitch": 0,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "126": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "そして金ない時の甘",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の頭"
+  },
+  "127": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "言い方",
+     "rate": 20,
+     "pitch": 4,
+     "gain_db": 2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "即ツッコミ"
+  },
+  "128": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "でも甘デジ座る時って",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "だいたい金ない時やろ",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "129": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.25,
+   "silence_after": 0.7,
+   "segments": [
+    {
+     "text": "否定できん",
+     "rate": 0,
+     "pitch": -8,
+     "gain_db": -1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ（小声）"
+  },
+  "130": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "とある129好きだったわ",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "131": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "129で100％STなの安心感ある",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "いちにきゅうで、百パーセントエスティーなの安心感ある"
+    }
+   ],
+   "note": ""
+  },
+  "132": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "遊びたい日にちょうどいい",
+     "rate": 14,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "133": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "ユニコーンLIGHTも",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "ユニコーンライトも"
+    },
+    {
+     "text": "別物だけどちゃんとユニコーン感あった",
+     "rate": 8,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "134": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "甘で高継続見ると",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "一回は打ちたくなる",
+     "rate": 12,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "135": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "シンフォ2の77も良かった",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "シンフォツーの、ななじゅうななも良かった"
+    }
+   ],
+   "note": ""
+  },
+  "136": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "77って当たりそうで",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "ななじゅうななって当たりそうで"
+    },
+    {
+     "text": "全然当たらん",
+     "rate": 0,
+     "pitch": -8,
+     "gain_db": -1,
+     "gap_before": 0.25
+    }
+   ],
+   "note": ""
+  },
+  "137": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.15,
+   "silence_after": 0.6,
+   "segments": [
+    {
+     "text": "甘デジあるある",
+     "rate": 16,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ"
+  },
+  "138": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "アグネスも結局強い",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "139": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "困った時の海",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "140": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.12,
+   "segments": [
+    {
+     "text": "319",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "141": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.12,
+   "segments": [
+    {
+     "text": "199",
+     "rate": 12,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "142": {
+   "tier": "C",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.12,
+   "segments": [
+    {
+     "text": "129",
+     "rate": 14,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "143": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "99",
+     "rate": 16,
+     "pitch": 6,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "きゅうきゅう"
+    }
+   ],
+   "note": "4人で順番に"
+  },
+  "144": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "予算で選べたのはデカかったよな",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "145": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.9,
+   "segments": [
+    {
+     "text": "今は甘でも荒い台普通にあるから",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "怖い",
+     "rate": 0,
+     "pitch": -10,
+     "gain_db": -2,
+     "gap_before": 0.3
+    }
+   ],
+   "note": "章の締め（静かに）"
+  },
+  "147": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.15,
+   "segments": [
+    {
+     "text": "結局昔の319が神っていうより",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "章の頭"
+  },
+  "148": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "選択肢が多かったんじゃね？",
+     "rate": 6,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "149": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "今日は勝負",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "319",
+     "rate": 8,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "150": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "ちょっと軽く",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "199",
+     "rate": 10,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.2
+    }
+   ],
+   "note": ""
+  },
+  "151": {
+   "tier": "B",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "遊びたい",
+     "rate": 12,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "甘",
+     "rate": 12,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.2,
+     "read": "あま"
+    }
+   ],
+   "note": "3人で順番に"
+  },
+  "152": {
+   "tier": "A",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "これが出来た",
+     "rate": 2,
+     "pitch": -4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "153": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "319の中でも",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "ユニコーン",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.15
+    },
+    {
+     "text": "エヴァ",
+     "rate": 10,
+     "pitch": 3,
+     "gain_db": 0,
+     "gap_before": 0.12
+    },
+    {
+     "text": "リゼロ",
+     "rate": 10,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.12
+    }
+   ],
+   "note": ""
+  },
+  "154": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "全部方向性違ったしな",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "155": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.1,
+   "segments": [
+    {
+     "text": "源みたいな高速機もあれば",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0,
+     "read": "げんみたいな高速機もあれば"
+    }
+   ],
+   "note": ""
+  },
+  "156": {
+   "tier": "B",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "とあるみたいな100％STもある",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0,
+     "read": "とあるみたいな、百パーセントエスティーもある"
+    }
+   ],
+   "note": ""
+  },
+  "157": {
+   "tier": "B",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.4,
+   "segments": [
+    {
+     "text": "あの頃も普通に文句言ってたけどな",
+     "rate": 4,
+     "pitch": -4,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "空気が変わる"
+  },
+  "158": {
+   "tier": "C",
+   "persona": "calm",
+   "pause_before": 0.0,
+   "silence_after": 0.15,
+   "segments": [
+    {
+     "text": "回らない",
+     "rate": 10,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "159": {
+   "tier": "C",
+   "persona": "reaction",
+   "pause_before": 0.0,
+   "silence_after": 0.15,
+   "segments": [
+    {
+     "text": "ハマる",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "160": {
+   "tier": "C",
+   "persona": "tsukkomi",
+   "pause_before": 0.0,
+   "silence_after": 0.35,
+   "segments": [
+    {
+     "text": "続かない",
+     "rate": 10,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "161": {
+   "tier": "A",
+   "persona": "tsukkomi",
+   "pause_before": 0.2,
+   "silence_after": 1.0,
+   "segments": [
+    {
+     "text": "結局ずっと同じこと言ってて草",
+     "rate": 18,
+     "pitch": 4,
+     "gain_db": 2,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "オチ・章の締め"
+  },
+  "162": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.25,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "つまり昔は最高だったってこと？",
+     "rate": 2,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "163": {
+   "tier": "B",
+   "persona": "cat",
+   "pause_before": 0.2,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "いや、",
+     "rate": 8,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "当時も死ぬほど文句言ってた。",
+     "rate": 16,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.15
+    }
+   ],
+   "note": ""
+  },
+  "164": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "じゃあ何が変わったの？",
+     "rate": 2,
+     "pitch": 2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "165": {
+   "tier": "B",
+   "persona": "cat",
+   "pause_before": 0.25,
+   "silence_after": 0.25,
+   "segments": [
+    {
+     "text": "今の台を知った。",
+     "rate": 6,
+     "pitch": -6,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "166": {
+   "tier": "B",
+   "persona": "rabbit",
+   "pause_before": 0.0,
+   "silence_after": 0.2,
+   "segments": [
+    {
+     "text": "なるほど。",
+     "rate": 0,
+     "pitch": -2,
+     "gain_db": 0,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "167": {
+   "tier": "A",
+   "persona": "cat",
+   "pause_before": 0.0,
+   "silence_after": 0.0,
+   "segments": [
+    {
+     "text": "319なら全然やれる。",
+     "rate": 10,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": ""
+  },
+  "168": {
+   "tier": "A",
+   "persona": "rabbit",
+   "pause_before": 0.7,
+   "silence_after": 1.2,
+   "segments": [
+    {
+     "text": "やっぱり感覚壊れてるね。",
+     "rate": 4,
+     "pitch": -2,
+     "gain_db": 1,
+     "gap_before": 0.0
+    }
+   ],
+   "note": "無音のあとツッコミ"
+  },
+  "169": {
+   "tier": "A",
+   "persona": "narrator",
+   "pause_before": 0.0,
+   "silence_after": 0.5,
+   "segments": [
+    {
+     "text": "あなたが一番好きだった319は？",
+     "rate": 4,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "ユニコーン？",
+     "rate": 8,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.4
+    },
+    {
+     "text": "エヴァ15？",
+     "rate": 8,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.2,
+     "read": "エヴァじゅうご？"
+    },
+    {
+     "text": "リゼロ鬼がかり？",
+     "rate": 8,
+     "pitch": 4,
+     "gain_db": 0,
+     "gap_before": 0.2,
+     "read": "リゼロおにがかり？"
+    },
+    {
+     "text": "それとも別の台？",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.25
+    },
+    {
+     "text": "ライトミドル・甘デジの思い出の機種も",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.5,
+     "read": "ライトミドル、甘デジの思い出の機種も"
+    },
+    {
+     "text": "コメントで教えてください。",
+     "rate": 6,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.1
+    }
+   ],
+   "note": ""
+  },
+  "170": {
+   "tier": "B",
+   "persona": "narrator",
+   "pause_before": 0.0,
+   "silence_after": 0.3,
+   "segments": [
+    {
+     "text": "チャンネル登録と高評価、",
+     "rate": 10,
+     "pitch": 0,
+     "gain_db": 0,
+     "gap_before": 0.0
+    },
+    {
+     "text": "よろしくお願いします！",
+     "rate": 12,
+     "pitch": 4,
+     "gain_db": 1,
+     "gap_before": 0.1
+    }
+   ],
+   "note": ""
+  }
+ }
+}

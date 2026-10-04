@@ -1,0 +1,126 @@
+name: Make episode (video + voice)
+
+# 台本（episodes/<回>/script.txt or script.json）から
+#   1) 掲示板反応集の映像を作り（generator/）
+#   2) 手動ディレクション（episodes/<回>/directions.json）どおりに読み上げを重ね
+#   3) 完成mp4を Artifact と outputs ブランチに保存する
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "回のフォルダ名（episodes/ の下）"
+        type: string
+        default: "ep002"
+      mode:
+        description: "test = 冒頭だけ / full = フル"
+        type: choice
+        options: [test, full]
+        default: test
+      test_seconds:
+        description: "テストで書き出す秒数"
+        type: string
+        default: "90"
+      save_to_repo:
+        description: "完成動画を outputs ブランチにも保存する"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      EP: ${{ inputs.episode }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install FFmpeg and Japanese fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg fonts-noto-cjk fonts-noto-cjk-extra
+          ls /usr/share/fonts/opentype/noto/ | grep -i cjk | head
+
+      - name: Install Python packages
+        run: pip install -r requirements.txt -r generator/requirements.txt
+
+      - name: Check episode files
+        run: |
+          test -d "episodes/$EP" || { echo "::error::episodes/$EP がありません"; exit 1; }
+          if [ -f "episodes/$EP/script.json" ]; then SCRIPT="episodes/$EP/script.json"; else SCRIPT="episodes/$EP/script.txt"; fi
+          test -f "$SCRIPT" || { echo "::error::episodes/$EP に script.txt / script.json がありません"; exit 1; }
+          test -f "episodes/$EP/directions.json" || echo "::warning::directions.json が無いので自動の読み方（dynamic）になります"
+          echo "SCRIPT=$SCRIPT" >> "$GITHUB_ENV"
+          ls -la "episodes/$EP" generator/assets/machines
+
+      - name: Render video (board screen, images, characters, BGM, SE)
+        run: |
+          mkdir -p work output
+          ARGS=""
+          if [ "${{ inputs.mode }}" = "test" ]; then ARGS="--test ${{ inputs.test_seconds }}"; fi
+          CUES=""
+          if [ -f "episodes/$EP/image_cues.manual.json" ]; then CUES="--cues-in ../episodes/$EP/image_cues.manual.json"; fi
+          cd generator
+          python generate.py "../$SCRIPT" --no-voice $ARGS $CUES \
+            -o "../work/${EP}_video.mp4" \
+            --cues-out "../work/image_cues.json" \
+            --timeline-out "../work/timeline.json"
+
+      - name: Restore TTS cache
+        uses: actions/cache@v4
+        with:
+          path: cache/tts
+          key: tts-${{ inputs.episode }}-${{ hashFiles(format('episodes/{0}/directions.json', inputs.episode), 'config.json') }}
+          restore-keys: |
+            tts-${{ inputs.episode }}-
+            tts-
+
+      - name: Add voice
+        id: run
+        run: |
+          if [ "${{ inputs.mode }}" = "full" ]; then
+            OUT="output/${EP}.mp4"; T=""
+          else
+            OUT="output/${EP}_test${{ inputs.test_seconds }}s.mp4"; T="--test ${{ inputs.test_seconds }}"
+          fi
+          STYLE=dynamic; DIR=""
+          if [ -f "episodes/$EP/directions.json" ]; then STYLE=directed; DIR="--directions episodes/$EP/directions.json"; fi
+          python src/add_voice.py --style $STYLE $DIR $T \
+            --input "work/${EP}_video.mp4" --timeline "work/timeline.json" --output "$OUT"
+          cp work/image_cues.json work/timeline.json work/ 2>/dev/null || true
+
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.episode }}-${{ inputs.mode }}
+          path: |
+            ${{ steps.run.outputs.output_path }}
+            work/voice_plan.json
+            work/image_cues.json
+            work/timeline.json
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: Save result to outputs branch
+        if: ${{ inputs.save_to_repo }}
+        env:
+          OUT: ${{ steps.run.outputs.output_path }}
+          TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/outbranch && cp "$OUT" /tmp/outbranch/
+          for f in voice_plan.json image_cues.json timeline.json; do
+            if [ -f "work/$f" ]; then cp "work/$f" "/tmp/outbranch/${EP}_$f"; fi
+          done
+          cd /tmp/outbranch
+          git init -q -b outputs
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "完成動画: $(basename "$OUT") (run ${{ github.run_id }})"
+          git push -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" outputs

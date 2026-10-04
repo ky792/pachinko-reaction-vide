@@ -1,0 +1,1366 @@
+{
+ "video_duration": 501.447,
+ "note": "start/end は動画上でそのセリフ（レス）が表示される秒数。end は次の表示が始まる時刻。",
+ "lines": [
+  {
+   "id": 1,
+   "start": 0.0,
+   "end": 3.299,
+   "speaker": "board",
+   "kind": "res",
+   "text": "昔ワイ\n「319とか重すぎだろ」"
+  },
+  {
+   "id": 2,
+   "start": 3.299,
+   "end": 6.748,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今ワイ\n「319？全然打てるやん」"
+  },
+  {
+   "id": 3,
+   "start": 6.748,
+   "end": 8.847,
+   "speaker": "board",
+   "kind": "res",
+   "text": "感覚壊されてて草"
+  },
+  {
+   "id": 4,
+   "start": 8.847,
+   "end": 11.696,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ユニコーン\nエヴァ\nリゼロ"
+  },
+  {
+   "id": 5,
+   "start": 11.696,
+   "end": 16.544,
+   "speaker": "board",
+   "kind": "res",
+   "text": "この3台が同時期に選べたの\n今考えると普通に贅沢だったよな"
+  },
+  {
+   "id": 6,
+   "start": 16.544,
+   "end": 20.142,
+   "speaker": "board",
+   "kind": "res",
+   "text": "しかもライトミドルも甘も選択肢あった"
+  },
+  {
+   "id": 7,
+   "start": 20.142,
+   "end": 24.191,
+   "speaker": "board",
+   "kind": "res",
+   "text": "もしかしてあの頃って\n結構いい時代だった？"
+  },
+  {
+   "id": 8,
+   "start": 24.191,
+   "end": 29.9,
+   "speaker": "narrator",
+   "kind": "title",
+   "text": "昔の319って今思えば神スペックだったよな。パチンコ民の反応集"
+  },
+  {
+   "id": 9,
+   "start": 29.9,
+   "end": 31.3,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その①、319が重いと言ってた時代"
+  },
+  {
+   "id": 10,
+   "start": 31.3,
+   "end": 35.9,
+   "speaker": "board",
+   "kind": "res",
+   "text": "当時は319ハマるたびに\nこんなん無理って言ってたよな"
+  },
+  {
+   "id": 11,
+   "start": 35.9,
+   "end": 39.049,
+   "speaker": "board",
+   "kind": "res",
+   "text": "1000ハマり見たら絶望してた"
+  },
+  {
+   "id": 12,
+   "start": 39.049,
+   "end": 41.748,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今\n「まあ319だしな」"
+  },
+  {
+   "id": 13,
+   "start": 41.748,
+   "end": 43.547,
+   "speaker": "board",
+   "kind": "res",
+   "text": "慣れって怖い"
+  },
+  {
+   "id": 14,
+   "start": 43.547,
+   "end": 49.395,
+   "speaker": "board",
+   "kind": "res",
+   "text": "399とか図柄揃い重い台見たあとだと\n319の数字に安心感あるの草"
+  },
+  {
+   "id": 15,
+   "start": 49.395,
+   "end": 53.593,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319が甘く見える時代が来るとは思わなかった"
+  },
+  {
+   "id": 16,
+   "start": 53.593,
+   "end": 58.291,
+   "speaker": "board",
+   "kind": "res",
+   "text": "しかも昔は\n319引いたらちゃんと大当たりって感じだった"
+  },
+  {
+   "id": 17,
+   "start": 58.291,
+   "end": 63.289,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今は当ててから\nRUSH\n上位\nLT\nとかまだ関門あるからな"
+  },
+  {
+   "id": 18,
+   "start": 63.289,
+   "end": 66.887,
+   "speaker": "board",
+   "kind": "res",
+   "text": "当たり引いてスタートラインはしんどい"
+  },
+  {
+   "id": 19,
+   "start": 66.887,
+   "end": 70.486,
+   "speaker": "board",
+   "kind": "res",
+   "text": "昔の319\n重いけど分かりやすかった"
+  },
+  {
+   "id": 20,
+   "start": 70.486,
+   "end": 73.963,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "319って今でも普通に重いよね？"
+  },
+  {
+   "id": 21,
+   "start": 73.963,
+   "end": 75.763,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "重い。"
+  },
+  {
+   "id": 22,
+   "start": 75.763,
+   "end": 78.748,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "じゃあなんで軽く感じるの？"
+  },
+  {
+   "id": 23,
+   "start": 78.748,
+   "end": 82.106,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "もっと重いものを見せられたから。"
+  },
+  {
+   "id": 24,
+   "start": 82.106,
+   "end": 85.255,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "完全に感覚壊されてるじゃん。"
+  },
+  {
+   "id": 25,
+   "start": 85.255,
+   "end": 86.655,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その②、ユニコーン"
+  },
+  {
+   "id": 26,
+   "start": 86.655,
+   "end": 88.754,
+   "speaker": "board",
+   "kind": "res",
+   "text": "まずユニコーンな"
+  },
+  {
+   "id": 27,
+   "start": 88.754,
+   "end": 91.603,
+   "speaker": "board",
+   "kind": "res",
+   "text": "あれ出た時の右打ちの衝撃よ"
+  },
+  {
+   "id": 28,
+   "start": 91.603,
+   "end": 96.751,
+   "speaker": "board",
+   "kind": "res",
+   "text": "転落式嫌いだったけど\n覚醒HYPER入った時の速さは好きだった"
+  },
+  {
+   "id": 29,
+   "start": 96.751,
+   "end": 100.499,
+   "speaker": "board",
+   "kind": "res",
+   "text": "右の出玉感と継続感\nそりゃ脳焼かれるわ"
+  },
+  {
+   "id": 30,
+   "start": 100.499,
+   "end": 102.449,
+   "speaker": "board",
+   "kind": "res",
+   "text": "「それでも！」"
+  },
+  {
+   "id": 31,
+   "start": 102.449,
+   "end": 106.048,
+   "speaker": "board",
+   "kind": "res",
+   "text": "これ聞きたいだけで打ってた奴おるやろ"
+  },
+  {
+   "id": 32,
+   "start": 106.048,
+   "end": 110.396,
+   "speaker": "board",
+   "kind": "res",
+   "text": "先読みカスタムも含めて\n当時かなり完成されてた"
+  },
+  {
+   "id": 33,
+   "start": 110.396,
+   "end": 113.095,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通常時は修行だったけどな"
+  },
+  {
+   "id": 34,
+   "start": 113.095,
+   "end": 115.395,
+   "speaker": "board",
+   "kind": "res",
+   "text": "それは今も変わらん"
+  },
+  {
+   "id": 35,
+   "start": 115.395,
+   "end": 121.392,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ユニコーンで高速RUSH慣れしたせいで\n遅い右打ち耐えられなくなった"
+  },
+  {
+   "id": 36,
+   "start": 121.392,
+   "end": 124.991,
+   "speaker": "board",
+   "kind": "res",
+   "text": "メーカー\n「じゃあもっと速くします」"
+  },
+  {
+   "id": 37,
+   "start": 124.991,
+   "end": 127.09,
+   "speaker": "board",
+   "kind": "res",
+   "text": "違うそうじゃない"
+  },
+  {
+   "id": 38,
+   "start": 127.09,
+   "end": 128.49,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その③、エヴァ15"
+  },
+  {
+   "id": 39,
+   "start": 128.49,
+   "end": 132.539,
+   "speaker": "board",
+   "kind": "res",
+   "text": "結局一番長く打ったの\nエヴァ15かもしれん"
+  },
+  {
+   "id": 40,
+   "start": 132.539,
+   "end": 135.538,
+   "speaker": "board",
+   "kind": "res",
+   "text": "スペック見た時の安心感すごい"
+  },
+  {
+   "id": 41,
+   "start": 135.538,
+   "end": 138.987,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319\nST\n約81％\n右1500"
+  },
+  {
+   "id": 42,
+   "start": 138.987,
+   "end": 141.536,
+   "speaker": "board",
+   "kind": "res",
+   "text": "もうこれでいいんだよ感"
+  },
+  {
+   "id": 43,
+   "start": 141.536,
+   "end": 147.383,
+   "speaker": "board",
+   "kind": "res",
+   "text": "変に上位とかなくて\nST入れたら最後まで同じゲーム性なのが良かった"
+  },
+  {
+   "id": 44,
+   "start": 147.383,
+   "end": 150.682,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通常引いても時短あるのも偉かった"
+  },
+  {
+   "id": 45,
+   "start": 150.682,
+   "end": 155.38,
+   "speaker": "board",
+   "kind": "res",
+   "text": "エヴァ15って\n派手な新機能より普通に完成度高かったよな"
+  },
+  {
+   "id": 46,
+   "start": 155.38,
+   "end": 158.529,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ホール行ったらとりあえずエヴァ"
+  },
+  {
+   "id": 47,
+   "start": 158.529,
+   "end": 161.078,
+   "speaker": "board",
+   "kind": "res",
+   "text": "空いてなかったら他の台"
+  },
+  {
+   "id": 48,
+   "start": 161.078,
+   "end": 163.627,
+   "speaker": "board",
+   "kind": "res",
+   "text": "そして結局エヴァに戻る"
+  },
+  {
+   "id": 49,
+   "start": 163.627,
+   "end": 165.727,
+   "speaker": "board",
+   "kind": "res",
+   "text": "パチンコ界の実家"
+  },
+  {
+   "id": 50,
+   "start": 165.727,
+   "end": 170.189,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "派手なスペックじゃないのに人気だったんだね。"
+  },
+  {
+   "id": 51,
+   "start": 170.189,
+   "end": 174.017,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "毎日ステーキ食いたいわけじゃないんよ。"
+  },
+  {
+   "id": 52,
+   "start": 174.017,
+   "end": 177.002,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "エヴァは白米みたいな感じ？"
+  },
+  {
+   "id": 53,
+   "start": 177.002,
+   "end": 179.262,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "例えが地味すぎる。"
+  },
+  {
+   "id": 54,
+   "start": 179.262,
+   "end": 180.662,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その④、リゼロ鬼がかり"
+  },
+  {
+   "id": 55,
+   "start": 180.662,
+   "end": 182.462,
+   "speaker": "board",
+   "kind": "res",
+   "text": "そしてリゼロ"
+  },
+  {
+   "id": 56,
+   "start": 182.462,
+   "end": 186.211,
+   "speaker": "board",
+   "kind": "res",
+   "text": "初当たり3000のインパクトやばかった"
+  },
+  {
+   "id": 57,
+   "start": 186.211,
+   "end": 190.559,
+   "speaker": "board",
+   "kind": "res",
+   "text": "あれで3000って数字が\n完全に定着した感ある"
+  },
+  {
+   "id": 58,
+   "start": 190.559,
+   "end": 195.706,
+   "speaker": "board",
+   "kind": "res",
+   "text": "鬼がかりRUSH入った時の\n「勝てるかもしれん」感がすごかった"
+  },
+  {
+   "id": 59,
+   "start": 195.706,
+   "end": 197.206,
+   "speaker": "board",
+   "kind": "res",
+   "text": "なお突入"
+  },
+  {
+   "id": 60,
+   "start": 197.206,
+   "end": 198.706,
+   "speaker": "board",
+   "kind": "res",
+   "text": "やめろ"
+  },
+  {
+   "id": 61,
+   "start": 198.706,
+   "end": 202.005,
+   "speaker": "board",
+   "kind": "res",
+   "text": "通常でもちゃんと出玉あるのは良心"
+  },
+  {
+   "id": 62,
+   "start": 202.005,
+   "end": 205.454,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今考えると\nそこ結構大事だったよな"
+  },
+  {
+   "id": 63,
+   "start": 205.454,
+   "end": 208.603,
+   "speaker": "board",
+   "kind": "res",
+   "text": "当たって数百発終了とかじゃない"
+  },
+  {
+   "id": 64,
+   "start": 208.603,
+   "end": 212.501,
+   "speaker": "board",
+   "kind": "res",
+   "text": "3000取ってRUSH入った時の安心感よ"
+  },
+  {
+   "id": 65,
+   "start": 212.501,
+   "end": 215.051,
+   "speaker": "board",
+   "kind": "res",
+   "text": "そして右で3000引く"
+  },
+  {
+   "id": 66,
+   "start": 215.051,
+   "end": 216.551,
+   "speaker": "board",
+   "kind": "res",
+   "text": "脳終了"
+  },
+  {
+   "id": 67,
+   "start": 216.551,
+   "end": 219.4,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ユニコーン\nエヴァ\nリゼロ"
+  },
+  {
+   "id": 68,
+   "start": 219.4,
+   "end": 222.548,
+   "speaker": "board",
+   "kind": "res",
+   "text": "この3択あった時期は普通に強い"
+  },
+  {
+   "id": 69,
+   "start": 222.548,
+   "end": 223.948,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑤、覇権3機種の後も319はまだ強かった"
+  },
+  {
+   "id": 70,
+   "start": 223.948,
+   "end": 227.247,
+   "speaker": "board",
+   "kind": "res",
+   "text": "別にこの3台だけじゃなかったしな"
+  },
+  {
+   "id": 71,
+   "start": 227.247,
+   "end": 229.547,
+   "speaker": "board",
+   "kind": "res",
+   "text": "その後に炎炎も出た"
+  },
+  {
+   "id": 72,
+   "start": 229.547,
+   "end": 232.996,
+   "speaker": "board",
+   "kind": "res",
+   "text": "炎炎は右のゲーム性\n結構好きだった"
+  },
+  {
+   "id": 73,
+   "start": 232.996,
+   "end": 235.845,
+   "speaker": "board",
+   "kind": "res",
+   "text": "あの頃のSANKYO強すぎ"
+  },
+  {
+   "id": 74,
+   "start": 235.845,
+   "end": 239.294,
+   "speaker": "board",
+   "kind": "res",
+   "text": "からくりも荒かったけど人気あったし"
+  },
+  {
+   "id": 75,
+   "start": 239.294,
+   "end": 243.342,
+   "speaker": "board",
+   "kind": "res",
+   "text": "からくりはもう\n319の顔したギャンブル台"
+  },
+  {
+   "id": 76,
+   "start": 243.342,
+   "end": 246.341,
+   "speaker": "board",
+   "kind": "res",
+   "text": "パチンコは全部ギャンブルだろ"
+  },
+  {
+   "id": 77,
+   "start": 246.341,
+   "end": 248.141,
+   "speaker": "board",
+   "kind": "res",
+   "text": "それを言うな"
+  },
+  {
+   "id": 78,
+   "start": 248.141,
+   "end": 251.589,
+   "speaker": "board",
+   "kind": "res",
+   "text": "SEEDもめちゃくちゃ期待されてた"
+  },
+  {
+   "id": 79,
+   "start": 251.589,
+   "end": 253.889,
+   "speaker": "board",
+   "kind": "res",
+   "text": "急に空気重くするな"
+  },
+  {
+   "id": 80,
+   "start": 253.889,
+   "end": 256.289,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ゴジエヴァもあったな"
+  },
+  {
+   "id": 81,
+   "start": 256.289,
+   "end": 260.889,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今思うと\n319って一括りでもゲーム性かなり違った"
+  },
+  {
+   "id": 82,
+   "start": 260.889,
+   "end": 262.389,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ST"
+  },
+  {
+   "id": 83,
+   "start": 262.389,
+   "end": 263.889,
+   "speaker": "board",
+   "kind": "res",
+   "text": "転落"
+  },
+  {
+   "id": 84,
+   "start": 263.889,
+   "end": 265.389,
+   "speaker": "board",
+   "kind": "res",
+   "text": "高速"
+  },
+  {
+   "id": 85,
+   "start": 265.389,
+   "end": 267.038,
+   "speaker": "board",
+   "kind": "res",
+   "text": "3000系"
+  },
+  {
+   "id": 86,
+   "start": 267.038,
+   "end": 269.338,
+   "speaker": "board",
+   "kind": "res",
+   "text": "選ぶ楽しさはあった"
+  },
+  {
+   "id": 87,
+   "start": 269.338,
+   "end": 270.738,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑥、さらに前には源さんと初代とある"
+  },
+  {
+   "id": 88,
+   "start": 270.738,
+   "end": 273.587,
+   "speaker": "board",
+   "kind": "res",
+   "text": "その前の時代も面白いんよな"
+  },
+  {
+   "id": 89,
+   "start": 273.587,
+   "end": 276.886,
+   "speaker": "board",
+   "kind": "res",
+   "text": "源さん出た時\n右速すぎて笑ったわ"
+  },
+  {
+   "id": 90,
+   "start": 276.886,
+   "end": 279.186,
+   "speaker": "board",
+   "kind": "res",
+   "text": "あの高継続の破壊力"
+  },
+  {
+   "id": 91,
+   "start": 279.186,
+   "end": 281.486,
+   "speaker": "board",
+   "kind": "res",
+   "text": "数十分で景色変わる"
+  },
+  {
+   "id": 92,
+   "start": 281.486,
+   "end": 283.286,
+   "speaker": "board",
+   "kind": "res",
+   "text": "なおRUSH"
+  },
+  {
+   "id": 93,
+   "start": 283.286,
+   "end": 285.235,
+   "speaker": "board",
+   "kind": "res",
+   "text": "そこが一番の壁"
+  },
+  {
+   "id": 94,
+   "start": 285.235,
+   "end": 287.934,
+   "speaker": "board",
+   "kind": "res",
+   "text": "でもあの速さは革命だった"
+  },
+  {
+   "id": 95,
+   "start": 287.934,
+   "end": 291.233,
+   "speaker": "board",
+   "kind": "res",
+   "text": "後の高速RUSHに繋がった感ある"
+  },
+  {
+   "id": 96,
+   "start": 291.233,
+   "end": 292.883,
+   "speaker": "board",
+   "kind": "res",
+   "text": "一方とある"
+  },
+  {
+   "id": 97,
+   "start": 292.883,
+   "end": 295.282,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319で100％ST"
+  },
+  {
+   "id": 98,
+   "start": 295.282,
+   "end": 297.831,
+   "speaker": "board",
+   "kind": "res",
+   "text": "こういうのでいいんだよ"
+  },
+  {
+   "id": 99,
+   "start": 297.831,
+   "end": 301.43,
+   "speaker": "board",
+   "kind": "res",
+   "text": "当てた瞬間ST確定ってだけで安心する"
+  },
+  {
+   "id": 100,
+   "start": 301.43,
+   "end": 304.129,
+   "speaker": "board",
+   "kind": "res",
+   "text": "しかも遊タイムまであった"
+  },
+  {
+   "id": 101,
+   "start": 304.129,
+   "end": 307.278,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今見ると別の意味で時代感じるな"
+  },
+  {
+   "id": 102,
+   "start": 307.278,
+   "end": 308.927,
+   "speaker": "board",
+   "kind": "res",
+   "text": "源ととある"
+  },
+  {
+   "id": 103,
+   "start": 308.927,
+   "end": 312.976,
+   "speaker": "board",
+   "kind": "res",
+   "text": "同じ319帯なのに\n方向性真逆で面白かった"
+  },
+  {
+   "id": 104,
+   "start": 312.976,
+   "end": 314.376,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑦、319だけじゃない。ライトミドルも強かった"
+  },
+  {
+   "id": 105,
+   "start": 314.376,
+   "end": 318.274,
+   "speaker": "board",
+   "kind": "res",
+   "text": "個人的にはライトミドルの方が好きだったわ"
+  },
+  {
+   "id": 106,
+   "start": 318.274,
+   "end": 322.874,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319疲れた時に\n199とか239打つのちょうどいい"
+  },
+  {
+   "id": 107,
+   "start": 322.874,
+   "end": 325.873,
+   "speaker": "board",
+   "kind": "res",
+   "text": "超電磁砲239めっちゃ打った"
+  },
+  {
+   "id": 108,
+   "start": 325.873,
+   "end": 328.272,
+   "speaker": "board",
+   "kind": "res",
+   "text": "239って絶妙なんよ"
+  },
+  {
+   "id": 109,
+   "start": 328.272,
+   "end": 330.222,
+   "speaker": "board",
+   "kind": "res",
+   "text": "199より重い"
+  },
+  {
+   "id": 110,
+   "start": 330.222,
+   "end": 332.771,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319より全然行けそう"
+  },
+  {
+   "id": 111,
+   "start": 332.771,
+   "end": 334.421,
+   "speaker": "board",
+   "kind": "res",
+   "text": "謎の安心感"
+  },
+  {
+   "id": 112,
+   "start": 334.421,
+   "end": 337.57,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ジャギ199とか頭おかしかった"
+  },
+  {
+   "id": 113,
+   "start": 337.57,
+   "end": 340.119,
+   "speaker": "board",
+   "kind": "res",
+   "text": "199であの右は夢ある"
+  },
+  {
+   "id": 114,
+   "start": 340.119,
+   "end": 342.218,
+   "speaker": "board",
+   "kind": "res",
+   "text": "突入の壁がすべて"
+  },
+  {
+   "id": 115,
+   "start": 342.218,
+   "end": 346.417,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ジャギでRUSH入った時の\nやったった感好き"
+  },
+  {
+   "id": 116,
+   "start": 346.417,
+   "end": 349.415,
+   "speaker": "board",
+   "kind": "res",
+   "text": "シンフォギアもやっぱ199よ"
+  },
+  {
+   "id": 117,
+   "start": 349.415,
+   "end": 352.414,
+   "speaker": "board",
+   "kind": "res",
+   "text": "199とシンフォの相性いいわ"
+  },
+  {
+   "id": 118,
+   "start": 352.414,
+   "end": 355.114,
+   "speaker": "board",
+   "kind": "res",
+   "text": "最終決戦やりたいから打つ"
+  },
+  {
+   "id": 119,
+   "start": 355.114,
+   "end": 356.614,
+   "speaker": "board",
+   "kind": "res",
+   "text": "分かる"
+  },
+  {
+   "id": 120,
+   "start": 356.614,
+   "end": 361.214,
+   "speaker": "board",
+   "kind": "res",
+   "text": "大海BLACKみたいな\nオーソドックス寄りもあったし"
+  },
+  {
+   "id": 121,
+   "start": 361.214,
+   "end": 365.814,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ライトミドルだけでも\n荒い台と遊びやすい台選べたよな"
+  },
+  {
+   "id": 122,
+   "start": 365.814,
+   "end": 370.276,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "319が怖い日は\n199に逃げられたんだね。"
+  },
+  {
+   "id": 123,
+   "start": 370.276,
+   "end": 372.85,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "なお199で4万負け。"
+  },
+  {
+   "id": 124,
+   "start": 372.85,
+   "end": 375.506,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "逃げられてないじゃん。"
+  },
+  {
+   "id": 125,
+   "start": 375.506,
+   "end": 376.906,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑧、129・甘デジもちゃんと面白かった"
+  },
+  {
+   "id": 126,
+   "start": 376.906,
+   "end": 379.206,
+   "speaker": "board",
+   "kind": "res",
+   "text": "そして金ない時の甘"
+  },
+  {
+   "id": 127,
+   "start": 379.206,
+   "end": 380.706,
+   "speaker": "board",
+   "kind": "res",
+   "text": "言い方"
+  },
+  {
+   "id": 128,
+   "start": 380.706,
+   "end": 384.755,
+   "speaker": "board",
+   "kind": "res",
+   "text": "でも甘デジ座る時って\nだいたい金ない時やろ"
+  },
+  {
+   "id": 129,
+   "start": 384.755,
+   "end": 386.404,
+   "speaker": "board",
+   "kind": "res",
+   "text": "否定できん"
+  },
+  {
+   "id": 130,
+   "start": 386.404,
+   "end": 389.104,
+   "speaker": "board",
+   "kind": "res",
+   "text": "とある129好きだったわ"
+  },
+  {
+   "id": 131,
+   "start": 389.104,
+   "end": 392.552,
+   "speaker": "board",
+   "kind": "res",
+   "text": "129で100％STなの安心感ある"
+  },
+  {
+   "id": 132,
+   "start": 392.552,
+   "end": 395.251,
+   "speaker": "board",
+   "kind": "res",
+   "text": "遊びたい日にちょうどいい"
+  },
+  {
+   "id": 133,
+   "start": 395.251,
+   "end": 400.249,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ユニコーンLIGHTも\n別物だけどちゃんとユニコーン感あった"
+  },
+  {
+   "id": 134,
+   "start": 400.249,
+   "end": 403.848,
+   "speaker": "board",
+   "kind": "res",
+   "text": "甘で高継続見ると\n一回は打ちたくなる"
+  },
+  {
+   "id": 135,
+   "start": 403.848,
+   "end": 406.697,
+   "speaker": "board",
+   "kind": "res",
+   "text": "シンフォ2の77も良かった"
+  },
+  {
+   "id": 136,
+   "start": 406.697,
+   "end": 410.146,
+   "speaker": "board",
+   "kind": "res",
+   "text": "77って当たりそうで\n全然当たらん"
+  },
+  {
+   "id": 137,
+   "start": 410.146,
+   "end": 412.095,
+   "speaker": "board",
+   "kind": "res",
+   "text": "甘デジあるある"
+  },
+  {
+   "id": 138,
+   "start": 412.095,
+   "end": 414.395,
+   "speaker": "board",
+   "kind": "res",
+   "text": "アグネスも結局強い"
+  },
+  {
+   "id": 139,
+   "start": 414.395,
+   "end": 416.195,
+   "speaker": "board",
+   "kind": "res",
+   "text": "困った時の海"
+  },
+  {
+   "id": 140,
+   "start": 416.195,
+   "end": 417.695,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319"
+  },
+  {
+   "id": 141,
+   "start": 417.695,
+   "end": 419.195,
+   "speaker": "board",
+   "kind": "res",
+   "text": "199"
+  },
+  {
+   "id": 142,
+   "start": 419.195,
+   "end": 420.695,
+   "speaker": "board",
+   "kind": "res",
+   "text": "129"
+  },
+  {
+   "id": 143,
+   "start": 420.695,
+   "end": 422.195,
+   "speaker": "board",
+   "kind": "res",
+   "text": "99"
+  },
+  {
+   "id": 144,
+   "start": 422.195,
+   "end": 425.343,
+   "speaker": "board",
+   "kind": "res",
+   "text": "予算で選べたのはデカかったよな"
+  },
+  {
+   "id": 145,
+   "start": 425.343,
+   "end": 428.792,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今は甘でも荒い台普通にあるから怖い"
+  },
+  {
+   "id": 146,
+   "start": 428.792,
+   "end": 430.192,
+   "speaker": "narrator",
+   "kind": "chapter",
+   "text": "その⑨、結局何が良かったのか"
+  },
+  {
+   "id": 147,
+   "start": 430.192,
+   "end": 433.341,
+   "speaker": "board",
+   "kind": "res",
+   "text": "結局昔の319が神っていうより"
+  },
+  {
+   "id": 148,
+   "start": 433.341,
+   "end": 436.19,
+   "speaker": "board",
+   "kind": "res",
+   "text": "選択肢が多かったんじゃね？"
+  },
+  {
+   "id": 149,
+   "start": 436.19,
+   "end": 438.439,
+   "speaker": "board",
+   "kind": "res",
+   "text": "今日は勝負\n319"
+  },
+  {
+   "id": 150,
+   "start": 438.439,
+   "end": 440.839,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ちょっと軽く\n199"
+  },
+  {
+   "id": 151,
+   "start": 440.839,
+   "end": 442.638,
+   "speaker": "board",
+   "kind": "res",
+   "text": "遊びたい\n甘"
+  },
+  {
+   "id": 152,
+   "start": 442.638,
+   "end": 444.438,
+   "speaker": "board",
+   "kind": "res",
+   "text": "これが出来た"
+  },
+  {
+   "id": 153,
+   "start": 444.438,
+   "end": 448.486,
+   "speaker": "board",
+   "kind": "res",
+   "text": "319の中でも\nユニコーン\nエヴァ\nリゼロ"
+  },
+  {
+   "id": 154,
+   "start": 448.486,
+   "end": 450.885,
+   "speaker": "board",
+   "kind": "res",
+   "text": "全部方向性違ったしな"
+  },
+  {
+   "id": 155,
+   "start": 450.885,
+   "end": 453.584,
+   "speaker": "board",
+   "kind": "res",
+   "text": "源みたいな高速機もあれば"
+  },
+  {
+   "id": 156,
+   "start": 453.584,
+   "end": 456.883,
+   "speaker": "board",
+   "kind": "res",
+   "text": "とあるみたいな100％STもある"
+  },
+  {
+   "id": 157,
+   "start": 456.883,
+   "end": 460.182,
+   "speaker": "board",
+   "kind": "res",
+   "text": "あの頃も普通に文句言ってたけどな"
+  },
+  {
+   "id": 158,
+   "start": 460.182,
+   "end": 461.682,
+   "speaker": "board",
+   "kind": "res",
+   "text": "回らない"
+  },
+  {
+   "id": 159,
+   "start": 461.682,
+   "end": 463.182,
+   "speaker": "board",
+   "kind": "res",
+   "text": "ハマる"
+  },
+  {
+   "id": 160,
+   "start": 463.182,
+   "end": 464.682,
+   "speaker": "board",
+   "kind": "res",
+   "text": "続かない"
+  },
+  {
+   "id": 161,
+   "start": 464.682,
+   "end": 467.681,
+   "speaker": "board",
+   "kind": "res",
+   "text": "結局ずっと同じこと言ってて草"
+  },
+  {
+   "id": 162,
+   "start": 467.681,
+   "end": 470.544,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "つまり昔は最高だったってこと？"
+  },
+  {
+   "id": 163,
+   "start": 470.544,
+   "end": 473.609,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "いや、当時も死ぬほど文句言ってた。"
+  },
+  {
+   "id": 164,
+   "start": 473.609,
+   "end": 475.815,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "じゃあ何が変わったの？"
+  },
+  {
+   "id": 165,
+   "start": 475.815,
+   "end": 477.469,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "今の台を知った。"
+  },
+  {
+   "id": 166,
+   "start": 477.469,
+   "end": 478.69,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "なるほど。"
+  },
+  {
+   "id": 167,
+   "start": 478.69,
+   "end": 480.814,
+   "speaker": "cat",
+   "kind": "talk",
+   "text": "319なら全然やれる。"
+  },
+  {
+   "id": 168,
+   "start": 481.814,
+   "end": 484.784,
+   "speaker": "rabbit",
+   "kind": "talk",
+   "text": "やっぱり感覚壊れてるね。"
+  },
+  {
+   "id": 169,
+   "start": 484.784,
+   "end": 497.947,
+   "speaker": "narrator",
+   "kind": "ending",
+   "text": "あなたが一番好きだった319は？。ユニコーン。エヴァ15。リゼロ鬼がかり。それとも別の台。ライトミドル・甘デジの\n思い出の機種もコメントで教えてください"
+  },
+  {
+   "id": 170,
+   "start": 498.247,
+   "end": 501.447,
+   "speaker": "narrator",
+   "kind": "subscribe",
+   "text": "チャンネル登録と高評価、よろしくお願いします！"
+  }
+ ]
+}

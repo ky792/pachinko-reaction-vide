@@ -1,0 +1,2910 @@
+[
+ {
+  "kind": "res",
+  "start": 0.0,
+  "dur": 3.2988005997001504,
+  "text": "昔ワイ\n「319とか重すぎだろ」",
+  "no": 1,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": true,
+  "chapter": null,
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 3.2988005997001504,
+  "dur": 3.4487256371814095,
+  "text": "今ワイ\n「319？全然打てるやん」",
+  "no": 2,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": null,
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 6.74752623688156,
+  "dur": 2.099400299850075,
+  "text": "感覚壊されてて草",
+  "no": 3,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.4494002998500752,
+  "reset": false,
+  "chapter": null,
+  "face": "smug",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 8.846926536731635,
+  "dur": 2.849025487256372,
+  "text": "ユニコーン\nエヴァ\nリゼロ",
+  "no": 4,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.199025487256372,
+  "reset": false,
+  "chapter": null,
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 11.695952023988006,
+  "dur": 4.847826086956522,
+  "text": "この3台が同時期に選べたの\n今考えると普通に贅沢だったよな",
+  "no": 5,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.597826086956522,
+  "reset": false,
+  "chapter": null,
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 16.54377811094453,
+  "dur": 3.598650674662669,
+  "text": "しかもライトミドルも甘も選択肢あった",
+  "no": 6,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.948650674662669,
+  "reset": false,
+  "chapter": null,
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 20.142428785607198,
+  "dur": 4.0484257871064475,
+  "text": "もしかしてあの頃って\n結構いい時代だった？",
+  "no": 7,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.398425787106447,
+  "reset": false,
+  "chapter": null,
+  "face": "shock",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "title",
+  "start": 24.190854572713647,
+  "dur": 5.708934169278996,
+  "lines": [
+   "昔の319って",
+   "今思えば神スペックだったよな"
+  ],
+  "subtitle": "パチンコ民の反応集",
+  "voice": null,
+  "voice_len": 5.108934169278997,
+  "se": "chapter"
+ },
+ {
+  "kind": "chapter",
+  "start": 29.899788741992644,
+  "dur": 1.4,
+  "number": "その①",
+  "name": "319が重いと言ってた時代",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 31.299788741992643,
+  "dur": 4.6,
+  "text": "当時は319ハマるたびに\nこんなん無理って言ってたよな",
+  "no": 8,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.297976011994003,
+  "reset": true,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "cry",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 35.899788741992644,
+  "dur": 3.148875562218891,
+  "text": "1000ハマり見たら絶望してた",
+  "no": 9,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 39.048664304211535,
+  "dur": 2.6991004497751123,
+  "text": "今\n「まあ319だしな」",
+  "no": 10,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 41.747764753986644,
+  "dur": 1.7995502248875561,
+  "text": "慣れって怖い",
+  "no": 11,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.1495502248875562,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "cry",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 43.5473149788742,
+  "dur": 5.84752623688156,
+  "text": "399とか図柄揃い重い台見たあとだと\n319の数字に安心感あるの草",
+  "no": 12,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 5.19752623688156,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 49.39484121575576,
+  "dur": 4.198350824587707,
+  "text": "319が甘く見える時代が来るとは思わなかった",
+  "no": 13,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.5483508245877067,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 53.59319204034347,
+  "dur": 4.697901049475263,
+  "text": "しかも昔は\n319引いたらちゃんと大当たりって感じだった",
+  "no": 14,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.447901049475263,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 58.29109308981873,
+  "dur": 4.997751124437782,
+  "text": "今は当ててから\nRUSH\n上位\nLT\nとかまだ関門あるからな",
+  "no": 15,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.747751124437782,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 63.288844214256514,
+  "dur": 3.598650674662669,
+  "text": "当たり引いてスタートラインはしんどい",
+  "no": 16,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.948650674662669,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 66.88749488891918,
+  "dur": 3.598650674662669,
+  "text": "昔の319\n重いけど分かりやすかった",
+  "no": 17,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.948650674662669,
+  "reset": false,
+  "chapter": [
+   "その①",
+   "319が重いと言ってた時代"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "talk",
+  "start": 70.48614556358184,
+  "dur": 3.4772577996715928,
+  "who": "rabbit",
+  "text": "319って今でも普通に重いよね？",
+  "face": "jito",
+  "first": true,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.8772577996715927,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": "character"
+ },
+ {
+  "kind": "talk",
+  "start": 73.96340336325343,
+  "dur": 1.8,
+  "who": "cat",
+  "text": "重い。",
+  "face": "normal",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 0.7202194357366771,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 75.76340336325343,
+  "dur": 2.9846469622331693,
+  "who": "rabbit",
+  "text": "じゃあなんで軽く感じるの？",
+  "face": "jito",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.384646962233169,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 78.7480503254866,
+  "dur": 3.3578369905956116,
+  "who": "cat",
+  "text": "もっと重いものを見せられたから。",
+  "face": "normal",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.7578369905956115,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 82.10588731608222,
+  "dur": 3.1488505747126436,
+  "who": "rabbit",
+  "text": "完全に感覚壊されてるじゃん。",
+  "face": "normal",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.5488505747126435,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "chapter",
+  "start": 85.25473789079486,
+  "dur": 1.4,
+  "number": "その②",
+  "name": "ユニコーン",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 86.65473789079486,
+  "dur": 2.099400299850075,
+  "text": "まずユニコーンな",
+  "no": 18,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.4494002998500752,
+  "reset": true,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 88.75413819064494,
+  "dur": 2.849025487256372,
+  "text": "あれ出た時の右打ちの衝撃よ",
+  "no": 19,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.199025487256372,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 91.6031636779013,
+  "dur": 5.147676161919041,
+  "text": "転落式嫌いだったけど\n覚醒HYPER入った時の速さは好きだった",
+  "no": 20,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.897676161919041,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 96.75083983982034,
+  "dur": 3.7485757121439285,
+  "text": "右の出玉感と継続感\nそりゃ脳焼かれるわ",
+  "no": 21,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.0985757121439286,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 100.49941555196428,
+  "dur": 1.9494752623688156,
+  "text": "「それでも！」",
+  "no": 22,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.2994752623688157,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 102.4488908143331,
+  "dur": 3.598650674662669,
+  "text": "これ聞きたいだけで打ってた奴おるやろ",
+  "no": 23,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.948650674662669,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 106.04754148899576,
+  "dur": 4.3482758620689665,
+  "text": "先読みカスタムも含めて\n当時かなり完成されてた",
+  "no": 24,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.698275862068966,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 110.39581735106472,
+  "dur": 2.6991004497751123,
+  "text": "通常時は修行だったけどな",
+  "no": 25,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 113.09491780083984,
+  "dur": 2.3,
+  "text": "それは今も変わらん",
+  "no": 26,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 115.39491780083983,
+  "dur": 5.997451274362819,
+  "text": "ユニコーンで高速RUSH慣れしたせいで\n遅い右打ち耐えられなくなった",
+  "no": 27,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 5.347451274362819,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 121.39236907520265,
+  "dur": 3.598650674662669,
+  "text": "メーカー\n「じゃあもっと速くします」",
+  "no": 28,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.948650674662669,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 124.99101974986532,
+  "dur": 2.099400299850075,
+  "text": "違うそうじゃない",
+  "no": 29,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.4494002998500752,
+  "reset": false,
+  "chapter": [
+   "その②",
+   "ユニコーン"
+  ],
+  "face": "normal",
+  "corner": "ガンダムユニコーン",
+  "se": "res"
+ },
+ {
+  "kind": "chapter",
+  "start": 127.09042004971539,
+  "dur": 1.4,
+  "number": "その③",
+  "name": "エヴァ15",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 128.4904200497154,
+  "dur": 4.0484257871064475,
+  "text": "結局一番長く打ったの\nエヴァ15かもしれん",
+  "no": 30,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.398425787106447,
+  "reset": true,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 132.53884583682185,
+  "dur": 2.9989505247376314,
+  "text": "スペック見た時の安心感すごい",
+  "no": 31,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.3489505247376314,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 135.5377963615595,
+  "dur": 3.4487256371814095,
+  "text": "319\nST\n約81％\n右1500",
+  "no": 32,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 138.9865219987409,
+  "dur": 2.5491754122938532,
+  "text": "もうこれでいいんだよ感",
+  "no": 33,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.8991754122938533,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 141.53569741103476,
+  "dur": 5.84752623688156,
+  "text": "変に上位とかなくて\nST入れたら最後まで同じゲーム性なのが良かった",
+  "no": 34,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 5.19752623688156,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 147.3832236479163,
+  "dur": 3.2988005997001504,
+  "text": "通常引いても時短あるのも偉かった",
+  "no": 35,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 150.68202424761645,
+  "dur": 4.697901049475263,
+  "text": "エヴァ15って\n派手な新機能より普通に完成度高かったよな",
+  "no": 36,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.447901049475263,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 155.37992529709172,
+  "dur": 3.148875562218891,
+  "text": "ホール行ったらとりあえずエヴァ",
+  "no": 37,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 158.52880085931062,
+  "dur": 2.5491754122938532,
+  "text": "空いてなかったら他の台",
+  "no": 38,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.8991754122938533,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 161.07797627160448,
+  "dur": 2.5491754122938532,
+  "text": "そして結局エヴァに戻る",
+  "no": 39,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.8991754122938533,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 163.62715168389835,
+  "dur": 2.099400299850075,
+  "text": "パチンコ界の実家",
+  "no": 40,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.4494002998500752,
+  "reset": false,
+  "chapter": [
+   "その③",
+   "エヴァ15"
+  ],
+  "face": "normal",
+  "corner": "未来への咆哮",
+  "se": "res"
+ },
+ {
+  "kind": "talk",
+  "start": 165.72655198374844,
+  "dur": 4.46247947454844,
+  "who": "rabbit",
+  "text": "派手なスペックじゃないのに人気だったんだね。",
+  "face": "normal",
+  "first": true,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 3.86247947454844,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": "character"
+ },
+ {
+  "kind": "talk",
+  "start": 170.18903145829688,
+  "dur": 3.8280564263322887,
+  "who": "cat",
+  "text": "毎日ステーキ食いたいわけじゃないんよ。",
+  "face": "normal",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 3.2280564263322886,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 174.01708788462918,
+  "dur": 2.9846469622331693,
+  "who": "rabbit",
+  "text": "エヴァは白米みたいな感じ？",
+  "face": "jito",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.384646962233169,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 177.00173484686235,
+  "dur": 2.2606583072100315,
+  "who": "cat",
+  "text": "例えが地味すぎる。",
+  "face": "normal",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 1.6606583072100314,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "chapter",
+  "start": 179.26239315407238,
+  "dur": 1.4,
+  "number": "その④",
+  "name": "リゼロ鬼がかり",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 180.6623931540724,
+  "dur": 1.7995502248875561,
+  "text": "そしてリゼロ",
+  "no": 41,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.1495502248875562,
+  "reset": true,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 182.46194337895994,
+  "dur": 3.7485757121439285,
+  "text": "初当たり3000のインパクトやばかった",
+  "no": 42,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.0985757121439286,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 186.21051909110386,
+  "dur": 4.3482758620689665,
+  "text": "あれで3000って数字が\n完全に定着した感ある",
+  "no": 43,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.698275862068966,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 190.55879495317282,
+  "dur": 5.147676161919041,
+  "text": "鬼がかりRUSH入った時の\n「勝てるかもしれん」感がすごかった",
+  "no": 44,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.897676161919041,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 195.70647111509186,
+  "dur": 1.5,
+  "text": "なお突入",
+  "no": 45,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.8497001499250376,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "smug",
+  "corner": "鬼がかりver.",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 197.20647111509186,
+  "dur": 1.5,
+  "text": "やめろ",
+  "no": 46,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "smug",
+  "corner": "鬼がかりver.",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 198.70647111509186,
+  "dur": 3.2988005997001504,
+  "text": "通常でもちゃんと出玉あるのは良心",
+  "no": 47,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 202.005271714792,
+  "dur": 3.4487256371814095,
+  "text": "今考えると\nそこ結構大事だったよな",
+  "no": 48,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 205.4539973519734,
+  "dur": 3.148875562218891,
+  "text": "当たって数百発終了とかじゃない",
+  "no": 49,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "cry",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 208.60287291419232,
+  "dur": 3.8985007496251876,
+  "text": "3000取ってRUSH入った時の安心感よ",
+  "no": 50,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.2485007496251876,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 212.5013736638175,
+  "dur": 2.5491754122938532,
+  "text": "そして右で3000引く",
+  "no": 51,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.8991754122938533,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 215.05054907611137,
+  "dur": 1.5,
+  "text": "脳終了",
+  "no": 52,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "smug",
+  "corner": "鬼がかりver.",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 216.55054907611137,
+  "dur": 2.849025487256372,
+  "text": "ユニコーン\nエヴァ\nリゼロ",
+  "no": 53,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.199025487256372,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 219.39957456336774,
+  "dur": 3.148875562218891,
+  "text": "この3択あった時期は普通に強い",
+  "no": 54,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": false,
+  "chapter": [
+   "その④",
+   "リゼロ鬼がかり"
+  ],
+  "face": "normal",
+  "corner": "鬼がかりver.",
+  "se": "res"
+ },
+ {
+  "kind": "chapter",
+  "start": 222.54845012558664,
+  "dur": 1.4,
+  "number": "その⑤",
+  "name": "覇権3機種の後も319はまだ強かった",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 223.94845012558665,
+  "dur": 3.2988005997001504,
+  "text": "別にこの3台だけじゃなかったしな",
+  "no": 55,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": true,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 227.2472507252868,
+  "dur": 2.3,
+  "text": "その後に炎炎も出た",
+  "no": 56,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 229.5472507252868,
+  "dur": 3.4487256371814095,
+  "text": "炎炎は右のゲーム性\n結構好きだった",
+  "no": 57,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 232.9959763624682,
+  "dur": 2.849025487256372,
+  "text": "あの頃のSANKYO強すぎ",
+  "no": 58,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.199025487256372,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 235.84500184972458,
+  "dur": 3.4487256371814095,
+  "text": "からくりも荒かったけど人気あったし",
+  "no": 59,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 239.293727486906,
+  "dur": 4.0484257871064475,
+  "text": "からくりはもう\n319の顔したギャンブル台",
+  "no": 60,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.398425787106447,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 243.34215327401245,
+  "dur": 2.9989505247376314,
+  "text": "パチンコは全部ギャンブルだろ",
+  "no": 61,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.3489505247376314,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 246.34110379875008,
+  "dur": 1.7995502248875561,
+  "text": "それを言うな",
+  "no": 62,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.1495502248875562,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 248.14065402363764,
+  "dur": 3.4487256371814095,
+  "text": "SEEDもめちゃくちゃ期待されてた",
+  "no": 63,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 251.58937966081905,
+  "dur": 2.3,
+  "text": "急に空気重くするな",
+  "no": 64,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 253.88937966081906,
+  "dur": 2.3992503748125937,
+  "text": "ゴジエヴァもあったな",
+  "no": 65,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.7492503748125938,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 256.2886300356316,
+  "dur": 4.6,
+  "text": "今思うと\n319って一括りでもゲーム性かなり違った",
+  "no": 66,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.9981259370314848,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 260.88863003563165,
+  "dur": 1.5,
+  "text": "ST",
+  "no": 67,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.5498500749625188,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 262.38863003563165,
+  "dur": 1.5,
+  "text": "転落",
+  "no": 68,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.5498500749625188,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 263.88863003563165,
+  "dur": 1.5,
+  "text": "高速",
+  "no": 69,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.5498500749625188,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 265.38863003563165,
+  "dur": 1.649625187406297,
+  "text": "3000系",
+  "no": 70,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 0.9996251874062969,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 267.03825522303794,
+  "dur": 2.3,
+  "text": "選ぶ楽しさはあった",
+  "no": 71,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その⑤",
+   "覇権3機種の後も319はまだ強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "chapter",
+  "start": 269.33825522303795,
+  "dur": 1.4,
+  "number": "その⑥",
+  "name": "さらに前には源さんと初代とある",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 270.7382552230379,
+  "dur": 2.849025487256372,
+  "text": "その前の時代も面白いんよな",
+  "no": 72,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.199025487256372,
+  "reset": true,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 273.5872807102943,
+  "dur": 3.2988005997001504,
+  "text": "源さん出た時\n右速すぎて笑ったわ",
+  "no": 73,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "大工の源さん 超韋駄天",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 276.88608130999444,
+  "dur": 2.3,
+  "text": "あの高継続の破壊力",
+  "no": 74,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "大工の源さん 超韋駄天",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 279.18608130999445,
+  "dur": 2.3,
+  "text": "数十分で景色変わる",
+  "no": 75,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "大工の源さん 超韋駄天",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 281.48608130999446,
+  "dur": 1.7995502248875561,
+  "text": "なおRUSH",
+  "no": 76,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.1495502248875562,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "大工の源さん 超韋駄天",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 283.28563153488204,
+  "dur": 1.9494752623688156,
+  "text": "そこが一番の壁",
+  "no": 77,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.2994752623688157,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "大工の源さん 超韋駄天",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 285.23510679725086,
+  "dur": 2.6991004497751123,
+  "text": "でもあの速さは革命だった",
+  "no": 78,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "大工の源さん 超韋駄天",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 287.934207247026,
+  "dur": 3.2988005997001504,
+  "text": "後の高速RUSHに繋がった感ある",
+  "no": 79,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "大工の源さん 超韋駄天",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 291.23300784672614,
+  "dur": 1.649625187406297,
+  "text": "一方とある",
+  "no": 80,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 0.9996251874062969,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 292.8826330341324,
+  "dur": 2.3992503748125937,
+  "text": "319で100％ST",
+  "no": 81,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.7492503748125938,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 295.281883408945,
+  "dur": 2.5491754122938532,
+  "text": "こういうのでいいんだよ",
+  "no": 82,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.8991754122938533,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 297.83105882123886,
+  "dur": 3.598650674662669,
+  "text": "当てた瞬間ST確定ってだけで安心する",
+  "no": 83,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.948650674662669,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 301.42970949590153,
+  "dur": 2.6991004497751123,
+  "text": "しかも遊タイムまであった",
+  "no": 84,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 304.12880994567666,
+  "dur": 3.148875562218891,
+  "text": "今見ると別の意味で時代感じるな",
+  "no": 85,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 307.27768550789557,
+  "dur": 1.649625187406297,
+  "text": "源ととある",
+  "no": 86,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 0.9996251874062969,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 308.92731069530186,
+  "dur": 4.0484257871064475,
+  "text": "同じ319帯なのに\n方向性真逆で面白かった",
+  "no": 87,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.398425787106447,
+  "reset": false,
+  "chapter": [
+   "その⑥",
+   "さらに前には源さんと初代とある"
+  ],
+  "face": "normal",
+  "corner": "初代 とある魔術の禁書目録",
+  "se": "res"
+ },
+ {
+  "kind": "chapter",
+  "start": 312.9757364824083,
+  "dur": 1.4,
+  "number": "その⑦",
+  "name": "319だけじゃない。ライトミドルも強かった",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 314.3757364824083,
+  "dur": 3.8985007496251876,
+  "text": "個人的にはライトミドルの方が好きだったわ",
+  "no": 88,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.2485007496251876,
+  "reset": true,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 318.2742372320335,
+  "dur": 4.6,
+  "text": "319疲れた時に\n199とか239打つのちょうどいい",
+  "no": 89,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.148050974512744,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 322.8742372320335,
+  "dur": 2.9989505247376314,
+  "text": "超電磁砲239めっちゃ打った",
+  "no": 90,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.3489505247376314,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "Pとある科学の超電磁砲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 325.87318775677113,
+  "dur": 2.3992503748125937,
+  "text": "239って絶妙なんよ",
+  "no": 91,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.7492503748125938,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "Pとある科学の超電磁砲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 328.2724381315837,
+  "dur": 1.9494752623688156,
+  "text": "199より重い",
+  "no": 92,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.2994752623688157,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "Pとある科学の超電磁砲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 330.22191339395255,
+  "dur": 2.5491754122938532,
+  "text": "319より全然行けそう",
+  "no": 93,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.8991754122938533,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "Pとある科学の超電磁砲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 332.7710888062464,
+  "dur": 1.649625187406297,
+  "text": "謎の安心感",
+  "no": 94,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 0.9996251874062969,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "Pとある科学の超電磁砲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 334.42071399365267,
+  "dur": 3.148875562218891,
+  "text": "ジャギ199とか頭おかしかった",
+  "no": 95,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "ジャギの逆襲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 337.5695895558716,
+  "dur": 2.5491754122938532,
+  "text": "199であの右は夢ある",
+  "no": 96,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.8991754122938533,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "ジャギの逆襲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 340.1187649681654,
+  "dur": 2.099400299850075,
+  "text": "突入の壁がすべて",
+  "no": 97,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.4494002998500752,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "ジャギの逆襲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 342.21816526801547,
+  "dur": 4.198350824587707,
+  "text": "ジャギでRUSH入った時の\nやったった感好き",
+  "no": 98,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.5483508245877067,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "ジャギの逆襲",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 346.41651609260316,
+  "dur": 2.9989505247376314,
+  "text": "シンフォギアもやっぱ199よ",
+  "no": 99,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.3489505247376314,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "シンフォギア3 黄金絶唱",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 349.41546661734077,
+  "dur": 2.9989505247376314,
+  "text": "199とシンフォの相性いいわ",
+  "no": 100,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.3489505247376314,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "シンフォギア3 黄金絶唱",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 352.4144171420784,
+  "dur": 2.6991004497751123,
+  "text": "最終決戦やりたいから打つ",
+  "no": 101,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "シンフォギア3 黄金絶唱",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 355.1135175918535,
+  "dur": 1.5,
+  "text": "分かる",
+  "no": 102,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "smug",
+  "corner": "シンフォギア3 黄金絶唱",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 356.6135175918535,
+  "dur": 4.6,
+  "text": "大海BLACKみたいな\nオーソドックス寄りもあったし",
+  "no": 103,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.148050974512744,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "シンフォギア3 黄金絶唱",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 361.21351759185353,
+  "dur": 4.6,
+  "text": "ライトミドルだけでも\n荒い台と遊びやすい台選べたよな",
+  "no": 104,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.148050974512744,
+  "reset": false,
+  "chapter": [
+   "その⑦",
+   "319だけじゃない。ライトミドルも強かった"
+  ],
+  "face": "normal",
+  "corner": "シンフォギア3 黄金絶唱",
+  "se": "res"
+ },
+ {
+  "kind": "talk",
+  "start": 365.81351759185355,
+  "dur": 4.46247947454844,
+  "who": "rabbit",
+  "text": "319が怖い日は\n199に逃げられたんだね。",
+  "face": "normal",
+  "first": true,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 3.86247947454844,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": "character"
+ },
+ {
+  "kind": "talk",
+  "start": 370.275997066402,
+  "dur": 2.5741379310344827,
+  "who": "cat",
+  "text": "なお199で4万負け。",
+  "face": "normal",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 1.9741379310344829,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 372.8501349974365,
+  "dur": 2.65623973727422,
+  "who": "rabbit",
+  "text": "逃げられてないじゃん。",
+  "face": "normal",
+  "first": false,
+  "finale": false,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.05623973727422,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "chapter",
+  "start": 375.50637473471073,
+  "dur": 1.4,
+  "number": "その⑧",
+  "name": "129・甘デジもちゃんと面白かった",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 376.9063747347107,
+  "dur": 2.3,
+  "text": "そして金ない時の甘",
+  "no": 105,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": true,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 379.2063747347107,
+  "dur": 1.5,
+  "text": "言い方",
+  "no": 106,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 380.7063747347107,
+  "dur": 4.0484257871064475,
+  "text": "でも甘デジ座る時って\nだいたい金ない時やろ",
+  "no": 107,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.398425787106447,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 384.7548005218172,
+  "dur": 1.649625187406297,
+  "text": "否定できん",
+  "no": 108,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 0.9996251874062969,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 386.40442570922346,
+  "dur": 2.6991004497751123,
+  "text": "とある129好きだったわ",
+  "no": 109,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 389.1035261589986,
+  "dur": 3.4487256371814095,
+  "text": "129で100％STなの安心感ある",
+  "no": 110,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 392.55225179618,
+  "dur": 2.6991004497751123,
+  "text": "遊びたい日にちょうどいい",
+  "no": 111,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 395.2513522459551,
+  "dur": 4.997751124437782,
+  "text": "ユニコーンLIGHTも\n別物だけどちゃんとユニコーン感あった",
+  "no": 112,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 4.747751124437782,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 400.2491033703929,
+  "dur": 3.598650674662669,
+  "text": "甘で高継続見ると\n一回は打ちたくなる",
+  "no": 113,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.948650674662669,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 403.8477540450556,
+  "dur": 2.849025487256372,
+  "text": "シンフォ2の77も良かった",
+  "no": 114,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.199025487256372,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 406.69677953231195,
+  "dur": 3.4487256371814095,
+  "text": "77って当たりそうで\n全然当たらん",
+  "no": 115,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 410.14550516949333,
+  "dur": 1.9494752623688156,
+  "text": "甘デジあるある",
+  "no": 116,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.2994752623688157,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 412.09498043186215,
+  "dur": 2.3,
+  "text": "アグネスも結局強い",
+  "no": 117,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 414.39498043186217,
+  "dur": 1.7995502248875561,
+  "text": "困った時の海",
+  "no": 118,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.1495502248875562,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 416.19453065674975,
+  "dur": 1.5,
+  "text": "319",
+  "no": 119,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "smug",
+  "corner": "とある Light PREMIUM",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 417.69453065674975,
+  "dur": 1.5,
+  "text": "199",
+  "no": 120,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "smug",
+  "corner": "とある Light PREMIUM",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 419.19453065674975,
+  "dur": 1.5,
+  "text": "129",
+  "no": 121,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "smug",
+  "corner": "とある Light PREMIUM",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 420.69453065674975,
+  "dur": 1.5,
+  "text": "99",
+  "no": 122,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.5498500749625188,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "smug",
+  "corner": "とある Light PREMIUM",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 422.19453065674975,
+  "dur": 3.148875562218891,
+  "text": "予算で選べたのはデカかったよな",
+  "no": 123,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "normal",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 425.34340621896865,
+  "dur": 3.4487256371814095,
+  "text": "今は甘でも荒い台普通にあるから怖い",
+  "no": 124,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.7987256371814095,
+  "reset": false,
+  "chapter": [
+   "その⑧",
+   "129・甘デジもちゃんと面白かった"
+  ],
+  "face": "cry",
+  "corner": "とある Light PREMIUM",
+  "se": "res"
+ },
+ {
+  "kind": "chapter",
+  "start": 428.79213185615004,
+  "dur": 1.4,
+  "number": "その⑨",
+  "name": "結局何が良かったのか",
+  "se": "chapter"
+ },
+ {
+  "kind": "res",
+  "start": 430.19213185615,
+  "dur": 3.148875562218891,
+  "text": "結局昔の319が神っていうより",
+  "no": 125,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.498875562218891,
+  "reset": true,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 433.3410074183689,
+  "dur": 2.849025487256372,
+  "text": "選択肢が多かったんじゃね？",
+  "no": 126,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.199025487256372,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "shock",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 436.1900329056253,
+  "dur": 2.2493253373313347,
+  "text": "今日は勝負\n319",
+  "no": 127,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.5993253373313345,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 438.43935824295664,
+  "dur": 2.3992503748125937,
+  "text": "ちょっと軽く\n199",
+  "no": 128,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.7492503748125938,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 440.83860861776924,
+  "dur": 1.7995502248875561,
+  "text": "遊びたい\n甘",
+  "no": 129,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.1495502248875562,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 442.6381588426568,
+  "dur": 1.7995502248875561,
+  "text": "これが出来た",
+  "no": 130,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.1495502248875562,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 444.4377090675444,
+  "dur": 4.0484257871064475,
+  "text": "319の中でも\nユニコーン\nエヴァ\nリゼロ",
+  "no": 131,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 3.398425787106447,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 448.48613485465086,
+  "dur": 2.3992503748125937,
+  "text": "全部方向性違ったしな",
+  "no": 132,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 1.7492503748125938,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 450.88538522946345,
+  "dur": 2.6991004497751123,
+  "text": "源みたいな高速機もあれば",
+  "no": 133,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.0491004497751124,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 453.5844856792386,
+  "dur": 3.2988005997001504,
+  "text": "とあるみたいな100％STもある",
+  "no": 134,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 456.8832862789387,
+  "dur": 3.2988005997001504,
+  "text": "あの頃も普通に文句言ってたけどな",
+  "no": 135,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.6488005997001505,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "normal",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "res",
+  "start": 460.18208687863887,
+  "dur": 1.5,
+  "text": "回らない",
+  "no": 136,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.8497001499250376,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 461.68208687863887,
+  "dur": 1.5,
+  "text": "ハマる",
+  "no": 137,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.6997751124437781,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 463.18208687863887,
+  "dur": 1.5,
+  "text": "続かない",
+  "no": 138,
+  "emphasis": true,
+  "voice": null,
+  "voice_len": 0.8497001499250376,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "emphasis"
+ },
+ {
+  "kind": "res",
+  "start": 464.68208687863887,
+  "dur": 2.9989505247376314,
+  "text": "結局ずっと同じこと言ってて草",
+  "no": 139,
+  "emphasis": false,
+  "voice": null,
+  "voice_len": 2.3489505247376314,
+  "reset": false,
+  "chapter": [
+   "その⑨",
+   "結局何が良かったのか"
+  ],
+  "face": "smug",
+  "corner": "",
+  "se": "res"
+ },
+ {
+  "kind": "talk",
+  "start": 467.6810374033765,
+  "dur": 2.8630541871921182,
+  "who": "rabbit",
+  "text": "つまり昔は最高だったってこと？",
+  "face": "jito",
+  "first": true,
+  "finale": true,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.7130541871921183,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": "character"
+ },
+ {
+  "kind": "talk",
+  "start": 470.5440915905686,
+  "dur": 3.064576802507837,
+  "who": "cat",
+  "text": "いや、当時も死ぬほど文句言ってた。",
+  "face": "normal",
+  "first": false,
+  "finale": true,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.914576802507837,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 473.6086683930764,
+  "dur": 2.20623973727422,
+  "who": "rabbit",
+  "text": "じゃあ何が変わったの？",
+  "face": "jito",
+  "first": false,
+  "finale": true,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.05623973727422,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 475.81490813035066,
+  "dur": 1.6539184952978057,
+  "who": "cat",
+  "text": "今の台を知った。",
+  "face": "normal",
+  "first": false,
+  "finale": true,
+  "pause": false,
+  "voice": null,
+  "voice_len": 1.5039184952978057,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 477.4688266256485,
+  "dur": 1.2210180623973725,
+  "who": "rabbit",
+  "text": "なるほど。",
+  "face": "normal",
+  "first": false,
+  "finale": true,
+  "pause": false,
+  "voice": null,
+  "voice_len": 1.0710180623973726,
+  "bgm_cut": false,
+  "ochi": false,
+  "se": null
+ },
+ {
+  "kind": "talk",
+  "start": 478.68984468804587,
+  "dur": 2.124137931034483,
+  "who": "cat",
+  "text": "319なら全然やれる。",
+  "face": "normal",
+  "first": false,
+  "finale": true,
+  "pause": false,
+  "voice": null,
+  "voice_len": 1.9741379310344829,
+  "bgm_cut": true,
+  "ochi": false,
+  "se": "bgm_cut"
+ },
+ {
+  "kind": "talk",
+  "start": 480.8139826190804,
+  "dur": 1.0,
+  "who": "rabbit",
+  "text": "………",
+  "face": "jito",
+  "first": false,
+  "finale": true,
+  "pause": true,
+  "voice": null,
+  "voice_len": 0
+ },
+ {
+  "kind": "talk",
+  "start": 481.8139826190804,
+  "dur": 2.970443349753695,
+  "who": "rabbit",
+  "text": "やっぱり感覚壊れてるね。",
+  "face": "angry",
+  "first": false,
+  "finale": true,
+  "pause": false,
+  "voice": null,
+  "voice_len": 2.220443349753695,
+  "bgm_cut": false,
+  "ochi": true,
+  "se": "ochi"
+ },
+ {
+  "kind": "ending",
+  "start": 484.78442596883406,
+  "dur": 13.162225705329154,
+  "question": "あなたが一番好きだった319は？",
+  "choices": [
+   "ユニコーン",
+   "エヴァ15",
+   "リゼロ鬼がかり",
+   "それとも別の台"
+  ],
+  "lines": [
+   "ライトミドル・甘デジの\n思い出の機種もコメントで教えてください"
+  ],
+  "voice": null,
+  "voice_len": 12.162225705329154,
+  "bgm": "ending"
+ },
+ {
+  "kind": "subscribe",
+  "start": 497.9466516741632,
+  "dur": 3.5,
+  "bgm": "ending",
+  "se": "character"
+ }
+]
