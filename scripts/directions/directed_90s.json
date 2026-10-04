@@ -565,25 +565,25 @@
    "segments": [
     {
      "text": "最近の台",
-     "rate": 5,
+     "rate": 8,
      "pitch": 0,
      "gain_db": 0,
      "gap_before": 0.0
     },
     {
      "text": "1/399とか1/499とか普通に書いてあって",
-     "rate": 12,
+     "rate": 16,
      "pitch": 0,
      "gain_db": 0,
-     "gap_before": 0.3,
-     "read": "399分の1とか、499分の1とか、普通に書いてあって"
+     "gap_before": 0.2,
+     "read": "399分の1とか499分の1とか、普通に書いてあって"
     },
     {
      "text": "感覚バグる",
-     "rate": 14,
+     "rate": 16,
      "pitch": 4,
      "gain_db": 1,
-     "gap_before": 0.12
+     "gap_before": 0.1
     }
    ],
    "note": "章の頭"
