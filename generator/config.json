@@ -138,7 +138,7 @@
   "layout": {
     "res_font": 54,
     "res_font_emphasis": 84,
-    "res_max_width": 1220,
+    "res_max_width": 1120,
     "res_left": 90,
     "area_top": 200,
     "area_bottom_margin": 46,
@@ -151,11 +151,12 @@
     "sequence_each": 1.4,
     "row": 3.6,
     "panel": {
-      "max_w": 720,
+      "max_w": 560,
       "max_h": 560,
       "right": 48,
       "top": 196
     },
-    "zoom": 0.05
+    "zoom": 0.05,
+    "hold_until_next": true
   }
 }

@@ -77,6 +77,7 @@ def build(script, cfg, voice):
                 corner = ""
             first = True
             pending = []
+            sec_cues = []
             for it in sec.get("items", []):
                 if it.get("type") == "image":
                     pending.append(it)
@@ -88,6 +89,7 @@ def build(script, cfg, voice):
                          IC.get("sequence_each", 1.4) * n if im.get("layout") == "sequence" else IC.get("single", 3.0))
                     cues.append({"time": round(t, 3), "duration": d, "files": im.get("files", []),
                                  "label": im.get("label", ""), "telop": im.get("telop", ""), "layout": im.get("layout", "single")})
+                    sec_cues.append(cues[-1])
                     if im.get("label"):
                         corner = im["label"]
                 pending = []
@@ -101,6 +103,13 @@ def build(script, cfg, voice):
                     corner=corner if typ == "reactions" else "",
                     se="emphasis" if emph else "res")
                 first = False
+            # 1枚表示の画像は、その話題のあいだ（次の画像が出るか章が終わるまで）ずっと出し続ける
+            if typ == "reactions" and cfg.get("images", {}).get("hold_until_next", True):
+                for i, c in enumerate(sec_cues):
+                    if c["layout"] != "single":
+                        continue
+                    nxt = sec_cues[i + 1]["time"] if i + 1 < len(sec_cues) else t
+                    c["duration"] = round(max(c["duration"], nxt - c["time"]), 3)
         elif typ == "title":
             txt = "".join(title_lines) + "。" + (script.get("subtitle") or "")
             wav, vl = voice.get("narrator", txt)

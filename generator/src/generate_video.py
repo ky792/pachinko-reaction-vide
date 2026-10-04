@@ -184,7 +184,12 @@ class Renderer:
         for k in range(n):
             t = (f0 + k) / self.fps
             cue = self.active_cue(t) if self.cues else None
-            if cue is not None:   # 画像表示中は毎フレーム合成（ズーム）
+            if cue is not None:   # 画像表示中（ズーム）
+                fade_zone = (t - cue["time"] < 0.3) or (cue["time"] + cue["duration"] - t < 0.3)
+                if (k >= anim_frames and not fade_zone and cue.get("layout") == "single"
+                        and last is not None and k % 3 != 0 and getattr(self, "_last_cue", None) is cue):
+                    self.proc.stdin.write(last); self.frame += 1   # 長く出す画像は3フレームごとに更新して速度を稼ぐ
+                    continue
                 if k < anim_frames:
                     im = make_anim(k)
                 else:
@@ -194,8 +199,9 @@ class Renderer:
                 add_dynamic(im, t, k)
                 self.overlay_cue(im, cue, t)
                 R.progress(im, t / self.total)
-                self.emit(im)
-                last = None
+                last = im.tobytes()
+                self._last_cue = cue
+                self.proc.stdin.write(last); self.frame += 1
                 continue
             if k < anim_frames:
                 im = make_anim(k)
@@ -205,6 +211,8 @@ class Renderer:
                 continue
             if static is None:
                 static = make_static()
+            if getattr(self, "_last_cue", None) is not None:
+                self._last_cue = None; last = None
             if last is None or k % 3 == 0:
                 im = static.copy()
                 add_dynamic(im, t, k)
