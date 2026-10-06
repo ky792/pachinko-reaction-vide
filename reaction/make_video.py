@@ -155,6 +155,8 @@ def make_voice(items, ep, cache_dir):
             v = board_cycle[bi % len(board_cycle)]; bi += 1
         else:
             v = voices[who]
+        if it.get("speed") and "speaker" in v:
+            v = dict(v, speed=it["speed"])
         say = it.get("say") or it["text"].replace("\n", "")
         for k, val in rep.items():
             say = say.replace(k, val)
