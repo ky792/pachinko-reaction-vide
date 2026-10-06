@@ -43,11 +43,11 @@ COLORS = {
     "yellow": (255, 222, 0),
     "blue": (40, 140, 255),
 }
-SIZES = {"normal": 80, "hook": 100, "ochi": 130}   # px（=pt相当）
+SIZES = {"normal": 80, "hook": 90, "ochi": 130}   # px（=pt相当）
 STROKE = {"normal": 14, "hook": 16, "ochi": 16}
 
 # 音量（読み上げ=1.0 基準）
-VOICE_GAIN, SE_GAIN, BGM_GAIN = 1.0, 0.70, 0.15
+VOICE_GAIN, SE_GAIN, BGM_GAIN = 1.0, 0.75, 0.15
 GAP = 0.04            # コメント間の間（0.05秒以下）
 OCHI_HOLD = 0.15      # 大オチ前の溜め（BGMカット後）
 END_HOLD = 1.6        # 大オチ後の余韻
@@ -126,6 +126,22 @@ async def tts_one(text, voice, rate, pitch, out_path):
     await com.save(str(out_path))
 
 
+def voicevox_one(text, v, out_path):
+    import urllib.parse, urllib.request
+    base = os.environ.get("VOICEVOX_URL", "http://127.0.0.1:50021")
+    q = urllib.parse.urlencode({"text": text, "speaker": v["speaker"]})
+    with urllib.request.urlopen(urllib.request.Request(f"{base}/audio_query?{q}", method="POST"), timeout=60) as r:
+        query = json.loads(r.read())
+    query.update({"speedScale": v.get("speed", 1.0), "pitchScale": v.get("pitch", 0.0),
+                  "intonationScale": v.get("intonation", 0.9), "volumeScale": 1.0,
+                  "prePhonemeLength": 0.02, "postPhonemeLength": 0.02})
+    body = json.dumps(query).encode()
+    req = urllib.request.Request(f"{base}/synthesis?speaker={v['speaker']}", data=body,
+                                 headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(req, timeout=120) as r:
+        out_path.write_bytes(r.read())
+
+
 def make_voice(items, ep, cache_dir):
     """各コメントの読み上げ音声（edge-tts）を作る。キャッシュあり。"""
     cache_dir.mkdir(parents=True, exist_ok=True)
@@ -142,12 +158,15 @@ def make_voice(items, ep, cache_dir):
         say = it.get("say") or it["text"].replace("\n", "")
         for k, val in rep.items():
             say = say.replace(k, val)
-        key = hashlib.sha1(f"{say}|{v['voice']}|{v['rate']}|{v['pitch']}".encode()).hexdigest()[:16]
-        mp3 = cache_dir / f"{key}.mp3"
+        key = hashlib.sha1(f"{say}|{json.dumps(v, sort_keys=True)}".encode()).hexdigest()[:16]
+        mp3 = cache_dir / (f"{key}.wav" if "speaker" in v else f"{key}.mp3")
         if not mp3.exists():
             for attempt in range(3):
                 try:
-                    asyncio.run(tts_one(say, v["voice"], v["rate"], v["pitch"], mp3))
+                    if "speaker" in v:
+                        voicevox_one(say, v, mp3)
+                    else:
+                        asyncio.run(tts_one(say, v["voice"], v["rate"], v["pitch"], mp3))
                     break
                 except Exception as e:  # noqa
                     print(f"  TTS再試行 {attempt+1}: {e}")
@@ -218,7 +237,7 @@ class Painter:
             fill = fill.crop((0, max(0, (fill.height - H) // 2), W, max(0, (fill.height - H) // 2) + H)).resize((W, H))
             base = fill.filter(ImageFilter.GaussianBlur(24))
             base = Image.blend(base, Image.new("RGB", (W, H), (0, 0, 0)), 0.45)
-            s = min(1240 / src.width, 600 / src.height)
+            s = min(1240 / src.width, 570 / src.height)
             fg = src.resize((int(src.width * s), int(src.height * s)))
             base.paste(fg, ((W - fg.width) // 2, 24))
         else:
@@ -250,11 +269,11 @@ class Painter:
             d.rounded_rectangle((W / 2 - tw / 2 - 40, 190, W / 2 + tw / 2 + 40, 300), 24, fill=(220, 30, 40),
                                 outline=(0, 0, 0), width=6)
             d.text((W / 2, 245), sub, font=fs, fill=(255, 255, 255), anchor="mm", stroke_width=5, stroke_fill=(0, 0, 0))
-        ft = font(120)
+        ft = font(112)
         lines = it["text"].split("\n")
-        lh = 150
+        lh = 145
         top = 600 - lh * len(lines) // 2
-        cols = [(255, 255, 255), (255, 222, 0)]
+        cols = [COLORS["red"], COLORS["red"]]
         for i, l in enumerate(lines):
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, ft, cols[min(i, 1)], 18)
         return im.convert("RGB")
@@ -297,6 +316,12 @@ class Painter:
         bottom = int(H * 0.88)
         top = bottom - lh * len(lines)
         color = COLORS[it.get("color", "white")]
+        # 固定吹き出し（大きさは毎回同じ＝切替でガタつかない）
+        bub = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(bub).rounded_rectangle((290, 610, W - 290, 985), 40, fill=(0, 0, 0, 115),
+                                               outline=(255, 255, 255, 150), width=4)
+        im.alpha_composite(bub)
+        d = ImageDraw.Draw(im)
         for i, l in enumerate(lines):
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, fnt, color, STROKE[size])
 
@@ -347,6 +372,7 @@ def main():
     for it in items:
         if it.get("bgm_cut"):
             it["_bgm_cut_at"] = t
+        if it.get("hold_before"):
             t += OCHI_HOLD
         dur = len(it["_voice"]) / SR + GAP
         dur = max(dur, it.get("min", 1.2))
@@ -365,7 +391,7 @@ def main():
     prev_frame = None
     for i, it in enumerate(items):
         sec = ep["sections"][it["_sec"]]
-        if it.get("bgm_cut") and prev_frame:
+        if it.get("hold_before") and prev_frame:
             concat.append((prev_frame, OCHI_HOLD))
         p = work / f"f{i:03d}.png"
         painter.frame(sec, it).save(p)

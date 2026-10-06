@@ -5,51 +5,52 @@
   "voices": {
     "board": [
       {
-        "voice": "ja-JP-KeitaNeural",
-        "rate": "+5%",
-        "pitch": "+0Hz"
+        "speaker": 3,
+        "speed": 1.05,
+        "intonation": 0.9
       },
       {
-        "voice": "ja-JP-NanamiNeural",
-        "rate": "+5%",
-        "pitch": "-4Hz"
-      },
-      {
-        "voice": "ja-JP-KeitaNeural",
-        "rate": "+5%",
-        "pitch": "-8Hz"
+        "speaker": 2,
+        "speed": 1.05,
+        "intonation": 0.9
       }
     ],
     "rabbit": {
-      "voice": "ja-JP-NanamiNeural",
-      "rate": "+0%",
-      "pitch": "+30Hz"
+      "speaker": 8,
+      "speed": 1.0,
+      "intonation": 1.0
     },
     "cat": {
-      "voice": "ja-JP-KeitaNeural",
-      "rate": "+0%",
-      "pitch": "+22Hz"
+      "speaker": 12,
+      "speed": 1.0,
+      "intonation": 1.0
     },
     "narrator": {
-      "voice": "ja-JP-NanamiNeural",
-      "rate": "+0%",
-      "pitch": "+0Hz"
+      "speaker": 2,
+      "speed": 1.0,
+      "intonation": 1.0
     }
   },
   "reading": {
-    "1/199": "199分の1",
-    "319": "さんいちきゅう",
+    "1/199": "ひゃくきゅうじゅうきゅうぶんのいち",
     "2400発": "にせんよんひゃっぱつ",
-    "3連": "さんれん",
-    "即落ち": "そくおち",
-    "慶次X": "けいじエックス",
     "GANTZ": "ガンツ",
+    "残保留4個": "ざんほりゅうよんこ",
     "RUSH": "ラッシュ",
     "一種二種": "いっしゅにしゅ",
-    "残保留4個": "ざんほりゅうよんこ",
     "右は7回": "みぎはななかい",
+    "319": "さんいちきゅう",
+    "即落ち": "そくおち",
+    "慶次X": "けいじエックス",
+    "化け物": "ばけもの",
+    "80%": "はちじゅっパーセント",
+    "50%": "ごじゅっパーセント",
+    "35%": "さんじゅうごパーセント",
+    "51%": "ごじゅういちパーセント",
+    "65%": "ろくじゅうごパーセント",
+    "3連": "さんれん",
     "草": "くさ",
-    "化け物": "ばけもの"
+    "%": "パーセント"
   },
   "sections": [
     {
@@ -73,7 +74,7 @@
       },
       "items": [
         {
-          "text": "継続65%で戦えって\n言われてた時代\n隣に80%の化け物おったよな",
+          "text": "継続65%で戦えって\n言われてた時代、\n隣に80%の化け物いたよな",
           "color": "red",
           "size": "hook",
           "se": "shock"
@@ -252,16 +253,18 @@
           "who": "cat",
           "face": "smug",
           "text": "規制前に滑り込んだから",
-          "se": "pon"
+          "se": "pon",
+          "bgm_cut": true
         },
         {
           "text": "お前だけ\n時代違うだろ",
           "color": "blue",
           "size": "ochi",
           "se": "don",
-          "bgm_cut": true
+          "hold_before": true
         }
       ]
     }
-  ]
+  ],
+  "credits": "VOICEVOX:ずんだもん / VOICEVOX:四国めたん / VOICEVOX:春日部つむぎ / VOICEVOX:白上虎太郎"
 }

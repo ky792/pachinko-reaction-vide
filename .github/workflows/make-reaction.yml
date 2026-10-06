@@ -23,6 +23,12 @@ jobs:
     timeout-minutes: 40
     env:
       EP: ${{ inputs.episode }}
+      VOICEVOX_URL: http://127.0.0.1:50021
+    services:
+      voicevox:
+        image: voicevox/voicevox_engine:cpu-latest
+        ports:
+          - 50021:50021
     steps:
       - uses: actions/checkout@v4
 
@@ -46,6 +52,11 @@ jobs:
           restore-keys: |
             ttsr-${{ inputs.episode }}-
             ttsr-
+
+      - name: Wait for VOICEVOX
+        run: |
+          for i in $(seq 1 60); do curl -sf "$VOICEVOX_URL/version" && break; sleep 3; done
+          curl -sf "$VOICEVOX_URL/version" || { echo "::error::VOICEVOX が起動しませんでした"; exit 1; }
 
       - name: Render
         run: |
