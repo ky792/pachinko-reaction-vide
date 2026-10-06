@@ -429,7 +429,7 @@ def main():
         b = read_wav_mono(bgm_file)
         rms = np.sqrt(np.mean(b ** 2)) + 1e-9
         b = b / rms * 0.22       # 声の平均的な大きさにそろえてから
-        b *= BGM_GAIN            # 15%
+        b *= ep.get("bgm_gain", BGM_GAIN)
         reps = int(np.ceil(n_total / len(b)))
         bgm = np.tile(b, reps)[:n_total]
         cut = next((it["_bgm_cut_at"] for it in items if "_bgm_cut_at" in it), None)
