@@ -216,9 +216,9 @@ class Painter:
             fill = fill.crop((0, max(0, (fill.height - H) // 2), W, max(0, (fill.height - H) // 2) + H)).resize((W, H))
             base = fill.filter(ImageFilter.GaussianBlur(24))
             base = Image.blend(base, Image.new("RGB", (W, H), (0, 0, 0)), 0.45)
-            s = min(1240 / src.width, 760 / src.height)
+            s = min(1240 / src.width, 600 / src.height)
             fg = src.resize((int(src.width * s), int(src.height * s)))
-            base.paste(fg, ((W - fg.width) // 2, 40))
+            base.paste(fg, ((W - fg.width) // 2, 24))
         else:
             # 画像が無い時：ホール背景を暗くして、機種名パネルを出す
             base = Image.blend(base.filter(ImageFilter.GaussianBlur(3)), Image.new("RGB", (W, H), (0, 0, 0)), 0.42)
