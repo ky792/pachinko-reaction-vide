@@ -4,12 +4,37 @@
   "bgm": "main.wav",
   "voices": {
     "board": [
-      {"voice": "ja-JP-KeitaNeural", "rate": "+18%", "pitch": "+0Hz"},
-      {"voice": "ja-JP-NanamiNeural", "rate": "+18%", "pitch": "-4Hz"},
-      {"voice": "ja-JP-KeitaNeural", "rate": "+18%", "pitch": "-8Hz"}
+      {
+        "voice": "ja-JP-KeitaNeural",
+        "rate": "+5%",
+        "pitch": "+0Hz"
+      },
+      {
+        "voice": "ja-JP-NanamiNeural",
+        "rate": "+5%",
+        "pitch": "-4Hz"
+      },
+      {
+        "voice": "ja-JP-KeitaNeural",
+        "rate": "+5%",
+        "pitch": "-8Hz"
+      }
     ],
-    "rabbit": {"voice": "ja-JP-NanamiNeural", "rate": "+12%", "pitch": "+30Hz"},
-    "cat": {"voice": "ja-JP-KeitaNeural", "rate": "+12%", "pitch": "+22Hz"}
+    "rabbit": {
+      "voice": "ja-JP-NanamiNeural",
+      "rate": "+0%",
+      "pitch": "+30Hz"
+    },
+    "cat": {
+      "voice": "ja-JP-KeitaNeural",
+      "rate": "+0%",
+      "pitch": "+22Hz"
+    },
+    "narrator": {
+      "voice": "ja-JP-NanamiNeural",
+      "rate": "+0%",
+      "pitch": "+0Hz"
+    }
   },
   "reading": {
     "1/199": "199分の1",
@@ -28,64 +53,214 @@
   },
   "sections": [
     {
-      "topic": "※65%時代",
-      "bg": {"image": "hall_65.jpg"},
+      "topic": null,
       "items": [
-        {"text": "継続65%で戦えって\n言われてた時代\n隣に80%の化け物おったよな", "color": "red", "size": "hook", "se": "shock"},
-        {"text": "今考えたら地獄で草", "color": "yellow", "se": "pon"},
-        {"text": "80%とか普通にあった時代から\n急に65%になるのキツすぎる", "se": "pon"},
-        {"text": "319引いて確変も取って\nようやく報われると思ったら", "se": "pon"},
-        {"text": "はい即落ち、これ何回\n食らったか分からん", "color": "yellow", "se": "shock"},
-        {"who": "rabbit", "face": "shock", "text": "319当てて確変取っても\n3連したら頑張った方なの？", "se": "pon"},
-        {"text": "65%って3連したら\nようやっとるレベルやろ", "se": "pon"}
+        {
+          "title": true,
+          "who": "narrator",
+          "text": "65%規制時代、\n今思うと地獄すぎたよな",
+          "sub": "パチンコ反応集",
+          "say": "65%規制時代、今思うと地獄すぎたよな",
+          "se": "piko",
+          "min": 2.6
+        }
+      ]
+    },
+    {
+      "topic": "※65%時代",
+      "bg": {
+        "image": "hall_65.jpg"
+      },
+      "items": [
+        {
+          "text": "継続65%で戦えって\n言われてた時代\n隣に80%の化け物おったよな",
+          "color": "red",
+          "size": "hook",
+          "se": "shock"
+        },
+        {
+          "text": "今考えたら地獄で草",
+          "color": "yellow",
+          "se": "pon"
+        },
+        {
+          "text": "80%とか普通にあった時代から\n急に65%になるのキツすぎる",
+          "se": "pon"
+        },
+        {
+          "text": "319引いて確変も取って\nようやく報われると思ったら",
+          "se": "pon"
+        },
+        {
+          "text": "はい即落ち、これ何回\n食らったか分からん",
+          "color": "yellow",
+          "se": "shock"
+        },
+        {
+          "who": "rabbit",
+          "face": "shock",
+          "text": "319当てて確変取っても\n3連したら頑張った方なの？",
+          "se": "pon"
+        },
+        {
+          "text": "65%って3連したら\nようやっとるレベルやろ",
+          "se": "pon"
+        }
       ]
     },
     {
       "topic": "※2400発で殴る",
-      "bg": {"image": "keiji_x.jpg", "label": "CR花の慶次X\n〜雲のかなたに〜"},
+      "bg": {
+        "image": "keiji_x.jpg",
+        "label": "CR花の慶次X\n〜雲のかなたに〜"
+      },
       "items": [
-        {"text": "65%しか続かんなら\n一発をデカくすればええ", "se": "piko"},
-        {"text": "この時期2400発搭載機\nめっちゃあったよな", "se": "pon"},
-        {"text": "慶次Xとか右の50%が\n2400発だったの狂ってる", "color": "yellow", "se": "piko"},
-        {"text": "継続しない代わりに\n一発で箱パンパンにする時代", "se": "pon"},
-        {"text": "でも35%通常が\n一生追いかけてくる", "se": "shock"},
-        {"who": "cat", "face": "smug", "text": "続かないなら2400発で\n殴ればいいという脳筋思想", "se": "piko"}
+        {
+          "text": "65%しか続かんなら\n一発をデカくすればええ",
+          "se": "piko"
+        },
+        {
+          "text": "この時期2400発搭載機\nめっちゃあったよな",
+          "se": "pon"
+        },
+        {
+          "text": "慶次Xとか右の50%が\n2400発だったの狂ってる",
+          "color": "yellow",
+          "se": "piko"
+        },
+        {
+          "text": "継続しない代わりに\n一発で箱パンパンにする時代",
+          "se": "pon"
+        },
+        {
+          "text": "でも35%通常が\n一生追いかけてくる",
+          "se": "shock"
+        },
+        {
+          "who": "cat",
+          "face": "smug",
+          "text": "続かないなら2400発で\n殴ればいいという脳筋思想",
+          "se": "piko"
+        }
       ]
     },
     {
       "topic": "※小当たりRUSH",
-      "bg": {"image": "gantz.jpg", "label": "CRぱちんこGANTZ"},
+      "bg": {
+        "image": "gantz.jpg",
+        "label": "CRぱちんこGANTZ"
+      },
       "items": [
-        {"text": "継続率上げられんなら\n当たるまで玉増やしたろ", "color": "yellow", "se": "piko"},
-        {"text": "GANTZの小当たりRUSH\n初見マジで意味分からんかった", "se": "pon"},
-        {"text": "2400発のあと次の当たりまで\nずっと玉増えるの頭おかしい", "se": "pon"},
-        {"who": "rabbit", "face": "shock", "text": "当たってないのに\n玉が増えてるんだけど……", "se": "pon"},
-        {"text": "規制の中でみんな必死に\n抜け道探してたよな", "se": "pon"}
+        {
+          "text": "継続率上げられんなら\n当たるまで玉増やしたろ",
+          "color": "yellow",
+          "se": "piko"
+        },
+        {
+          "text": "GANTZの小当たりRUSH\n初見マジで意味分からんかった",
+          "se": "pon"
+        },
+        {
+          "text": "2400発のあと次の当たりまで\nずっと玉増えるの頭おかしい",
+          "se": "pon"
+        },
+        {
+          "who": "rabbit",
+          "face": "shock",
+          "text": "当たってないのに\n玉が増えてるんだけど……",
+          "se": "pon"
+        },
+        {
+          "text": "規制の中でみんな必死に\n抜け道探してたよな",
+          "se": "pon"
+        }
       ]
     },
     {
       "topic": "※答え見つかる",
-      "bg": {"image": "symphogear.jpg", "label": "CRF戦姫絶唱シンフォギア"},
+      "bg": {
+        "image": "symphogear.jpg",
+        "label": "CRF戦姫絶唱シンフォギア"
+      },
       "items": [
-        {"text": "そんな中で出てきたのが\nシンフォギアなんよな", "se": "piko"},
-        {"text": "1/199で最終決戦あって\n右は7回＋残保留4個です", "se": "pon"},
-        {"text": "トータル約80%続きます", "color": "yellow", "se": "piko"},
-        {"text": "65%どこ行ったんだよ", "color": "blue", "se": "taiko"},
-        {"text": "この頃から一種二種の\n時代始まった感ある", "se": "pon"},
-        {"who": "cat", "face": "smug", "text": "65%規制を攻略するゲームに\nなってて草", "se": "pon"},
-        {"text": "65%で真正面から殴り合う必要\nなかったんやなって", "se": "pon"}
+        {
+          "text": "そんな中で出てきたのが\nシンフォギアなんよな",
+          "se": "piko"
+        },
+        {
+          "text": "1/199で最終決戦あって\n右は7回＋残保留4個です",
+          "se": "pon"
+        },
+        {
+          "text": "トータル約80%続きます",
+          "color": "yellow",
+          "se": "piko"
+        },
+        {
+          "text": "65%どこ行ったんだよ",
+          "color": "blue",
+          "se": "taiko"
+        },
+        {
+          "text": "この頃から一種二種の\n時代始まった感ある",
+          "se": "pon"
+        },
+        {
+          "who": "cat",
+          "face": "smug",
+          "text": "65%規制を攻略するゲームに\nなってて草",
+          "se": "pon"
+        },
+        {
+          "text": "65%で真正面から殴り合う必要\nなかったんやなって",
+          "se": "pon"
+        }
       ]
     },
     {
       "topic": "※時代違い",
-      "bg": {"image": "hokuto_musou.jpg", "label": "CR真・北斗無双"},
+      "bg": {
+        "image": "hokuto_musou.jpg",
+        "label": "CR真・北斗無双"
+      },
       "items": [
-        {"text": "ただこの65%時代\n一番ひどいことしてた奴が\n隣にずっといた", "se": "piko"},
-        {"who": "rabbit", "face": "normal", "text": "じゃあ北斗無双も\n65%だったの？", "se": "pon"},
-        {"who": "cat", "face": "jito", "text": "いや、あいつは80%で\n2400発比率51%", "color": "yellow", "se": "piko"},
-        {"who": "rabbit", "face": "shock", "text": "なんで？", "se": "pon", "min": 0.9},
-        {"who": "cat", "face": "smug", "text": "規制前に滑り込んだから", "se": "pon"},
-        {"text": "お前だけ\n時代違うだろ", "color": "blue", "size": "ochi", "se": "don", "bgm_cut": true}
+        {
+          "text": "ただこの65%時代\n一番ひどいことしてた奴が\n隣にずっといた",
+          "se": "piko"
+        },
+        {
+          "who": "rabbit",
+          "face": "normal",
+          "text": "じゃあ北斗無双も\n65%だったの？",
+          "se": "pon"
+        },
+        {
+          "who": "cat",
+          "face": "jito",
+          "text": "いや、あいつは80%で\n2400発比率51%",
+          "color": "yellow",
+          "se": "piko"
+        },
+        {
+          "who": "rabbit",
+          "face": "shock",
+          "text": "なんで？",
+          "se": "pon",
+          "min": 0.9
+        },
+        {
+          "who": "cat",
+          "face": "smug",
+          "text": "規制前に滑り込んだから",
+          "se": "pon"
+        },
+        {
+          "text": "お前だけ\n時代違うだろ",
+          "color": "blue",
+          "size": "ochi",
+          "se": "don",
+          "bgm_cut": true
+        }
       ]
     }
   ]

@@ -47,7 +47,7 @@ SIZES = {"normal": 80, "hook": 100, "ochi": 130}   # px（=pt相当）
 STROKE = {"normal": 14, "hook": 16, "ochi": 16}
 
 # 音量（読み上げ=1.0 基準）
-VOICE_GAIN, SE_GAIN, BGM_GAIN = 1.0, 0.75, 0.18
+VOICE_GAIN, SE_GAIN, BGM_GAIN = 1.0, 0.70, 0.15
 GAP = 0.04            # コメント間の間（0.05秒以下）
 OCHI_HOLD = 0.15      # 大オチ前の溜め（BGMカット後）
 END_HOLD = 1.6        # 大オチ後の余韻
@@ -156,8 +156,10 @@ def make_voice(items, ep, cache_dir):
             else:
                 sys.exit(f"[エラー] 読み上げを作れませんでした: {say}")
         x = trim_silence(read_wav_mono(mp3))
-        peak = np.max(np.abs(x)) + 1e-9
-        it["_voice"] = (x / peak * 0.85).astype(np.float32)
+        rms = np.sqrt(np.mean(x ** 2)) + 1e-9
+        x = x / rms * 0.22
+        x = np.tanh(x * 1.1) / np.tanh(1.1)   # ピークだけ軽く抑える
+        it["_voice"] = x.astype(np.float32)
         print(f"  声 {len(x)/SR:4.2f}s {who:5s} {say}")
 
 
@@ -238,7 +240,28 @@ class Painter:
         self.bg_cache[key] = base
         return base
 
+    def title_frame(self, it):
+        im = Image.blend(self.hall.filter(ImageFilter.GaussianBlur(6)), Image.new("RGB", (W, H), (0, 0, 0)), 0.5).convert("RGBA")
+        d = ImageDraw.Draw(im)
+        sub = it.get("sub")
+        if sub:
+            fs = font(64)
+            tw = d.textlength(sub, font=fs)
+            d.rounded_rectangle((W / 2 - tw / 2 - 40, 190, W / 2 + tw / 2 + 40, 300), 24, fill=(220, 30, 40),
+                                outline=(0, 0, 0), width=6)
+            d.text((W / 2, 245), sub, font=fs, fill=(255, 255, 255), anchor="mm", stroke_width=5, stroke_fill=(0, 0, 0))
+        ft = font(120)
+        lines = it["text"].split("\n")
+        lh = 150
+        top = 600 - lh * len(lines) // 2
+        cols = [(255, 255, 255), (255, 222, 0)]
+        for i, l in enumerate(lines):
+            draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, ft, cols[min(i, 1)], 18)
+        return im.convert("RGB")
+
     def frame(self, sec, it):
+        if it.get("title"):
+            return self.title_frame(it)
         im = self.background(sec).copy().convert("RGBA")
         d = ImageDraw.Draw(im)
 
@@ -370,15 +393,15 @@ def main():
             s = se_cache[kind]
             if s is not None:
                 se[a:a + len(s)] += s[: n_total - a]
-    se *= 0.85 * SE_GAIN  # 声のピーク(0.85)に対して75%
+    se *= 0.85 * SE_GAIN  # 声のピーク付近に対して70%
 
     bgm = np.zeros(n_total, np.float32)
     bgm_file = ASSETS / "bgm" / ep.get("bgm", "main.wav")
     if bgm_file.exists():
         b = read_wav_mono(bgm_file)
         rms = np.sqrt(np.mean(b ** 2)) + 1e-9
-        b = b / rms * 0.20       # 声の平均的な大きさにそろえてから
-        b *= BGM_GAIN            # 18%
+        b = b / rms * 0.22       # 声の平均的な大きさにそろえてから
+        b *= BGM_GAIN            # 15%
         reps = int(np.ceil(n_total / len(b)))
         bgm = np.tile(b, reps)[:n_total]
         cut = next((it["_bgm_cut_at"] for it in items if "_bgm_cut_at" in it), None)
@@ -398,7 +421,7 @@ def main():
     out = Path(args.output); out.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([
         "ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(lst), "-i", str(wav),
-        "-vf", f"fps={FPS},format=yuv420p", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+        "-vf", f"fps={FPS},format=yuv420p", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
         "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-t", f"{total:.3f}", "-movflags", "+faststart",
         str(out)], check=True)
     print(f"完成: {out}")
