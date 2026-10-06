@@ -1,0 +1,77 @@
+name: Make reaction video (telop format)
+
+# 下部中央テロップ型の反応集（episodes/<回>/reaction.json）を
+# 読み上げ（edge-tts）付きで書き出す。
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "回のフォルダ名（episodes/ の下）"
+        type: string
+        default: "ep003"
+      save_to_repo:
+        description: "完成動画を outputs-<回> ブランチにも保存する"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      EP: ${{ inputs.episode }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install FFmpeg and Japanese fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg fonts-noto-cjk fonts-noto-cjk-extra
+
+      - name: Install Python packages
+        run: pip install edge-tts numpy pillow
+
+      - name: Restore TTS cache
+        uses: actions/cache@v4
+        with:
+          path: cache/tts_reaction
+          key: ttsr-${{ inputs.episode }}-${{ hashFiles(format('episodes/{0}/reaction.json', inputs.episode)) }}
+          restore-keys: |
+            ttsr-${{ inputs.episode }}-
+            ttsr-
+
+      - name: Render
+        run: |
+          test -f "episodes/$EP/reaction.json" || { echo "::error::episodes/$EP/reaction.json がありません"; exit 1; }
+          python reaction/make_video.py "episodes/$EP/reaction.json" -o "output/${EP}.mp4"
+          cp work/reaction/timeline.json "output/${EP}_timeline.json"
+
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.episode }}-reaction
+          path: |
+            output/${{ inputs.episode }}.mp4
+            output/${{ inputs.episode }}_timeline.json
+          retention-days: 7
+
+      - name: Save result to outputs branch
+        if: ${{ inputs.save_to_repo }}
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/
+          cd /tmp/outbranch
+          git init -q -b "outputs-${EP}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "完成動画: ${EP}.mp4 (run ${{ github.run_id }})"
+          git push -f "https://x-access-token:${TOKEN}@github.com/${{ github.repository }}.git" "outputs-${EP}"

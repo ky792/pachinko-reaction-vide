@@ -73,3 +73,16 @@ GitHubアプリ／ブラウザで **Actions → Add voice (edge-tts) → Run wor
 
 - edge-tts は Microsoft Edge の読み上げ機能を使う無料のツールです（公式の有料APIではありません）。仕様変更で動かなくなることがあります
 - `scripts/timeline.json` は、この動画を作ったときの表示タイミングです。別の動画に使う場合はその動画のタイムラインに差し替えてください
+
+---
+
+# テロップ型の反応集（下部中央テロップ・右上トピック）
+
+`episodes/<回>/reaction.json` に台本を置き、**Actions → Make reaction video (telop format) → Run workflow**（`episode` に回の名前）。
+完成動画は Artifact と `outputs-<回>` ブランチに保存されます。
+
+- 背景画像（任意）：`episodes/<回>/images/` に reaction.json の `bg.image` と同じ名前で置く。無い時はホール背景＋機種名パネル
+- 色：`white`（通常）/ `red`・`yellow`（強調・フック）/ `blue`（ツッコミ・オチ）、サイズ：`normal` 80px / `hook` 100px / `ochi` 130px
+- SE：`pon` `piko` `shock` `taiko` `don` `none`（その場で合成）
+- 大オチの行に `"bgm_cut": true` で直前にBGMを切って一拍溜める
+- 音量比 声100 : SE75 : BGM18、コメント間の間は0.04秒
