@@ -328,9 +328,9 @@ class Painter:
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, fnt, color, STROKE[size])
 
         # キャラの名札
-        if who in ("rabbit", "cat"):
-            name = {"rabbit": "うさぎ", "cat": "ねこ"}[who]
-            col = (255, 120, 160) if who == "rabbit" else (255, 150, 40)
+        if who in ("rabbit", "cat", "narrator"):
+            name = {"rabbit": "うさぎ", "cat": "ねこ", "narrator": "概要"}[who]
+            col = {"rabbit": (255, 120, 160), "cat": (255, 150, 40), "narrator": (70, 90, 120)}[who]
             fn = font(44)
             tw = d.textlength(name, font=fn)
             nx = W // 2; ny = top - 46
