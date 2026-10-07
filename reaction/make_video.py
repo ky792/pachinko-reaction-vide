@@ -114,9 +114,14 @@ def synth_se(kind):
 
 
 # ---------------------------------------------------------------- 音声
-def read_wav_mono(path):
+def read_wav_mono(path, shift=0):
+    """shift: 半音単位で声を高く（テンポは変えない）"""
+    af = []
+    if shift:
+        r = 2 ** (shift / 12)
+        af = ["-af", f"asetrate={SR}*{r:.5f},aresample={SR},atempo={1 / r:.5f}"]
     out = subprocess.run(
-        ["ffmpeg", "-v", "error", "-i", str(path), "-f", "f32le", "-ac", "1", "-ar", str(SR), "-"],
+        ["ffmpeg", "-v", "error", "-i", str(path), *af, "-f", "f32le", "-ac", "1", "-ar", str(SR), "-"],
         capture_output=True, check=True).stdout
     return np.frombuffer(out, dtype=np.float32).copy()
 
@@ -233,7 +238,8 @@ def make_voice(items, ep, cache_dir):
                         mp3.unlink()
             else:
                 sys.exit(f"[エラー] 読み上げを作れませんでした: {say}")
-        x = trim_silence(read_wav_mono(mp3))
+        x = read_wav_mono(mp3, shift=v.get("shift", 0))
+        x = trim_silence(x)
         rms = np.sqrt(np.mean(x ** 2)) + 1e-9
         x = x / rms * 0.22
         x = np.tanh(x * 1.1) / np.tanh(1.1)   # ピークだけ軽く抑える
