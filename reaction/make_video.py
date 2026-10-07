@@ -180,7 +180,8 @@ def resolve_speaker(v):
                         out["_name"] = ("AivisSpeech:" if v.get("engine") == "aivis" else "VOICEVOX:") + name
                         print(f"  話者: {name}（{style}） id={st['id']}")
                         return out
-    sys.exit(f"[エラー] 話者が見つかりません: {v['candidates']}")
+    have = "; ".join(sp["name"] + "(" + ",".join(st["name"] for st in sp["styles"]) + ")" for sp in _SPEAKERS[base])
+    sys.exit(f"[エラー] 話者が見つかりません: {v['candidates']}  使える話者: {have}")
 
 
 USED_VOICES = set()
