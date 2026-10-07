@@ -36,29 +36,27 @@
       "intonation": 1.0
     },
     "nagi": {
+      "engine": "aivis",
       "candidates": [
         [
-          "WhiteCUL",
-          "ノーマル"
-        ],
-        [
-          "東北きりたん",
+          "るな",
           "ノーマル"
         ]
       ],
-      "speed": 1.05,
-      "intonation": 1.1
+      "speed": 1.0,
+      "intonation": 1.0
     },
     "baku": {
+      "engine": "aivis",
       "candidates": [
         [
-          "白上虎太郎",
-          "わーい"
+          "らせつん",
+          "喜び"
         ]
       ],
       "speed": 1.08,
-      "pitch": 0.05,
-      "intonation": 1.3
+      "intonation": 1.0,
+      "shift": 3
     }
   },
   "reading": {
@@ -796,5 +794,9 @@
     }
   ],
   "credits": "VOICEVOX:ずんだもん / VOICEVOX:四国めたん / VOICEVOX:冥鳴ひまり / VOICEVOX:白上虎太郎",
-  "bgm_gain": 0.55
+  "bgm_gain": 0.55,
+  "aivis_models": [
+    "4f281e78-eba6-495a-8e50-5c322d02b5b1",
+    "9f36ec0d-8dac-42dc-aff4-149c5f99faad"
+  ]
 }
