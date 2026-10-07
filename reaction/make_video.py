@@ -173,13 +173,14 @@ def resolve_speaker(v):
             _SPEAKERS[base] = json.loads(r.read())
     for name, style in v["candidates"]:
         for sp in _SPEAKERS[base]:
-            if sp["name"] == name:
-                for st in sp["styles"]:
-                    if st["name"] == style:
-                        out = dict(v); out.pop("candidates"); out["speaker"] = st["id"]
-                        out["_name"] = ("AivisSpeech:" if v.get("engine") == "aivis" else "VOICEVOX:") + name
-                        print(f"  話者: {name}（{style}） id={st['id']}")
-                        return out
+            if sp["name"] != name and not sp["name"].startswith(name + "("):
+                continue
+            for st in sp["styles"]:
+                if st["name"] == style:
+                    out = dict(v); out.pop("candidates"); out["speaker"] = st["id"]
+                    out["_name"] = ("AivisSpeech:" if v.get("engine") == "aivis" else "VOICEVOX:") + name
+                    print(f"  話者: {name}（{style}） id={st['id']}")
+                    return out
     have = "; ".join(sp["name"] + "(" + ",".join(st["name"] for st in sp["styles"]) + ")" for sp in _SPEAKERS[base])
     sys.exit(f"[エラー] 話者が見つかりません: {v['candidates']}  使える話者: {have}")
 
