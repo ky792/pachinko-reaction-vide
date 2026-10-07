@@ -136,9 +136,16 @@ async def tts_one(text, voice, rate, pitch, out_path):
     await com.save(str(out_path))
 
 
+def engine_base(v):
+    if v.get("engine") == "aivis":
+        return os.environ.get("AIVIS_URL", "http://127.0.0.1:10101")
+    return os.environ.get("VOICEVOX_URL", "http://127.0.0.1:50021")
+
+
 def voicevox_one(text, v, out_path):
+    """VOICEVOX / AivisSpeech（VOICEVOX互換API）で1文を合成する。"""
     import urllib.parse, urllib.request
-    base = os.environ.get("VOICEVOX_URL", "http://127.0.0.1:50021")
+    base = engine_base(v)
     q = urllib.parse.urlencode({"text": text, "speaker": v["speaker"]})
     with urllib.request.urlopen(urllib.request.Request(f"{base}/audio_query?{q}", method="POST"), timeout=60) as r:
         query = json.loads(r.read())
@@ -152,25 +159,25 @@ def voicevox_one(text, v, out_path):
         out_path.write_bytes(r.read())
 
 
-_SPEAKERS = None
+_SPEAKERS = {}
 
 
 def resolve_speaker(v):
     """{"candidates": [["猫使ビィ","ノーマル"], ...]} を VOICEVOX の style id に解決する。"""
-    global _SPEAKERS
     if "candidates" not in v:
         return v
-    if _SPEAKERS is None:
+    base = engine_base(v)
+    if base not in _SPEAKERS:
         import urllib.request
-        base = os.environ.get("VOICEVOX_URL", "http://127.0.0.1:50021")
         with urllib.request.urlopen(f"{base}/speakers", timeout=60) as r:
-            _SPEAKERS = json.loads(r.read())
+            _SPEAKERS[base] = json.loads(r.read())
     for name, style in v["candidates"]:
-        for sp in _SPEAKERS:
+        for sp in _SPEAKERS[base]:
             if sp["name"] == name:
                 for st in sp["styles"]:
                     if st["name"] == style:
-                        out = dict(v); out.pop("candidates"); out["speaker"] = st["id"]; out["_name"] = name
+                        out = dict(v); out.pop("candidates"); out["speaker"] = st["id"]
+                        out["_name"] = ("AivisSpeech:" if v.get("engine") == "aivis" else "VOICEVOX:") + name
                         print(f"  話者: {name}（{style}） id={st['id']}")
                         return out
     sys.exit(f"[エラー] 話者が見つかりません: {v['candidates']}")
@@ -197,6 +204,8 @@ def make_voice(items, ep, cache_dir):
         if it.get("corner"):
             it["_voice"] = np.zeros(int(SR * it.get("min", 1.0)), np.float32)
             continue
+        if it.get("voice"):
+            v = it["voice"] = resolve_speaker(it["voice"]) if "candidates" in it["voice"] else it["voice"]
         if "candidates" in v:
             v = voices[who] = resolve_speaker(v)
         USED_VOICES.add(v.get("_name", ""))
@@ -707,7 +716,7 @@ def main():
         str(out)], check=True)
     names = sorted(n for n in USED_VOICES if n)
     if names:
-        (out.parent / (out.stem + "_credits.txt")).write_text(" / ".join(f"VOICEVOX:{n}" for n in names), encoding="utf-8")
+        (out.parent / (out.stem + "_credits.txt")).write_text(" / ".join(names), encoding="utf-8")
     print(f"完成: {out}")
 
 

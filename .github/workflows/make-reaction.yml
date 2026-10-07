@@ -59,6 +59,30 @@ jobs:
           curl -sf "$VOICEVOX_URL/version" || { echo "::error::VOICEVOX が起動しませんでした"; exit 1; }
           mkdir -p output && curl -sf "$VOICEVOX_URL/speakers" | python -c "import json,sys;print('\n'.join(sp['name']+': '+', '.join(f\"{st['name']}={st['id']}\" for st in sp['styles']) for sp in json.load(sys.stdin)))" > output/voicevox_speakers.txt
 
+      - name: Restore AivisSpeech models cache
+        uses: actions/cache@v4
+        with:
+          path: ~/aivis
+          key: aivis-${{ hashFiles(format('episodes/{0}/reaction.json', inputs.episode)) }}
+          restore-keys: aivis-
+
+      - name: Start AivisSpeech (only if the episode uses it)
+        run: |
+          UUIDS=$(python -c "import json;d=json.load(open('episodes/$EP/reaction.json'));print(' '.join(d.get('aivis_models',[])))")
+          if [ -z "$UUIDS" ]; then echo "AivisSpeech は使わない回"; exit 0; fi
+          mkdir -p ~/aivis/Models output
+          for u in $UUIDS; do
+            f=~/aivis/Models/$u.aivmx
+            if [ ! -s "$f" ]; then curl -fL --retry 3 -o "$f" "https://api.aivis-project.com/v1/aivm-models/$u/download?model_type=AIVMX"; fi
+            ls -la "$f"
+          done
+          sudo chmod -R 777 ~/aivis
+          docker run -d --name aivis -p 10101:10101 -v ~/aivis:/home/user/.local/share/AivisSpeech-Engine-Dev ghcr.io/aivis-project/aivisspeech-engine:cpu-latest
+          for i in $(seq 1 150); do curl -sf http://127.0.0.1:10101/version && break; sleep 4; done
+          curl -sf http://127.0.0.1:10101/version || { docker logs aivis | tail -50; echo "::error::AivisSpeech が起動しませんでした"; exit 1; }
+          curl -sf http://127.0.0.1:10101/speakers | python -c "import json,sys;print('\n'.join(sp['name']+': '+', '.join(st['name'] for st in sp['styles']) for sp in json.load(sys.stdin)))" > output/aivis_speakers.txt
+          cat output/aivis_speakers.txt
+
       - name: Render
         run: |
           test -f "episodes/$EP/reaction.json" || { echo "::error::episodes/$EP/reaction.json がありません"; exit 1; }
@@ -80,7 +104,7 @@ jobs:
         env:
           TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/ && cp output/${EP}_credits.txt output/voicevox_speakers.txt /tmp/outbranch/ 2>/dev/null || true
+          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/ && cp output/${EP}_credits.txt output/voicevox_speakers.txt output/aivis_speakers.txt /tmp/outbranch/ 2>/dev/null || true
           cd /tmp/outbranch
           git init -q -b "outputs-${EP}"
           git config user.name "github-actions[bot]"

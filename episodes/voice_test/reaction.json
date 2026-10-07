@@ -1,0 +1,236 @@
+{
+  "title": "声の聞き比べ",
+  "bgm": "main.wav",
+  "bgm_gain": 0.4,
+  "aivis_models": [
+    "a59cb814-0083-4369-8542-f51a29e72af7",
+    "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
+    "6d11c6c2-f4a4-4435-887e-23dd60f8b8dd",
+    "f5017410-fbb5-49e1-97cb-e785f42e15f5",
+    "59f96896-64d2-4378-830a-4d5feb3d81aa",
+    "9f36ec0d-8dac-42dc-aff4-149c5f99faad"
+  ],
+  "voices": {
+    "board": [
+      {
+        "candidates": [
+          [
+            "ずんだもん",
+            "ノーマル"
+          ]
+        ],
+        "speed": 1.05
+      }
+    ],
+    "narrator": {
+      "candidates": [
+        [
+          "四国めたん",
+          "ノーマル"
+        ]
+      ]
+    },
+    "nagi": {
+      "candidates": [
+        [
+          "WhiteCUL",
+          "ノーマル"
+        ]
+      ]
+    },
+    "baku": {
+      "candidates": [
+        [
+          "白上虎太郎",
+          "わーい"
+        ]
+      ]
+    }
+  },
+  "reading": {
+    "27%": "にじゅうななパーセント",
+    "65%": "ろくじゅうごパーセント",
+    "3連": "さんれん"
+  },
+  "sections": [
+    {
+      "topic": "※ナギの声候補",
+      "items": [
+        {
+          "who": "nagi",
+          "label": "今の声：WhiteCUL",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "candidates": [
+              [
+                "WhiteCUL",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.05,
+            "intonation": 1.1
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "候補A：まお（おちつき）",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "まお",
+                "おちつき"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "候補B：まお（ふつー）",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "まお",
+                "ふつー"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "候補C：凛音エル",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "凛音エル",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "候補D：コハク",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "コハク",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        }
+      ]
+    },
+    {
+      "topic": "※バクの声候補",
+      "items": [
+        {
+          "who": "baku",
+          "label": "今の声：白上虎太郎",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "candidates": [
+              [
+                "白上虎太郎",
+                "わーい"
+              ]
+            ],
+            "speed": 1.08,
+            "pitch": 0.05,
+            "intonation": 1.3
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "候補E：らせつん",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "らせつん",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "候補F：にせ",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "にせ",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "候補G：ほのか（うれしい）",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "ほのか",
+                "uresii_uresii"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "候補H：凛音エル（Happy）",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "凛音エル",
+                "Happy"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        }
+      ]
+    }
+  ]
+}
