@@ -62,7 +62,6 @@
   "reading": {
     "1/199": "199分の1",
     "GANTZ": "ガンツ",
-    "残保留4個": "ざん保留4個",
     "RUSH": "ラッシュ",
     "右は7回": "右は7回",
     "一種二種": "一種二種",
@@ -70,7 +69,6 @@
     "16R": "16アール",
     "慶次X": "慶次エックス",
     "CR機": "シーアール機",
-    "残保留": "ざん保留",
     "即落ち": "即おち",
     "“": "",
     "”": "",
@@ -813,5 +811,72 @@
   "aivis_models": [
     "4f281e78-eba6-495a-8e50-5c322d02b5b1",
     "9f36ec0d-8dac-42dc-aff4-149c5f99faad"
+  ],
+  "dictionary": [
+    {
+      "surface": "残保留",
+      "pronunciation": "ザンホリュウ",
+      "accent_type": 3
+    },
+    {
+      "surface": "電サポ",
+      "pronunciation": "デンサポ",
+      "accent_type": 0
+    },
+    {
+      "surface": "連チャン",
+      "pronunciation": "レンチャン",
+      "accent_type": 0
+    },
+    {
+      "surface": "出玉",
+      "pronunciation": "デダマ",
+      "accent_type": 0
+    },
+    {
+      "surface": "出玉感",
+      "pronunciation": "デダマカン",
+      "accent_type": 0
+    },
+    {
+      "surface": "小当たり",
+      "pronunciation": "コアタリ",
+      "accent_type": 0
+    },
+    {
+      "surface": "大当たり",
+      "pronunciation": "オオアタリ",
+      "accent_type": 3
+    },
+    {
+      "surface": "上出来",
+      "pronunciation": "ジョウデキ",
+      "accent_type": 0
+    },
+    {
+      "surface": "脳筋",
+      "pronunciation": "ノウキン",
+      "accent_type": 0
+    },
+    {
+      "surface": "北斗無双",
+      "pronunciation": "ホクトムソウ",
+      "accent_type": 3
+    },
+    {
+      "surface": "シンフォギア",
+      "pronunciation": "シンフォギア",
+      "accent_type": 3
+    },
+    {
+      "surface": "慶次",
+      "pronunciation": "ケイジ",
+      "accent_type": 1
+    },
+    {
+      "surface": "パーセント",
+      "pronunciation": "パーセント",
+      "accent_type": 3
+    }
   ]
 }

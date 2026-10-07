@@ -157,7 +157,16 @@ def voicevox_one(text, v, out_path):
     q = urllib.parse.urlencode({"text": text, "speaker": v["speaker"]})
     with urllib.request.urlopen(urllib.request.Request(f"{base}/audio_query?{q}", method="POST"), timeout=60) as r:
         query = json.loads(r.read())
-    KANA_LOG.append(f"{text}\t{query.get('kana','')}")
+    kana = query.get("kana", "")
+    if v.get("engine") == "aivis":   # Aivis は読みを返さないので、同じ解析器の VOICEVOX で確認用に取る
+        try:
+            vb = os.environ.get("VOICEVOX_URL", "http://127.0.0.1:50021")
+            q2 = urllib.parse.urlencode({"text": text, "speaker": 3})
+            with urllib.request.urlopen(urllib.request.Request(f"{vb}/audio_query?{q2}", method="POST"), timeout=60) as r2:
+                kana = "(参考)" + json.loads(r2.read()).get("kana", "")
+        except Exception:
+            pass
+    KANA_LOG.append(f"{text}\t{kana}")
     query.update({"speedScale": v.get("speed", 1.0), "pitchScale": v.get("pitch", 0.0),
                   "intonationScale": v.get("intonation", 0.9), "volumeScale": 1.0,
                   "prePhonemeLength": 0.02, "postPhonemeLength": 0.02})
@@ -197,8 +206,28 @@ def resolve_speaker(v):
 USED_VOICES = set()
 
 
+def register_dictionary(words):
+    """読み・アクセントの辞書を VOICEVOX と AivisSpeech の両方に登録する。
+    words: [{"surface": "残保留", "pronunciation": "ザンホリュウ", "accent_type": 3}, ...]
+    accent_type は「何拍目のあとで下がるか」（0 = 下がらない平板）"""
+    import urllib.parse, urllib.request
+    for base in (os.environ.get("VOICEVOX_URL", "http://127.0.0.1:50021"), os.environ.get("AIVIS_URL", "http://127.0.0.1:10101")):
+        ok = 0
+        for w in words:
+            q = urllib.parse.urlencode({"surface": w["surface"], "pronunciation": w["pronunciation"],
+                                        "accent_type": w.get("accent_type", 0), "word_type": "PROPER_NOUN", "priority": 8})
+            try:
+                urllib.request.urlopen(urllib.request.Request(f"{base}/user_dict_word?{q}", method="POST"), timeout=30).read()
+                ok += 1
+            except Exception as e:  # noqa
+                print(f"  辞書登録できず {base} {w['surface']}: {e}")
+        print(f"  辞書 {ok}/{len(words)} 語 → {base}")
+
+
 def make_voice(items, ep, cache_dir):
     """各コメントの読み上げ音声（edge-tts）を作る。キャッシュあり。"""
+    if ep.get("dictionary"):
+        register_dictionary(ep["dictionary"])
     cache_dir.mkdir(parents=True, exist_ok=True)
     voices = ep["voices"]
     rep = ep.get("reading", {})
@@ -226,7 +255,7 @@ def make_voice(items, ep, cache_dir):
         say = it.get("say") or it["text"].replace("\n", "")
         for k, val in rep.items():
             say = say.replace(k, val)
-        key = hashlib.sha1(f"{say}|{json.dumps(v, sort_keys=True)}".encode()).hexdigest()[:16]
+        key = hashlib.sha1(f"{say}|{json.dumps(v, sort_keys=True)}|{json.dumps(ep.get('dictionary', []), ensure_ascii=False)}".encode()).hexdigest()[:16]
         mp3 = cache_dir / (f"{key}.wav" if "speaker" in v else f"{key}.mp3")
         if not mp3.exists():
             for attempt in range(3):
