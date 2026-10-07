@@ -26,9 +26,10 @@
       "intonation": 0.9
     },
     "baku": {
-      "speaker": 12,
+      "speaker": 32,
       "speed": 1.08,
-      "intonation": 1.2
+      "pitch": 0.05,
+      "intonation": 1.3
     }
   },
   "reading": {
@@ -53,6 +54,8 @@
     "65%": "ろくじゅうごパーセント",
     "CR機": "シーアールき",
     "27%": "にじゅうななパーセント",
+    "16R": "じゅうろくアール",
+    "64%": "ろくじゅうよんパーセント",
     "3連": "さんれん",
     "草": "くさ",
     "%": "パーセント"
@@ -186,14 +189,32 @@
           "se": "shock"
         },
         {
-          "who": "nagi",
-          "face": "explain",
-          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "text": "65%って3連したら\nようやっとるレベルやろ",
           "se": "pon"
         },
         {
-          "text": "65%って3連したら\nようやっとるレベルやろ",
-          "se": "pon"
+          "who": "nagi",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "se": "pon",
+          "face": "explain"
+        },
+        {
+          "who": "baku",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "se": "piko",
+          "face": "tsukkomi"
+        },
+        {
+          "who": "nagi",
+          "text": "80%なら約51%なので\n体感はまるで違いますね",
+          "se": "pon",
+          "face": "explain"
+        },
+        {
+          "who": "baku",
+          "text": "そら隣の80%に\n浮気したなるわ…",
+          "se": "pon",
+          "face": "mutto"
         }
       ]
     },
@@ -257,9 +278,27 @@
         },
         {
           "who": "baku",
-          "face": "tsukkomi",
           "text": "続かんなら2400発で\n殴ればええって脳筋すぎやろ！",
-          "se": "piko"
+          "se": "piko",
+          "face": "tsukkomi"
+        },
+        {
+          "who": "nagi",
+          "text": "慶次Xは右の半分が16R\n1回の重みで勝負する\n設計ですね",
+          "se": "pon",
+          "face": "explain"
+        },
+        {
+          "who": "baku",
+          "text": "1発デカくても\n連チャンせんのやろ？",
+          "se": "pon",
+          "face": "mutto"
+        },
+        {
+          "who": "nagi",
+          "text": "はい。だから出玉の波は\nかなり荒かったですね",
+          "se": "pon",
+          "face": "think"
         }
       ]
     },
@@ -313,14 +352,32 @@
           "se": "pon"
         },
         {
-          "who": "baku",
-          "face": "max",
-          "text": "当たってないのに\n玉増えてるやんけ！",
+          "text": "規制の中でみんな必死に\n抜け道探してたよな",
           "se": "pon"
         },
         {
-          "text": "規制の中でみんな必死に\n抜け道探してたよな",
-          "se": "pon"
+          "who": "baku",
+          "text": "当たってないのに\n玉増えてるやんけ！",
+          "se": "piko",
+          "face": "max"
+        },
+        {
+          "who": "nagi",
+          "text": "次の大当たりまで\n小当たりで玉を増やす\n仕組みですね",
+          "se": "pon",
+          "face": "explain"
+        },
+        {
+          "who": "baku",
+          "text": "続かへんなら\n道中で増やす作戦か！",
+          "se": "piko",
+          "face": "max"
+        },
+        {
+          "who": "nagi",
+          "text": "65%を守ったまま\n出玉感を足した工夫です",
+          "se": "pon",
+          "face": "normal"
         }
       ]
     },
@@ -384,15 +441,33 @@
           "se": "pon"
         },
         {
-          "who": "nagi",
-          "face": "point",
-          "text": "各社が65%規制の\n“攻略法”を探していた\n時代とも言えますね",
-          "se": "pon"
-        },
-        {
           "text": "65%で真正面から殴り合う必要\nなかったんやなって",
           "se": "pon",
           "speed": 1.2
+        },
+        {
+          "who": "baku",
+          "text": "待って、残保留込みで\n約80%ってズルない？",
+          "se": "piko",
+          "face": "tsukkomi"
+        },
+        {
+          "who": "nagi",
+          "text": "電サポ7回だけなら約64%\nちゃんと65%以下なんです",
+          "se": "pon",
+          "face": "explain"
+        },
+        {
+          "who": "baku",
+          "text": "残保留で上乗せとか\n頭良すぎやろ！",
+          "se": "piko",
+          "face": "max"
+        },
+        {
+          "who": "nagi",
+          "text": "各社が65%規制の\n“攻略法”を探していた\n時代とも言えますね",
+          "se": "pon",
+          "face": "normal"
         }
       ]
     },
@@ -632,6 +707,19 @@
           "speed": 1.2,
           "label": "まとめ",
           "face": "explain"
+        },
+        {
+          "who": "baku",
+          "text": "結局、北斗無双が\n一番ずるかったってことやな",
+          "se": "piko",
+          "face": "tsukkomi"
+        },
+        {
+          "who": "nagi",
+          "text": "…否定はできませんね",
+          "se": "pon",
+          "face": "think",
+          "min": 1.4
         },
         {
           "who": "baku",
