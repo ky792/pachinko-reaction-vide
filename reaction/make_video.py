@@ -141,6 +141,9 @@ async def tts_one(text, voice, rate, pitch, out_path):
     await com.save(str(out_path))
 
 
+KANA_LOG = []
+
+
 def engine_base(v):
     if v.get("engine") == "aivis":
         return os.environ.get("AIVIS_URL", "http://127.0.0.1:10101")
@@ -154,6 +157,7 @@ def voicevox_one(text, v, out_path):
     q = urllib.parse.urlencode({"text": text, "speaker": v["speaker"]})
     with urllib.request.urlopen(urllib.request.Request(f"{base}/audio_query?{q}", method="POST"), timeout=60) as r:
         query = json.loads(r.read())
+    KANA_LOG.append(f"{text}\t{query.get('kana','')}")
     query.update({"speedScale": v.get("speed", 1.0), "pitchScale": v.get("pitch", 0.0),
                   "intonationScale": v.get("intonation", 0.9), "volumeScale": 1.0,
                   "prePhonemeLength": 0.02, "postPhonemeLength": 0.02})
@@ -722,6 +726,7 @@ def main():
         "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "copy",
         "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-t", f"{total:.3f}", "-movflags", "+faststart",
         str(out)], check=True)
+    (work / "kana.txt").write_text("\n".join(KANA_LOG), encoding="utf-8")
     names = sorted(n for n in USED_VOICES if n)
     if names:
         (out.parent / (out.stem + "_credits.txt")).write_text(" / ".join(names), encoding="utf-8")

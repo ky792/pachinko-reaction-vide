@@ -89,6 +89,7 @@ jobs:
           python reaction/make_video.py "episodes/$EP/reaction.json" -o "output/${EP}.mp4"
           cp work/reaction/timeline.json "output/${EP}_timeline.json"
           cat "output/${EP}_credits.txt" || true
+          cp work/reaction/kana.txt "output/${EP}_kana.txt" || true
 
       - name: Upload result
         uses: actions/upload-artifact@v4
@@ -104,7 +105,7 @@ jobs:
         env:
           TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/ && cp output/${EP}_credits.txt output/voicevox_speakers.txt output/aivis_speakers.txt /tmp/outbranch/ 2>/dev/null || true
+          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/ && cp output/${EP}_credits.txt output/voicevox_speakers.txt output/aivis_speakers.txt output/${EP}_kana.txt /tmp/outbranch/ 2>/dev/null || true
           cd /tmp/outbranch
           git init -q -b "outputs-${EP}"
           git config user.name "github-actions[bot]"
