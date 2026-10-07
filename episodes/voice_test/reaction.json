@@ -4,11 +4,23 @@
   "bgm_gain": 0.4,
   "aivis_models": [
     "a59cb814-0083-4369-8542-f51a29e72af7",
-    "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
-    "6d11c6c2-f4a4-4435-887e-23dd60f8b8dd",
     "f5017410-fbb5-49e1-97cb-e785f42e15f5",
-    "59f96896-64d2-4378-830a-4d5feb3d81aa",
-    "9f36ec0d-8dac-42dc-aff4-149c5f99faad"
+    "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
+    "1b2830f4-8cf1-4184-a0d9-3a1bace3a844",
+    "e9339137-2ae3-4d41-9394-fb757a7e61e6",
+    "a670e6b8-0852-45b2-8704-1bc9862f2fe6",
+    "4f281e78-eba6-495a-8e50-5c322d02b5b1",
+    "3328da9a-8124-4619-a853-f7fc2f37889f",
+    "f83c385c-829b-40c4-8c11-639027e61636",
+    "9f36ec0d-8dac-42dc-aff4-149c5f99faad",
+    "6d11c6c2-f4a4-4435-887e-23dd60f8b8dd",
+    "2e1fdde8-d089-42d7-b64f-cf89952b1bdc",
+    "00f29eb2-e12b-4f64-a5e8-4188be62de33",
+    "1f04a608-916c-4d9e-bf6e-b9da5c176f85",
+    "3dabea2b-cc10-41da-955b-4618ce84e716",
+    "70ad7e84-6a10-48d6-8f9a-8dac4bba3c0b",
+    "f79e73ab-3320-473b-8e3f-713c30c39ed1",
+    "ed0f793d-786c-4fde-8561-e8bbac7bfe1d"
   ],
   "voices": {
     "board": [
@@ -74,7 +86,7 @@
         },
         {
           "who": "nagi",
-          "label": "候補A：まお（おちつき）",
+          "label": "1：まお（おちつき）",
           "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
           "voice": {
             "engine": "aivis",
@@ -91,7 +103,7 @@
         },
         {
           "who": "nagi",
-          "label": "候補B：まお（ふつー）",
+          "label": "2：まお（ふつー）",
           "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
           "voice": {
             "engine": "aivis",
@@ -108,7 +120,7 @@
         },
         {
           "who": "nagi",
-          "label": "候補C：凛音エル",
+          "label": "3：凛音エル",
           "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
           "voice": {
             "engine": "aivis",
@@ -125,7 +137,7 @@
         },
         {
           "who": "nagi",
-          "label": "候補D：コハク",
+          "label": "4：コハク",
           "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
           "voice": {
             "engine": "aivis",
@@ -133,6 +145,108 @@
               [
                 "コハク",
                 "ノーマル"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "5：みちのくあいり",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "みちのくあいり",
+                "標準"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "6：まい",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "まい",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "7：花音",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "花音",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "8：るな",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "るな",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "9：桜音",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "桜音",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.0,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "nagi",
+          "label": "10：わかな",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "わかな",
+                "普通"
               ]
             ],
             "speed": 1.0,
@@ -164,7 +278,7 @@
         },
         {
           "who": "baku",
-          "label": "候補E：らせつん（喜び）",
+          "label": "11：らせつん（喜び）",
           "text": "3連で上出来って\n夢なさすぎやろ！",
           "voice": {
             "engine": "aivis",
@@ -181,7 +295,7 @@
         },
         {
           "who": "baku",
-          "label": "候補F：にせ",
+          "label": "12：にせ",
           "text": "3連で上出来って\n夢なさすぎやろ！",
           "voice": {
             "engine": "aivis",
@@ -198,14 +312,14 @@
         },
         {
           "who": "baku",
-          "label": "候補G：ほのか（うれしい）",
+          "label": "13：澤原玄二郎",
           "text": "3連で上出来って\n夢なさすぎやろ！",
           "voice": {
             "engine": "aivis",
             "candidates": [
               [
-                "ほのか",
-                "uresii_uresii"
+                "澤原 玄二郎",
+                "ノーマル"
               ]
             ],
             "speed": 1.08,
@@ -215,14 +329,116 @@
         },
         {
           "who": "baku",
-          "label": "候補H：凛音エル（Happy）",
+          "label": "14：宗周定昌",
           "text": "3連で上出来って\n夢なさすぎやろ！",
           "voice": {
             "engine": "aivis",
             "candidates": [
               [
-                "凛音エル",
-                "Happy"
+                "宗周定昌",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "15：yukyu",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "yukyu",
+                "デフォルト"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "16：Lux",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "Lux",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "17：はきみて れく",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "はきみて れく",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "18：MarkN",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "MarkN",
+                "ノーマル"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "19：六弦エレキ（るんるん）",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "六弦エレキ",
+                "るんるん"
+              ]
+            ],
+            "speed": 1.08,
+            "intonation": 1.0
+          },
+          "se": "pon"
+        },
+        {
+          "who": "baku",
+          "label": "20：みちのくあいり（喜び）",
+          "text": "3連で上出来って\n夢なさすぎやろ！",
+          "voice": {
+            "engine": "aivis",
+            "candidates": [
+              [
+                "みちのくあいり",
+                "喜び"
               ]
             ],
             "speed": 1.08,

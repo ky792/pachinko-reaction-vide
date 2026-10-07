@@ -63,7 +63,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/aivis
-          key: aivis-${{ hashFiles(format('episodes/{0}/reaction.json', inputs.episode)) }}
+          key: aivis-${{ inputs.episode }}-${{ hashFiles(format('episodes/{0}/reaction.json', inputs.episode)) }}
           restore-keys: aivis-
 
       - name: Start AivisSpeech (only if the episode uses it)
