@@ -88,6 +88,16 @@ def synth_se(kind):
         rng = np.random.default_rng(1)
         hit = rng.standard_normal(n) * env(n, attack=0.001, decay=0.015) * 0.6
         x = body + hit
+    elif kind == "shu":
+        n = int(0.35 * SR); t = np.arange(n) / SR
+        rng = np.random.default_rng(3)
+        noise = rng.standard_normal(n)
+        # 高→低に流れるホワイトノイズ
+        out = np.zeros(n); y = 0.0
+        for i in range(n):
+            a = 0.08 + 0.6 * (1 - t[i] / 0.35)
+            y += a * (noise[i] - y); out[i] = y
+        x = out * np.sin(np.pi * np.clip(t / 0.35, 0, 1)) ** 1.5
     elif kind == "don":
         n = int(1.2 * SR); t = np.arange(n) / SR
         f = 90 * np.exp(-t * 2.5) + 38
@@ -142,11 +152,40 @@ def voicevox_one(text, v, out_path):
         out_path.write_bytes(r.read())
 
 
+_SPEAKERS = None
+
+
+def resolve_speaker(v):
+    """{"candidates": [["猫使ビィ","ノーマル"], ...]} を VOICEVOX の style id に解決する。"""
+    global _SPEAKERS
+    if "candidates" not in v:
+        return v
+    if _SPEAKERS is None:
+        import urllib.request
+        base = os.environ.get("VOICEVOX_URL", "http://127.0.0.1:50021")
+        with urllib.request.urlopen(f"{base}/speakers", timeout=60) as r:
+            _SPEAKERS = json.loads(r.read())
+    for name, style in v["candidates"]:
+        for sp in _SPEAKERS:
+            if sp["name"] == name:
+                for st in sp["styles"]:
+                    if st["name"] == style:
+                        out = dict(v); out.pop("candidates"); out["speaker"] = st["id"]; out["_name"] = name
+                        print(f"  話者: {name}（{style}） id={st['id']}")
+                        return out
+    sys.exit(f"[エラー] 話者が見つかりません: {v['candidates']}")
+
+
+USED_VOICES = set()
+
+
 def make_voice(items, ep, cache_dir):
     """各コメントの読み上げ音声（edge-tts）を作る。キャッシュあり。"""
     cache_dir.mkdir(parents=True, exist_ok=True)
     voices = ep["voices"]
     rep = ep.get("reading", {})
+    if any("candidates" in v for v in voices["board"]):
+        voices["board"] = [resolve_speaker(v) for v in voices["board"]]
     board_cycle = voices["board"]
     bi = 0
     for it in items:
@@ -155,6 +194,13 @@ def make_voice(items, ep, cache_dir):
             v = board_cycle[bi % len(board_cycle)]; bi += 1
         else:
             v = voices[who]
+        if it.get("corner"):
+            it["_voice"] = np.zeros(int(SR * it.get("min", 1.0)), np.float32)
+            continue
+        if "candidates" in v:
+            v = voices[who] = resolve_speaker(v)
+        USED_VOICES.add(v.get("_name", ""))
+        v = {k: x for k, x in v.items() if k != "_name"}
         if it.get("speed") and "speaker" in v:
             v = dict(v, speed=it["speed"])
         say = it.get("say") or it["text"].replace("\n", "")
@@ -414,6 +460,37 @@ class Painter:
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, ft, cols[min(i, 1)], 18)
         return im.convert("RGB")
 
+    def corner_band(self, it):
+        if getattr(self, "_band", None) is None or self._band_text != it["text"]:
+            bw, bh = W, 150
+            band = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+            d = ImageDraw.Draw(band)
+            d.rectangle((0, 0, bw, bh), fill=(16, 18, 34, 235))
+            d.rectangle((0, 0, bw // 2, 10), fill=(40, 110, 255))
+            d.rectangle((bw // 2, 0, bw, 10), fill=(255, 110, 30))
+            d.rectangle((0, bh - 10, bw // 2, bh), fill=(40, 110, 255))
+            d.rectangle((bw // 2, bh - 10, bw, bh), fill=(255, 110, 30))
+            f = font(74)
+            d.text((bw / 2, bh / 2 + 2), it["text"].replace("\n", " "), font=f, fill=(255, 255, 255), anchor="mm",
+                   stroke_width=8, stroke_fill=(0, 0, 0))
+            self._band, self._band_text = band, it["text"]
+        return self._band
+
+    def corner(self, layer, it, tau):
+        """コーナー名の帯を右からサッと出して左へ流す。"""
+        dur = it.get("min", 1.0); tin = 0.18; tout = 0.18
+        if tau < tin:
+            x = int(W * (1 - tau / tin) ** 2)
+        elif tau > dur - tout:
+            k = (tau - (dur - tout)) / tout
+            x = -int(W * k * k)
+        else:
+            x = 0
+        band = self.corner_band(it)
+        base = layer.copy()
+        base.paste(band, (x, 700), band)
+        return self.chars(base, {"who": "board", "text": ""}, 0, tau)
+
     def chars(self, layer, it, tau, t):
         """静止レイヤーにナギ・バクを重ねる（登場ポップ＋しゃべり中の揺れ＋待機の呼吸）。"""
         import math
@@ -464,6 +541,8 @@ class Painter:
 
         who = norm_who(it.get("who", "board"))
         im.alpha_composite(self.glow)
+        if it.get("corner"):
+            return im.convert("RGB")
 
         # テロップ（下部中央・下端から約12%）
         size = it.get("size", "normal")
@@ -519,7 +598,7 @@ def main():
     if args.no_voice:
         for it in items:
             n = len(it["text"].replace("\n", ""))
-            it["_voice"] = np.zeros(int(SR * max(1.1, n / 6.3)), np.float32)
+            it["_voice"] = np.zeros(int(SR * (it.get("min", 1.0) if it.get("corner") else max(1.1, n / 6.3))), np.float32)
     else:
         make_voice(items, ep, Path(args.cache))
 
@@ -566,6 +645,8 @@ def main():
         it = items[seg]
         if it.get("title"):
             fr = layers[seg]
+        elif it.get("corner"):
+            fr = painter.corner(layers[seg], it, t - starts[seg])
         else:
             fr = painter.chars(layers[seg], it, t - starts[seg], t)
         enc.stdin.write(fr.tobytes())
@@ -624,6 +705,9 @@ def main():
         "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "copy",
         "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-t", f"{total:.3f}", "-movflags", "+faststart",
         str(out)], check=True)
+    names = sorted(n for n in USED_VOICES if n)
+    if names:
+        (out.parent / (out.stem + "_credits.txt")).write_text(" / ".join(f"VOICEVOX:{n}" for n in names), encoding="utf-8")
     print(f"完成: {out}")
 
 
