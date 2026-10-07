@@ -91,3 +91,4 @@ GitHubアプリ／ブラウザで **Actions → Add voice (edge-tts) → Run wor
 - 基準デザイン：`generator/assets/characters/reference_nagi_baku.png`
 - 表情素材：`characters/nagi/`（normal / explain / think / surprise / point）、`characters/baku/`（normal / max / tsukkomi / mutto / cheer）。基準画像から `reaction/cut_characters.py` で切り出し
 - reaction.json の `who` に `nagi`（解説・整理）/ `baku`（驚き・ツッコミ）。`face` を省くとセリフの中身から自動で表情を選ぶ
+- 2026-10 更新：表情は全身イラスト（白背景→`reaction/prep_characters.py` で透過）。ナギ normal/explain/think/surprise、バク normal/max/tsukkomi/mutto。白フチ・足元の影・登場ポップ・しゃべり中の揺れ・待機の呼吸を自動で付ける。背景は `backgrounds/hall_anime.png`

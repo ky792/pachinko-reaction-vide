@@ -185,6 +185,58 @@ def make_voice(items, ep, cache_dir):
 
 
 # ---------------------------------------------------------------- 画面
+CHAR_TALK, CHAR_IDLE = 400, 335      # 元画像(正方形キャンバス)の高さをこの px に
+CHAR_X = {"nagi": 175, "baku": W - 185}   # 足元の中心
+FOOT_Y = H - 18
+
+
+def sticker(src, sc, bright):
+    """縮小→白フチ→足元の影。返り値は (画像, 足元中心からのオフセット)。"""
+    im = src.resize((max(1, int(src.width * sc)), max(1, int(src.height * sc))), Image.LANCZOS)
+    pad = 14
+    canvas = Image.new("RGBA", (im.width + pad * 2, im.height + pad * 2 + 20), (0, 0, 0, 0))
+    a = np.asarray(im)[..., 3]
+    from scipy import ndimage as ndi
+    big = np.zeros((canvas.height, canvas.width), bool)
+    big[pad:pad + im.height, pad:pad + im.width] = a > 60
+    ys, xs = np.where(big)
+    foot_y, cx = ys.max(), int(np.median(xs))
+    # 影（足元の楕円）
+    sh = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
+    ImageDraw.Draw(sh).ellipse((cx - im.width * 0.32, foot_y - 12, cx + im.width * 0.32, foot_y + 14), fill=(0, 0, 0, 120))
+    sh = sh.filter(ImageFilter.GaussianBlur(6))
+    canvas.alpha_composite(sh)
+    # 白フチ
+    edge = ndi.binary_dilation(big, iterations=6)
+    e = np.zeros((canvas.height, canvas.width, 4), np.uint8)
+    e[edge] = (255, 255, 255, 255)
+    eimg = Image.fromarray(e, "RGBA").filter(ImageFilter.GaussianBlur(0.8))
+    canvas.alpha_composite(eimg)
+    body = im
+    if bright < 1:
+        rgb = Image.eval(im.convert("RGB"), lambda v: int(v * bright))
+        body = Image.merge("RGBA", (*rgb.split(), im.split()[3]))
+    canvas.alpha_composite(body, (pad, pad))
+    return canvas, (cx, foot_y)
+
+
+def corner_glow():
+    g = np.zeros((H, W, 4), np.float32)
+    yy, xx = np.mgrid[0:H, 0:W]
+    for (cx, col) in ((170, (60, 140, 255)), (W - 170, (255, 120, 40))):
+        d = np.sqrt(((xx - cx) / 420.0) ** 2 + ((yy - (H + 40)) / 380.0) ** 2)
+        a = np.clip(1 - d, 0, 1) ** 1.6 * 150
+        for k in range(3):
+            g[..., k] = np.where(a > g[..., 3], col[k], g[..., k])
+        g[..., 3] = np.maximum(g[..., 3], a)
+    return Image.fromarray(g.astype(np.uint8), "RGBA")
+
+
+def ease_out_back(x):
+    c1 = 1.70158; c3 = c1 + 1
+    return 1 + c3 * (x - 1) ** 3 + c1 * (x - 1) ** 2
+
+
 ALIAS = {"rabbit": "nagi", "cat": "baku", "usagi": "nagi", "neko": "baku"}
 IDLE_FACE = {"nagi": "normal", "baku": "normal"}
 FACE_ALIAS = {"shock": "surprise", "smug": "explain", "jito": "mutto", "angry": "tsukkomi", "cry": "surprise"}
@@ -194,7 +246,16 @@ def norm_who(w):
     return ALIAS.get(w, w)
 
 
+FACE_FALLBACK = {"nagi": {"point": "explain", "max": "explain", "cheer": "explain", "tsukkomi": "think", "mutto": "think"},
+                 "baku": {"cheer": "normal", "surprise": "max", "explain": "normal", "think": "mutto", "point": "tsukkomi"}}
+
+
 def pick_face(c, it):
+    f = _pick_face(c, it)
+    return FACE_FALLBACK[c].get(f, f)
+
+
+def _pick_face(c, it):
     """セリフの中身から表情を選ぶ（face 指定があればそれを優先）。
     ナギ: normal / explain / think / surprise / point
     バク: normal / max / tsukkomi / mutto / cheer"""
@@ -242,15 +303,16 @@ class Painter:
     def __init__(self, ep, ep_dir):
         self.ep = ep
         self.ep_dir = ep_dir
-        self.hall = Image.open(ASSETS / "backgrounds" / "hall_real.png").convert("RGB").resize((W, H))
-        # 固定キャラ：ナギ（うさぎ・左下）とバク（ねこ・右下）
-        self.chars = {}
+        self.hall = Image.open(ASSETS / "backgrounds" / (ep.get("background") or "hall_anime.png")).convert("RGB").resize((W, H))
+        # 固定キャラ：ナギ（うさぎ・左下）とバク（ねこ・右下）。全身・白フチ付きで前計算
+        self.sprites = {}
         for who in ("nagi", "baku"):
-            d = {}
             for p in (ASSETS / "characters" / who).glob("*.png"):
-                d[p.stem] = Image.open(p).convert("RGBA")
-            self.chars[who] = d
+                src = Image.open(p).convert("RGBA")
+                for mode, sc, bright in (("talk", CHAR_TALK / src.height, 1.0), ("idle", CHAR_IDLE / src.height, 0.86)):
+                    self.sprites[(who, p.stem, mode)] = sticker(src, sc, bright)
         self.bg_cache = {}
+        self.glow = corner_glow()
 
     def find_image(self, name):
         for base in (self.ep_dir / "images", ASSETS / "machines"):
@@ -291,7 +353,7 @@ class Painter:
             base.paste(card, ((W - card.width) // 2, 140), card)
         else:
             # 画像が無い時：ホール背景を暗くして、機種名パネルを出す
-            base = Image.blend(base.filter(ImageFilter.GaussianBlur(3)), Image.new("RGB", (W, H), (0, 0, 0)), 0.42)
+            base = Image.blend(base.filter(ImageFilter.GaussianBlur(4)), Image.new("RGB", (W, H), (0, 0, 0)), 0.38)
             label = bg.get("label")
             if label:
                 d = ImageDraw.Draw(base)
@@ -352,6 +414,37 @@ class Painter:
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, ft, cols[min(i, 1)], 18)
         return im.convert("RGB")
 
+    def chars(self, layer, it, tau, t):
+        """静止レイヤーにナギ・バクを重ねる（登場ポップ＋しゃべり中の揺れ＋待機の呼吸）。"""
+        import math
+        fr = layer.copy()
+        who = norm_who(it.get("who", "board"))
+        for c, phase in (("nagi", 0.0), ("baku", 1.7)):
+            talking = who == c
+            if talking:
+                face = pick_face(c, it)
+                spr, (fx, fy) = self.sprites.get((c, face, "talk")) or self.sprites[(c, "normal", "talk")]
+                strong = face in ("max", "surprise", "tsukkomi")
+                k = min(tau / 0.32, 1.0)
+                scale = 0.82 + 0.18 * ease_out_back(k) if tau < 0.32 else 1.0
+                jump = (46 if strong else 24) * math.sin(math.pi * min(tau / 0.34, 1.0)) if tau < 0.34 else 0
+                bob = 6 * math.sin(2 * math.pi * (1.6 if strong else 1.1) * tau)
+                dy = -jump - abs(bob) if strong else -jump + bob
+                lean = (12 if c == "nagi" else -12) * (1 - k)   # 中央側から飛び込む
+            else:
+                face = IDLE_FACE[c]
+                spr, (fx, fy) = self.sprites[(c, face, "idle")]
+                scale = 1.0
+                dy = 4 * math.sin(2 * math.pi * 0.45 * t + phase)
+                lean = 0
+            if scale != 1.0:
+                spr = spr.resize((max(1, int(spr.width * scale)), max(1, int(spr.height * scale))), Image.BILINEAR)
+                fx, fy = fx * scale, fy * scale
+            x = int(CHAR_X[c] - fx + lean)
+            y = int(FOOT_Y - fy + dy)
+            fr.paste(spr, (x, y), spr)
+        return fr
+
     def frame(self, sec, it):
         if it.get("title"):
             return self.title_frame(it)
@@ -369,18 +462,8 @@ class Painter:
             d.rectangle((x0, y0, x1, y1), outline=(255, 255, 255), width=4)
             draw_stroked(d, ((x0 + x1) / 2, (y0 + y1) / 2), topic, ft, (255, 255, 255), 6)
 
-        # キャラ（ナギ＝左下、バク＝右下、どちらも中央向き）。しゃべっている方を大きく
         who = norm_who(it.get("who", "board"))
-        for c, x_left in (("nagi", True), ("baku", False)):
-            talking = (who == c)
-            face = pick_face(c, it) if talking else IDLE_FACE[c]
-            src = self.chars[c].get(face) or self.chars[c]["normal"]
-            hgt = 300 if talking else 240
-            ch = src.resize((int(src.width * hgt / src.height), hgt), Image.LANCZOS)
-            if who in ("nagi", "baku") and not talking:
-                ch = Image.blend(Image.new("RGBA", ch.size, (0, 0, 0, 0)), ch, 0.8)
-            x = 8 if x_left else W - ch.width - 8
-            im.alpha_composite(ch, (x, H - ch.height))
+        im.alpha_composite(self.glow)
 
         # テロップ（下部中央・下端から約12%）
         size = it.get("size", "normal")
@@ -459,24 +542,36 @@ def main():
     (work / "timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"全体 {total:.1f}秒 / コメント {len(items)}件")
 
-    # 画面（コメントごとに1枚・完全カット）
+    # 画面：コメントごとの静止レイヤー（完全カット）＋キャラだけ毎フレーム動かす
     painter = Painter(ep, ep_path.parent)
-    concat = []
-    prev_frame = None
+    layers = []
     for i, it in enumerate(items):
         sec = ep["sections"][it["_sec"]]
-        if it.get("hold_before") and prev_frame:
-            concat.append((prev_frame, OCHI_HOLD))
-        p = work / f"f{i:03d}.png"
-        painter.frame(sec, it).save(p)
-        dur = it["_dur"] + (END_HOLD if i == len(items) - 1 else 0)
-        concat.append((p, dur))
-        prev_frame = p
-    lst = work / "frames.txt"
-    with open(lst, "w") as f:
-        for p, d in concat:
-            f.write(f"file '{p.resolve()}'\nduration {d:.3f}\n")
-        f.write(f"file '{concat[-1][0].resolve()}'\n")
+        lay = painter.frame(sec, it).convert("RGB")
+        if i in (0, len(items) - 1) or i % 5 == 0:
+            lay.save(work / f"f{i:03d}.png")
+        layers.append(lay)
+    starts = [it["_start"] for it in items]
+    vf = work / "video.mp4"
+    n_frames = int(round(total * FPS))
+    enc = subprocess.Popen([
+        "ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS),
+        "-i", "-", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", str(vf)],
+        stdin=subprocess.PIPE)
+    seg = 0
+    for f in range(n_frames):
+        t = f / FPS
+        while seg + 1 < len(items) and t >= starts[seg + 1]:
+            seg += 1
+        it = items[seg]
+        if it.get("title"):
+            fr = layers[seg]
+        else:
+            fr = painter.chars(layers[seg], it, t - starts[seg], t)
+        enc.stdin.write(fr.tobytes())
+        if f % 300 == 0:
+            print(f"  映像 {t:5.1f}/{total:.1f}秒")
+    enc.stdin.close(); enc.wait()
 
     # 音声ミックス
     n_total = int(total * SR) + SR
@@ -525,8 +620,8 @@ def main():
 
     out = Path(args.output); out.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([
-        "ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(lst), "-i", str(wav),
-        "-vf", f"fps={FPS},format=yuv420p", "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+        "ffmpeg", "-y", "-v", "error", "-i", str(vf), "-i", str(wav),
+        "-af", "loudnorm=I=-14:TP=-1.5:LRA=11", "-c:v", "copy",
         "-c:a", "aac", "-b:a", "192k", "-ac", "2", "-t", f"{total:.3f}", "-movflags", "+faststart",
         str(out)], check=True)
     print(f"完成: {out}")
