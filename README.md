@@ -86,3 +86,8 @@ GitHubアプリ／ブラウザで **Actions → Add voice (edge-tts) → Run wor
 - SE：`pon` `piko` `shock` `taiko` `don` `none`（その場で合成）
 - 大オチの行に `"bgm_cut": true` で直前にBGMを切って一拍溜める
 - 音量比 声100 : SE75 : BGM18、コメント間の間は0.04秒
+
+## 固定キャラ（ナギ・バク）
+- 基準デザイン：`generator/assets/characters/reference_nagi_baku.png`
+- 表情素材：`characters/nagi/`（normal / explain / think / surprise / point）、`characters/baku/`（normal / max / tsukkomi / mutto / cheer）。基準画像から `reaction/cut_characters.py` で切り出し
+- reaction.json の `who` に `nagi`（解説・整理）/ `baku`（驚き・ツッコミ）。`face` を省くとセリフの中身から自動で表情を選ぶ

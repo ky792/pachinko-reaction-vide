@@ -15,20 +15,20 @@
         "intonation": 0.9
       }
     ],
-    "rabbit": {
-      "speaker": 8,
-      "speed": 1.0,
-      "intonation": 1.0
-    },
-    "cat": {
-      "speaker": 12,
-      "speed": 1.0,
-      "intonation": 1.0
-    },
     "narrator": {
       "speaker": 2,
       "speed": 1.0,
       "intonation": 1.0
+    },
+    "nagi": {
+      "speaker": 14,
+      "speed": 1.05,
+      "intonation": 0.9
+    },
+    "baku": {
+      "speaker": 12,
+      "speed": 1.08,
+      "intonation": 1.2
     }
   },
   "reading": {
@@ -38,6 +38,7 @@
     "残保留4個": "ざんほりゅうよんこ",
     "2015年": "にせんじゅうごねん",
     "2022年": "にせんにじゅうにねん",
+    "“攻略法”": "攻略法",
     "RUSH": "ラッシュ",
     "一種二種": "いっしゅにしゅ",
     "右は7回": "みぎはななかい",
@@ -51,6 +52,7 @@
     "51%": "ごじゅういちパーセント",
     "65%": "ろくじゅうごパーセント",
     "CR機": "シーアールき",
+    "27%": "にじゅうななパーセント",
     "3連": "さんれん",
     "草": "くさ",
     "%": "パーセント"
@@ -184,9 +186,9 @@
           "se": "shock"
         },
         {
-          "who": "rabbit",
-          "face": "shock",
-          "text": "319当てて確変取っても\n3連したら頑張った方なの？",
+          "who": "nagi",
+          "face": "explain",
+          "text": "計算すると、65%で\n3回以上続くのは約27%\n3連できたら上出来です",
           "se": "pon"
         },
         {
@@ -254,9 +256,9 @@
           "se": "shock"
         },
         {
-          "who": "cat",
-          "face": "smug",
-          "text": "続かないなら2400発で\n殴ればいいという脳筋思想",
+          "who": "baku",
+          "face": "tsukkomi",
+          "text": "続かんなら2400発で\n殴ればええって脳筋すぎやろ！",
           "se": "piko"
         }
       ]
@@ -311,9 +313,9 @@
           "se": "pon"
         },
         {
-          "who": "rabbit",
-          "face": "shock",
-          "text": "当たってないのに\n玉が増えてるんだけど……",
+          "who": "baku",
+          "face": "max",
+          "text": "当たってないのに\n玉増えてるやんけ！",
           "se": "pon"
         },
         {
@@ -382,9 +384,9 @@
           "se": "pon"
         },
         {
-          "who": "cat",
-          "face": "smug",
-          "text": "65%規制を攻略するゲームに\nなってて草",
+          "who": "nagi",
+          "face": "point",
+          "text": "各社が65%規制の\n“攻略法”を探していた\n時代とも言えますね",
           "se": "pon"
         },
         {
@@ -406,15 +408,15 @@
           "speed": 1.2
         },
         {
-          "who": "rabbit",
+          "who": "baku",
           "face": "normal",
-          "text": "じゃあ北斗無双も\n65%だったの？",
+          "text": "なあナギ、北斗無双も\n65%やったっけ？",
           "se": "pon"
         },
         {
-          "who": "cat",
-          "face": "jito",
-          "text": "いや、あいつは80%で\n2400発比率51%",
+          "who": "nagi",
+          "face": "explain",
+          "text": "いいえ、あちらは継続約80%\n2400発比率51%です",
           "color": "yellow",
           "se": "piko",
           "speed": 1.2,
@@ -453,9 +455,9 @@
           }
         },
         {
-          "who": "rabbit",
-          "face": "shock",
-          "text": "なんで？",
+          "who": "baku",
+          "face": "tsukkomi",
+          "text": "なんでや！",
           "se": "pon",
           "min": 0.9,
           "bg": {
@@ -493,9 +495,9 @@
           }
         },
         {
-          "who": "cat",
-          "face": "smug",
-          "text": "規制前に滑り込んだから",
+          "who": "nagi",
+          "face": "point",
+          "text": "規制前に導入された\n機種だからですね",
           "se": "pon",
           "bgm_cut": true,
           "bg": {
@@ -606,37 +608,40 @@
       },
       "items": [
         {
-          "who": "narrator",
+          "who": "nagi",
           "text": "継続率65%の規制のもと\nメーカー各社は出玉や仕組みで\n性能を補う工夫を重ねた",
           "se": "taiko",
           "speed": 1.2,
           "bgm_resume": true,
           "hold_before": true,
-          "label": "まとめ"
+          "label": "まとめ",
+          "face": "point"
         },
         {
-          "who": "narrator",
+          "who": "nagi",
           "text": "中でもシンフォギアは\n残保留を使う仕組みで\n実質約80%の継続を実現した",
           "se": "pon",
           "speed": 1.2,
-          "label": "まとめ"
+          "label": "まとめ",
+          "face": "explain"
         },
         {
-          "who": "narrator",
-          "text": "一方の北斗無双は規制前の\n約80%継続のまま、CR機の撤去が\n終わる2022年まで稼働を続けた",
+          "who": "nagi",
+          "text": "一方の北斗無双は\n規制前の約80%継続のまま\n2022年のCR機撤去まで\n稼働を続けた",
           "se": "pon",
           "speed": 1.2,
-          "label": "まとめ"
+          "label": "まとめ",
+          "face": "explain"
         },
         {
-          "who": "rabbit",
-          "face": "normal",
-          "text": "みんなが一番打った\n65%時代の台はどれ？\nコメントで教えてね",
+          "who": "baku",
+          "face": "max",
+          "text": "みんなが一番打った\n65%時代の台、\nコメントで教えてや！",
           "se": "piko"
         }
       ]
     }
   ],
-  "credits": "VOICEVOX:ずんだもん / VOICEVOX:四国めたん / VOICEVOX:春日部つむぎ / VOICEVOX:白上虎太郎",
+  "credits": "VOICEVOX:ずんだもん / VOICEVOX:四国めたん / VOICEVOX:冥鳴ひまり / VOICEVOX:白上虎太郎",
   "bgm_gain": 0.55
 }

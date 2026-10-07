@@ -150,7 +150,7 @@ def make_voice(items, ep, cache_dir):
     board_cycle = voices["board"]
     bi = 0
     for it in items:
-        who = it.get("who", "board")
+        who = norm_who(it.get("who", "board"))
         if who == "board":
             v = board_cycle[bi % len(board_cycle)]; bi += 1
         else:
@@ -185,6 +185,42 @@ def make_voice(items, ep, cache_dir):
 
 
 # ---------------------------------------------------------------- 画面
+ALIAS = {"rabbit": "nagi", "cat": "baku", "usagi": "nagi", "neko": "baku"}
+IDLE_FACE = {"nagi": "normal", "baku": "normal"}
+FACE_ALIAS = {"shock": "surprise", "smug": "explain", "jito": "mutto", "angry": "tsukkomi", "cry": "surprise"}
+
+
+def norm_who(w):
+    return ALIAS.get(w, w)
+
+
+def pick_face(c, it):
+    """セリフの中身から表情を選ぶ（face 指定があればそれを優先）。
+    ナギ: normal / explain / think / surprise / point
+    バク: normal / max / tsukkomi / mutto / cheer"""
+    f = it.get("face")
+    if f:
+        f = FACE_ALIAS.get(f, f) if f not in ("normal",) else f
+        if f in ("normal", "explain", "think", "surprise", "point", "max", "tsukkomi", "mutto", "cheer"):
+            if c == "baku" and f == "surprise": return "max"
+            if c == "baku" and f == "explain": return "normal"
+            if c == "nagi" and f in ("max", "cheer"): return "explain"
+            if c == "nagi" and f in ("tsukkomi", "mutto"): return "think"
+            return f
+    t = it["text"]
+    if c == "nagi":
+        if "？" in t or "?" in t or "かな" in t: return "think"
+        if "！？" in t or "えっ" in t: return "surprise"
+        if any(k in t for k in ("まとめ", "つまり", "ポイント")): return "point"
+        if any(ch.isdigit() for ch in t): return "explain"
+        return "normal"
+    if any(k in t for k in ("だろ", "やろ", "なんで", "おかしい", "やんけ")): return "tsukkomi"
+    if any(k in t for k in ("草", "w", "ｗ", "最高", "！！")): return "max"
+    if any(k in t for k in ("…", "ずる", "納得いかん")): return "mutto"
+    if "！" in t: return "cheer"
+    return "normal"
+
+
 def draw_stroked(draw, xy, text, fnt, fill, stroke, anchor="mm"):
     draw.text(xy, text, font=fnt, fill=fill, stroke_width=stroke,
               stroke_fill=(0, 0, 0), anchor=anchor)
@@ -207,14 +243,12 @@ class Painter:
         self.ep = ep
         self.ep_dir = ep_dir
         self.hall = Image.open(ASSETS / "backgrounds" / "hall_real.png").convert("RGB").resize((W, H))
+        # 固定キャラ：ナギ（うさぎ・左下）とバク（ねこ・右下）
         self.chars = {}
-        for who in ("rabbit", "cat"):
+        for who in ("nagi", "baku"):
             d = {}
             for p in (ASSETS / "characters" / who).glob("*.png"):
-                im = Image.open(p).convert("RGBA")
-                if who == "cat":
-                    im = im.transpose(Image.FLIP_LEFT_RIGHT)
-                d[p.stem] = im
+                d[p.stem] = Image.open(p).convert("RGBA")
             self.chars[who] = d
         self.bg_cache = {}
 
@@ -335,18 +369,18 @@ class Painter:
             d.rectangle((x0, y0, x1, y1), outline=(255, 255, 255), width=4)
             draw_stroked(d, ((x0 + x1) / 2, (y0 + y1) / 2), topic, ft, (255, 255, 255), 6)
 
-        # キャラ（左下うさぎ・右下ねこ）。しゃべっている方を大きく前に
-        who = it.get("who", "board")
-        for c, x_left in (("rabbit", True), ("cat", False)):
+        # キャラ（ナギ＝左下、バク＝右下、どちらも中央向き）。しゃべっている方を大きく
+        who = norm_who(it.get("who", "board"))
+        for c, x_left in (("nagi", True), ("baku", False)):
             talking = (who == c)
-            face = it.get("face", "normal") if talking else "normal"
+            face = pick_face(c, it) if talking else IDLE_FACE[c]
             src = self.chars[c].get(face) or self.chars[c]["normal"]
-            hgt = 430 if talking else 330
-            ch = src.resize((int(src.width * hgt / src.height), hgt))
-            if not talking and who != "board":
-                ch = Image.blend(Image.new("RGBA", ch.size, (0, 0, 0, 0)), ch, 0.85)
-            x = 10 if x_left else W - ch.width - 10
-            im.alpha_composite(ch, (x, H - ch.height - 10))
+            hgt = 300 if talking else 240
+            ch = src.resize((int(src.width * hgt / src.height), hgt), Image.LANCZOS)
+            if who in ("nagi", "baku") and not talking:
+                ch = Image.blend(Image.new("RGBA", ch.size, (0, 0, 0, 0)), ch, 0.8)
+            x = 8 if x_left else W - ch.width - 8
+            im.alpha_composite(ch, (x, H - ch.height))
 
         # テロップ（下部中央・下端から約12%）
         size = it.get("size", "normal")
@@ -358,7 +392,7 @@ class Painter:
         color = COLORS[it.get("color", "white")]
         # 固定吹き出し（大きさは毎回同じ＝切替でガタつかない）
         bub = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        ImageDraw.Draw(bub).rounded_rectangle((290, 610, W - 290, 985), 40, fill=(0, 0, 0, 115),
+        ImageDraw.Draw(bub).rounded_rectangle((320, 610, W - 320, 985), 40, fill=(0, 0, 0, 115),
                                                outline=(255, 255, 255, 150), width=4)
         im.alpha_composite(bub)
         d = ImageDraw.Draw(im)
@@ -366,12 +400,12 @@ class Painter:
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, fnt, color, STROKE[size])
 
         # キャラの名札
-        if who in ("rabbit", "cat", "narrator"):
-            name = it.get("label") or {"rabbit": "うさぎ", "cat": "ねこ", "narrator": "概要"}[who]
-            col = {"rabbit": (255, 120, 160), "cat": (255, 150, 40), "narrator": (70, 90, 120)}[who]
+        if who in ("nagi", "baku", "narrator"):
+            name = it.get("label") or {"nagi": "ナギ", "baku": "バク", "narrator": "概要"}[who]
+            col = {"nagi": (30, 80, 200), "baku": (220, 60, 30), "narrator": (70, 90, 120)}[who]
             fn = font(44)
             tw = d.textlength(name, font=fn)
-            nx = W // 2; ny = top - 46
+            nx = 330 + tw / 2 + 50; ny = 628
             d.rounded_rectangle((nx - tw / 2 - 26, ny - 32, nx + tw / 2 + 26, ny + 32), 18, fill=col,
                                 outline=(0, 0, 0), width=5)
             d.text((nx, ny), name, font=fn, fill=(255, 255, 255), anchor="mm",
