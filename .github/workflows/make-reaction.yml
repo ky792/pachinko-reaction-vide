@@ -63,6 +63,7 @@ jobs:
           test -f "episodes/$EP/reaction.json" || { echo "::error::episodes/$EP/reaction.json がありません"; exit 1; }
           python reaction/make_video.py "episodes/$EP/reaction.json" -o "output/${EP}.mp4"
           cp work/reaction/timeline.json "output/${EP}_timeline.json"
+          cat "output/${EP}_credits.txt" || true
 
       - name: Upload result
         uses: actions/upload-artifact@v4
@@ -78,7 +79,7 @@ jobs:
         env:
           TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/
+          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/ && cp output/${EP}_credits.txt /tmp/outbranch/ 2>/dev/null || true
           cd /tmp/outbranch
           git init -q -b "outputs-${EP}"
           git config user.name "github-actions[bot]"
