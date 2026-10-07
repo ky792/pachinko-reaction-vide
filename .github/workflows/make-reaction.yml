@@ -57,6 +57,7 @@ jobs:
         run: |
           for i in $(seq 1 60); do curl -sf "$VOICEVOX_URL/version" && break; sleep 3; done
           curl -sf "$VOICEVOX_URL/version" || { echo "::error::VOICEVOX が起動しませんでした"; exit 1; }
+          mkdir -p output && curl -sf "$VOICEVOX_URL/speakers" | python -c "import json,sys;print('\n'.join(sp['name']+': '+', '.join(f\"{st['name']}={st['id']}\" for st in sp['styles']) for sp in json.load(sys.stdin)))" > output/voicevox_speakers.txt
 
       - name: Render
         run: |
@@ -79,7 +80,7 @@ jobs:
         env:
           TOKEN: ${{ github.token }}
         run: |
-          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/ && cp output/${EP}_credits.txt /tmp/outbranch/ 2>/dev/null || true
+          mkdir -p /tmp/outbranch && cp output/${EP}.mp4 output/${EP}_timeline.json /tmp/outbranch/ && cp output/${EP}_credits.txt output/voicevox_speakers.txt /tmp/outbranch/ 2>/dev/null || true
           cd /tmp/outbranch
           git init -q -b "outputs-${EP}"
           git config user.name "github-actions[bot]"
