@@ -241,7 +241,20 @@ class Painter:
             base = Image.blend(base, Image.new("RGB", (W, H), (0, 0, 0)), 0.45)
             s = min(1240 / src.width, 570 / src.height)
             fg = src.resize((int(src.width * s), int(src.height * s)))
-            base.paste(fg, ((W - fg.width) // 2, 24))
+            if bg.get("spec"):
+                # 実機（左）＋スペック表（右）を並べる
+                card = self.spec_card(bg["spec"])
+                gap = 40
+                tot = fg.width + gap + card.width
+                x0 = (W - tot) // 2
+                base.paste(fg, (x0, 24))
+                base.paste(card, (x0 + fg.width + gap, 140), card)
+            else:
+                base.paste(fg, ((W - fg.width) // 2, 24))
+        elif bg.get("spec"):
+            base = Image.blend(base.filter(ImageFilter.GaussianBlur(6)), Image.new("RGB", (W, H), (0, 0, 0)), 0.45)
+            card = self.spec_card(bg["spec"])
+            base.paste(card, ((W - card.width) // 2, 140), card)
         else:
             # 画像が無い時：ホール背景を暗くして、機種名パネルを出す
             base = Image.blend(base.filter(ImageFilter.GaussianBlur(3)), Image.new("RGB", (W, H), (0, 0, 0)), 0.42)
@@ -260,6 +273,31 @@ class Painter:
                     draw_stroked(d, (W // 2, y0 + 35 + lh * i + lh // 2), l, f1, (255, 255, 255), 8)
         self.bg_cache[key] = base
         return base
+
+    def spec_card(self, spec):
+        """スペック表の画像を作る。rows: [[項目, 値, 強調色(任意)], ...]"""
+        rows = spec["rows"]
+        cw = spec.get("width", 760)
+        head_h, row_h, pad = 80, 68, 18
+        ch = head_h + row_h * len(rows) + pad * 2
+        card = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+        d = ImageDraw.Draw(card)
+        d.rounded_rectangle((0, 0, cw - 1, ch - 1), 26, fill=(14, 16, 28, 235), outline=(255, 222, 0), width=6)
+        d.rounded_rectangle((0, 0, cw - 1, head_h), 26, fill=(200, 28, 40))
+        d.rectangle((0, head_h - 26, cw - 1, head_h), fill=(200, 28, 40))
+        title = spec["title"]
+        ft = font(52 if len(title) <= 13 else 42)
+        d.text((cw / 2, head_h / 2 + 2), title, font=ft, fill=(255, 255, 255), anchor="mm",
+               stroke_width=5, stroke_fill=(0, 0, 0))
+        fk, fv = font(38), font(46)
+        for i, r in enumerate(rows):
+            y = head_h + pad + row_h * i + row_h / 2
+            if i:
+                d.line((28, y - row_h / 2, cw - 28, y - row_h / 2), fill=(255, 255, 255, 60), width=2)
+            d.text((36, y), r[0], font=fk, fill=(200, 205, 220), anchor="lm")
+            col = COLORS.get(r[2], (255, 255, 255)) if len(r) > 2 and r[2] else (255, 255, 255)
+            d.text((cw - 36, y), r[1], font=fv, fill=col, anchor="rm", stroke_width=4, stroke_fill=(0, 0, 0))
+        return card
 
     def title_frame(self, it):
         im = Image.blend(self.hall.filter(ImageFilter.GaussianBlur(6)), Image.new("RGB", (W, H), (0, 0, 0)), 0.5).convert("RGBA")
@@ -283,7 +321,7 @@ class Painter:
     def frame(self, sec, it):
         if it.get("title"):
             return self.title_frame(it)
-        im = self.background(sec).copy().convert("RGBA")
+        im = self.background({"bg": it.get("bg", sec.get("bg", {}))}).copy().convert("RGBA")
         d = ImageDraw.Draw(im)
 
         # 右上トピック
@@ -329,7 +367,7 @@ class Painter:
 
         # キャラの名札
         if who in ("rabbit", "cat", "narrator"):
-            name = {"rabbit": "うさぎ", "cat": "ねこ", "narrator": "概要"}[who]
+            name = it.get("label") or {"rabbit": "うさぎ", "cat": "ねこ", "narrator": "概要"}[who]
             col = {"rabbit": (255, 120, 160), "cat": (255, 150, 40), "narrator": (70, 90, 120)}[who]
             fn = font(44)
             tw = d.textlength(name, font=fn)
@@ -433,10 +471,15 @@ def main():
         reps = int(np.ceil(n_total / len(b)))
         bgm = np.tile(b, reps)[:n_total]
         cut = next((it["_bgm_cut_at"] for it in items if "_bgm_cut_at" in it), None)
+        resume = next((it["_start"] for it in items if it.get("bgm_resume")), None)
         if cut is not None:
             c = int(cut * SR); fade = int(0.03 * SR)
             bgm[c:c + fade] *= np.linspace(1, 0, fade)
-            bgm[c + fade:] = 0
+            r = int(resume * SR) if resume is not None else n_total
+            bgm[c + fade:r] = 0
+            if resume is not None:
+                fi = int(0.4 * SR)
+                bgm[r:r + fi] *= np.linspace(0, 1, len(bgm[r:r + fi]))
     mix = voice * VOICE_GAIN + se + bgm
     peak = np.max(np.abs(mix))
     if peak > 0.98:
