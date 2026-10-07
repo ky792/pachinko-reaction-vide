@@ -69,6 +69,14 @@
     "慶次X": "慶次エックス",
     "CR機": "シーアール機",
     "即落ち": "即おち",
+    "65%": "ロクジュウゴパーセント",
+    "80%": "ハチジュッパーセント",
+    "27%": "ニジュウナナパーセント",
+    "51%": "ゴジュウイチパーセント",
+    "64%": "ロクジュウヨンパーセント",
+    "50%": "ゴジュッパーセント",
+    "35%": "サンジュウゴパーセント",
+    "52%": "ゴジュウニパーセント",
     "“": "",
     "”": "",
     "草": "くさ"
@@ -873,49 +881,49 @@
       "accent_type": 1
     },
     {
-      "surface": "65%",
+      "surface": "16R",
+      "pronunciation": "ジュウロクアール",
+      "accent_type": 5
+    },
+    {
+      "surface": "ロクジュウゴパーセント",
       "pronunciation": "ロクジュウゴパーセント",
       "accent_type": 6
     },
     {
-      "surface": "80%",
+      "surface": "ハチジュッパーセント",
       "pronunciation": "ハチジュッパーセント",
       "accent_type": 5
     },
     {
-      "surface": "27%",
+      "surface": "ニジュウナナパーセント",
       "pronunciation": "ニジュウナナパーセント",
       "accent_type": 6
     },
     {
-      "surface": "51%",
+      "surface": "ゴジュウイチパーセント",
       "pronunciation": "ゴジュウイチパーセント",
       "accent_type": 6
     },
     {
-      "surface": "64%",
+      "surface": "ロクジュウヨンパーセント",
       "pronunciation": "ロクジュウヨンパーセント",
       "accent_type": 7
     },
     {
-      "surface": "50%",
+      "surface": "ゴジュッパーセント",
       "pronunciation": "ゴジュッパーセント",
       "accent_type": 4
     },
     {
-      "surface": "35%",
+      "surface": "サンジュウゴパーセント",
       "pronunciation": "サンジュウゴパーセント",
       "accent_type": 6
     },
     {
-      "surface": "52%",
+      "surface": "ゴジュウニパーセント",
       "pronunciation": "ゴジュウニパーセント",
       "accent_type": 6
-    },
-    {
-      "surface": "16R",
-      "pronunciation": "ジュウロクアール",
-      "accent_type": 5
     }
   ]
 }
