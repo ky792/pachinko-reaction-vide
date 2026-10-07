@@ -721,4 +721,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit as e:
+        if e.code not in (0, None):
+            print(f"::error::{e.code}")
+        raise
+    except Exception:
+        import traceback
+        tb = traceback.format_exc()
+        print("::error::" + tb.replace("\n", "%0A"))
+        raise
