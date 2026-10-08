@@ -328,6 +328,24 @@ def corner_glow():
     return Image.fromarray(g.astype(np.uint8), "RGBA")
 
 
+def punch(fr, tau):
+    """大オチだけ：ズームで叩きつけ＋一瞬の揺れ"""
+    import math
+    if tau > 0.45:
+        return fr
+    z = 1.0 + 0.10 * max(0.0, 1 - tau / 0.16) ** 2
+    shake = int(14 * math.sin(tau * 90) * max(0.0, 1 - tau / 0.45))
+    if z > 1.001:
+        w2, h2 = int(W * z), int(H * z)
+        big = fr.resize((w2, h2), Image.BILINEAR)
+        fr = big.crop(((w2 - W) // 2, (h2 - H) // 2, (w2 - W) // 2 + W, (h2 - H) // 2 + H))
+    if shake:
+        out = Image.new("RGB", (W, H), (0, 0, 0))
+        out.paste(fr, (shake, 0))
+        fr = out
+    return fr
+
+
 def ease_out_back(x):
     c1 = 1.70158; c3 = c1 + 1
     return 1 + c3 * (x - 1) ** 3 + c1 * (x - 1) ** 2
@@ -612,7 +630,7 @@ class Painter:
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, fnt, color, STROKE[size])
 
         # キャラの名札
-        if who in ("nagi", "baku", "narrator"):
+        if who in ("nagi", "baku", "narrator") and not it.get("notag"):
             name = it.get("label") or {"nagi": "ナギ", "baku": "バク", "narrator": "概要"}[who]
             col = {"nagi": (30, 80, 200), "baku": (220, 60, 30), "narrator": (70, 90, 120)}[who]
             fn = font(44)
@@ -658,8 +676,9 @@ def main():
     for it in items:
         if it.get("bgm_cut"):
             it["_bgm_cut_at"] = t
-        if it.get("hold_before"):
-            t += OCHI_HOLD
+        hb = it.get("hold_before")
+        if hb:
+            t += hb if (isinstance(hb, (int, float)) and not isinstance(hb, bool)) else OCHI_HOLD
         dur = len(it["_voice"]) / SR + GAP
         dur = max(dur, it.get("min", 1.2))
         it["_start"], it["_dur"] = t, dur
@@ -699,6 +718,8 @@ def main():
             fr = painter.corner(layers[seg], it, t - starts[seg])
         else:
             fr = painter.chars(layers[seg], it, t - starts[seg], t)
+            if it.get("size") == "ochi":
+                fr = punch(fr, t - starts[seg])
         enc.stdin.write(fr.tobytes())
         if f % 300 == 0:
             print(f"  映像 {t:5.1f}/{total:.1f}秒")

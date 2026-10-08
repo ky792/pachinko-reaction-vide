@@ -656,16 +656,14 @@
                 ]
               ]
             }
-          },
-          "bgm_cut": true
+          }
         },
         {
-          "text": "お前だけ\n時代違うだろ",
-          "color": "blue",
-          "size": "ochi",
-          "se": "don",
-          "hold_before": true,
-          "min": 2.4,
+          "who": "baku",
+          "face": "mutto",
+          "text": "ずっる！\nでもさすがに\nすぐ撤去されたやろ？",
+          "say": "ずっる！でもさすがに、すぐ撤去されたやろ？",
+          "se": "pon",
           "bg": {
             "image": "hokuto_musou.jpg",
             "spec": {
@@ -694,6 +692,92 @@
                 [
                   "16R出玉",
                   "約2400個",
+                  "yellow"
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "who": "nagi",
+          "face": "explain",
+          "text": "いいえ。CR機が撤去される\n2022年まで、約6年間\nホールにいました",
+          "say": "いいえ。シーアール機が撤去される、2022年まで。約6年間、ホールにいました。",
+          "se": "pon",
+          "bg": {
+            "image": "hokuto_musou.jpg",
+            "spec": {
+              "title": "CR真・北斗無双",
+              "rows": [
+                [
+                  "導入",
+                  "2016年3月",
+                  "red"
+                ],
+                [
+                  "65%規制の試験",
+                  "2016年4月〜",
+                  null
+                ],
+                [
+                  "ST継続率",
+                  "約80%",
+                  "red"
+                ],
+                [
+                  "電サポ中16R比率",
+                  "51%",
+                  "yellow"
+                ],
+                [
+                  "稼働",
+                  "〜2022年1月（約6年）",
+                  "yellow"
+                ]
+              ]
+            }
+          },
+          "bgm_cut": true
+        },
+        {
+          "who": "baku",
+          "face": "tsukkomi",
+          "notag": true,
+          "text": "お前だけ\n時代違うだろ！",
+          "say": "お前だけ、時代違うやろ！",
+          "color": "blue",
+          "size": "ochi",
+          "se": "don",
+          "hold_before": 0.7,
+          "min": 2.6,
+          "bg": {
+            "image": "hokuto_musou.jpg",
+            "spec": {
+              "title": "CR真・北斗無双",
+              "rows": [
+                [
+                  "導入",
+                  "2016年3月",
+                  "red"
+                ],
+                [
+                  "65%規制の試験",
+                  "2016年4月〜",
+                  null
+                ],
+                [
+                  "ST継続率",
+                  "約80%",
+                  "red"
+                ],
+                [
+                  "電サポ中16R比率",
+                  "51%",
+                  "yellow"
+                ],
+                [
+                  "稼働",
+                  "〜2022年1月（約6年）",
                   "yellow"
                 ]
               ]
@@ -760,12 +844,12 @@
         },
         {
           "who": "nagi",
-          "text": "一方の北斗無双は\n規制前の約80%継続のまま\n2022年のCR機撤去まで\n稼働を続けた",
+          "text": "一方の北斗無双は\n規制前のスペックのまま\n65%時代を最後まで\n生き抜いた",
           "se": "pon",
           "speed": 1.2,
           "label": "まとめ",
           "face": "explain",
-          "say": "一方の北斗無双は、規制前の約80%継続のまま、2022年のCR機撤去まで、稼働を続けた。"
+          "say": "一方の北斗無双は、規制前のスペックのまま、65%時代を、最後まで生き抜いた。"
         },
         {
           "who": "baku",
@@ -793,7 +877,7 @@
     }
   ],
   "credits": "VOICEVOX:ずんだもん / VOICEVOX:四国めたん / VOICEVOX:冥鳴ひまり / VOICEVOX:白上虎太郎",
-  "bgm_gain": 0.55,
+  "bgm_gain": 0.85,
   "aivis_models": [
     "4f281e78-eba6-495a-8e50-5c322d02b5b1",
     "9f36ec0d-8dac-42dc-aff4-149c5f99faad"
