@@ -429,6 +429,12 @@ class Painter:
     def __init__(self, ep, ep_dir):
         self.ep = ep
         self.ep_dir = ep_dir
+        # board_style=nagi_data：レスを「ナギが集めたデータ」として通し番号を振る
+        n = 0
+        for sec in ep["sections"]:
+            for it in sec["items"]:
+                if norm_who(it.get("who", "board")) == "board" and not it.get("corner") and not it.get("title"):
+                    n += 1; it["_no"] = n
         self.hall = Image.open(ASSETS / "backgrounds" / (ep.get("background") or "hall_anime.png")).convert("RGB").resize((W, H))
         # 固定キャラ：ナギ（うさぎ・左下）とバク（ねこ・右下）。全身・白フチ付きで前計算
         self.sprites = {}
@@ -634,10 +640,33 @@ class Painter:
         color = COLORS[it.get("color", "white")]
         # 固定吹き出し（大きさは毎回同じ＝切替でガタつかない）
         bub = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        ImageDraw.Draw(bub).rounded_rectangle((320, 610, W - 320, 985), 40, fill=(0, 0, 0, 115),
-                                               outline=(255, 255, 255, 150), width=4)
+        data_card = (self.ep.get("board_style") == "nagi_data" and who == "board" and "_no" in it)
+        if data_card:
+            # ナギのタブレット画面風：紺の画面＋水色の枠＋うっすら罫線
+            bd = ImageDraw.Draw(bub)
+            bd.rounded_rectangle((320, 610, W - 320, 985), 40, fill=(6, 22, 60, 150),
+                                 outline=(120, 200, 255, 230), width=6)
+            for yy in range(700, 970, 64):
+                bd.line((370, yy, W - 370, yy), fill=(120, 200, 255, 28), width=2)
+        else:
+            ImageDraw.Draw(bub).rounded_rectangle((320, 610, W - 320, 985), 40, fill=(0, 0, 0, 115),
+                                                   outline=(255, 255, 255, 150), width=4)
         im.alpha_composite(bub)
         d = ImageDraw.Draw(im)
+        if data_card:
+            tags = [(f"ナギの収集データ  No.{it['_no']:03d}", (30, 80, 200), 330, "l")]
+            right = self.ep.get("board_tag")
+            if right:
+                tags.append((right, (20, 40, 80), W - 330, "r"))
+            fn = font(40)
+            for name, col, edge, side in tags:
+                tw = d.textlength(name, font=fn)
+                nx = edge + tw / 2 + 50 if side == "l" else edge - tw / 2 - 50
+                ny = 616
+                d.rounded_rectangle((nx - tw / 2 - 26, ny - 30, nx + tw / 2 + 26, ny + 30), 16, fill=col,
+                                    outline=(120, 200, 255) if side == "l" else (0, 0, 0), width=5)
+                d.text((nx, ny), name, font=fn, fill=(255, 255, 255), anchor="mm",
+                       stroke_width=4, stroke_fill=(0, 0, 0))
         for i, l in enumerate(lines):
             draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, fnt, color, STROKE[size])
 
