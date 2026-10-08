@@ -98,6 +98,18 @@ def synth_se(kind):
             a = 0.08 + 0.6 * (1 - t[i] / 0.35)
             y += a * (noise[i] - y); out[i] = y
         x = out * np.sin(np.pi * np.clip(t / 0.35, 0, 1)) ** 1.5
+    elif kind == "impact":
+        # 大オチ用：低い衝撃音＋金属っぽいクラッシュ＋余韻
+        n = int(1.8 * SR); t = np.arange(n) / SR
+        rng = np.random.default_rng(7)
+        f = 70 * np.exp(-t * 3.0) + 32
+        boom = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.55) * np.clip(t / 0.002, 0, 1)
+        noise = rng.standard_normal(n)
+        hp = noise - np.convolve(noise, np.ones(6) / 6, "same")          # 高域だけ残す
+        crash = hp * np.exp(-t / 0.35) * 0.9
+        thud = np.convolve(noise, np.ones(30) / 30, "same") * np.exp(-t / 0.05) * 3.0
+        stab = sum(np.sin(2 * np.pi * fr_ * t) for fr_ in (220, 277, 330, 440)) * np.exp(-t / 0.4) * 0.25
+        x = boom * 1.2 + crash + thud + stab
     elif kind == "don":
         n = int(1.2 * SR); t = np.arange(n) / SR
         f = 90 * np.exp(-t * 2.5) + 38
@@ -739,7 +751,8 @@ def main():
                 se_cache[kind] = synth_se(kind)
             s = se_cache[kind]
             if s is not None:
-                se[a:a + len(s)] += s[: n_total - a]
+                g = it.get("se_gain", 1.0)
+                se[a:a + len(s)] += (s * g)[: n_total - a]
     se *= 0.85 * SE_GAIN  # 声のピーク付近に対して70%
 
     bgm = np.zeros(n_total, np.float32)

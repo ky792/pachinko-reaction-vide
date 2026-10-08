@@ -554,21 +554,24 @@
           "text": "なあナギ、この時代の新台って\nみんな65%なんやろ？",
           "say": "なあナギ、この時代の新台って、みんな65%なんやろ？",
           "face": "normal",
-          "se": "piko"
+          "se": "piko",
+          "speed": 1.35
         },
         {
           "who": "nagi",
           "text": "はい。2016年4月以降に\n試験を受けた台は\n65%が上限です",
           "say": "はい。2016年4月以降に試験を受けた台は、65%が上限です。",
           "face": "explain",
-          "se": "pon"
+          "se": "pon",
+          "speed": 1.3
         },
         {
           "who": "baku",
           "text": "ほな北斗無双も\n65%やんな？",
           "say": "ほな、北斗無双も、65%やんな？",
           "face": "normal",
-          "se": "piko"
+          "se": "piko",
+          "speed": 1.35
         },
         {
           "who": "nagi",
@@ -609,14 +612,16 @@
               ]
             }
           },
-          "color": "yellow"
+          "color": "yellow",
+          "speed": 1.3
         },
         {
           "who": "baku",
           "text": "なんでや！\n同じ時代の台やろ！",
           "say": "なんでや！同じ時代の台やろ！",
           "face": "tsukkomi",
-          "se": "piko"
+          "se": "piko",
+          "speed": 1.35
         },
         {
           "who": "nagi",
@@ -656,7 +661,8 @@
                 ]
               ]
             }
-          }
+          },
+          "speed": 1.3
         },
         {
           "who": "baku",
@@ -696,7 +702,8 @@
                 ]
               ]
             }
-          }
+          },
+          "speed": 1.35
         },
         {
           "who": "nagi",
@@ -737,7 +744,8 @@
               ]
             }
           },
-          "bgm_cut": true
+          "bgm_cut": true,
+          "speed": 1.3
         },
         {
           "who": "baku",
@@ -747,7 +755,7 @@
           "say": "お前だけ、時代違うやろ！",
           "color": "blue",
           "size": "ochi",
-          "se": "don",
+          "se": "impact",
           "hold_before": 0.7,
           "min": 2.6,
           "bg": {
@@ -782,7 +790,9 @@
                 ]
               ]
             }
-          }
+          },
+          "speed": 1.35,
+          "se_gain": 1.35
         }
       ]
     },
