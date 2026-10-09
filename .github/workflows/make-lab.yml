@@ -1,0 +1,83 @@
+name: Render NagiBaku Lab explainer
+
+# Lab = documentary/explainer workflow. Does not call reaction/ or old generator.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "demo / stills / chapter / full"
+        type: choice
+        options:
+          - demo
+          - stills
+          - chapter
+          - full
+        default: demo
+      episode:
+        description: "Episode folder under episodes/ (for stills/chapter/full)"
+        type: string
+        default: ken_full
+      chapter:
+        description: "Chapter filename prefix when mode=chapter"
+        type: string
+        default: "02"
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install render dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg fonts-noto-cjk fonts-noto-cjk-extra
+          python -m pip install "pillow>=10" "numpy>=1.24" "scipy>=1.10"
+      - name: Validate selected target
+        env:
+          MODE: ${{ inputs.mode }}
+          EP: ${{ inputs.episode }}
+          CHAPTER: ${{ inputs.chapter }}
+        run: |
+          [[ "$EP" =~ ^[a-zA-Z0-9_-]+$ ]] || { echo "::error::Unsafe episode name"; exit 1; }
+          [[ "$CHAPTER" =~ ^[a-zA-Z0-9_-]+$ ]] || { echo "::error::Unsafe chapter"; exit 1; }
+          if [ "$MODE" != "demo" ]; then
+            test -f "episodes/$EP/data.json" || { echo "::error::Missing episode data.json"; exit 1; }
+            test -d "episodes/$EP/script" || { echo "::error::Missing episode scripts"; exit 1; }
+          fi
+      - name: Render selected mode
+        env:
+          MODE: ${{ inputs.mode }}
+          EP: ${{ inputs.episode }}
+          CHAPTER: ${{ inputs.chapter }}
+        run: |
+          mkdir -p output
+          case "$MODE" in
+            demo)
+              python lab/render.py episodes/lab_motion_demo/scene.json -o output/lab_motion_demo.mp4
+              ;;
+            stills)
+              python lab/episode.py "episodes/$EP" --stills --out "output/$EP"
+              ;;
+            chapter)
+              python lab/episode.py "episodes/$EP" --only "$CHAPTER" --jobs 2 --out "output/$EP"
+              ;;
+            full)
+              python lab/episode.py "episodes/$EP" --jobs 2 --out "output/$EP"
+              ;;
+            *)
+              echo "::error::Unsupported render mode"; exit 1
+              ;;
+          esac
+      - name: Upload video / storyboard artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lab-${{ inputs.mode }}-${{ inputs.episode }}-${{ github.run_number }}
+          path: output/
+          if-no-files-found: error
+          retention-days: 7
