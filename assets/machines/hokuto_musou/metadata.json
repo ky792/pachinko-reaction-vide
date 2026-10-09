@@ -1,0 +1,24 @@
+{
+ "name": "CR真・北斗無双",
+ "maker": "サミー",
+ "how": "サミーに使用許諾を問い合わせる（下の candidates）。許諾が取れたら写真をこのフォルダに置き、license=permission・permission=granted・terms・credit を記入する",
+ "candidates": [
+  "サミー公式サイトの機種ページ（https://www.sammy.co.jp/）：画像の転載は許諾が必要。問い合わせフォームから『YouTubeの解説動画で実機画像を使いたい』と申請",
+  "版権元：北斗の拳（武論尊・原哲夫／コアミックス・NSP 等）、無双シリーズ（コーエーテクモゲームス）も権利者になる可能性があり、サミー経由で確認",
+  "自分で撮影した写真も、盤面のイラスト・ロゴは著作物なので、そのままでは自由に使えない（引用の条件を満たすかは要確認）"
+ ],
+ "photos": {
+  "front":    {"file": "front.png",    "what": "実機全体の正面", "cutout": true, "focus": [0.5, 0.45],
+               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー ほか（未確認）",
+               "terms": "", "scope": "", "credit": "", "credit_required": true},
+  "detail":   {"file": "detail.jpg",   "what": "盤面のアップ", "focus": [0.5, 0.4],
+               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー ほか（未確認）",
+               "terms": "", "scope": "", "credit": "", "credit_required": true},
+  "cabinet":  {"file": "cabinet.png",  "what": "筐体の特徴が分かる写真", "cutout": true, "focus": [0.5, 0.45],
+               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー ほか（未確認）",
+               "terms": "", "scope": "", "credit": "", "credit_required": true},
+  "official": {"file": "official.jpg", "what": "公式資料（チラシ・プレスリリース等）", "focus": [0.5, 0.4],
+               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー（未確認）",
+               "terms": "", "scope": "", "credit": "", "credit_required": true}
+ }
+}

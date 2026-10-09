@@ -88,3 +88,21 @@ B は「年表で年を示す → 実機が入る → 左へ寄る → 機種名
 | shock | 赤い保留（青→緑→赤で止める）→ 赤い数字＋低い衝撃音 | data.json の facts の数字を `バク!:` で驚く D | `@D:stat value=65 tone=shock` |
 
 効果音は全部 `v3/sfx.py` で合成したオリジナル（senbare / jingle / scan / slap / reel_* / reach / align / shock ほか）。
+
+## V4：写真の自動挿入（v3/photos.py ＋ assets/）
+
+1. 写真を `assets/machines/<機種キー>/` に置く（front＝正面、detail＝盤面アップ、cabinet＝筐体、official＝公式資料）
+2. 同じフォルダの `metadata.json` に出典URL・権利者・ライセンス・利用条件・クレジットを書く（形式は v3/photos.py の先頭）
+3. エピソードの data.json の機種に `"photos": "<機種キー>"` を書く。台本で機種名を言えば、その写真が自動で入る
+   - B 機種紹介：正面写真を背景から抜いて中央に着地（放射状の光・影・ジングル・機種名テロップ）→ 左に寄ってプロフィール（ゆっくりズーム）
+   - D 数字：写真カード（盤面アップ優先）＋保留変化 → カウントアップで円グラフ完成 → 強調
+   - D 比較：機種のカードに写真のサムネイル
+   - B→D は「注目スペックの行に寄って数字の画面へ」ズームで切り替わる
+4. ホール写真は `assets/halls/<キー>/`。台本で `@A:archive hall=<キー> year=〜2015 headline="…"` と書くと紙＋額縁の資料風で出る
+5. 写真が無い・許諾が未確認なら「仮素材」と明記した図に置き換わり、`episodes/<回>/MISSING_PHOTOS.md` に不足一覧が出る
+6. `--final` を付けると、許諾済み（permission=granted）か自由なライセンス（cc0 / cc-by / cc-by-sa / own / ai）の写真しか使わない
+
+縦横比：機種の正面は切らずに枠へ収め（contain、拡大は1.6倍まで）、背景や盤面は metadata の `focus`（被写体の位置）を中心に切り出す（cover）。どちらも縦横比は変えない。
+
+キャラ：`@host nagi size=200 pos=bl from=1.0 until="65%"` のように、大きさ・位置・表示時間（秒かセリフの語句）を指定できる。
+表情はセリフの内容で決まる（v3/hosts.py の EXPRESSIONS）。`<キャラ>/surprise.png` などの差分画像を置けば自動でそちらを使う。

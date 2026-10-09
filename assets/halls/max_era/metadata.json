@@ -1,0 +1,19 @@
+{
+ "name": "MAX機の時代のホール",
+ "how": "実写に差し替える場合：Wikimedia Commons の CC ライセンス写真を、撮影年（2015年以前）とライセンスを確認してダウンロードし real.jpg として置く。CC BY / BY-SA は作者名とライセンス名のクレジットが必要",
+ "candidates": [
+  "https://commons.wikimedia.org/wiki/Category:Interiors_of_pachinko_parlors",
+  "https://commons.wikimedia.org/wiki/File:Pachinko_parlor_dsc04790.jpg",
+  "https://commons.wikimedia.org/wiki/File:Pachinko_parlour.jpg",
+  "https://commons.wikimedia.org/wiki/File:At_Pachinko_Parlor.jpg"
+ ],
+ "photos": {
+  "main": {"file": "../../../generator/assets/backgrounds/hall_anime.png", "what": "ホール風景（イメージイラスト）",
+           "license": "ai", "permission": "granted", "source_url": "チャンネルで作成したAI生成イラスト",
+           "rights_holder": "チャンネル（きょうじ）", "terms": "自作素材", "scope": "制限なし",
+           "credit": "イメージ（AI生成イラスト）", "credit_required": true, "focus": [0.5, 0.5]},
+  "real": {"file": "real.jpg", "what": "当時のホール風景（実写）", "focus": [0.5, 0.5],
+           "license": "none", "permission": "none", "source_url": "", "rights_holder": "",
+           "terms": "", "scope": "", "credit": "", "credit_required": true}
+ }
+}

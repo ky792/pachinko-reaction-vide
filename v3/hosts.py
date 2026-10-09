@@ -17,7 +17,7 @@ from .style import ASSETS, W, H, put, prog, out3, back, inout
 DEFAULTS = {
     "A": {},                                                   # 歴史・資料：出さない
     "C": {},                                                   # 歴史：出さない
-    "B": {"speaker": {"size": 250, "pos": "auto"}},             # 機種紹介：話者を端に小さく
+    "B": {"speaker": {"size": 220, "pos": "auto"}},             # 実機紹介：話者を端に小さく（写真を隠さない）
     "D": {"baku_exclaim": {"size": 330, "pos": "br"}},          # 数字：基本出さない。バクの驚きだけ
     "E": {"nagi": {"size": 300, "pos": "bl"}},                 # 重要な解説：ナギ
     "F": {"nagi": {"size": 500, "pos": "l"}, "baku": {"size": 480, "pos": "r"}},   # 掛け合い：2人
@@ -71,7 +71,7 @@ def resolve(scene, line_who, exclaim=False):
         plan["baku"] = {"size": 320, "pos": "br", "force": True}
     if "speaker" in rule and line_who and line_who not in plan:
         plan[line_who] = dict(rule["speaker"])
-    if "baku_exclaim" in rule and line_who == "baku" and exclaim:
+    if "baku_exclaim" in rule and line_who == "baku" and exclaim and "baku" not in plan:
         plan["baku"] = dict(rule["baku_exclaim"])
     for who in ("nagi", "baku"):
         if who in rule:
@@ -113,16 +113,48 @@ def _tank_glow(cv, who, img, pos, t_line):
     put(cv, lay, (cx - lay.width / 2, cy - lay.height / 2), a)
 
 
-def draw(cv, scene, t_scene, who_speaking, line_t, exclaim):
+# セリフの内容 → 表情（差分画像があれば使う）と頭上の記号
+EXPRESSIONS = [
+    # (誰, 条件, 表情ファイル名, 頭上の記号)
+    ("baku", lambda tx, ex: ex and ("？" in tx or "?" in tx), "surprise", "question"),
+    ("baku", lambda tx, ex: "ややこし" in tx or "なんで" in tx, "confused", "sweat"),
+    ("baku", lambda tx, ex: ex, "surprise", "surprise"),
+    ("nagi", lambda tx, ex: any(w in tx for w in ("そういうこと", "つまり", "ポイント")), "explain", "spark"),
+    ("nagi", lambda tx, ex: True, "explain", None),
+    ("baku", lambda tx, ex: True, "talk", None),
+]
+
+
+def expression(who, text, exclaim):
+    for w, cond, face, emo in EXPRESSIONS:
+        if w == who and cond(text, exclaim):
+            return face, emo
+    return "normal", None
+
+
+def _window(scene, cfg):
+    """@host の from= / until= （秒 または セリフ中の語句）"""
+    def at(v, default):
+        if v is None:
+            return default
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return scene["cue"](v, default)
+    return at(cfg.get("from"), -1.0), at(cfg.get("until"), 1e9)
+
+
+def draw(cv, scene, t_scene, who_speaking, line_t, exclaim, line_text=""):
     """t_scene=シーン内の秒、line_t=今のセリフの経過秒"""
     plan = scene["_host_plan"](who_speaking, exclaim)
     for who, cfg in plan.items():
+        t_from, t_until = _window(scene, cfg)
+        if not (t_from <= t_scene <= t_until):
+            continue
         talking = who == who_speaking
-        face = "normal"
-        if talking and exclaim and has_face(who, EXCLAIM_FACE[who]):
-            face = EXCLAIM_FACE[who]
-        elif talking and has_face(who, TALK_FACE[who]):
-            face = TALK_FACE[who]
+        face, emo = expression(who, line_text, exclaim) if talking else ("normal", None)
+        if not has_face(who, face):
+            face = "normal"
         sp = sprite(who, cfg["size"], face)
         first = scene.get("_host_first", {}).get(who, 0.0)
         pk = prog(t_scene, first, 0.45)
@@ -149,5 +181,8 @@ def draw(cv, scene, t_scene, who_speaking, line_t, exclaim):
         put(cv, img, pos, a)
         if talking and not exclaim and scene["template"] in ("B", "E", "F"):
             _tank_glow(cv, who, img, pos, line_t)
-        if talking and exclaim and face == "normal":     # 表情差分がないときは頭上の記号で驚きを出す
-            fx.emote(cv, "surprise", (cx + img.width * 0.18, pos[1] + 30), line_t, 0.05, scale=cfg["size"] / 330)
+        if talking and emo and (face == "normal" or emo == "spark") and line_t < 1.4:
+            # 表情差分がないときは頭上の記号で気持ちを出す（ナギの「ひらめき」は控えめに短く）
+            sc_ = cfg["size"] / 330 * (0.7 if who == "nagi" else 1.0)
+            if exclaim or line_t < 1.2:
+                fx.emote(cv, emo, (cx + img.width * 0.18, pos[1] + 30), line_t, 0.05, scale=sc_)

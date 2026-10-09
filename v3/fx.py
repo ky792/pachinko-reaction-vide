@@ -90,7 +90,7 @@ def hold_orb(cv, center, r, t, steps, burst_at=None):
 # ---------------------------------------------------------------- 期待度ゲージ
 def gauge(cv, xy, w, h, k, label="期待度", segs=10):
     x, y = xy
-    lay = Image.new("RGBA", (w + 200, h + 60), (0, 0, 0, 0))
+    lay = Image.new("RGBA", (w + 320, h + 60), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
     d.text((0, h / 2 + 20), label, font=font("black", 34), fill=TEXT, anchor="lm", stroke_width=4, stroke_fill=NAVY)
     gx = 150
@@ -244,9 +244,10 @@ def emote(cv, kind, xy, t, t0, scale=1.0):
     s = scale * (0.4 + 0.6 * back(k, 2.0))
     lay = Image.new("RGBA", (220, 160), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    if kind == "surprise":
+    if kind in ("surprise", "question"):
         for i, ang in enumerate((-12, 10)):
-            tl = text_layer("！", font("black", 110), (255, 220, 60), stroke=8, stroke_fill=(120, 40, 0), pad=4)
+            ch = "！？"[i] if kind == "question" else "！"
+            tl = text_layer(ch, font("black", 110), (255, 220, 60), stroke=8, stroke_fill=(120, 40, 0), pad=4)
             tl = tl.rotate(ang, expand=True, resample=Image.BICUBIC)
             lay.alpha_composite(tl, (10 + 80 * i, 0))
     elif kind == "sweat":

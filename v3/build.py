@@ -22,12 +22,13 @@ from PIL import Image, ImageDraw, ImageFilter
 
 from . import fx, hosts, moments, sfx
 from .media import Library
+from .photos import PhotoLib
 from .planner import Planner
 from .style import (W, H, FPS, SR, ROOT, NAVY, TEXT, SPEAKER, NAME, font, prog, out3, inout, put, fade_img,
                     text_layer, bottom_shade, program_tag)
 from .templates import TEMPLATES
 
-TRANS_DUR = {"cut": 0.0, "fade": 0.35, "zoom": 0.32, "push": 0.45}
+TRANS_DUR = {"cut": 0.0, "fade": 0.35, "zoom": 0.45, "push": 0.45}
 
 
 # ---------------------------------------------------------------- シーンの準備
@@ -168,7 +169,7 @@ def scene_frame(sc, t_abs, lib, with_hosts=True):
         ln = current_line(sc, t_abs)
         who = ln["who"] if ln else (sc["lines"][-1]["who"] if sc["lines"] else None)
         line_t = t_abs - ln["start"] if ln else 99
-        hosts.draw(cv, sc, t, who, line_t, bool(ln and ln["exclaim"]))
+        hosts.draw(cv, sc, t, who, line_t, bool(ln and ln["exclaim"]), ln["text"] if ln else "")
     return cv
 
 
@@ -198,7 +199,20 @@ def frame(scenes, total, t, lib):
     if i > 0 and td and t - sc["start"] < td:
         p = (t - sc["start"]) / td
         prev = scene_frame(scenes[i - 1], t, lib)
-        if sc["trans"] == "zoom":
+        prev_tpl = TEMPLATES[scenes[i - 1]["template"]]
+        if sc["trans"] == "zoom" and hasattr(prev_tpl, "focus_point"):
+            # 写真→図解：前の画面の「注目の数字」へ寄っていき、そのまま数字の画面になる
+            fpx, fpy = prev_tpl.focus_point(scenes[i - 1])
+            z = 1 + 1.4 * inout(p)
+            big = prev.resize((int(W * z), int(H * z)), Image.BILINEAR)
+            ox, oy = fpx * z - fpx - (W / 2 - fpx) * inout(p), fpy * z - fpy - (H / 2 - fpy) * inout(p)
+            ox, oy = int(min(max(0, ox), big.width - W)), int(min(max(0, oy), big.height - H))
+            prev_z = big.crop((ox, oy, ox + W, oy + H))
+            zi = 1 + 0.08 * (1 - out3(p))
+            nb = cv.resize((int(W * zi), int(H * zi)), Image.BILINEAR)
+            cvz = nb.crop(((nb.width - W) // 2, (nb.height - H) // 2, (nb.width - W) // 2 + W, (nb.height - H) // 2 + H))
+            cv = Image.blend(prev_z, cvz, inout(prog(p, 0.35, 0.65)))
+        elif sc["trans"] == "zoom":
             z = 1 + 0.12 * (1 - out3(p))
             big = cv.resize((int(W * z), int(H * z)), Image.BILINEAR)
             cv = big.crop(((big.width - W) // 2, (big.height - H) // 2, (big.width - W) // 2 + W, (big.height - H) // 2 + H))
@@ -285,7 +299,9 @@ def synth_bgm(total, scenes):
             drum_on[a:int((sc["start"] + moments.ERA["align"]) * SR)] = 0.0
         if sc["template"] == "D" and sc["variant"] == "stat":    # 保留変化の間は止めて溜める
             from .templates import SLAM
-            c0, c1 = int(sc["start"] * SR), int((sc["start"] + SLAM) * SR)
+            from .templates import DONE
+            c0 = int(sc["start"] * SR)
+            c1 = int((sc["start"] + (SLAM if sc["opts"].get("tone") == "shock" else DONE)) * SR)
             drum_on[c0:c1] = 0.0
     kick, hat = _kick(int(0.3 * SR)), _hat(int(0.08 * SR), rng)
     for bt in np.arange(0, total, beat / 2):
@@ -364,12 +380,17 @@ def main():
     scenes[-1]["dur"] += 0.4
     prepare(scenes)
     lib = Library(ep, final=a.final)
+    lib.photos = PhotoLib(final=a.final)
     for sc in scenes:          # 必要素材を先に読み込んで一覧にする
         if sc["template"] == "A":
             lib.get(sc["opts"].get("asset", "hall"))
-        if sc["template"] == "B":
-            lib.get(sc["machine"]["asset"])
+        if sc["template"] == "A" and sc["variant"] == "archive":
+            lib.photos.hall(sc["opts"].get("hall", "max_era"), sc["opts"].get("role", "main"))
+        if sc.get("machine") and sc["machine"].get("photos"):
+            for role in ("front", "detail", "cabinet"):
+                lib.photos.machine(sc["machine"]["photos"], role)
     write_plan(ep, scenes, lib, total)
+    print("\n".join(lib.photos.write_missing(ep)))
     if a.plan:
         return
     out = Path(a.output)

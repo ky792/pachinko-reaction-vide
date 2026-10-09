@@ -199,6 +199,46 @@ def lab_bg():
 
 
 @lru_cache(maxsize=1)
+def paper_bg():
+    """歴史資料の紙（明るすぎない生成り。縁はネイビーに沈めて他の画面とつなぐ）"""
+    rng = np.random.default_rng(21)
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    base = np.array([224, 214, 192], np.float32)
+    n = rng.normal(0, 1, (H // 4, W // 4)).astype(np.float32)
+    n = np.asarray(Image.fromarray(((n * 20) + 128).clip(0, 255).astype(np.uint8)).resize((W, H), Image.BICUBIC),
+                   np.float32) - 128
+    img = base[None, None, :] + n[..., None] * 0.35 + rng.normal(0, 3, (H, W, 1))
+    fib = Image.new("L", (W, H), 0)
+    fd = ImageDraw.Draw(fib)
+    for _ in range(260):
+        x, y = rng.uniform(0, W), rng.uniform(0, H)
+        a = rng.uniform(0, np.pi)
+        L = rng.uniform(20, 90)
+        fd.line((x, y, x + L * np.cos(a), y + L * np.sin(a)), fill=int(rng.uniform(10, 26)), width=1)
+    img -= np.asarray(fib, np.float32)[..., None]
+    vig = np.clip(np.sqrt(((xx - W / 2) / (W * 0.62)) ** 2 + ((yy - H / 2) / (H * 0.62)) ** 2) - 0.55, 0, 1) / 0.45
+    navy = np.array([11, 18, 32], np.float32)
+    img = img * (1 - 0.85 * vig[..., None]) + navy * 0.85 * vig[..., None]
+    return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+
+
+def sunburst(r, n=24, col=(244, 201, 93), a=60):
+    """放射状の光（実機登場の背景）"""
+    im = Image.new("RGBA", (r * 2, r * 2), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    for i in range(n):
+        a0 = 360 / n * i
+        d.pieslice((0, 0, r * 2, r * 2), a0, a0 + 360 / n / 2, fill=col + (a,))
+    mask = Image.new("L", im.size, 0)
+    md = ImageDraw.Draw(mask)
+    for k in range(40):
+        rr = r * (1 - k / 40)
+        md.ellipse((r - rr, r - rr, r + rr, r + rr), fill=int(255 * (k / 40) ** 0.7))
+    im.putalpha(Image.fromarray(np.minimum(np.asarray(im.split()[3]), np.asarray(mask)), "L"))
+    return im
+
+
+@lru_cache(maxsize=1)
 def bottom_shade():
     g = np.zeros((300, W, 4), np.uint8)
     g[..., 3] = (np.linspace(0, 1, 300) ** 1.6 * 175).astype(np.uint8)[:, None]

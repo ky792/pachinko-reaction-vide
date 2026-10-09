@@ -15,11 +15,44 @@ import re
 import numpy as np
 from PIL import Image, ImageDraw
 
+from functools import lru_cache
+
+from PIL import ImageEnhance, ImageFilter
+
 from .style import (W, H, NAVY, TEXT, SUB, GOLD, RED, BLUE, font, prog, out3, inout, back, lerp, put, scaled,
                     text_layer, gold_text, label, spaced, fit_size, dark_grad, metal_bg, bokeh_bg, lab_bg,
-                    chip, source_line)
+                    chip, source_line, paper_bg, sunburst)
 from .media import with_shadow
+from .photos import contain, cover
 from . import fx, moments
+
+
+def machine_photo(lib, sc, roles=("front",)):
+    """シーンの機種の写真を、指定の順で探す（実物があればそれ、無ければ最初の役割の仮素材）"""
+    key = (sc.get("machine") or {}).get("photos")
+    if not key or not getattr(lib, "photos", None):
+        return None
+    for r in roles:
+        ph = lib.photos.machine(key, r)
+        if not ph.placeholder:
+            return ph
+    return lib.photos.machine(key, "front")       # 実物が1枚も無いときは、実機の形の仮素材（「仮素材」と明記）
+
+
+def photo_notes(cv, ph, credit=True):
+    if ph is None:
+        return
+    if ph.note:
+        chip(cv, f"{ph.note}（{ph.meta.get('file', ph.role)}）" if ph.placeholder else ph.note)
+    if credit and ph.credit:
+        source_line(cv, ph.credit)
+
+
+def with_credit(src, ph):
+    """出典の行に写真のクレジットを足す（1行にまとめて重ならないように）"""
+    if ph is not None and getattr(ph, "credit", ""):
+        return f"{src}　写真：{ph.credit}" if src else f"写真：{ph.credit}"
+    return src
 
 NUM = re.compile(r"(約?[0-9][0-9,.]*(?:%|個|回転|回|分の1)|1/[0-9][0-9.]*)")
 
@@ -43,6 +76,8 @@ class Photo:
         return [(40, 100, 1100, 420)]
 
     def draw(self, cv, sc, t, lib):
+        if sc["variant"] == "archive":
+            return self._archive(cv, sc, t, lib)
         o = sc["opts"]
         a = lib.get(o.get("asset", "hall"))
         src = a.img.convert("RGB")
@@ -66,7 +101,67 @@ class Photo:
             source_line(cv, a.credit)
 
 
+    def _archive(self, cv, sc, t, lib):
+        """歴史資料：紙の上に額縁つきの写真。色はほんの少しだけ古く、ズームは控えめ"""
+        o = sc["opts"]
+        ph = lib.photos.hall(o.get("hall", "max_era"), o.get("role", "main"))
+        cv.paste(paper_bg())
+        fw, fh = 1000, 640                       # 額縁の中の写真の大きさ
+        z = 1.0 + 0.035 * prog(t, 0, sc["dur"] + 0.5)
+        if not hasattr(self, "_cache"):
+            self._cache = {}
+        ck = (id(ph), fw, fh)
+        if ck not in self._cache:
+            base = cover(ph.img.convert("RGB"), int(fw * 1.04), int(fh * 1.04), ph.focus)
+            g = ImageEnhance.Color(base).enhance(0.72)                       # 彩度を少し落とす
+            warm = Image.new("RGB", g.size, (255, 226, 180))
+            g = Image.blend(g, Image.composite(g, warm, Image.new("L", g.size, 200)), 0.25)
+            self._cache[ck] = g.convert("RGBA")
+        src = self._cache[ck]
+        cw, ch = int(fw / z * 1.0), int(fh / z * 1.0)
+        x0 = (src.width - cw) // 2
+        y0 = (src.height - ch) // 2
+        photo = src.crop((x0, y0, x0 + cw, y0 + ch)).resize((fw, fh), Image.BILINEAR)
+        frame = Image.new("RGBA", (fw + 44, fh + 44 + 60), (0, 0, 0, 0))
+        fd = ImageDraw.Draw(frame)
+        fd.rectangle((0, 0, frame.width - 1, frame.height - 1), fill=(250, 247, 238, 255))
+        frame.alpha_composite(photo, (22, 22))
+        cap = o.get("caption", ph.note or "")
+        if cap:
+            fd.text((frame.width / 2, fh + 22 + 32), cap, font=font("medium", 26), fill=(90, 80, 66), anchor="mm")
+        ka = out3(prog(t, 0.05, 0.6))
+        fr = frame.rotate(-1.6 + 0.8 * (1 - ka), expand=True, resample=Image.BICUBIC)
+        sh = Image.new("RGBA", fr.size, (0, 0, 0, 0))
+        sh.putalpha(fr.split()[3].point(lambda v: v * 0.45))
+        sh = sh.filter(ImageFilter.GaussianBlur(16))
+        fx0, fy0 = 790 + 40 * (1 - ka), 120
+        put(cv, sh, (fx0 + 14, fy0 + 22), ka)
+        put(cv, fr, (fx0, fy0), ka)
+        # 左：年号と見出し
+        k1 = out3(prog(t, 0.35, 0.5))
+        put(cv, label(o.get("tag", "ARCHIVE"), NAVY, 24), (110, 210), k1)
+        yr = str(o.get("year", ""))
+        if yr:
+            g = gold_text(yr, fit_size(yr, "black", 190, 600))
+            put(cv, g, (90 - 30 * (1 - k1), 250), k1)
+            fx.glint(cv, (90, 250, 90 + g.width, 250 + g.height), t, 0.9, 0.6)
+        k2 = out3(prog(t, 0.6, 0.5))
+        if o.get("headline"):
+            hl = text_layer(o["headline"], font("black", fit_size(o["headline"], "black", 92, 640)), NAVY, pad=0)
+            put(cv, hl, (110, 500 + 16 * (1 - k2)), k2)
+            ln = Image.new("RGBA", (max(1, int(hl.width * k2)), 8), GOLD + (255,))
+            put(cv, ln, (110, 500 + hl.height + 22), k2)
+        if o.get("sub"):
+            put(cv, text_layer(o["sub"], font("bold", 44), (70, 64, 56), pad=0), (112, 650), out3(prog(t, 0.8, 0.5)))
+        if ph.placeholder:
+            chip(cv, ph.note)
+        if ph.credit and not ph.meta.get("license") == "ai":
+            source_line(cv, ph.credit)
+
+
 def _events_A(sc):
+    if sc["variant"] == "archive":
+        return [(0.05, "whoosh"), (0.9, "sparkle")]
     return [(0.3, "whoosh"), (1.0, "sparkle")]
 
 
@@ -74,6 +169,23 @@ Photo.events = staticmethod(_events_A)
 
 
 # ================================================================ B 実機＋機種名＋スペック
+@lru_cache(maxsize=1)
+def _sunburst():
+    return sunburst(720, 28, GOLD, 70)
+
+
+@lru_cache(maxsize=8)
+def _name_banner(name):
+    g = gold_text(name, fit_size(name, "black", 92, 1100))
+    bw, bh = g.width + 140, g.height + 30
+    band = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(band)
+    d.polygon([(40, 0), (bw, 0), (bw - 40, bh), (0, bh)], fill=(10, 16, 30, 235))
+    d.line((40, 3, bw, 3), fill=GOLD + (255,), width=5)
+    d.line((0, bh - 3, bw - 40, bh - 3), fill=GOLD + (255,), width=5)
+    band.alpha_composite(g, ((bw - g.width) // 2, (bh - g.height) // 2))
+    return band
+
 GAUGE = 1.0     # 期待度ゲージが満ちる秒数
 
 
@@ -115,28 +227,46 @@ class Machine:
         k_up = inout(prog(t, t_photo - 0.2, 0.6))
         self._year_strip(cv, m, t, k_tl, k_up)
         moments.entry_before(cv, t, t_photo + 0.25)          # 先バレ（着地の直前に縁が光る）
-        # 前景：実機（影つき）。右から大きく入り、左へ寄って小さくなる
-        a = lib.get(m["asset"])
-        if t >= t_photo + 0.25:
-            k_in = out3(prog(t, t_photo + 0.25, 0.55))   # 年表が上へ退いてから入る
+        # 前景：実機写真（背景を抜いて影と光）。中央に大きく着地 → 左へ寄ってプロフィールに
+        a = machine_photo(lib, sc, ("front", "cabinet")) or lib.get(m["asset"])
+        te = t_photo + 0.25
+        if t >= te:
+            k_in = out3(prog(t, te, 0.55))                   # 年表が上へ退いてから入る
             k_mv = inout(prog(t, t_left, 0.7))
-            h_big, h_small = 760, 720
-            hh = lerp(h_big, h_small, k_mv)
-            img = scaled(a.img, hh / a.img.height)
-            sh, pad = with_shadow(img)
             cx = lerp(W / 2 + 260 * (1 - k_in), 485, k_mv)
             cy = lerp(H / 2 + 60, 570, k_mv)
-            # 登場の瞬間だけ少し大きく弾む
-            bump = 1 + 0.06 * (1 - out3(prog(t, t_photo + 0.25, 0.45)))
+            # 放射状の光：着地で広がり、プロフィールでは薄く残して奥行きに
+            ka = out3(prog(t, te, 0.4)) * lerp(1.0, 0.28, k_mv)
+            if ka > 0.01:
+                sb = _sunburst()
+                sb = sb.rotate(-8 * t, resample=Image.BILINEAR)
+                sbs = scaled(sb, lerp(1.0, 0.7, k_mv))
+                put(cv, sbs, (cx - sbs.width / 2, cy - sbs.height / 2), ka)
+            # 縦横比に合わせて収める（横長の写真でもはみ出さない）。プロフィールではゆっくりズーム
+            h_box = lerp(760, 720, k_mv) * (1 + 0.045 * prog(t, t_left + 0.7, sc["dur"]))
+            w_box = lerp(900, 640, k_mv)
+            img = scaled(a.img, min(h_box / a.img.height, w_box / a.img.width))
+            sh, pad = with_shadow(img)
+            bump = 1 + 0.06 * (1 - out3(prog(t, te, 0.45)))   # 着地の瞬間だけ少し弾む
             if bump > 1.001:
                 sh = scaled(sh, bump)
-            put(cv, sh, (cx - sh.width / 2, cy - sh.height / 2 + pad * 0 - 0), k_in)
-            moments.entry_after(cv, t, t_photo + 0.25, (cx, cy),
+            put(cv, sh, (cx - sh.width / 2, cy - sh.height / 2), k_in)
+            moments.entry_after(cv, t, te, (cx, cy),
                                 (cx - img.width / 2, cy - img.height / 2, cx + img.width / 2, cy + img.height / 2))
-            if a.note:
-                chip(cv, f"{a.note}（{a.info.get('file', a.key)}）" if a.placeholder else a.note)
-            if a.credit and not a.placeholder:
-                source_line(cv, a.credit)
+            # 機種名が勢いよく登場（中央にいる間だけ。左へ寄ると右の見出しに引き継ぐ）
+            kb = 1 - prog(t, t_left, 0.3)
+            if t >= te + 0.12 and kb > 0:
+                bn = _name_banner(m["name"])
+                s_ = 1 + 0.5 * (1 - back(prog(t, te + 0.12, 0.3), 2.2))
+                bns = scaled(bn, s_)
+                put(cv, bns, (W / 2 - bns.width / 2, 790 - bns.height / 2), min(1, prog(t, te + 0.12, 0.06)) * kb)
+            if hasattr(a, "role"):
+                photo_notes(cv, a, credit=t < t_name)
+            else:
+                if a.note:
+                    chip(cv, f"{a.note}（{a.info.get('file', a.key)}）" if a.placeholder else a.note)
+                if a.credit and not a.placeholder:
+                    source_line(cv, a.credit)
         # 右：機種名とスペック
         x = self.TEXT_X
         if t >= t_name:
@@ -177,17 +307,25 @@ class Machine:
                     fx.slam_text(cv, vi, c, t, ts)
                     fx.sparkles(cv, c, t, ts, n=18, spread=260, seed=4)
             if sc.get("source"):
-                source_line(cv, sc["source"])
+                source_line(cv, with_credit(sc["source"], a if hasattr(a, "role") else None))
+
+    def focus_point(self, sc):
+        """次の画面へズームで切り替えるときの中心＝注目スペックの数字"""
+        m = sc["machine"]
+        size = fit_size(m["name"], "black", 110, 1860 - self.TEXT_X)
+        y0 = 250 + size + 120
+        i = next((i for i, sp in enumerate(m["specs"]) if sp.get("key")), len(m["specs"]) - 1)
+        return (self.TEXT_X + 840, y0 + 92 * i + 46)
 
     def events(self, sc):
         tp, tn, tl, ts = self.phases(sc)
         te = tp + 0.25
-        ev = [(0.05, "whoosh"), (tn, "pop")] + moments.entry_events(te)
+        ev = [(0.05, "whoosh"), (tn, "pop"), (te + 0.12, "stamp")] + moments.entry_events(te)
         for i, sp in enumerate(sc["machine"]["specs"]):
             if sp.get("key"):
                 ev += moments.analysis_events(ts[i] - GAUGE)
                 ev += [(ts[i] - GAUGE + k * (GAUGE - 0.1) / 10, "tick") for k in range(10)]
-                ev += [(ts[i], "impact"), (ts[i], "shake"), (ts[i], "flash_s")]
+                ev += [(ts[i], "stamp"), (ts[i], "sparkle")]      # ここは「写真を見せる場面」。揺れ・フラッシュは次の数字の場面に任せる
             else:
                 ev.append((ts[i], "pop"))
         return ev
@@ -326,81 +464,143 @@ History.events = staticmethod(_events_C)
 # ================================================================ D 数字・比較
 ORB_STEPS = [0.05, 0.4, 0.75, 1.1]   # 保留玉の色が変わる時刻（青→緑→赤→金）
 SHOCK_STEPS = [0.05, 0.45, 0.85]      # 衝撃（tone=shock）は 青→緑→赤 で止めて溜める
-SLAM = 1.45                           # 弾けて数字が叩きつけられる時刻
+SLAM = 1.45                           # 弾けて数字が叩きつけられる時刻（衝撃）
+COUNT_STEPS = [0.05, 0.35, 0.65, 0.95]   # 写真つきの数字：保留変化（少し速め）
+COUNT0, COUNT_DUR = 1.05, 1.0             # カウントアップの開始と長さ
+DONE = COUNT0 + COUNT_DUR + 0.05          # 円グラフが完成して強調する時刻
 SHOCK_RED = (236, 72, 84)
 
 
 class Numbers:
     def busy(self, sc):
         if sc["variant"] == "stat":
+            if sc.get("machine") and sc["opts"].get("tone") != "shock":
+                return [(220, 180, 820, 820), (900, 280, 1400, 680), (1410, 110, 1870, 705)]
             return [(280, 180, 920, 820), (1020, 280, 1820, 680)]
         return [(200, 140, W - 200, 860)]
 
     def draw(self, cv, sc, t, lib):
         cv.paste(dark_grad())
-        (self._stat if sc["variant"] == "stat" else self._compare)(cv, sc, t)
+        if sc["variant"] == "stat":
+            self._stat(cv, sc, t, lib)
+        else:
+            self._compare(cv, sc, t, lib)
 
-    def _stat(self, cv, sc, t):
+    # 写真つきの数字：実機写真 → 保留変化 → カウントアップで円グラフが満ちる → 完成で強調
+    def _photo_card(self, cv, sc, t, lib):
+        ph = machine_photo(lib, sc, ("detail", "front"))
+        if ph is None:
+            return None
+        cw, chh, x0, y0 = 440, 580, 1420, 120         # 下端は 700 まで（右下にバクが飛び込んでも写真を隠さない）
+        if not hasattr(self, "_cards"):
+            self._cards = {}
+        ck = id(ph)
+        if ck not in self._cards:
+            card = Image.new("RGBA", (cw, chh), (0, 0, 0, 0))
+            cd = ImageDraw.Draw(card)
+            cd.rounded_rectangle((0, 0, cw - 1, chh - 1), 22, fill=(18, 26, 44, 255))
+            if ph.placeholder or ph.meta.get("cutout"):
+                im = contain(ph.img, cw - 60, chh - 60)        # 実機の正面は切らずに収める
+                card.alpha_composite(im, ((cw - im.width) // 2, (chh - im.height) // 2))
+            else:
+                im = cover(ph.img, cw - 16, chh - 16, ph.focus)  # 盤面アップは被写体を中心に切り出す
+                mask = Image.new("L", im.size, 0)
+                ImageDraw.Draw(mask).rounded_rectangle((0, 0, im.width - 1, im.height - 1), 16, fill=255)
+                im.putalpha(mask)
+                card.alpha_composite(im, (8, 8))
+            ImageDraw.Draw(card).rounded_rectangle((0, 0, cw - 1, chh - 1), 22, outline=GOLD + (255,), width=4)
+            self._cards[ck] = card
+        k = out3(prog(t, 0.05, 0.5))
+        z = 1 + 0.03 * prog(t, 0, sc["dur"])
+        card = scaled(self._cards[ck], z)
+        put(cv, card, (x0 + 120 * (1 - k) - (card.width - cw) / 2, y0 - (card.height - chh) / 2), k)
+        photo_notes(cv, ph, credit=False)
+        return ph
+
+    def _num_img(self, txt, pre, col, shock, size=170):
+        fnum, fpre = font("black", size), font("black", int(size * 0.41))
+        d = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+        wn, wp = d.textlength(txt, font=fnum), d.textlength(pre, font=fpre) if pre else 0
+        im = Image.new("RGBA", (int(wn + wp + 60), int(size * 1.53)), (0, 0, 0, 0))
+        nd = ImageDraw.Draw(im)
+        base = int(size * 1.18)
+        sf = (70, 10, 16) if shock else (60, 30, 0)
+        if pre:
+            nd.text((10, base), pre, font=fpre, fill=col, anchor="ls", stroke_width=5, stroke_fill=sf)
+        nd.text((10 + wp + (8 if pre else 0), base), txt, font=fnum, fill=col, anchor="ls", stroke_width=6, stroke_fill=sf)
+        return im
+
+    def _stat(self, cv, sc, t, lib):
         o = sc["opts"]
         val = float(o["value"])
+        shock = o.get("tone") == "shock"
+        with_photo = bool(sc.get("machine")) and not shock
+        ph = self._photo_card(cv, sc, t, lib) if with_photo else None
+        col = SHOCK_RED if shock else GOLD
+        steps = SHOCK_STEPS if shock else COUNT_STEPS
+        t_go = SLAM if shock else COUNT0                  # 保留が弾けて数字が動き出す時刻
+        cx, cy, r = (520, 500, 280) if ph else (600, 500, 300)
         lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         d = ImageDraw.Draw(lay)
-        shock = o.get("tone") == "shock"
-        col = SHOCK_RED if shock else GOLD
-        steps = SHOCK_STEPS if shock else ORB_STEPS
-        cx, cy, r = 600, 500, 300
         d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(40, 52, 76), width=30)
-        kf = out3(prog(t, SLAM, 0.6))
+        kf = out3(prog(t, SLAM, 0.6)) if shock else prog(t, COUNT0, COUNT_DUR) ** 0.8
         v = val * kf
         if v > 0.5:
             d.arc((cx - r, cy - r, cx + r, cy + r), -90, -90 + 360 * min(v, 100) / 100, fill=col, width=30)
         cv.alpha_composite(lay)
-        fx.hold_orb(cv, (cx, cy), 120, t, steps, burst_at=SLAM)
-        if not shock:          # 期待度アップ：保留が変わるたびにゲージが1段上がり、数字が出たら消える
+        fx.hold_orb(cv, (cx, cy), 120, t, steps, burst_at=t_go)
+        if not shock:          # 期待度アップ：保留が変わるたびにゲージが1段上がり、数字が完成したら消える
             stage = sum(1 for s_ in steps if t >= s_)
-            ga = 1 - prog(t, SLAM + 0.5, 0.4)
+            ga = 1 - prog(t, DONE + 0.3, 0.4)
             if ga > 0 and stage > 0:
                 gl = Image.new("RGBA", (W, H), (0, 0, 0, 0))
                 fx.gauge(gl, (cx - 280, 850), 380, 40, stage / len(steps), label="期待度", segs=len(steps))
                 put(cv, gl, (0, 0), ga)
-        if t < SLAM:
-            return self._stat_text(cv, sc, t)
-        fx.burst(cv, (cx, cy), t, SLAM, col=col, r_in=200, r_out=720)
-        if not shock:
-            fx.sparkles(cv, (cx, cy), t, SLAM + 0.05, n=30, spread=480)
-        d = ImageDraw.Draw(cv)
-        num = f"{int(round(val))}%"          # 数字は最終値で叩きつける（リングだけが満ちていく）
-        fnum, fpre = font("black", 170), font("black", 70)
+        rx = 900 if ph else 1030
+        if t < t_go:
+            return self._stat_text(cv, sc, t, rx, 470 if ph else 800, t_go)
         pre = o.get("prefix", "")
-        wn, wp = d.textlength(num, font=fnum), d.textlength(pre, font=fpre) if pre else 0
-        numimg = Image.new("RGBA", (int(wn + wp + 60), 260), (0, 0, 0, 0))
-        nd = ImageDraw.Draw(numimg)
-        if pre:
-            nd.text((10, 200), pre, font=fpre, fill=col, anchor="ls", stroke_width=5, stroke_fill=(60, 30, 0))
-        nd.text((10 + wp + (8 if pre else 0), 200), num, font=fnum, fill=col, anchor="ls", stroke_width=6,
-                stroke_fill=(70, 10, 16) if shock else (60, 30, 0))
-        fx.slam_text(cv, numimg, (cx, cy - 10), t, SLAM)
-        self._stat_text(cv, sc, t)
+        if shock:               # 規制の数字：赤で叩きつける（警告）
+            fx.burst(cv, (cx, cy), t, SLAM, col=col, r_in=200, r_out=720)
+            fx.slam_text(cv, self._num_img(f"{int(round(val))}%", pre, col, True), (cx, cy - 10), t, SLAM)
+        else:                   # カウントアップ → 円グラフ完成 → 強調
+            num = self._num_img(f"{int(v)}%", pre, col, False, 150 if ph else 170)
+            if t < DONE:
+                put(cv, num, (cx - num.width / 2, cy - 10 - num.height / 2), 1.0)
+            else:
+                fx.burst(cv, (cx, cy), t, DONE, col=col, r_in=200, r_out=720)
+                fx.sparkles(cv, (cx, cy), t, DONE + 0.05, n=30, spread=480)
+                s_ = 1 + 0.35 * (1 - back(prog(t, DONE, 0.3), 2.0))
+                ns = scaled(num, s_)
+                put(cv, ns, (cx - ns.width / 2, cy - 10 - ns.height / 2), 1.0)
+                kr = prog(t, DONE, 0.5)            # 完成したリングに光の輪
+                if kr < 1:
+                    ring = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                    rr = r + 40 * out3(kr)
+                    ImageDraw.Draw(ring).ellipse((cx - rr, cy - rr, cx + rr, cy + rr), outline=GOLD + (int(220 * (1 - kr)),), width=10)
+                    cv.alpha_composite(ring)
+        self._stat_text(cv, sc, t, rx, 470 if ph else 800, t_go)
         if sc.get("source"):
-            source_line(cv, sc["source"])
+            source_line(cv, with_credit(sc["source"], ph))
 
-    def _stat_text(self, cv, sc, t):
+    def _stat_text(self, cv, sc, t, rx=1030, maxw=800, t_go=SLAM):
         o = sc["opts"]
-        k1, k2 = out3(prog(t, 0.3, 0.5)), out3(prog(t, SLAM + 0.3, 0.5))
-        rx = 1030
+        k1, k2 = out3(prog(t, 0.3, 0.5)), out3(prog(t, (DONE if o.get("tone") != "shock" else t_go) + 0.2, 0.5))
         put(cv, label(o.get("tag", "KEY NUMBER"), RED if o.get("tone") == "shock" else BLUE, 26), (rx, 290), k1)
         lb = o.get("label", "")
-        put(cv, text_layer(lb, font("black", fit_size(lb, "black", 110, 800)), TEXT, pad=0), (rx, 350 + 16 * (1 - k1)), k1)
+        put(cv, text_layer(lb, font("black", fit_size(lb, "black", 110, maxw)), TEXT, pad=0), (rx, 350 + 16 * (1 - k1)), k1)
         for i, ln in enumerate(o.get("lines", [])):
-            put(cv, text_layer(ln, font("bold", 46), (205, 212, 224), pad=0), (rx, 520 + 66 * i + 16 * (1 - k2)), k2)
+            f = font("bold", fit_size(ln, "bold", 46, maxw + 40))
+            put(cv, text_layer(ln, f, (205, 212, 224), pad=0), (rx, 520 + 66 * i + 16 * (1 - k2)), k2)
 
-    def _compare(self, cv, sc, t):
+    def _compare(self, cv, sc, t, lib=None):
         o = sc["opts"]
         if o.get("heading"):
             k = out3(prog(t, 0.0, 0.5))
             g = gold_text(o["heading"], 96)
             put(cv, g, ((W - g.width) / 2, 150 + 16 * (1 - k)), k)
         items = o["items"]
+        thumb = None
         cw, chh, gap = 640, 380, 80
         cx0 = (W - (cw * len(items) + gap * (len(items) - 1))) / 2
         for i, it in enumerate(items):
@@ -414,6 +614,14 @@ class Numbers:
             cdr.text((40, 118), it["name"], font=font("black", fit_size(it["name"], "black", 60, cw - 80)), fill=TEXT, anchor="lm")
             cdr.text((40, 200), it.get("label", ""), font=font("bold", 36), fill=SUB, anchor="lm")
             cdr.text((cw - 40, 290), it["value"], font=font("black", 132), fill=col, anchor="rm")
+            if it.get("key") and lib is not None:      # 機種のカードには実機写真のサムネイル
+                ph = machine_photo(lib, sc, ("front",))
+                if ph is not None:
+                    thumb = ph
+                    th = contain(ph.img, 130, 190)
+                    card.alpha_composite(th, (cw - 40 - th.width, 24))
+                    if ph.placeholder:
+                        cdr.text((cw - 40 - th.width / 2, 24 + th.height + 14), "仮素材", font=font("bold", 20), fill=SUB, anchor="mm")
             if t >= max(0.2, ts - 0.2):
                 card = scaled(card, 1 + 0.25 * (1 - back(prog(t, max(0.2, ts - 0.2), 0.3), 2.0)))
                 put(cv, card, (cx0 + (cw + gap) * i + cw / 2 - card.width / 2, 380 + chh / 2 - card.height / 2), kc)
@@ -435,15 +643,20 @@ class Numbers:
             note = text_layer(o["note"], font("medium", 32), (200, 208, 222), pad=0)
             put(cv, note, ((W - note.width) / 2, 795), kn)
         if sc.get("source"):
-            source_line(cv, sc["source"])
+            source_line(cv, with_credit(sc["source"], thumb))
 
 
 def _events_D(sc):
     if sc["variant"] == "stat" and sc["opts"].get("tone") == "shock":
         return [(s, "hold") for s in SHOCK_STEPS] + [(SLAM, "shock"), (SLAM, "flash_r"), (SLAM, "shake")]
     if sc["variant"] == "stat":
-        return [(ORB_STEPS[0], "hold"), (ORB_STEPS[1], "hold"), (ORB_STEPS[2], "hold"), (ORB_STEPS[3], "hold_gold"),
-                (SLAM, "impact"), (SLAM, "flash"), (SLAM, "shake"), (SLAM + 0.1, "sparkle")]
+        ev = [(COUNT_STEPS[0], "hold"), (COUNT_STEPS[1], "hold"), (COUNT_STEPS[2], "hold"), (COUNT_STEPS[3], "hold_gold"),
+              (COUNT0, "pop")]
+        ev += [(COUNT0 + k * 0.07, "tick") for k in range(int(COUNT_DUR / 0.07))]       # カウントアップの音
+        ev += [(DONE, "impact"), (DONE, "flash"), (DONE, "shake"), (DONE + 0.1, "sparkle")]
+        if sc.get("machine"):
+            ev.insert(0, (0.05, "whoosh"))
+        return ev
     ev = [(0.05, "whoosh")]
     for i, it in enumerate(sc["opts"]["items"]):
         ev.append((max(0.2, sc["cue"](it["value"], 0.3 + 0.5 * i) - 0.2), "stamp"))

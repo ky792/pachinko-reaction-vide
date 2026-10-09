@@ -31,7 +31,7 @@ from .moments import INTROS
 WHO = {"ナギ": "nagi", "バク": "baku"}
 CHARS_PER_SEC = {"nagi": 5.2, "baku": 5.6}
 GAP = 0.24
-MIN_DUR = {"A": 2.8, "B": 5.2, "C": 3.0, "D": 3.6, "E": 3.4, "F": 2.6}
+MIN_DUR = {"A": 3.2, "B": 5.2, "C": 3.0, "D": 4.0, "E": 3.4, "F": 2.6}
 TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push"}
 
 
@@ -143,6 +143,7 @@ class Planner:
             o.setdefault("label", spec["k"] if spec else (fact["label"] if fact else "注目の数字"))
             o.setdefault("lines", self.data.get("explain", {}).get(o["label"], []))
             sc["source"] = self.data.get("compare_source") if fact else (m.get("source") if m else None)
+            sc["machine"] = m if spec else None          # 機種の数字なら、その機種の写真を添える
         elif t == "D" and v == "compare":
             items = []
             m = ctx.get("machine")
@@ -156,6 +157,7 @@ class Planner:
                 if fact:
                     items.append(dict(fact))
             o["items"] = items
+            sc["machine"] = m
             if "違う" in text:
                 vals = "と".join(i["value"].replace("約", "") for i in items)
                 o.setdefault("note", f"※{vals}は数え方が違う指標。単純な比較はできない")
@@ -234,6 +236,9 @@ class Planner:
                 for k in ("size", "alpha"):
                     if k in o:
                         cfg[k] = float(o[k]) if k == "alpha" else int(o[k])
+                for k in ("from", "until"):          # 表示時間（秒 または セリフ中の語句）
+                    if k in o:
+                        cfg[k] = o[k]
                 if "pos" in o:
                     cfg["pos"] = o["pos"]
                 cfg["force"] = True
