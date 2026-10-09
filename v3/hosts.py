@@ -5,10 +5,12 @@
    "baku": {"show": False}}
 pos: bl=左下 br=右下 l=左（大）r=右（大）
 """
+import math
 from functools import lru_cache
 
-from PIL import Image, ImageEnhance
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
+from . import fx
 from .style import ASSETS, W, H, put, prog, out3, back, inout
 
 # テンプレートごとの既定（指示書の方針どおり）
@@ -24,10 +26,24 @@ DEFAULTS = {
 ANCHORS = {"bl": (40, H - 40), "br": (W - 40, H - 40), "l": (330, H - 20), "r": (W - 330, H - 20)}
 
 
-@lru_cache(maxsize=16)
-def sprite(who, h):
-    im = Image.open(ASSETS / "characters" / "v2" / who / "normal.png").convert("RGBA")
+FACES = ASSETS / "characters" / "v2"
+# 表情差分：<who>/<face>.png があれば使う（なければ normal.png ＋ 頭上の記号で代用）
+EXCLAIM_FACE = {"baku": "surprise", "nagi": "surprise"}
+TALK_FACE = {"nagi": "explain", "baku": "talk"}
+TANK = (235 / 299, 350 / 504)        # ナギの脳タンクの位置（元画像に対する比率）
+
+
+@lru_cache(maxsize=32)
+def sprite(who, h, face="normal"):
+    p = FACES / who / f"{face}.png"
+    if not p.exists():
+        p = FACES / who / "normal.png"
+    im = Image.open(p).convert("RGBA")
     return im.resize((max(1, int(im.width * h / im.height)), h), Image.LANCZOS)
+
+
+def has_face(who, face):
+    return (FACES / who / f"{face}.png").exists()
 
 
 def _box(who, cfg):
@@ -46,14 +62,16 @@ def overlap(a, b):
     return w * h
 
 
-def resolve(scene, line_who):
+def resolve(scene, line_who, exclaim=False):
     """シーンの指定と、いま話している人から、表示するキャラと配置を決める"""
     tpl = scene["template"]
     rule = dict(DEFAULTS.get(tpl, {}))
     plan = {}
-    if "speaker" in rule and line_who:
+    if exclaim and line_who == "baku" and tpl != "F":     # バクのツッコミはどの場面でも右下に飛び込む
+        plan["baku"] = {"size": 320, "pos": "br", "force": True}
+    if "speaker" in rule and line_who and line_who not in plan:
         plan[line_who] = dict(rule["speaker"])
-    if "baku_exclaim" in rule and line_who == "baku":
+    if "baku_exclaim" in rule and line_who == "baku" and exclaim:
         plan["baku"] = dict(rule["baku_exclaim"])
     for who in ("nagi", "baku"):
         if who in rule:
@@ -81,23 +99,58 @@ def resolve(scene, line_who):
     return keep
 
 
+def _tank_glow(cv, who, img, pos, t_line):
+    """ナギが話し始めると脳タンクが光る（解説の合図）"""
+    k = prog(t_line, 0, 0.9)
+    if who != "nagi" or k <= 0 or k >= 1:
+        return
+    a = math.sin(math.pi * k)
+    r = img.width * 0.16
+    cx, cy = pos[0] + img.width * TANK[0], pos[1] + img.height * TANK[1]
+    lay = Image.new("RGBA", (int(r * 4), int(r * 4)), (0, 0, 0, 0))
+    ImageDraw.Draw(lay).ellipse((r, r, r * 3, r * 3), fill=(120, 230, 255, 200))
+    lay = lay.filter(ImageFilter.GaussianBlur(r * 0.45))
+    put(cv, lay, (cx - lay.width / 2, cy - lay.height / 2), a)
+
+
 def draw(cv, scene, t_scene, who_speaking, line_t, exclaim):
     """t_scene=シーン内の秒、line_t=今のセリフの経過秒"""
-    plan = scene["_host_plan"](who_speaking)
+    plan = scene["_host_plan"](who_speaking, exclaim)
+    if exclaim and who_speaking == "baku" and "baku" in plan:    # ツッコミの集中線はキャラの後ろ
+        fx.speed_lines(cv, line_t, 0.0)
     for who, cfg in plan.items():
-        sp = sprite(who, cfg["size"])
-        first = scene.get("_host_first", {}).get(who, 0.0)
-        k = out3(prog(t_scene, first, 0.35))
         talking = who == who_speaking
-        a = cfg.get("alpha", 1.0) * k
+        face = "normal"
+        if talking and exclaim and has_face(who, EXCLAIM_FACE[who]):
+            face = EXCLAIM_FACE[who]
+        elif talking and has_face(who, TALK_FACE[who]):
+            face = TALK_FACE[who]
+        sp = sprite(who, cfg["size"], face)
+        first = scene.get("_host_first", {}).get(who, 0.0)
+        pk = prog(t_scene, first, 0.45)
+        k = back(pk, 1.8) if pk < 1 else 1.0            # 登場：下から弾んで出る
+        a = cfg.get("alpha", 1.0) * min(1.0, pk * 2.5)
         img = sp
         if not talking and scene["template"] == "F":
             img = ImageEnhance.Brightness(sp).enhance(0.72)
-        s = 1.0
-        if talking and exclaim:   # 驚き・ツッコミ：軽く拡大して戻す
-            s = 1 + 0.08 * out3(prog(line_t, 0, 0.2)) * (1 - inout(prog(line_t, 0.9, 0.35)))
+        s, rot, dy = 1.0, 0.0, 0.0
+        dy += 3 * math.sin(t_scene * 2.4 + (0 if who == "nagi" else 1.7))      # 呼吸のような小さな揺れ
+        if talking and exclaim:   # 驚き・ツッコミ：跳ねて、傾いて、戻る
+            jk = prog(line_t, 0, 0.42)
+            dy -= 70 * math.sin(math.pi * jk) if jk < 1 else 0
+            s = 1 + 0.1 * out3(prog(line_t, 0, 0.2)) * (1 - inout(prog(line_t, 0.9, 0.35)))
+            rot = 7 * math.sin(line_t * 22) * max(0.0, 1 - line_t / 0.7)
+        elif talking and line_t < 0.3:   # 話し始めに軽くうなずく
+            dy += 8 * math.sin(math.pi * line_t / 0.3)
         if abs(s - 1) > 1e-3:
             img = img.resize((int(img.width * s), int(img.height * s)), Image.BILINEAR)
+        if abs(rot) > 0.2:
+            img = img.rotate(rot, expand=True, resample=Image.BICUBIC)
         x0, y0, x1, y1 = _box(who, cfg)
         cx = (x0 + x1) / 2
-        put(cv, img, (cx - img.width / 2, y1 - img.height + 60 * (1 - k)), a)
+        pos = (cx - img.width / 2, y1 - img.height + 90 * (1 - k) + dy)
+        put(cv, img, pos, a)
+        if talking and not exclaim and scene["template"] in ("B", "E", "F"):
+            _tank_glow(cv, who, img, pos, line_t)
+        if talking and exclaim and face == "normal":     # 表情差分がないときは頭上の記号で驚きを出す
+            fx.emote(cv, "surprise", (cx + img.width * 0.18, pos[1] + 30), line_t, 0.05, scale=cfg["size"] / 330)

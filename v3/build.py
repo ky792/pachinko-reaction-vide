@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-from . import hosts
+from . import fx, hosts, sfx
 from .media import Library
 from .planner import Planner
 from .style import (W, H, FPS, SR, ROOT, NAVY, TEXT, SPEAKER, NAME, font, prog, out3, inout, put, fade_img,
@@ -50,17 +50,23 @@ def prepare(scenes):
         sc["_busy"] = TEMPLATES[sc["template"]].busy(sc)
         cache = {}
 
-        def plan_for(who, sc=sc, cache=cache):
-            if who not in cache:
-                cache[who] = hosts.resolve(sc, who)
-            return cache[who]
+        def plan_for(who, exclaim=False, sc=sc, cache=cache):
+            if (who, exclaim) not in cache:
+                cache[(who, exclaim)] = hosts.resolve(sc, who, exclaim)
+            return cache[(who, exclaim)]
 
         sc["_host_plan"] = plan_for
         first = {}
         for ln in lines:
-            for who in plan_for(ln["who"]):
+            for who in plan_for(ln["who"], ln["exclaim"]):
                 first.setdefault(who, max(0.0, ln["start"] - s0 - 0.15))
         sc["_host_first"] = first
+        # 演出のタイミング（効果音・フラッシュ・画面振動）。テンプレートの events ＋ バクのツッコミ
+        ev = [(s0 + t, k) for t, k in getattr(TEMPLATES[sc["template"]], "events", lambda _: [])(sc)]
+        for ln in lines:
+            if ln["exclaim"]:
+                ev += [(ln["start"], "boing"), (ln["start"], "shake_s")]
+        sc["_events"] = ev
 
 
 def current_line(sc, t_abs):
@@ -160,6 +166,23 @@ def scene_frame(sc, t_abs, lib, with_hosts=True):
     return cv
 
 
+FLASH = {"flash": 0.42, "flash_s": 0.22}       # 強さは控えめ（目に優しく、要所だけ）
+SHAKE = {"shake": 13, "shake_s": 6}
+
+
+def screen_fx(cv, scenes, t):
+    for sc in scenes:
+        for t0, kind in sc["_events"]:
+            if kind in FLASH and 0 <= t - t0 < 0.3:
+                fx.flash(cv, t, t0, FLASH[kind])
+    dx = dy = 0
+    for kind, amp in SHAKE.items():
+        evs = [t0 for sc in scenes for t0, k in sc["_events"] if k == kind]
+        ox, oy = fx.shake_offset(t, evs, amp=amp)
+        dx += ox; dy += oy
+    return fx.apply_shake(cv, (dx, dy))
+
+
 def frame(scenes, total, t, lib):
     i = max(j for j, s in enumerate(scenes) if s["start"] <= t or j == 0)
     sc = scenes[i]
@@ -183,6 +206,7 @@ def frame(scenes, total, t, lib):
             cv = out
         else:
             cv = Image.blend(prev, cv, inout(p))
+    cv = screen_fx(cv, scenes, t)          # 揺れ・フラッシュは絵だけ。字幕は揺らさない
     program_tag(cv)
     cv.alpha_composite(bottom_shade(), (0, H - 300))
     draw_subtitle(cv, sc, t)
@@ -192,60 +216,94 @@ def frame(scenes, total, t, lib):
 
 
 # ---------------------------------------------------------------- 音
+BPM = 120
+SE_GAIN = {"hold": 0.32, "hold_gold": 0.4, "tick": 0.14, "impact": 0.55, "fanfare": 0.3, "sparkle": 0.16,
+           "boing": 0.34, "whoosh": 0.22, "pop": 0.2, "stamp": 0.4}
+
+
+def _kick(n):
+    t = np.arange(n) / SR
+    return np.sin(2 * np.pi * np.cumsum(50 + 90 * np.exp(-t * 35)) / SR) * np.exp(-t * 11)
+
+
+def _hat(n, rng):
+    t = np.arange(n) / SR
+    x = rng.standard_normal(n)
+    return (x - np.convolve(x, np.ones(6) / 6, "same")) * np.exp(-t * 60)
+
+
 def synth_bgm(total, scenes):
+    """明るく弾む研究所BGM（オリジナル）。情報が出る場面はドラムで前に進め、数字の直前は一瞬止めて溜める"""
     n = int(total * SR)
     t = np.arange(n) / SR
     out = np.zeros(n, np.float32)
-    prog_ = [[57, 60, 64], [53, 57, 60], [50, 53, 57], [52, 56, 59], [53, 57, 60], [55, 59, 62]]
+    rng = np.random.default_rng(7)
+    prog_ = [[60, 64, 67], [57, 60, 64], [53, 57, 60], [55, 59, 62]]      # C - Am - F - G
     f = lambda m: 440 * 2 ** ((m - 69) / 12)
-    bounds = [s["start"] for s in scenes] + [total]
-    for i in range(len(scenes)):
-        st, en = bounds[i], bounds[i + 1]
-        a, b = int(st * SR), int(en * SR)
+    beat = 60 / BPM
+    bar = beat * 4
+    # パッド＋ベース（小節ごとにコード進行）
+    for bi, st in enumerate(np.arange(0, total, bar)):
+        a, b = int(st * SR), min(n, int((st + bar) * SR))
         tt = t[a:b] - st
-        env = np.minimum(1, tt / 1.0) * np.minimum(1, (en - st - tt) / 0.6 + 0.05)
-        seg = np.zeros(b - a, np.float32)
-        for m in prog_[i % len(prog_)]:
-            for det in (-0.12, 0.12):
-                seg += np.sin(2 * np.pi * f(m + det) * tt) * 0.08
-            seg += np.sin(2 * np.pi * f(m - 12) * tt) * 0.05
-        out[a:b] += seg * env
-        if scenes[i]["template"] in ("C", "D", "E"):        # 情報を出す場面だけ低い鼓動
-            for bt in np.arange(st, en, 0.5):
-                a2, m2 = int(bt * SR), int(0.25 * SR)
-                t2 = np.arange(min(m2, n - a2)) / SR
-                out[a2:a2 + len(t2)] += np.sin(2 * np.pi * (55 + 30 * np.exp(-t2 * 30)) * t2) * np.exp(-t2 * 14) * 0.3
-    return out * np.minimum(1, t / 1.0) * np.minimum(1, (total - t) / 1.5)
+        ch = prog_[bi % 4]
+        seg = np.zeros(b - a)
+        for m in ch:
+            for det in (-0.1, 0.1):
+                seg += np.sin(2 * np.pi * f(m + det) * tt) * 0.05
+        for k in range(8):               # 8分のベース（ルート→オクターブ）
+            s8 = int(k * beat / 2 * SR)
+            ln_ = min(int(beat / 2 * SR), len(tt) - s8)
+            if ln_ <= 0:
+                break
+            t8 = np.arange(ln_) / SR
+            fr = f(ch[0] - 24 + (12 if k % 2 else 0))
+            seg[s8:s8 + ln_] += np.sign(np.sin(2 * np.pi * fr * t8)) * 0.05 * np.exp(-t8 * 9)
+        # きらっとしたベル（2拍目と4拍目の裏）
+        for k in (3, 7):
+            s8 = int(k * beat / 2 * SR)
+            ln_ = min(int(0.4 * SR), len(tt) - s8)
+            if ln_ > 0:
+                t8 = np.arange(ln_) / SR
+                seg[s8:s8 + ln_] += np.sin(2 * np.pi * f(ch[(k // 4) + 1] + 12) * t8) * 0.05 * np.exp(-t8 * 8)
+        out[a:b] += seg
+    # ドラム：B/C/D/E は全開、A/F は軽く
+    drum_on = np.zeros(n, np.float32)
+    for sc in scenes:
+        a, b = int(sc["start"] * SR), min(n, int((sc["start"] + sc["dur"]) * SR))
+        drum_on[a:b] = 1.0 if sc["template"] in ("B", "C", "D", "E") else 0.45
+        if sc["template"] == "D" and sc["variant"] == "stat":    # 保留変化の間は止めて溜める
+            from .templates import SLAM
+            c0, c1 = int(sc["start"] * SR), int((sc["start"] + SLAM) * SR)
+            drum_on[c0:c1] = 0.0
+    kick, hat = _kick(int(0.3 * SR)), _hat(int(0.08 * SR), rng)
+    for bt in np.arange(0, total, beat / 2):
+        a = int(bt * SR)
+        if a >= n:
+            break
+        g = drum_on[a]
+        if g <= 0:
+            continue
+        on_beat = abs((bt / beat) - round(bt / beat)) < 1e-6
+        x = kick * 0.5 if on_beat else hat * 0.12
+        m = min(len(x), n - a)
+        out[a:a + m] += x[:m] * g
+    return out * np.minimum(1, t / 0.8) * np.minimum(1, (total - t) / 1.5)
 
 
 def build_audio(scenes, total, path):
-    sys.path.insert(0, str(ROOT / "reaction"))
-    from make_video import synth_se
-    from .templates import Machine
     n = int(total * SR)
-    mix = synth_bgm(total, scenes) * 0.5
-    hits = []
-    for i, sc in enumerate(scenes):
-        s0 = sc["start"]
-        hits.append((s0, {"B": "don", "C": "taiko"}.get(sc["template"], "shu"), 0.3 if i else 0.25))
-        if sc["template"] == "B":
-            tp, tn, tl, ts = Machine().phases(sc)
-            hits += [(s0 + tp, "shu", 0.25)] + [(s0 + x, "pon", 0.22) for x in ts]
-        if sc["template"] == "D" and sc["variant"] == "stat":
-            hits += [(s0 + x, "pon", 0.06) for x in np.arange(0.2, 1.4, 0.09)]
-        if sc["template"] == "E":
-            hits += [(s0 + max(0.5, sc["cue"](it.replace("{", "").replace("}", "")[:5], 0.7 + 0.9 * k) - 0.1), "pon", 0.2)
-                     for k, it in enumerate(sc["opts"]["items"])]
-        for ln in sc["lines"]:
-            if ln["exclaim"]:
-                hits.append((ln["start"], "piko", 0.18))
-    for t0, kind, g in hits:
-        x = synth_se(kind)
-        if x is None:
-            continue
-        a = int(t0 * SR)
-        seg = x[: max(0, n - a)] * g
-        mix[a:a + len(seg)] += seg
+    mix = synth_bgm(total, scenes) * 0.55
+    for sc in scenes:
+        for t0, kind in sc["_events"]:
+            if kind not in SE_GAIN:
+                continue
+            x = sfx.make(kind)
+            a = int(t0 * SR)
+            if a >= n:
+                continue
+            seg = x[: n - a] * SE_GAIN[kind]
+            mix[a:a + len(seg)] += seg
     for sc in scenes:   # 声（voices/<ID>.wav があれば）
         for ln in sc["lines"]:
             if ln.get("voice"):
@@ -257,7 +315,7 @@ def build_audio(scenes, total, path):
                         x = np.interp(np.arange(int(len(x) * SR / w.getframerate())) * w.getframerate() / SR, np.arange(len(x)), x)
                 a = int(ln["start"] * SR)
                 mix[a:a + len(x)] += x[: n - a]
-    mix = np.clip(mix, -1, 1)
+    mix = np.tanh(mix * 1.1) / np.tanh(1.1)
     with wave.open(str(path), "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((mix * 32767).astype(np.int16).tobytes())
@@ -269,7 +327,7 @@ def write_plan(ep, scenes, lib, total):
             "| # | 開始 | 長さ | テンプレート | 選び方 | キャラ | セリフ |", "| --- | --- | --- | --- | --- | --- | --- |"]
     names = {"A": "A 写真", "B": "B 機種紹介", "C": "C 年表・カレンダー", "D": "D 数字・比較", "E": "E 要点", "F": "F 掛け合い"}
     for i, sc in enumerate(scenes):
-        hs = sorted({w for ln in sc["lines"] for w in sc["_host_plan"](ln["who"])})
+        hs = sorted({w for ln in sc["lines"] for w in sc["_host_plan"](ln["who"], ln["exclaim"])})
         rows.append(f"| {i + 1} | {sc['start']:.1f} | {sc['dur']:.1f} | {names[sc['template']]}（{sc['variant']}） | "
                     f"{'自動' if sc.get('auto') else '台本で指定'} | {'・'.join(NAME[h] for h in hs) or 'なし'} | "
                     f"{' / '.join(l['text'] for l in sc['lines'])} |")

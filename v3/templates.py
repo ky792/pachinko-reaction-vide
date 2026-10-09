@@ -15,10 +15,11 @@ import re
 import numpy as np
 from PIL import Image, ImageDraw
 
-from .style import (W, H, NAVY, TEXT, SUB, GOLD, RED, BLUE, font, prog, out3, inout, lerp, put, scaled,
+from .style import (W, H, NAVY, TEXT, SUB, GOLD, RED, BLUE, font, prog, out3, inout, back, lerp, put, scaled,
                     text_layer, gold_text, label, spaced, fit_size, dark_grad, metal_bg, bokeh_bg, lab_bg,
                     chip, source_line)
 from .media import with_shadow
+from . import fx
 
 NUM = re.compile(r"(約?[0-9][0-9,.]*(?:%|個|回転|回|分の1)|1/[0-9][0-9.]*)")
 
@@ -56,6 +57,7 @@ class Photo:
             k = out3(prog(t, 0.35, 0.6))
             g = gold_text(o["headline"], fit_size(o["headline"], "black", 132, 1500))
             put(cv, g, (70 - 40 * (1 - k), 120), k)
+            fx.glint(cv, (70, 120, 70 + g.width, 120 + g.height), t, 1.0, 0.7)
             if o.get("sub"):
                 put(cv, text_layer(o["sub"], font("black", 52), TEXT, stroke=6), (110, 120 + g.height - 30), out3(prog(t, 0.8, 0.5)))
         if a.note:
@@ -64,7 +66,17 @@ class Photo:
             source_line(cv, a.credit)
 
 
+def _events_A(sc):
+    return [(0.3, "whoosh"), (1.0, "sparkle")]
+
+
+Photo.events = staticmethod(_events_A)
+
+
 # ================================================================ B 実機＋機種名＋スペック
+GAUGE = 1.0     # 期待度ゲージが満ちる秒数
+
+
 class Machine:
     TEXT_X = 900
 
@@ -81,6 +93,8 @@ class Machine:
         for i, sp in enumerate(m["specs"]):
             c = sc["cue"](sp.get("say", sp["v"]), None)
             ts = max(prev, (c - 0.15) if c is not None else prev + 0.45)
+            if sp.get("key"):
+                ts = max(ts, prev + GAUGE)
             specs.append(ts)
             prev = ts + 0.25
         return t_photo, t_name, t_left, specs
@@ -111,7 +125,15 @@ class Machine:
             sh, pad = with_shadow(img)
             cx = lerp(W / 2 + 260 * (1 - k_in), 485, k_mv)
             cy = lerp(H / 2 + 60, 570, k_mv)
-            put(cv, sh, (cx - img.width / 2 - pad, cy - img.height / 2 - pad), k_in)
+            # 登場の瞬間だけ少し大きく弾む
+            bump = 1 + 0.06 * (1 - out3(prog(t, t_photo + 0.25, 0.45)))
+            if bump > 1.001:
+                sh = scaled(sh, bump)
+            put(cv, sh, (cx - sh.width / 2, cy - sh.height / 2 + pad * 0 - 0), k_in)
+            te = t_photo + 0.25
+            fx.sparkles(cv, (cx, cy), t, te, n=26, spread=520)
+            fx.glint(cv, (cx - img.width / 2, cy - img.height / 2, cx + img.width / 2, cy + img.height / 2), t, te + 0.35, 0.7)
+            fx.ribbon(cv, "注目機種 ENTRY!", (cx - img.width / 2 - 60, cy - img.height / 2 - 30), t, te + 0.05, 1.5)
             if a.note:
                 chip(cv, f"{a.note}（{a.info.get('file', a.key)}）" if a.placeholder else a.note)
             if a.credit and not a.placeholder:
@@ -131,18 +153,42 @@ class Machine:
             y0 = 250 + size + 120
             for i, sp in enumerate(m["specs"]):
                 ts = t_specs[i]
+                big_v = sp.get("key")
+                ry = y0 + 92 * i
+                if big_v and ts - GAUGE <= t < ts:          # 注目の数字は、期待度ゲージが満ちてから出す
+                    put(cv, text_layer(sp["k"], font("bold", 40), (205, 212, 224), pad=0), (x, ry + 20), 1.0)
+                    fx.gauge(cv, (x + 300, ry + 22), 520, 48, prog(t, ts - GAUGE, GAUGE - 0.1), label="")
+                    continue
                 if t < ts:
                     continue
                 k = out3(prog(t, ts, 0.4))
                 row = Image.new("RGBA", (960, 92), (0, 0, 0, 0))
                 rd = ImageDraw.Draw(row)
                 rd.text((0, 46), sp["k"], font=font("bold", 40), fill=(205, 212, 224), anchor="lm")
-                big_v = sp.get("key")
-                rd.text((940, 46), sp["v"], font=font("black", 78 if big_v else 54), fill=GOLD if big_v else TEXT, anchor="rm")
+                if not big_v:
+                    rd.text((940, 46), sp["v"], font=font("black", 54), fill=TEXT, anchor="rm")
                 rd.line((0, 90, 940, 90), fill=(255, 255, 255, 40), width=2)
-                put(cv, row, (x + 30 * (1 - k), y0 + 92 * i), k)
+                put(cv, row, (x + 30 * (1 - k), ry), k)
+                if big_v:
+                    vi = text_layer(sp["v"], font("black", 84), GOLD, stroke=5, stroke_fill=(60, 30, 0), pad=10)
+                    c = (x + 940 - vi.width / 2 + 10, ry + 46)
+                    fx.burst(cv, c, t, ts, r_in=60, r_out=300)
+                    fx.slam_text(cv, vi, c, t, ts)
+                    fx.sparkles(cv, c, t, ts, n=18, spread=260, seed=4)
             if sc.get("source"):
                 source_line(cv, sc["source"])
+
+    def events(self, sc):
+        tp, tn, tl, ts = self.phases(sc)
+        te = tp + 0.25
+        ev = [(0.05, "whoosh"), (te, "fanfare"), (te, "flash"), (te + 0.35, "sparkle"), (tn, "pop")]
+        for i, sp in enumerate(sc["machine"]["specs"]):
+            if sp.get("key"):
+                ev += [(ts[i] - GAUGE + k * (GAUGE - 0.1) / 10, "tick") for k in range(10)]
+                ev += [(ts[i], "impact"), (ts[i], "shake"), (ts[i], "flash_s")]
+            else:
+                ev.append((ts[i], "pop"))
+        return ev
 
     def _year_strip(self, cv, m, t, k_tl, k_up):
         lay = Image.new("RGBA", (W, 260), (0, 0, 0, 0))
@@ -244,7 +290,15 @@ class History:
                         fill=(255, 255, 255) if is_focus else (20, 16, 10), anchor="mm")
                 from .style import fade_img
                 card.alpha_composite(fade_img(nb, shown), (0, 330))
-            put(cv, card, (x0 + (cw + gap) * i, 300 + 40 * (1 - k)), k)
+            jig = 0
+            if is_focus:
+                kk = prog(t, t_focus + 0.3, 0.35)
+                if 0 < kk < 1:
+                    jig = int(16 * (1 - kk) * np.sin(kk * 40))
+                if t >= t_focus + 0.3:
+                    sc_ = 1 + 0.08 * (1 - out3(prog(t, t_focus + 0.3, 0.3)))
+                    card = scaled(card, sc_)
+            put(cv, card, (x0 + (cw + gap) * i + jig - (card.width - cw) / 2, 300 + 40 * (1 - k) - (card.height - chh) / 2), k)
         # 視線誘導の枠：最初の印 → 注目の月（ナレーションでその月を言う瞬間に動く）
         start_i = next((i for i, mo in enumerate(months) if str(mo) in marks and mo != focus), 0)
         fi = months.index(focus)
@@ -256,7 +310,22 @@ class History:
         put(cv, lay, (0, 0), out3(prog(t, 0.7, 0.3)))
 
 
+def _events_C(sc):
+    if sc["variant"] == "calendar":
+        tf = sc["cue"](f"{sc['opts']['focus']}月", 1.0)
+        return [(0.05, "whoosh")] + [(0.1 + 0.18 * i, "pop") for i in range(len(sc["opts"]["months"]))] + \
+               [(tf + 0.3, "stamp"), (tf + 0.3, "shake_s")]
+    return [(0.05, "whoosh"), (1.2, "stamp")]
+
+
+History.events = staticmethod(_events_C)
+
+
 # ================================================================ D 数字・比較
+ORB_STEPS = [0.05, 0.4, 0.75, 1.1]   # 保留玉の色が変わる時刻（青→緑→赤→金）
+SLAM = 1.45                           # 弾けて数字が叩きつけられる時刻
+
+
 class Numbers:
     def busy(self, sc):
         if sc["variant"] == "stat":
@@ -274,29 +343,40 @@ class Numbers:
         d = ImageDraw.Draw(lay)
         cx, cy, r = 600, 500, 300
         d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(40, 52, 76), width=30)
-        kf = inout(prog(t, 0.15, 1.3))
+        kf = out3(prog(t, SLAM, 0.6))
         v = val * kf
         if v > 0.5:
             d.arc((cx - r, cy - r, cx + r, cy + r), -90, -90 + 360 * min(v, 100) / 100, fill=GOLD, width=30)
         cv.alpha_composite(lay)
+        fx.hold_orb(cv, (cx, cy), 120, t, ORB_STEPS, burst_at=SLAM)
+        if t < SLAM:
+            return self._stat_text(cv, sc, t)
+        fx.burst(cv, (cx, cy), t, SLAM, r_in=200, r_out=720)
+        fx.sparkles(cv, (cx, cy), t, SLAM + 0.05, n=30, spread=480)
         d = ImageDraw.Draw(cv)
-        num = f"{int(round(v))}%"
+        num = f"{int(round(val))}%"          # 数字は最終値で叩きつける（リングだけが満ちていく）
         fnum, fpre = font("black", 170), font("black", 70)
         pre = o.get("prefix", "")
         wn, wp = d.textlength(num, font=fnum), d.textlength(pre, font=fpre) if pre else 0
-        x = cx - (wn + wp + (8 if pre else 0)) / 2
+        numimg = Image.new("RGBA", (int(wn + wp + 60), 260), (0, 0, 0, 0))
+        nd = ImageDraw.Draw(numimg)
         if pre:
-            d.text((x, cy + 58), pre, font=fpre, fill=GOLD, anchor="ls")
-        d.text((x + wp + (8 if pre else 0), cy + 58), num, font=fnum, fill=GOLD, anchor="ls")
-        k1, k2 = out3(prog(t, 0.3, 0.5)), out3(prog(t, 0.8, 0.5))
+            nd.text((10, 200), pre, font=fpre, fill=GOLD, anchor="ls", stroke_width=5, stroke_fill=(60, 30, 0))
+        nd.text((10 + wp + (8 if pre else 0), 200), num, font=fnum, fill=GOLD, anchor="ls", stroke_width=6, stroke_fill=(60, 30, 0))
+        fx.slam_text(cv, numimg, (cx, cy - 10), t, SLAM)
+        self._stat_text(cv, sc, t)
+        if sc.get("source"):
+            source_line(cv, sc["source"])
+
+    def _stat_text(self, cv, sc, t):
+        o = sc["opts"]
+        k1, k2 = out3(prog(t, 0.3, 0.5)), out3(prog(t, SLAM + 0.3, 0.5))
         rx = 1030
         put(cv, label(o.get("tag", "KEY NUMBER"), BLUE, 26), (rx, 290), k1)
         lb = o.get("label", "")
         put(cv, text_layer(lb, font("black", fit_size(lb, "black", 110, 800)), TEXT, pad=0), (rx, 350 + 16 * (1 - k1)), k1)
         for i, ln in enumerate(o.get("lines", [])):
             put(cv, text_layer(ln, font("bold", 46), (205, 212, 224), pad=0), (rx, 520 + 66 * i + 16 * (1 - k2)), k2)
-        if sc.get("source"):
-            source_line(cv, sc["source"])
 
     def _compare(self, cv, sc, t):
         o = sc["opts"]
@@ -318,13 +398,41 @@ class Numbers:
             cdr.text((40, 118), it["name"], font=font("black", fit_size(it["name"], "black", 60, cw - 80)), fill=TEXT, anchor="lm")
             cdr.text((40, 200), it.get("label", ""), font=font("bold", 36), fill=SUB, anchor="lm")
             cdr.text((cw - 40, 290), it["value"], font=font("black", 132), fill=col, anchor="rm")
-            put(cv, card, (cx0 + (cw + gap) * i, 380 + 30 * (1 - kc)), kc)
+            if t >= max(0.2, ts - 0.2):
+                card = scaled(card, 1 + 0.25 * (1 - back(prog(t, max(0.2, ts - 0.2), 0.3), 2.0)))
+                put(cv, card, (cx0 + (cw + gap) * i + cw / 2 - card.width / 2, 380 + chh / 2 - card.height / 2), kc)
+        if len(items) == 2 and o.get("note"):
+            tn = sc["cue"](o.get("note_cue", "違う"), 1.6)
+            kb = prog(t, tn, 0.3)
+            if kb > 0:
+                r = 62 * (0.4 + 0.6 * back(kb, 2.4))
+                bx, by = W / 2, 380 + chh / 2
+                badge = Image.new("RGBA", (200, 200), (0, 0, 0, 0))
+                bd = ImageDraw.Draw(badge)
+                bd.ellipse((100 - r, 100 - r, 100 + r, 100 + r), fill=(214, 40, 60, 255), outline=GOLD + (255,), width=6)
+                bd.text((100, 96), "≠", font=font("black", int(r * 1.3)), fill=(255, 255, 255), anchor="mm")
+                put(cv, badge, (bx - 100, by - 100), 1.0)
         if o.get("note"):
             kn = out3(prog(t, sc["cue"](o.get("note_cue", "違う"), 1.6), 0.4))
             note = text_layer(o["note"], font("medium", 32), (200, 208, 222), pad=0)
             put(cv, note, ((W - note.width) / 2, 795), kn)
         if sc.get("source"):
             source_line(cv, sc["source"])
+
+
+def _events_D(sc):
+    if sc["variant"] == "stat":
+        return [(ORB_STEPS[0], "hold"), (ORB_STEPS[1], "hold"), (ORB_STEPS[2], "hold"), (ORB_STEPS[3], "hold_gold"),
+                (SLAM, "impact"), (SLAM, "flash"), (SLAM, "shake"), (SLAM + 0.1, "sparkle")]
+    ev = [(0.05, "whoosh")]
+    for i, it in enumerate(sc["opts"]["items"]):
+        ev.append((max(0.2, sc["cue"](it["value"], 0.3 + 0.5 * i) - 0.2), "stamp"))
+    if sc["opts"].get("note"):
+        ev += [(sc["cue"](sc["opts"].get("note_cue", "違う"), 1.6), "boing")]
+    return ev
+
+
+Numbers.events = staticmethod(_events_D)
 
 
 # ================================================================ E 要点
@@ -337,7 +445,9 @@ class Points:
         cv.paste(bokeh_bg())
         d = ImageDraw.Draw(cv)
         g = gold_text(o["heading"], fit_size(o["heading"], "black", 104, 1600))
-        put(cv, g, ((W - g.width) / 2, 120), out3(prog(t, 0.0, 0.5)))
+        kh = prog(t, 0.0, 0.5)
+        put(cv, g, ((W - g.width) / 2, 120 - 80 * (1 - back(kh, 1.8))), min(1, kh * 2))
+        fx.glint(cv, ((W - g.width) / 2, 120, (W + g.width) / 2, 120 + g.height), t, 0.6, 0.7)
         if o.get("sub"):
             sub = text_layer(o["sub"], font("bold", 42), TEXT, stroke=5, pad=0)
             put(cv, sub, ((W - sub.width) / 2, 120 + g.height - 6), out3(prog(t, 0.3, 0.5)))
@@ -357,12 +467,34 @@ class Points:
                 if take:
                     out += ("{" + take + "}") if part.startswith("{") else take
             y = 470 + 120 * i
-            d.text((470, y), "①②③④⑤"[i], font=fbody, fill=GOLD, anchor="lm")
+            # 書き終わった項目の数字には、蛍光ペンのようなマーカーを引く
+            km = prog(t, max(0.5, ts - 0.1) + 0.8, 0.35)
+            if km > 0 and "{" in item:
+                pre = item.split("{")[0]
+                keyw = item.split("{")[1].split("}")[0]
+                mx0 = 560 + d.textlength(pre, font=fbody)
+                mw = d.textlength(keyw, font=fkey)
+                mk = Image.new("RGBA", (int(mw * km) + 1, 34), (255, 220, 60, 150))
+                cv.alpha_composite(mk, (int(mx0), int(y + 22)))
+                d = ImageDraw.Draw(cv)
+            bounce = 1 + 0.3 * (1 - out3(prog(t, max(0.5, ts - 0.1), 0.25)))
+            num = text_layer("①②③④⑤"[i], font("black", int(64 * bounce)), GOLD, pad=0)
+            put(cv, num, (470 + 30 - num.width / 2, y - num.height / 2), 1.0)
             rich_line(d, (560, y), out, fbody, TEXT, (255, 92, 92), key_font=fkey)
         if o.get("note"):
             last = sc["cue"](o["items"][-1].replace("{", "").replace("}", "")[:5], 0.7 + 0.9 * (len(o["items"]) - 1))
             note = text_layer(o["note"], font("medium", 34), (220, 210, 230), pad=0)
             put(cv, note, ((W - note.width) / 2, 760), out3(prog(t, last + 1.0, 0.4)))
+
+
+def _events_E(sc):
+    ev = [(0.05, "whoosh"), (0.6, "sparkle")]
+    for i, it in enumerate(sc["opts"]["items"]):
+        ev.append((max(0.5, sc["cue"](it.replace("{", "").replace("}", "")[:5], 0.7 + 0.9 * i) - 0.1), "pop"))
+    return ev
+
+
+Points.events = staticmethod(_events_E)
 
 
 # ================================================================ F 掛け合い
@@ -381,11 +513,23 @@ class Talk:
         if o.get("card"):
             txt = o["card"]
             g = gold_text(txt, fit_size(txt, "black", 110, 1300))
-            put(cv, g, ((W - g.width) / 2, 250 + 20 * (1 - k)), k)
+            if t >= 0.2:
+                gs = scaled(g, 1 + 0.6 * (1 - back(prog(t, 0.2, 0.32), 2.2)))
+                put(cv, gs, ((W - gs.width) / 2, 250 + g.height / 2 - gs.height / 2), min(1, prog(t, 0.2, 0.08)))
         if o.get("card2"):
             k2 = out3(prog(t, sc["cue"](o.get("card2_cue", o["card2"][:4]), 1.0), 0.5))
             l2 = text_layer(o["card2"], font("black", fit_size(o["card2"], "black", 84, 1300)), TEXT, stroke=7, pad=0)
             put(cv, l2, ((W - l2.width) / 2, 470 + 16 * (1 - k2)), k2)
+
+
+def _events_F(sc):
+    ev = [(0.2, "impact")]
+    if sc["opts"].get("card2"):
+        ev.append((sc["cue"](sc["opts"].get("card2_cue", sc["opts"]["card2"][:4]), 1.0), "pop"))
+    return ev
+
+
+Talk.events = staticmethod(_events_F)
 
 
 TEMPLATES = {"A": Photo(), "B": Machine(), "C": History(), "D": Numbers(), "E": Points(), "F": Talk()}

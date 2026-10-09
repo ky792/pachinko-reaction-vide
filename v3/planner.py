@@ -11,7 +11,7 @@
 
 自動選択のルール（上から順に判定）:
   1. 機種名（data.json の aliases）＋「登場・導入」        → B 機種紹介
-  2. 直前がBで、その機種のスペックの数字を言っている      → Bの続き（スペックを順に出す）
+  2. 直前がBで、その機種のスペックの数字か機種名を言っている → Bの続き（スペックを順に出す）
   3. %の数字が2つ                                          → D 比較
   4. バクの驚き（バク!:）で%の数字                         → D 大きな数字
   5. 「ポイント」「①」など                                → E 要点
@@ -26,8 +26,8 @@ from pathlib import Path
 
 WHO = {"ナギ": "nagi", "バク": "baku"}
 CHARS_PER_SEC = {"nagi": 5.2, "baku": 5.6}
-GAP = 0.32
-MIN_DUR = {"A": 2.8, "B": 5.2, "C": 3.0, "D": 3.2, "E": 3.4, "F": 2.6}
+GAP = 0.24
+MIN_DUR = {"A": 2.8, "B": 5.2, "C": 3.0, "D": 3.6, "E": 3.4, "F": 2.6}
 TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push"}
 
 
@@ -97,7 +97,7 @@ class Planner:
             return "D", "stat", {"value": pcts[0]}, True
         if cur and cur["template"] == "B":
             specs = self.machines[cur["opts"]["machine"]]["specs"]
-            if any(s.get("say", s["v"]) in text for s in specs):
+            if any(s.get("say", s["v"]) in text for s in specs) or mk == cur["opts"]["machine"]:
                 return "B", None, {}, False
         if len(pcts) >= 2:
             return "D", "compare", {"pcts": pcts}, True
