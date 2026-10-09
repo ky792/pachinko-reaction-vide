@@ -26,6 +26,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import render  # noqa: E402
+import motion  # noqa: E402
 import ui  # noqa: E402
 
 SR = 44100
@@ -136,7 +137,7 @@ def build_chapter(ep_dir, script_path, data):
     stem = script_path.stem
     items = parse_script(script_path)
     scene = {"duration": 0, "cues": [], "layout": [], "subs": [], "emphasis": [], "se": [],
-             "year_track": [], "voices": [], "lines": []}
+             "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []}}
     t = 0.25
     cur = None          # 今出ている資料
     chap = None
@@ -188,6 +189,37 @@ def build_chapter(ep_dir, script_path, data):
             set_layout("machine" if kind == "machine" else "normal", t - 0.1)
             scene["se"].append({"t": t + 0.02, "kind": "pon" if kind == "analysis" else "shu", "gain": 0.22})
             t += SHOW_PAUSE
+        elif c == "camera":
+            # @camera <zoom> <x> <y> <duration> (すべて数字。位置は原画のピクセル)
+            bits = it["arg"].split()
+            if len(bits) != 4:
+                raise ValueError("@camera zoom x y duration の4値が必要です")
+            zoom, x, y, duration = map(float, bits)
+            if not 1.0 <= zoom <= 3.0 or duration < 0:
+                raise ValueError("@camera: zoom は1〜3、duration は0以上")
+            frames = scene["motion"]["camera"]
+            previous = motion.sample(frames, t, motion.CAMERA_DEFAULT)
+            frames.append({"t": round(t, 3), **previous})
+            frames.append({"t": round(t + duration, 3), "zoom": zoom, "x": x, "y": y})
+        elif c == "motion":
+            # @motion <target> <dx> <dy> <scale> <rotate> <opacity> <duration>
+            bits = it["arg"].split()
+            if len(bits) != 7:
+                raise ValueError("@motion target dx dy scale rotate opacity duration の7値が必要です")
+            target = bits[0]
+            dx, dy, scale, rotate, opacity, duration = map(float, bits[1:])
+            if scale <= 0 or not 0 <= opacity <= 1 or duration < 0:
+                raise ValueError("@motion: scale > 0、opacity は0〜1、duration は0以上")
+            motions = scene["motion"]["elements"]
+            element = next((e for e in motions if e["target"] == target), None)
+            if element is None:
+                element = {"target": target, "keyframes": []}
+                motions.append(element)
+            frames = element["keyframes"]
+            previous = motion.sample(frames, t, motion.ELEMENT_DEFAULT)
+            frames.append({"t": round(t, 3), **previous})
+            frames.append({"t": round(t + duration, 3), "dx": dx, "dy": dy,
+                           "scale": scale, "rotate": rotate, "opacity": opacity})
         elif c == "pause":
             t += float(it["arg"])
         elif c == "line":

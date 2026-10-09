@@ -25,6 +25,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ui  # noqa: E402
+import motion  # noqa: E402
 
 SR = 44100
 CHAR_H = {"normal": 330, "machine": 250, "hidden": 330}
@@ -109,6 +110,9 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
 
 def state_key(scene, t):
     """画面のUIが止まっていれば、その状態を表すキーを返す（動いている間は None）"""
+    # 要素を動かす章では座標変化をキャッシュしてしまわないようにする。
+    if scene.get("motion", {}).get("elements"):
+        return None
     key = []
     y, still = year_at(scene, t)
     if not still:
@@ -161,7 +165,13 @@ def render_layers(scene, t, images):
     ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"))
     for c in cues:
         if c["start"] <= t < c["end"] and c["type"] in BACK:
-            _draw_cue(under, c, t - c["start"], c["end"] - c["start"], images)
+            element = motion.matching_element(scene, c)
+            if element is None:
+                _draw_cue(under, c, t - c["start"], c["end"] - c["start"], images)
+            else:
+                layer = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
+                _draw_cue(layer, c, t - c["start"], c["end"] - c["start"], images)
+                motion.composite_element(under, layer, element.get("keyframes", []), t)
     over = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
     h, a = layout_state(scene, t)
     for c in cues:
@@ -185,7 +195,8 @@ def render_frame(scene, t, images):
         if k is not None:
             _CACHE.clear()
             _CACHE[k] = (under, over)
-    cv = under.copy()
+    # 資料・背景だけを仮想カメラで動かし、案内役と字幕は固定する。
+    cv = motion.camera_image(under.copy(), motion.camera_state(scene, t))
     h, a = layout_state(scene, t)
     who = speaker_at(scene, t)
     if a > 0.01:
