@@ -140,25 +140,48 @@ def rich(d, center, line, f, base, key):
         x += d.textlength(s, font=f)
 
 
+# ---------------------------------------------------------------- 研究ラボらしさの小部品
+def lab_label(d, xy, txt, col=None, size=20, anchor="lm"):
+    """小さな英字ラベル（NAGI ANALYSIS / DATA LOG / LAB RECORD）。字間広め・控えめ"""
+    draw_spaced(d, xy, txt, font("bold", size), col or SUB, 4, anchor=anchor)
+
+
+def corner_ticks(d, box, col, n=16, w=2):
+    """パネルの四隅だけに細いL字。枠全体を光らせない"""
+    x0, y0, x1, y1 = box
+    for (x, y, sx, sy) in ((x0, y0, 1, 1), (x1, y0, -1, 1), (x0, y1, 1, -1), (x1, y1, -1, -1)):
+        d.line((x, y, x + sx * n, y), fill=col, width=w)
+        d.line((x, y, x, y + sy * n), fill=col, width=w)
+
+
 # ---------------------------------------------------------------- 背景
 @lru_cache(maxsize=1)
 def background():
-    """#101827 の研究室。上からごく弱い光＋細かい方眼（主張しない）"""
+    """研究室の背景画像（generator/assets/backgrounds/lab_room.png）を暗く・ぼかして敷く。
+    無ければ #101827 の無地＋方眼。文字が主役になる明るさに抑える"""
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
-    base = np.array(BG[:3], np.float32)
-    light = np.clip(1 - np.sqrt(((xx - W / 2) / 1300) ** 2 + ((yy + 200) / 900) ** 2), 0, 1) ** 1.5
-    img = base + light[..., None] * np.array([14, 22, 38], np.float32)
+    p = ASSETS / "backgrounds" / "lab_room.png"
+    if p.exists():
+        src = Image.open(p).convert("RGB")
+        s = max(W / src.width, H / src.height)
+        src = src.resize((int(src.width * s + 0.5), int(src.height * s + 0.5)), Image.LANCZOS)
+        src = src.crop(((src.width - W) // 2, (src.height - H) // 2, (src.width - W) // 2 + W, (src.height - H) // 2 + H))
+        src = src.filter(ImageFilter.GaussianBlur(9))
+        img = np.asarray(src).astype(np.float32) * 0.34 + np.array(BG[:3], np.float32) * 0.42
+    else:
+        img = np.zeros((H, W, 3), np.float32) + np.array(BG[:3], np.float32)
+        grid = ((xx % 80) < 1) | ((yy % 80) < 1)
+        img[grid] += 5
     vign = np.clip(np.sqrt(((xx - W / 2) / (W * 0.62)) ** 2 + ((yy - H / 2) / (H * 0.62)) ** 2), 0, 1.4)
-    img *= (1 - 0.28 * np.clip(vign - 0.55, 0, 1))[..., None]
-    grid = ((xx % 80) < 1) | ((yy % 80) < 1)
-    img[grid] += 5
-    im = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
-    return im
+    img *= (1 - 0.35 * np.clip(vign - 0.5, 0, 1))[..., None]
+    return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
 
 
 # ---------------------------------------------------------------- 常設：上部バー（章ラベル＋年表ミニマップ）
-TL_X0, TL_X1, TL_Y = 1240, W - MARGIN, 66
+TL_X0, TL_X1, TL_Y = 1200, W - MARGIN, 70
 YEARS = (2008, 2026)
+FUTURE = (40, 52, 70, 255)     # 未来＝暗め
+PAST = (120, 136, 160, 255)    # 過去＝薄く残す
 
 
 def year_x(y):
@@ -166,70 +189,56 @@ def year_x(y):
 
 
 def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=()):
-    """左：章番号と章タイトル／右：2008–2026 の年表（今の年にマーカー）"""
+    """左：章タイトル（CHAPTER番号は小さく補助）／右：年表。今の年だけ強調、過去は薄く、未来は暗く"""
     if a <= 0:
         return
-    lay = Image.new("RGBA", (W, 140), (0, 0, 0, 0))
+    lay = Image.new("RGBA", (W, 150), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    f_no, f_t = font("bold", 26), font("bold", 34)
-    no = f"CHAPTER {chapter_no:02d}"
-    nw = text_w(no, f_no, 3) + 36
-    d.rounded_rectangle((MARGIN, 44, MARGIN + nw, 88), 8, outline=NAGI, width=2)
-    draw_spaced(d, (MARGIN + 18, 66), no, f_no, NAGI, 3)
-    d.text((MARGIN + nw + 22, 65), chapter_title, font=f_t, fill=TEXT, anchor="lm")
+    lab_label(d, (MARGIN, 40), f"CHAPTER {chapter_no:02d}", NAGI, 20)
+    d.text((MARGIN, 82), chapter_title, font=font("black", 44), fill=TEXT, anchor="lm")
     # 年表
-    d.line((TL_X0, TL_Y, TL_X1, TL_Y), fill=PANEL_LINE, width=3)
+    cx = year_x(year)
+    d.line((TL_X0, TL_Y, cx, TL_Y), fill=PAST, width=3)
+    d.line((cx, TL_Y, TL_X1, TL_Y), fill=FUTURE, width=3)
     for y in range(YEARS[0], YEARS[1] + 1):
         x = year_x(y)
         h = 7 if y % 2 == 0 else 4
-        d.line((x, TL_Y - h, x, TL_Y + h), fill=PANEL_LINE, width=2)
+        d.line((x, TL_Y - h, x, TL_Y + h), fill=PAST if y < year else FUTURE, width=2)
     fs = font("medium", 22)
-    d.text((TL_X0, TL_Y + 30), str(YEARS[0]), font=fs, fill=SUB, anchor="lm")
-    d.text((TL_X1, TL_Y + 30), str(YEARS[1]), font=fs, fill=SUB, anchor="rm")
+    d.text((TL_X0, TL_Y + 32), str(YEARS[0]), font=fs, fill=PAST, anchor="lm")
+    d.text((TL_X1, TL_Y + 32), str(YEARS[1]), font=fs, fill=FUTURE, anchor="rm")
     for my in milestones:
-        x = year_x(my)
-        d.ellipse((x - 4, TL_Y - 4, x + 4, TL_Y + 4), fill=SUB)
-    if era:   # 章が扱う期間を帯で
+        if my < year:
+            x = year_x(my)
+            d.ellipse((x - 4, TL_Y - 4, x + 4, TL_Y + 4), fill=PAST)
+    if era:   # 章が扱う期間
         d.line((year_x(era[0]), TL_Y, year_x(era[1]), TL_Y), fill=NAGI, width=5)
-    x = year_x(year)
-    d.ellipse((x - 9, TL_Y - 9, x + 9, TL_Y + 9), fill=KEY, outline=BG, width=3)
-    d.text((x, TL_Y - 30), f"{int(year)}", font=font("bold", 26), fill=KEY, anchor="mm")
+    d.ellipse((cx - 11, TL_Y - 11, cx + 11, TL_Y + 11), fill=KEY, outline=BG, width=3)
+    d.text((cx, TL_Y - 34), f"{int(year)}", font=font("black", 34), fill=KEY, anchor="mm")
     paste(canvas, lay, (0, 0), a)
 
 
 # ---------------------------------------------------------------- F チャプター
 def chapter_card(canvas, tl, dur, data):
-    """CHAPTER 02 → 年 → タイトル → 問い を順に。最後は全体がふわっと消える"""
-    out = 1 - ease_in_out(prog(tl, dur - 0.45, 0.45))
+    """年とタイトルがほぼ同時に立ち上がる。CHAPTER番号は小さく添えるだけ"""
+    out = 1 - ease_in_out(prog(tl, dur - 0.4, 0.4))
     if out <= 0:
         return
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    cy = H / 2 - 40
-    steps = [("no", 0.0), ("rule", 0.25), ("year", 0.7), ("title", 1.3), ("q", 1.9)]
-    st = {k: ease_out(prog(tl, s, 0.5)) for k, s in steps}
-    # CHAPTER 02
-    f = font("bold", 34)
-    no = f"CHAPTER {data['no']:02d}"
-    tmp = Image.new("RGBA", (W, 60), (0, 0, 0, 0))
-    draw_spaced(ImageDraw.Draw(tmp), (W / 2, 30), no, f, NAGI, 10, anchor="mm")
-    paste(lay, tmp, (0, cy - 230 + 16 * (1 - st["no"])), st["no"])
-    # 線（中央から左右へ伸びる）
-    rw = 560 * st["rule"]
-    d.line((W / 2 - rw / 2, cy - 160, W / 2 + rw / 2, cy - 160), fill=PANEL_LINE, width=2)
-    # 年
-    tmp = Image.new("RGBA", (W, 130), (0, 0, 0, 0))
-    ImageDraw.Draw(tmp).text((W / 2, 65), data["year"], font=font("black", 96), fill=KEY, anchor="mm")
-    paste(lay, tmp, (0, cy - 140 + 20 * (1 - st["year"])), st["year"])
-    # タイトル
-    tmp = Image.new("RGBA", (W, 160), (0, 0, 0, 0))
-    ImageDraw.Draw(tmp).text((W / 2, 80), data["title"], font=font("black", 118), fill=TEXT, anchor="mm")
-    paste(lay, tmp, (0, cy + 10 + 24 * (1 - st["title"])), st["title"])
-    # 問い
-    if data.get("question"):
-        tmp = Image.new("RGBA", (W, 80), (0, 0, 0, 0))
-        ImageDraw.Draw(tmp).text((W / 2, 40), data["question"], font=font("medium", 46), fill=SUB, anchor="mm")
-        paste(lay, tmp, (0, cy + 190 + 12 * (1 - st["q"])), st["q"])
+    cy = H / 2 - 30
+    st = {k: ease_out(prog(tl, s, 0.45)) for k, s in (("year", 0.0), ("title", 0.15), ("no", 0.3), ("rule", 0.3))}
+    tmp = Image.new("RGBA", (W, 180), (0, 0, 0, 0))
+    ImageDraw.Draw(tmp).text((W / 2, 90), data["year"], font=font("black", 140), fill=KEY, anchor="mm")
+    paste(lay, tmp, (0, cy - 250 + 20 * (1 - st["year"])), st["year"])
+    tmp = Image.new("RGBA", (W, 190), (0, 0, 0, 0))
+    ImageDraw.Draw(tmp).text((W / 2, 95), data["title"], font=font("black", 140), fill=TEXT, anchor="mm")
+    paste(lay, tmp, (0, cy - 50 + 24 * (1 - st["title"])), st["title"])
+    rw = 420 * st["rule"]
+    d.line((W / 2 - rw / 2, cy + 175, W / 2 + rw / 2, cy + 175), fill=PANEL_LINE, width=2)
+    tmp = Image.new("RGBA", (W, 50), (0, 0, 0, 0))
+    lab_label(ImageDraw.Draw(tmp), (W / 2, 25), f"CHAPTER {data['no']:02d}", SUB, 24, anchor="mm")
+    paste(lay, tmp, (0, cy + 195), st["no"])
     paste(canvas, lay, (0, 0), out)
 
 
@@ -262,18 +271,20 @@ def machine_card(canvas, tl, dur, data, image=None):
     cx, cy, cw = 840, 170, 860
     rows = data["rows"]
     rh = 92
-    ch = 150 + rh * len(rows) + 30
+    ch = 165 + rh * len(rows) + 30
     card = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
     cd = ImageDraw.Draw(card)
     cd.rounded_rectangle((0, 0, cw - 1, ch - 1), RADIUS, fill=PANEL)
     cd.rectangle((0, 24, 6, ch - 24), fill=NAGI)
-    cd.text((44, 58), data["name"], font=font("black", 56), fill=TEXT, anchor="lm")
-    cd.text((46, 112), data.get("sub", ""), font=font("medium", 28), fill=SUB, anchor="lm")
+    corner_ticks(cd, (10, 10, cw - 11, ch - 11), NAGI)
+    lab_label(cd, (44, 34), data.get("tag", "DATA LOG"), NAGI, 18)
+    cd.text((44, 78), data["name"], font=font("black", 56), fill=TEXT, anchor="lm")
+    cd.text((46, 126), data.get("sub", ""), font=font("medium", 30), fill=SUB, anchor="lm")
     for i, r in enumerate(rows):
         ra = ease_out(prog(tl, 0.45 + 0.28 * i, 0.35))
         if ra <= 0:
             continue
-        y = 150 + rh * i
+        y = 165 + rh * i
         row = Image.new("RGBA", (cw, rh), (0, 0, 0, 0))
         rd = ImageDraw.Draw(row)
         rd.line((44, 0, cw - 44, 0), fill=PANEL_LINE, width=2)
@@ -286,6 +297,7 @@ def machine_card(canvas, tl, dur, data, image=None):
         rd.text((cw - 44, rh / 2), v, font=font("black", 60 if hl else 40), fill=KEY if hl else TEXT, anchor="rm")
         card.alpha_composite(fade(row, ra), (0, y + int(10 * (1 - ra))))
     paste(canvas, card, (cx + 60 * (1 - a_in), cy), a)
+
 
 
 # ---------------------------------------------------------------- D ナギ解析
@@ -304,27 +316,24 @@ def _glow(r):
 
 
 def tank_glow(canvas, center, r, k):
-    """脳タンクが淡く光る（強すぎない・ゆっくり）"""
     if k <= 0:
         return
     g = _glow(int(r))
-    paste(canvas, g, (center[0] - g.width / 2, center[1] - g.height / 2), 0.55 * k)
+    paste(canvas, g, (center[0] - g.width / 2, center[1] - g.height / 2), 0.5 * k)
 
 
 def analysis(canvas, tl, dur, data, tank):
-    """タンクが光る→細い線が伸びる→パネルが開く→比較バー→注記→静かに収納"""
+    """研究施設の端末のように静かに。タンクの光は最初の一瞬だけ→解析ライン→パネル展開→数字が主役"""
     T_OUT = 0.9
     t_close = dur - T_OUT
-    glow = ease_out(prog(tl, 0, 0.6)) * (1 - ease_in_out(prog(tl, dur - 0.5, 0.5)))
-    glow *= 0.85 + 0.15 * math.sin(tl * 2.2)
-    tank_glow(canvas, tank, TANK[2] * 1.1, glow)
+    flash = math.sin(math.pi * prog(tl, 0, 0.7))          # 0→1→0 の一瞬だけ
+    tank_glow(canvas, tank, TANK[2] * 1.1, flash)
 
-    # 線：タンク → 上 → パネル左下
     px0, py0, px1, py1 = 470, 160, 1500, 820
     path = [(tank[0], tank[1] - 40), (tank[0], py1 - 70), (px0, py1 - 70)]
     seg_len = [math.dist(path[i], path[i + 1]) for i in range(len(path) - 1)]
     total = sum(seg_len)
-    k_line = ease_in_out(prog(tl, 0.35, 0.55)) * (1 - ease_in_out(prog(tl, t_close + 0.45, 0.4)))
+    k_line = ease_in_out(prog(tl, 0.3, 0.55)) * (1 - ease_in_out(prog(tl, t_close + 0.45, 0.4)))
     if k_line > 0:
         lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         d = ImageDraw.Draw(lay)
@@ -336,53 +345,66 @@ def analysis(canvas, tl, dur, data, tank):
             else:
                 (x0, y0), (x1, y1) = path[i], path[i + 1]
                 pts.append((x0 + (x1 - x0) * rem / L, y0 + (y1 - y0) * rem / L)); break
-        d.line(pts, fill=NAGI, width=3, joint="curve")
+        d.line(pts, fill=NAGI, width=2, joint="curve")
         ex, ey = pts[-1]
-        d.ellipse((ex - 6, ey - 6, ex + 6, ey + 6), fill=NAGI)
-        d.ellipse((path[0][0] - 6, path[0][1] - 6, path[0][0] + 6, path[0][1] + 6), outline=NAGI, width=3)
+        d.rectangle((ex - 4, ey - 4, ex + 4, ey + 4), fill=NAGI)
         canvas.alpha_composite(lay)
 
-    # パネル：左下から開く
-    k_open = ease_out(prog(tl, 0.85, 0.5)) * (1 - ease_in_out(prog(tl, t_close, 0.45)))
+    k_open = ease_out(prog(tl, 0.8, 0.5)) * (1 - ease_in_out(prog(tl, t_close, 0.45)))
     if k_open <= 0:
         return
     pw, ph = px1 - px0, py1 - py0
     panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
     d = ImageDraw.Draw(panel)
-    d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 245),
-                        outline=NAGI, width=2)
-    k_c = ease_out(prog(tl, 1.25, 0.4)) * (1 - ease_in_out(prog(tl, t_close - 0.3, 0.3)))
+    d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 246), outline=PANEL_LINE, width=2)
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
+    k_c = ease_out(prog(tl, 1.2, 0.4)) * (1 - ease_in_out(prog(tl, t_close - 0.3, 0.3)))
     if k_c > 0:
         c = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
         cd = ImageDraw.Draw(c)
-        cd.text((48, 56), data["label"], font=font("bold", 30), fill=NAGI, anchor="lm")
-        cd.text((48, 112), data["title"], font=font("black", 52), fill=TEXT, anchor="lm")
-        bx0, bx1 = 48, pw - 400
-        for i, b in enumerate(data["bars"]):
-            y = 200 + 150 * i
-            kb = ease_out(prog(tl, 1.55 + 0.35 * i, 0.9))
+        # 見出し：何を比べているか
+        lab_label(cd, (48, 52), data.get("tag", "NAGI ANALYSIS"), NAGI, 20)
+        cd.text((48, 104), data["heading"], font=font("black", 58), fill=TEXT, anchor="lm")
+        cd.line((48, 150, pw - 48, 150), fill=PANEL_LINE, width=2)
+        # 数字が主役の2列
+        bars = data["bars"]
+        n = len(bars)
+        colw = (pw - 96) / n
+        for i, b in enumerate(bars):
+            x0 = 48 + colw * i
+            kb = ease_out(prog(tl, 1.45 + 0.35 * i, 0.9))
             col = KEY if b.get("key") else TEXT
-            cd.text((bx0, y), b["k"], font=font("bold", 34), fill=TEXT, anchor="lm")
+            if i:
+                cd.line((x0 - 1, 190, x0 - 1, 470), fill=PANEL_LINE, width=2)
+            xl = x0 + (36 if i else 0)
+            cd.text((xl, 200), b["k"], font=font("bold", 36), fill=TEXT if b.get("key") else SUB, anchor="lm")
+            v = int(round(b["value"] * kb))
+            fbig = font("black", 166)
+            num = f"{v}%"
+            y_num = 330
+            x = xl
+            if b.get("prefix"):
+                fp = font("black", 64)
+                cd.text((x, y_num + 40), b["prefix"], font=fp, fill=col, anchor="ls")
+                x += cd.textlength(b["prefix"], font=fp) + 6
+            cd.text((x, y_num + 40), num, font=fbig, fill=col, anchor="ls")
+            # 細いバー（数字の補助）
+            bw = colw - 84
+            yb = 420
+            cd.rectangle((xl, yb, xl + bw, yb + 8), fill=PANEL_LINE)
+            cd.rectangle((xl, yb, xl + bw * b["value"] / 100 * kb, yb + 8), fill=col)
             if b.get("sub"):
-                cd.text((bx0, y + 42), b["sub"], font=font("regular", 26), fill=SUB, anchor="lm")
-            yb = y + 82
-            cd.rounded_rectangle((bx0, yb, bx1, yb + 26), 8, fill=PANEL_LINE)
-            fill_to = bx0 + (bx1 - bx0) * b["value"] / 100 * kb
-            if fill_to > bx0 + 16:
-                cd.rounded_rectangle((bx0, yb, fill_to, yb + 26), 8, fill=col)
-            n = int(round(b["value"] * kb))
-            cd.text((pw - 48, yb + 6), b["fmt"].format(n), font=font("black", 92), fill=col, anchor="rm")
-        # 注記（定義が違うことを必ず出す）
-        kn = ease_out(prog(tl, 2.6, 0.5))
+                cd.text((xl, yb + 44), b["sub"], font=font("medium", 30), fill=SUB, anchor="lm")
+        # 注記：1〜2行・短く
+        kn = ease_out(prog(tl, 2.5, 0.5))
         if kn > 0 and data.get("note"):
-            nd = Image.new("RGBA", (pw, 165), (0, 0, 0, 0))
+            nd = Image.new("RGBA", (pw, 120), (0, 0, 0, 0))
             ndd = ImageDraw.Draw(nd)
-            ndd.line((48, 8, pw - 48, 8), fill=PANEL_LINE, width=2)
-            for j, line in enumerate(data["note"]):
-                ndd.text((48, 44 + 38 * j), line, font=font("medium", 27), fill=SUB if j else TEXT, anchor="lm")
-            c.alpha_composite(fade(nd, kn), (0, ph - 175))
+            ndd.line((48, 6, pw - 48, 6), fill=PANEL_LINE, width=2)
+            for j, line in enumerate(data["note"][:2]):
+                ndd.text((48, 46 + 46 * j), line, font=font("bold" if j == 0 else "medium", 34), fill=TEXT if j == 0 else SUB, anchor="lm")
+            c.alpha_composite(fade(nd, kn), (0, ph - 130))
         panel.alpha_composite(fade(c, k_c))
-    # 開く動き：左下を基点に縦横へ
     vis_w = max(2, int(pw * min(1, k_open * 1.25)))
     vis_h = max(2, int(ph * k_open))
     crop = panel.crop((0, ph - vis_h, vis_w, ph))
@@ -414,6 +436,11 @@ def timeline(canvas, tl, dur, data):
             continue
         x = X(ev["v"])
         col = KEY if ev.get("key") else NAGI
+        latest = all(prog(tl, 0.6 + 0.6 * j, 0.01) < 1 for j in range(i + 1, len(data["events"])))
+        # 今説明している出来事だけ強く。過去は箱を残したまま色だけ落とす
+        tcol = TEXT if latest else SUB
+        if not latest:
+            col = PAST
         up = i % 2 == 0
         stem = 150 * ke
         e = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -424,33 +451,24 @@ def timeline(canvas, tl, dur, data):
         bw = max(text_w(ev["label"], font("black", 44)), text_w(ev.get("sub", ""), font("medium", 28))) + 56
         bx = min(max(x - bw / 2, MARGIN), W - MARGIN - bw)
         ed.rounded_rectangle((bx, ty - 10, bx + bw, ty + 100), RADIUS, fill=PANEL, outline=col, width=2)
-        ed.text((bx + bw / 2, ty + 28), ev["label"], font=font("black", 44), fill=TEXT, anchor="mm")
+        ed.text((bx + bw / 2, ty + 28), ev["label"], font=font("black", 44), fill=tcol, anchor="mm")
         ed.text((bx + bw / 2, ty + 74), ev.get("sub", ""), font=font("medium", 28), fill=col, anchor="mm")
         lay.alpha_composite(fade(e, ke))
     if data.get("caption"):
         kc = ease_out(prog(tl, 0.6 + 0.6 * len(data["events"]), 0.5))
-        c = Image.new("RGBA", (W, 80), (0, 0, 0, 0))
-        ImageDraw.Draw(c).text((W / 2, 40), data["caption"], font=font("bold", 40), fill=TEXT, anchor="mm")
-        lay.alpha_composite(fade(c, kc), (0, data.get("caption_y", 180)))
+        c = Image.new("RGBA", (W, 120), (0, 0, 0, 0))
+        cdr = ImageDraw.Draw(c)
+        lab_label(cdr, (W / 2, 22), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+        cdr.text((W / 2, 76), data["caption"], font=font("black", 50), fill=TEXT, anchor="mm")
+        lay.alpha_composite(fade(c, kc), (0, data.get("caption_y", 160)))
     paste(canvas, lay, (0, 0), a)
+
 
 
 # ---------------------------------------------------------------- E バクのツッコミ
 def tsukkomi_lines(canvas, tl, center):
-    """バクの頭の横に橙の短い線が3本。0.45秒で消える"""
-    k = prog(tl, 0, 0.45)
-    if k >= 1:
-        return
-    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(lay)
-    cx, cy = center
-    for ang in (-150, -115, -80):
-        r0 = 130 + 30 * ease_out(k)
-        r1 = r0 + 46 * (1 - k)
-        a = math.radians(ang)
-        d.line((cx + r0 * math.cos(a), cy + r0 * math.sin(a), cx + r1 * math.cos(a), cy + r1 * math.sin(a)),
-               fill=BAKU, width=8)
-    paste(canvas, lay, (0, 0), 1 - k)
+    """簡素化：演出は字幕の橙アクセントと軽い拡大（emphasis）だけ。ここでは何も足さない"""
+    return
 
 
 # ---------------------------------------------------------------- 字幕
