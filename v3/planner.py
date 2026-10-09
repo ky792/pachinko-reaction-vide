@@ -8,6 +8,8 @@
   @C:era band="MAX機の時代" end=2015.9 goto=2016
   @host nagi size=300 pos=bl alpha=0.9         ← 今のシーンのキャラ表示を上書き（off で非表示）
   @trans fade                                  ← 今のシーンへの入り方（cut / fade / zoom / push）
+  @moment analysis at="65%" box=560,430,900,90 ← ナギの解析演出を、その語句を言う瞬間に重ねる（v3/moments.py）
+  @C:calendar intro=era_shift reels="2016年|5月|新内規"   ← 時代転換のリールから入る
 
 自動選択のルール（上から順に判定）:
   1. 機種名（data.json の aliases）＋「登場・導入」        → B 機種紹介
@@ -23,6 +25,8 @@ import json
 import re
 import wave
 from pathlib import Path
+
+from .moments import INTROS
 
 WHO = {"ナギ": "nagi", "バク": "baku"}
 CHARS_PER_SEC = {"nagi": 5.2, "baku": 5.6}
@@ -131,10 +135,14 @@ class Planner:
             spec = None
             if m:
                 spec = next((s for s in m["specs"] if f"{val}%" in s["v"]), None)
+            fact = None if spec else next((f for f in self.data.get("facts", []) if f["value"] == f"{val}%"), None)
+            if fact:                        # 規制・ルールの数字は「衝撃」の出し方にする
+                o.setdefault("tone", fact.get("tone", "shock"))
+                o.setdefault("tag", "NEW RULE")
             o.setdefault("prefix", "約" if (spec and spec["v"].startswith("約")) else "")
-            o.setdefault("label", spec["k"] if spec else "注目の数字")
+            o.setdefault("label", spec["k"] if spec else (fact["label"] if fact else "注目の数字"))
             o.setdefault("lines", self.data.get("explain", {}).get(o["label"], []))
-            sc["source"] = m.get("source") if m else None
+            sc["source"] = self.data.get("compare_source") if fact else (m.get("source") if m else None)
         elif t == "D" and v == "compare":
             items = []
             m = ctx.get("machine")
@@ -165,6 +173,12 @@ class Planner:
             if isinstance(o["months"], str):
                 o["months"] = [int(x) for x in o["months"].split(",")]
             ctx["event"] = next((e for e in evs if int(e["date"][5:7]) == focus), None)
+            ev = ctx["event"]
+            if ev and ev.get("turn") and "intro" not in o:      # 転換点の月は、リールの導入演出から入る
+                o["intro"] = "era_shift"
+                o.setdefault("reels", f"{year}年|{focus}月|{ev.get('short', ev['label'])}")
+            if isinstance(o.get("reels"), str):
+                o["reels"] = o["reels"].split("|")
             ctx["year"] = year
         elif t == "E":
             ev = ctx.get("event")
@@ -198,7 +212,7 @@ class Planner:
                     cur = {"template": t, "variant": var or {"A": "photo", "B": "machine", "C": "calendar", "D": "stat",
                                                             "E": "points", "F": "talk"}[t],
                            "opts": dict(pending["opts"]), "lines": [], "hosts": dict(pending.get("hosts", {})),
-                           "trans": pending.get("trans", TRANS[t])}
+                           "trans": pending.get("trans", TRANS[t]), "moments": pending.get("moments", [])}
                     if t == "B" and "machine" not in cur["opts"]:
                         cur["opts"]["machine"] = self.find_machine(ln["text"])
                     scenes.append(cur)
@@ -224,6 +238,13 @@ class Planner:
                     cfg["pos"] = o["pos"]
                 cfg["force"] = True
                 (pending.setdefault("hosts", {}) if pending else cur["hosts"])[who] = cfg
+            elif c == "moment":                     # @moment analysis at="65%" box=x,y,w,h
+                name = next(k for k, v in it["opts"].items() if v is True)
+                mo = {"name": name, **{k: v for k, v in it["opts"].items() if v is not True}}
+                if pending:
+                    pending.setdefault("moments", []).append(mo)
+                elif cur is not None:
+                    cur.setdefault("moments", []).append(mo)
             elif c == "trans":
                 kind = next(iter(it["opts"]))
                 if pending:
@@ -241,6 +262,7 @@ class Planner:
         for sc in scenes:
             sc["start"] = t
             lt = t + (0.15 if sc is not scenes[0] else 0.3)
+            lt += INTROS.get(sc["opts"].get("intro"), 0.0)          # 導入演出（リールなど）の間はナレーションを待つ
             for ln in sc["lines"]:
                 vp = self.ep / "voices" / f"{ln['id']}.wav"
                 ln["voice"] = str(vp) if vp.exists() else None

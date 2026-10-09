@@ -19,7 +19,7 @@ from .style import (W, H, NAVY, TEXT, SUB, GOLD, RED, BLUE, font, prog, out3, in
                     text_layer, gold_text, label, spaced, fit_size, dark_grad, metal_bg, bokeh_bg, lab_bg,
                     chip, source_line)
 from .media import with_shadow
-from . import fx
+from . import fx, moments
 
 NUM = re.compile(r"(約?[0-9][0-9,.]*(?:%|個|回転|回|分の1)|1/[0-9][0-9.]*)")
 
@@ -114,6 +114,7 @@ class Machine:
         k_tl = out3(prog(t, 0.0, 0.5))
         k_up = inout(prog(t, t_photo - 0.2, 0.6))
         self._year_strip(cv, m, t, k_tl, k_up)
+        moments.entry_before(cv, t, t_photo + 0.25)          # 先バレ（着地の直前に縁が光る）
         # 前景：実機（影つき）。右から大きく入り、左へ寄って小さくなる
         a = lib.get(m["asset"])
         if t >= t_photo + 0.25:
@@ -130,10 +131,8 @@ class Machine:
             if bump > 1.001:
                 sh = scaled(sh, bump)
             put(cv, sh, (cx - sh.width / 2, cy - sh.height / 2 + pad * 0 - 0), k_in)
-            te = t_photo + 0.25
-            fx.sparkles(cv, (cx, cy), t, te, n=26, spread=520)
-            fx.glint(cv, (cx - img.width / 2, cy - img.height / 2, cx + img.width / 2, cy + img.height / 2), t, te + 0.35, 0.7)
-            fx.ribbon(cv, "注目機種 ENTRY!", (cx - img.width / 2 - 60, cy - img.height / 2 - 30), t, te + 0.05, 1.5)
+            moments.entry_after(cv, t, t_photo + 0.25, (cx, cy),
+                                (cx - img.width / 2, cy - img.height / 2, cx + img.width / 2, cy + img.height / 2))
             if a.note:
                 chip(cv, f"{a.note}（{a.info.get('file', a.key)}）" if a.placeholder else a.note)
             if a.credit and not a.placeholder:
@@ -155,6 +154,8 @@ class Machine:
                 ts = t_specs[i]
                 big_v = sp.get("key")
                 ry = y0 + 92 * i
+                if big_v:                                      # ナギの解析：ゲージが満ちる間、青いブラケットで挟む
+                    moments.analysis(cv, (x - 6, ry + 4, x + 950, ry + 88), t, ts - GAUGE, hold=GAUGE + 0.9, tag=None)
                 if big_v and ts - GAUGE <= t < ts:          # 注目の数字は、期待度ゲージが満ちてから出す
                     put(cv, text_layer(sp["k"], font("bold", 40), (205, 212, 224), pad=0), (x, ry + 20), 1.0)
                     fx.gauge(cv, (x + 300, ry + 22), 520, 48, prog(t, ts - GAUGE, GAUGE - 0.1), label="")
@@ -181,9 +182,10 @@ class Machine:
     def events(self, sc):
         tp, tn, tl, ts = self.phases(sc)
         te = tp + 0.25
-        ev = [(0.05, "whoosh"), (te, "fanfare"), (te, "flash"), (te + 0.35, "sparkle"), (tn, "pop")]
+        ev = [(0.05, "whoosh"), (tn, "pop")] + moments.entry_events(te)
         for i, sp in enumerate(sc["machine"]["specs"]):
             if sp.get("key"):
+                ev += moments.analysis_events(ts[i] - GAUGE)
                 ev += [(ts[i] - GAUGE + k * (GAUGE - 0.1) / 10, "tick") for k in range(10)]
                 ev += [(ts[i], "impact"), (ts[i], "shake"), (ts[i], "flash_s")]
             else:
@@ -323,7 +325,9 @@ History.events = staticmethod(_events_C)
 
 # ================================================================ D 数字・比較
 ORB_STEPS = [0.05, 0.4, 0.75, 1.1]   # 保留玉の色が変わる時刻（青→緑→赤→金）
+SHOCK_STEPS = [0.05, 0.45, 0.85]      # 衝撃（tone=shock）は 青→緑→赤 で止めて溜める
 SLAM = 1.45                           # 弾けて数字が叩きつけられる時刻
+SHOCK_RED = (236, 72, 84)
 
 
 class Numbers:
@@ -341,18 +345,29 @@ class Numbers:
         val = float(o["value"])
         lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         d = ImageDraw.Draw(lay)
+        shock = o.get("tone") == "shock"
+        col = SHOCK_RED if shock else GOLD
+        steps = SHOCK_STEPS if shock else ORB_STEPS
         cx, cy, r = 600, 500, 300
         d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(40, 52, 76), width=30)
         kf = out3(prog(t, SLAM, 0.6))
         v = val * kf
         if v > 0.5:
-            d.arc((cx - r, cy - r, cx + r, cy + r), -90, -90 + 360 * min(v, 100) / 100, fill=GOLD, width=30)
+            d.arc((cx - r, cy - r, cx + r, cy + r), -90, -90 + 360 * min(v, 100) / 100, fill=col, width=30)
         cv.alpha_composite(lay)
-        fx.hold_orb(cv, (cx, cy), 120, t, ORB_STEPS, burst_at=SLAM)
+        fx.hold_orb(cv, (cx, cy), 120, t, steps, burst_at=SLAM)
+        if not shock:          # 期待度アップ：保留が変わるたびにゲージが1段上がり、数字が出たら消える
+            stage = sum(1 for s_ in steps if t >= s_)
+            ga = 1 - prog(t, SLAM + 0.5, 0.4)
+            if ga > 0 and stage > 0:
+                gl = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                fx.gauge(gl, (cx - 280, 850), 380, 40, stage / len(steps), label="期待度", segs=len(steps))
+                put(cv, gl, (0, 0), ga)
         if t < SLAM:
             return self._stat_text(cv, sc, t)
-        fx.burst(cv, (cx, cy), t, SLAM, r_in=200, r_out=720)
-        fx.sparkles(cv, (cx, cy), t, SLAM + 0.05, n=30, spread=480)
+        fx.burst(cv, (cx, cy), t, SLAM, col=col, r_in=200, r_out=720)
+        if not shock:
+            fx.sparkles(cv, (cx, cy), t, SLAM + 0.05, n=30, spread=480)
         d = ImageDraw.Draw(cv)
         num = f"{int(round(val))}%"          # 数字は最終値で叩きつける（リングだけが満ちていく）
         fnum, fpre = font("black", 170), font("black", 70)
@@ -361,8 +376,9 @@ class Numbers:
         numimg = Image.new("RGBA", (int(wn + wp + 60), 260), (0, 0, 0, 0))
         nd = ImageDraw.Draw(numimg)
         if pre:
-            nd.text((10, 200), pre, font=fpre, fill=GOLD, anchor="ls", stroke_width=5, stroke_fill=(60, 30, 0))
-        nd.text((10 + wp + (8 if pre else 0), 200), num, font=fnum, fill=GOLD, anchor="ls", stroke_width=6, stroke_fill=(60, 30, 0))
+            nd.text((10, 200), pre, font=fpre, fill=col, anchor="ls", stroke_width=5, stroke_fill=(60, 30, 0))
+        nd.text((10 + wp + (8 if pre else 0), 200), num, font=fnum, fill=col, anchor="ls", stroke_width=6,
+                stroke_fill=(70, 10, 16) if shock else (60, 30, 0))
         fx.slam_text(cv, numimg, (cx, cy - 10), t, SLAM)
         self._stat_text(cv, sc, t)
         if sc.get("source"):
@@ -372,7 +388,7 @@ class Numbers:
         o = sc["opts"]
         k1, k2 = out3(prog(t, 0.3, 0.5)), out3(prog(t, SLAM + 0.3, 0.5))
         rx = 1030
-        put(cv, label(o.get("tag", "KEY NUMBER"), BLUE, 26), (rx, 290), k1)
+        put(cv, label(o.get("tag", "KEY NUMBER"), RED if o.get("tone") == "shock" else BLUE, 26), (rx, 290), k1)
         lb = o.get("label", "")
         put(cv, text_layer(lb, font("black", fit_size(lb, "black", 110, 800)), TEXT, pad=0), (rx, 350 + 16 * (1 - k1)), k1)
         for i, ln in enumerate(o.get("lines", [])):
@@ -401,7 +417,9 @@ class Numbers:
             if t >= max(0.2, ts - 0.2):
                 card = scaled(card, 1 + 0.25 * (1 - back(prog(t, max(0.2, ts - 0.2), 0.3), 2.0)))
                 put(cv, card, (cx0 + (cw + gap) * i + cw / 2 - card.width / 2, 380 + chh / 2 - card.height / 2), kc)
-        if len(items) == 2 and o.get("note"):
+        if len(items) == 2 and o.get("note"):   # ナギの解析：「数え方」で2枚をまとめて走査 →「違う」で≠
+            ta = sc["cue"](o.get("scan_cue", "数え方"), 1.2)
+            moments.analysis(cv, (cx0 - 6, 374, cx0 + cw * 2 + gap + 6, 386 + chh), t, ta, hold=1.5)
             tn = sc["cue"](o.get("note_cue", "違う"), 1.6)
             kb = prog(t, tn, 0.3)
             if kb > 0:
@@ -421,6 +439,8 @@ class Numbers:
 
 
 def _events_D(sc):
+    if sc["variant"] == "stat" and sc["opts"].get("tone") == "shock":
+        return [(s, "hold") for s in SHOCK_STEPS] + [(SLAM, "shock"), (SLAM, "flash_r"), (SLAM, "shake")]
     if sc["variant"] == "stat":
         return [(ORB_STEPS[0], "hold"), (ORB_STEPS[1], "hold"), (ORB_STEPS[2], "hold"), (ORB_STEPS[3], "hold_gold"),
                 (SLAM, "impact"), (SLAM, "flash"), (SLAM, "shake"), (SLAM + 0.1, "sparkle")]
@@ -428,7 +448,8 @@ def _events_D(sc):
     for i, it in enumerate(sc["opts"]["items"]):
         ev.append((max(0.2, sc["cue"](it["value"], 0.3 + 0.5 * i) - 0.2), "stamp"))
     if sc["opts"].get("note"):
-        ev += [(sc["cue"](sc["opts"].get("note_cue", "違う"), 1.6), "boing")]
+        ev += moments.analysis_events(sc["cue"](sc["opts"].get("scan_cue", "数え方"), 1.2))
+        ev += [(sc["cue"](sc["opts"].get("note_cue", "違う"), 1.6), "stamp")]
     return ev
 
 
@@ -476,6 +497,7 @@ class Points:
                 mw = d.textlength(keyw, font=fkey)
                 mk = Image.new("RGBA", (int(mw * km) + 1, 34), (255, 220, 60, 150))
                 cv.alpha_composite(mk, (int(mx0), int(y + 22)))
+                moments.analysis(cv, (mx0 - 8, y - 52, mx0 + mw + 8, y + 56), t, max(0.5, ts - 0.1) + 0.8, hold=1.4, tag=None)
                 d = ImageDraw.Draw(cv)
             bounce = 1 + 0.3 * (1 - out3(prog(t, max(0.5, ts - 0.1), 0.25)))
             num = text_layer("①②③④⑤"[i], font("black", int(64 * bounce)), GOLD, pad=0)
@@ -490,7 +512,10 @@ class Points:
 def _events_E(sc):
     ev = [(0.05, "whoosh"), (0.6, "sparkle")]
     for i, it in enumerate(sc["opts"]["items"]):
-        ev.append((max(0.5, sc["cue"](it.replace("{", "").replace("}", "")[:5], 0.7 + 0.9 * i) - 0.1), "pop"))
+        t_i = max(0.5, sc["cue"](it.replace("{", "").replace("}", "")[:5], 0.7 + 0.9 * i) - 0.1)
+        ev.append((t_i, "pop"))
+        if "{" in it:
+            ev += moments.analysis_events(t_i + 0.8)
     return ev
 
 

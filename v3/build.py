@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
-from . import fx, hosts, sfx
+from . import fx, hosts, moments, sfx
 from .media import Library
 from .planner import Planner
 from .style import (W, H, FPS, SR, ROOT, NAVY, TEXT, SPEAKER, NAME, font, prog, out3, inout, put, fade_img,
@@ -64,8 +64,11 @@ def prepare(scenes):
         # 演出のタイミング（効果音・フラッシュ・画面振動）。テンプレートの events ＋ バクのツッコミ
         ev = [(s0 + t, k) for t, k in getattr(TEMPLATES[sc["template"]], "events", lambda _: [])(sc)]
         for ln in lines:
-            if ln["exclaim"]:
-                ev += [(ln["start"], "boing"), (ln["start"], "shake_s")]
+            if ln["exclaim"] and ln["who"] == "baku":
+                ev += [(ln["start"] + t, k) for t, k in moments.tsukkomi_events(0.0)]
+        if sc["opts"].get("intro") == "era_shift":
+            ev += [(s0 + t, k) for t, k in moments.era_events(sc["opts"]["reels"])]
+        ev += [(s0 + t, k) for t, k in moments.overlay_events(sc)]
         sc["_events"] = ev
 
 
@@ -158,6 +161,9 @@ def scene_frame(sc, t_abs, lib, with_hosts=True):
     cv = Image.new("RGBA", (W, H), (0, 0, 0, 255))
     t = t_abs - sc["start"]
     TEMPLATES[sc["template"]].draw(cv, sc, t, lib)
+    moments.overlay(cv, sc, t)
+    if sc["opts"].get("intro") == "era_shift":
+        moments.era_shift(cv, t, sc["opts"]["reels"], sc["opts"].get("intro_title", "TURNING POINT"))
     if with_hosts:
         ln = current_line(sc, t_abs)
         who = ln["who"] if ln else (sc["lines"][-1]["who"] if sc["lines"] else None)
@@ -166,7 +172,8 @@ def scene_frame(sc, t_abs, lib, with_hosts=True):
     return cv
 
 
-FLASH = {"flash": 0.42, "flash_s": 0.22}       # 強さは控えめ（目に優しく、要所だけ）
+FLASH = {"flash": (0.42, (255, 255, 255)), "flash_s": (0.22, (255, 255, 255)),   # 強さは控えめ（目に優しく、要所だけ）
+         "flash_r": (0.30, (255, 70, 80))}
 SHAKE = {"shake": 13, "shake_s": 6}
 
 
@@ -174,7 +181,7 @@ def screen_fx(cv, scenes, t):
     for sc in scenes:
         for t0, kind in sc["_events"]:
             if kind in FLASH and 0 <= t - t0 < 0.3:
-                fx.flash(cv, t, t0, FLASH[kind])
+                fx.flash(cv, t, t0, FLASH[kind][0], col=FLASH[kind][1])
     dx = dy = 0
     for kind, amp in SHAKE.items():
         evs = [t0 for sc in scenes for t0, k in sc["_events"] if k == kind]
@@ -218,7 +225,9 @@ def frame(scenes, total, t, lib):
 # ---------------------------------------------------------------- 音
 BPM = 120
 SE_GAIN = {"hold": 0.32, "hold_gold": 0.4, "tick": 0.14, "impact": 0.55, "fanfare": 0.3, "sparkle": 0.16,
-           "boing": 0.34, "whoosh": 0.22, "pop": 0.2, "stamp": 0.4}
+           "boing": 0.3, "whoosh": 0.22, "pop": 0.2, "stamp": 0.4,
+           "senbare": 0.22, "jingle": 0.34, "scan": 0.2, "slap": 0.3, "reel_tick": 0.08, "reel_stop": 0.4,
+           "reach": 0.18, "align": 0.32, "shock": 0.55}
 
 
 def _kick(n):
@@ -272,6 +281,8 @@ def synth_bgm(total, scenes):
     for sc in scenes:
         a, b = int(sc["start"] * SR), min(n, int((sc["start"] + sc["dur"]) * SR))
         drum_on[a:b] = 1.0 if sc["template"] in ("B", "C", "D", "E") else 0.45
+        if sc["opts"].get("intro") == "era_shift":             # リールの間もドラムを止める
+            drum_on[a:int((sc["start"] + moments.ERA["align"]) * SR)] = 0.0
         if sc["template"] == "D" and sc["variant"] == "stat":    # 保留変化の間は止めて溜める
             from .templates import SLAM
             c0, c1 = int(sc["start"] * SR), int((sc["start"] + SLAM) * SR)

@@ -74,6 +74,64 @@ def make(kind):
         n = int(0.35 * SR); t = np.arange(n) / SR
         x = np.sin(2 * np.pi * (130 * np.exp(-t * 6) + 60) * t) * np.exp(-t / 0.09)
         x += rng.standard_normal(n) * np.exp(-t / 0.015) * 0.5
+    elif kind == "senbare":       # 先バレ：ピピン（短い高音2つ）
+        n = int(0.22 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for st, fr in ((0.0, 2093.0), (0.07, 2637.0)):
+            a = int(st * SR); tt = t[: n - a]
+            x[a:] += (np.sin(2 * np.pi * fr * tt) + 0.3 * np.sin(2 * np.pi * fr * 2 * tt)) * np.exp(-tt / 0.05)
+    elif kind == "jingle":        # ナギバク研究所の専用ジングル（ソ・ド・ミ｜レ・ソー）ベル＋矩形波＋低音
+        notes = [(0.0, 783.99, 0.1), (0.08, 1046.5, 0.1), (0.16, 1318.5, 0.1), (0.3, 1174.7, 0.1), (0.38, 1568.0, 0.55)]
+        n = int(1.3 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for st, fr, dc in notes:
+            a = int(st * SR); tt = t[: n - a]
+            bell = np.sin(2 * np.pi * fr * tt) + 0.35 * np.sin(2 * np.pi * fr * 2.76 * tt) * np.exp(-tt / 0.08)
+            x[a:] += (bell + 0.25 * np.sign(np.sin(2 * np.pi * fr * tt))) * np.exp(-tt / dc)
+        a = int(0.38 * SR); tt = t[: n - a]
+        for m in (1.0, 1.26, 1.5):
+            x[a:] += 0.35 * np.sin(2 * np.pi * 392 * m * tt) * np.exp(-tt / 0.6)
+        x += np.sin(2 * np.pi * (70 + 60 * np.exp(-t * 30)) * t) * np.exp(-t / 0.18) * 1.2
+    elif kind == "scan":          # ナギの解析：ピ・ピ・ピッ＋さらっとした走査音
+        n = int(0.42 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for i, fr in enumerate((1320, 1660, 1980)):
+            a = int(i * 0.06 * SR); tt = t[: n - a]
+            x[a:] += np.sin(2 * np.pi * fr * tt) * np.exp(-tt / 0.03) * 0.8
+        noise = rng.standard_normal(n)
+        hp = noise - np.convolve(noise, np.ones(8) / 8, "same")
+        x += hp * np.sin(np.pi * t / t[-1]) * 0.12
+    elif kind == "slap":          # ツッコミ：ピシッ
+        n = int(0.09 * SR); t = np.arange(n) / SR
+        noise = rng.standard_normal(n)
+        x = (noise - np.convolve(noise, np.ones(4) / 4, "same")) * np.exp(-t / 0.012) * 2
+        x += np.sin(2 * np.pi * 900 * t) * np.exp(-t / 0.01)
+    elif kind == "reel_tick":     # リール回転中のカタカタ
+        n = int(0.025 * SR); t = np.arange(n) / SR
+        x = np.sin(2 * np.pi * 2400 * t) * np.exp(-t / 0.004) + rng.standard_normal(n) * np.exp(-t / 0.003) * 0.4
+    elif kind == "reel_stop":     # リール停止：ガチッ
+        n = int(0.16 * SR); t = np.arange(n) / SR
+        x = np.sin(2 * np.pi * (180 * np.exp(-t * 20) + 90) * t) * np.exp(-t / 0.05)
+        x += rng.standard_normal(n) * np.exp(-t / 0.006) * 0.8
+    elif kind == "reach":         # 最後のリールの溜め：上がっていく音
+        n = int(0.55 * SR); t = np.arange(n) / SR
+        f = 380 * np.exp(t * 1.6)
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * (0.6 + 0.4 * np.sin(2 * np.pi * 16 * t)) * np.minimum(1, t / 0.05)
+        x *= np.exp(-np.maximum(0, t - 0.45) / 0.04)
+    elif kind == "align":         # 揃い：明るい和音＋きらめき
+        n = int(1.3 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for m in (523.25, 659.25, 783.99, 1046.5):
+            x += (np.sin(2 * np.pi * m * t) + 0.3 * np.sin(2 * np.pi * m * 2.76 * t) * np.exp(-t / 0.1)) * np.exp(-t / 0.5)
+        for i, fr in enumerate((2093, 2637, 3136, 4186)):
+            a = int((0.05 + 0.06 * i) * SR); tt = t[: n - a]
+            x[a:] += 0.4 * np.sin(2 * np.pi * fr * tt) * np.exp(-tt / 0.1)
+    elif kind == "shock":         # 規制の衝撃：ズドーン（低く沈む）
+        n = int(1.2 * SR); t = np.arange(n) / SR
+        x = np.sin(2 * np.pi * np.cumsum(110 * np.exp(-t * 2.2) + 38) / SR) * np.exp(-t / 0.45)
+        x += 0.35 * (np.sin(2 * np.pi * 233 * t) + np.sin(2 * np.pi * 247 * t)) * np.exp(-t / 0.3)
+        noise = rng.standard_normal(n)
+        x += np.convolve(noise, np.ones(30) / 30, "same") * np.exp(-t / 0.05) * 3
     else:
         return None
     return _norm(x)

@@ -10,7 +10,7 @@ from functools import lru_cache
 
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 
-from . import fx
+from . import fx, moments
 from .style import ASSETS, W, H, put, prog, out3, back, inout
 
 # テンプレートごとの既定（指示書の方針どおり）
@@ -116,8 +116,6 @@ def _tank_glow(cv, who, img, pos, t_line):
 def draw(cv, scene, t_scene, who_speaking, line_t, exclaim):
     """t_scene=シーン内の秒、line_t=今のセリフの経過秒"""
     plan = scene["_host_plan"](who_speaking, exclaim)
-    if exclaim and who_speaking == "baku" and "baku" in plan:    # ツッコミの集中線はキャラの後ろ
-        fx.speed_lines(cv, line_t, 0.0)
     for who, cfg in plan.items():
         talking = who == who_speaking
         face = "normal"
@@ -133,21 +131,20 @@ def draw(cv, scene, t_scene, who_speaking, line_t, exclaim):
         img = sp
         if not talking and scene["template"] == "F":
             img = ImageEnhance.Brightness(sp).enhance(0.72)
-        s, rot, dy = 1.0, 0.0, 0.0
+        s, sx, sy, rot, dy = 1.0, 1.0, 1.0, 0.0, 0.0
         dy += 3 * math.sin(t_scene * 2.4 + (0 if who == "nagi" else 1.7))      # 呼吸のような小さな揺れ
-        if talking and exclaim:   # 驚き・ツッコミ：跳ねて、傾いて、戻る
-            jk = prog(line_t, 0, 0.42)
-            dy -= 70 * math.sin(math.pi * jk) if jk < 1 else 0
-            s = 1 + 0.1 * out3(prog(line_t, 0, 0.2)) * (1 - inout(prog(line_t, 0.9, 0.35)))
-            rot = 7 * math.sin(line_t * 22) * max(0.0, 1 - line_t / 0.7)
-        elif talking and line_t < 0.3:   # 話し始めに軽くうなずく
-            dy += 8 * math.sin(math.pi * line_t / 0.3)
-        if abs(s - 1) > 1e-3:
-            img = img.resize((int(img.width * s), int(img.height * s)), Image.BILINEAR)
-        if abs(rot) > 0.2:
-            img = img.rotate(rot, expand=True, resample=Image.BICUBIC)
         x0, y0, x1, y1 = _box(who, cfg)
         cx = (x0 + x1) / 2
+        if talking and exclaim:   # ツッコミ（moments.tsukkomi）：吹き出し＋集中線を後ろに、拡大・伸び縮み・跳ね
+            s, sx, sy, rot, jdy = moments.tsukkomi_pose(line_t)
+            dy += jdy
+            moments.tsukkomi_back(cv, (cx, (y0 + y1) / 2 - 20), cfg["size"], line_t)
+        elif talking and line_t < 0.3:   # 話し始めに軽くうなずく
+            dy += 8 * math.sin(math.pi * line_t / 0.3)
+        if abs(s * sx - 1) > 1e-3 or abs(s * sy - 1) > 1e-3:
+            img = img.resize((int(img.width * s * sx), int(img.height * s * sy)), Image.BILINEAR)
+        if abs(rot) > 0.2:
+            img = img.rotate(rot, expand=True, resample=Image.BICUBIC)
         pos = (cx - img.width / 2, y1 - img.height + 90 * (1 - k) + dy)
         put(cv, img, pos, a)
         if talking and not exclaim and scene["template"] in ("B", "E", "F"):

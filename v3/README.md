@@ -74,3 +74,17 @@ B は「年表で年を示す → 実機が入る → 左へ寄る → 機種名
 - BGM は 120BPM の明るいオリジナル。情報の場面はドラムあり、保留変化の間だけ止めて溜める
 - キャラ：下から弾んで登場／呼吸の揺れ／ナギは話し始めに脳タンクが光る／バクのツッコミは跳ねて傾く。`バク!:` ならどの場面でも右下に飛び込む（F以外）
 - 表情差分：`generator/assets/characters/v2/<who>/surprise.png`（驚き）、`nagi/explain.png`・`baku/talk.png`（話し中）を置くと自動で使う。無ければ normal.png ＋頭上の記号
+
+## ナギバク専用演出パッケージ（v3/moments.py）
+
+使い回せる「見せ場」の部品。メリハリのため、普段の解説には使わず要所だけで呼ぶ。
+
+| 名前 | 中身 | 自動で入る場面 | 台本から呼ぶ |
+| --- | --- | --- | --- |
+| A machine_entry | 先バレ（画面の縁が金に2回光る）→ 専用ジングル → 中央に着地（衝撃波・帯・光） | B 機種紹介 | （B なら自動） |
+| B analysis | 青い走査線＋ブラケットで挟む＋ANALYSIS。1.5秒ほどで静かに消える | B の注目スペック、E の数字、D 比較の「数え方」 | `@moment analysis at="65%" box=560,430,900,90` |
+| C tsukkomi | オレンジのトゲ吹き出し＋集中線＋拡大と伸び縮み＋ピシッ・びよん | `バク!:` の行（全テンプレート） | `バク!:` と書くだけ |
+| D era_shift | 3リールが回って左から止まり、最後だけ溜めて揃う → 資料の画面へ | data.json の events に `"turn": true` の月を出す C | `@C:calendar intro=era_shift reels="2016年|5月|新内規"` |
+| shock | 赤い保留（青→緑→赤で止める）→ 赤い数字＋低い衝撃音 | data.json の facts の数字を `バク!:` で驚く D | `@D:stat value=65 tone=shock` |
+
+効果音は全部 `v3/sfx.py` で合成したオリジナル（senbare / jingle / scan / slap / reel_* / reach / align / shock ほか）。
