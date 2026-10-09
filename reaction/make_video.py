@@ -439,7 +439,8 @@ class Painter:
         # 固定キャラ：ナギ（うさぎ・左下）とバク（ねこ・右下）。全身・白フチ付きで前計算
         self.sprites = {}
         for who in ("nagi", "baku"):
-            for p in (ASSETS / "characters" / who).glob("*.png"):
+            # characters: "v2" のように指定すると generator/assets/characters/v2/<nagi|baku>/ を使う（無指定は従来どおり）
+            for p in (ASSETS / "characters" / (ep.get("characters") or "") / who).glob("*.png"):
                 src = Image.open(p).convert("RGBA")
                 for mode, sc, bright in (("talk", CHAR_TALK / src.height, 1.0), ("idle", CHAR_IDLE / src.height, 0.86)):
                     self.sprites[(who, p.stem, mode)] = sticker(src, sc, bright)
