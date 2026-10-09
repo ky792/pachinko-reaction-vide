@@ -5,3 +5,4 @@ __pycache__/
 generator/temp/
 generator/output/
 generator/audio/generated/
+episodes/*/build/

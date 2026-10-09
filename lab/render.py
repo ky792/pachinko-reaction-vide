@@ -62,51 +62,138 @@ def emphasis_at(scene, who, t):
     return 1.0
 
 
-def render_frame(scene, t, images):
-    cv = ui.background().copy()
-    ch = scene["chapter"]
-    cues = scene["cues"]
-    chap_end = max((c["end"] for c in cues if c["type"] == "chapter"), default=0)
-    bar_a = ui.ease_out(ui.prog(t, chap_end - 0.4, 0.5)) if chap_end else 1.0
-    ui.top_bar(cv, bar_a, ch["no"], ch["title"], ch["year"], ch.get("era"), scene.get("milestones", ()))
+BACK = ("chapter", "title", "timeline", "machine", "keyword", "flow", "lineup")
 
-    # 資料（キャラより奥）
-    tank_screen = None
-    for c in cues:
+
+def year_at(scene, t):
+    """上部年表の現在地。year_track [[秒, 年], ...] の間を0.8秒かけて滑らかに動かす"""
+    tr = scene.get("year_track")
+    if not tr:
+        return scene["chapter"]["year"], True
+    i = max([j for j, (t0, _) in enumerate(tr) if t >= t0], default=0)
+    if i == 0:
+        return tr[0][1], True
+    k = ui.prog(t, tr[i][0], 0.8)
+    return tr[i - 1][1] + (tr[i][1] - tr[i - 1][1]) * ui.ease_in_out(k), k >= 1
+
+
+def tank_pos(h, extra=1.0):
+    """ナギの脳タンクの画面座標（呼吸の上下は無視＝解析UIを静止させるため）"""
+    hq = int(round(h * extra / 4) * 4)
+    img, s = ui._scaled("nagi", hq, 1.0)
+    fx, fy = ui.CHAR_FOOT["nagi"]
+    x = fx - img.width / 2
+    y = fy - (img.height - 30)
+    return (x + 20 + ui.TANK[0] * s, y + ui.TANK[1] * s)
+
+
+def _draw_cue(cv, c, tl, dur, images, data_tank=None):
+    tp, d = c["type"], c.get("data", {})
+    if tp == "chapter":
+        ui.chapter_card(cv, tl, dur, d)
+    elif tp == "title":
+        ui.title_card(cv, tl, dur, d)
+    elif tp == "timeline":
+        ui.timeline(cv, tl, dur, d)
+    elif tp == "machine":
+        ui.machine_card(cv, tl, dur, d, images.get(c.get("image")))
+    elif tp == "keyword":
+        ui.keyword(cv, tl, dur, d)
+    elif tp == "flow":
+        ui.flow(cv, tl, dur, d)
+    elif tp == "lineup":
+        ui.lineup(cv, tl, dur, d)
+    elif tp == "analysis" and data_tank is not None:
+        ui.analysis(cv, tl, dur, d, data_tank)
+
+
+def state_key(scene, t):
+    """画面のUIが止まっていれば、その状態を表すキーを返す（動いている間は None）"""
+    key = []
+    y, still = year_at(scene, t)
+    if not still:
+        return None
+    cues = scene["cues"]
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title")), default=0)
+    if chap_end and chap_end - 0.4 <= t < chap_end + 0.15:
+        return None
+    key.append(round(y, 3))
+    for i, c in enumerate(cues):
         if not (c["start"] <= t < c["end"]):
             continue
+        if c["type"] == "tsukkomi":
+            continue
         tl, dur = t - c["start"], c["end"] - c["start"]
-        if c["type"] == "chapter":
-            ui.chapter_card(cv, tl, dur, c["data"])
-        elif c["type"] == "timeline":
-            ui.timeline(cv, tl, dur, c["data"])
-        elif c["type"] == "machine":
-            ui.machine_card(cv, tl, dur, c["data"], images.get(c.get("image")))
+        settle = ui.SETTLE.get(c["type"], lambda d: 0.6)(c.get("data", {}))
+        outro = ui.OUTRO.get(c["type"], 0.45)
+        if tl < settle or tl > dur - outro:
+            return None
+        key.append(("c", i))
+    for i, sb in enumerate(scene["subs"]):
+        if sb["start"] <= t < sb["end"]:
+            tl, dur = t - sb["start"], sb["end"] - sb["start"]
+            if tl < 0.22 or tl > dur - 0.17:
+                return None
+            key.append(("s", i))
+    h, a = layout_state(scene, t)
+    if not (a in (0.0, 1.0)):
+        return None
+    key.append((round(h), a))
+    return tuple(key)
 
-    # キャラ
+
+def render_layers(scene, t, images):
+    ch = scene["chapter"]
+    cues = scene["cues"]
+    under = ui.background().copy()
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title")), default=0)
+    first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title")), default=1e9)
+    in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title"))
+    if in_card:
+        bar_a = 0.0 if t >= first_bg + 0.3 else 1 - ui.prog(t, first_bg, 0.3)
+        # 全画面表示が終わる直前から上部バーを戻す
+        for c in cues:
+            if c["type"] in ("chapter", "title") and c["start"] <= t < c["end"]:
+                bar_a = max(bar_a, ui.ease_out(ui.prog(t, c["end"] - 0.4, 0.5)))
+    else:
+        bar_a = 1.0
+    y, _ = year_at(scene, t)
+    ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"))
+    for c in cues:
+        if c["start"] <= t < c["end"] and c["type"] in BACK:
+            _draw_cue(under, c, t - c["start"], c["end"] - c["start"], images)
+    over = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
+    h, a = layout_state(scene, t)
+    for c in cues:
+        if c["start"] <= t < c["end"] and c["type"] == "analysis" and a > 0.01:
+            _draw_cue(over, c, t - c["start"], c["end"] - c["start"], images, tank_pos(h))
+    for sb in scene["subs"]:
+        if sb["start"] <= t < sb["end"]:
+            ui.subtitle(over, t - sb["start"], sb["end"] - sb["start"], sb["who"], sb["text"], sb.get("accent", False))
+    return under, over
+
+
+_CACHE = {}
+
+
+def render_frame(scene, t, images):
+    k = state_key(scene, t)
+    if k is not None and k in _CACHE:
+        under, over = _CACHE[k]
+    else:
+        under, over = render_layers(scene, t, images)
+        if k is not None:
+            _CACHE.clear()
+            _CACHE[k] = (under, over)
+    cv = under.copy()
     h, a = layout_state(scene, t)
     who = speaker_at(scene, t)
-    xf = {}
     if a > 0.01:
         lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
         for c in ("nagi", "baku"):
-            xf[c] = ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=emphasis_at(scene, c, t))
+            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=emphasis_at(scene, c, t))
         ui.paste(cv, lay, (0, 0), a)
-
-    # キャラに紐づく演出（手前）
-    for c in cues:
-        if not (c["start"] <= t < c["end"]):
-            continue
-        tl, dur = t - c["start"], c["end"] - c["start"]
-        if c["type"] == "analysis" and "nagi" in xf:
-            tank_screen = xf["nagi"](ui.TANK[0], ui.TANK[1])
-            ui.analysis(cv, tl, dur, c["data"], tank_screen)
-        elif c["type"] == "tsukkomi" and "baku" in xf:
-            ui.tsukkomi_lines(cv, tl, xf["baku"](170, 150))
-
-    for s in scene["subs"]:
-        if s["start"] <= t < s["end"]:
-            ui.subtitle(cv, t - s["start"], s["end"] - s["start"], s["who"], s["text"], s.get("accent", False))
+    cv.alpha_composite(over)
     return cv.convert("RGB")
 
 

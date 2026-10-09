@@ -12,7 +12,7 @@ python lab/render.py episodes/lab_demo/scene.json -o output/check.png --stills 5
 | 項目 | 値 |
 | --- | --- |
 | 画面 | 1920×1080 / 30fps、端の余白 60px、角丸 12px |
-| 背景 | #101827（上からごく弱い光＋80px方眼） |
+| 背景 | ラボ背景画像を暗く・ぼかして使用（無ければ #101827＋80px方眼） |
 | 情報パネル | #19273B、区切り線 #2A3B55 |
 | ナギ | #64BFFF（字幕の左線・名札・解析UI） |
 | バク | #F28C38（字幕の右線・名札・ツッコミ） |
@@ -42,23 +42,44 @@ python lab/render.py episodes/lab_demo/scene.json -o output/check.png --stills 5
 | （常設） | 上部バー | 左に章タイトル（CHAPTER番号は小さく）、右に2008–2026の年表（今の年だけ強調） |
 | `machine` | A 機種紹介カード | 左に実機（`images/` に無ければ「差し替え」仮パネル）、右にスペック行が順に出る。`count` で数字カウントアップ、`key` で強調 |
 | `timeline` | B 歴史タイムライン | 範囲（小数の年）と出来事を渡すと、軸→出来事が順に立ち上がる。章全体にも数か月の拡大にも使える |
-| `analysis` | D ナギ解析 | 脳タンクが淡く光る→線が伸びる→パネルが開く→比較バー→注記→収納 |
-| `tsukkomi` | E バクのツッコミ | 頭の横に橙の線3本（0.45秒）。`emphasis` でバクを一時拡大 |
+| `analysis` | D ナギ解析 | 脳タンクが一瞬光る→解析ライン→パネル展開→数字2つを大きく比較→短い注記→収納 |
+| `tsukkomi` | E バクのツッコミ | 字幕の橙ラインと1.08倍の軽い拡大だけ（`emphasis`） |
+| `keyword` | G キーワード | 章の要点を1語で大きく |
+| `flow` | H フロー | 仕組みを手順として左から右へ |
+| `lineup` | I ラインナップ | 機種カードを並べる（OPは早送り、EDは振り返り） |
+| `title` | J タイトル | 動画タイトルの全画面表示 |
 | （subs） | 字幕 | `who` = nagi / baku、`accent: true` で橙の下線 |
 
 C（スペック比較）は `analysis` の `bars` で2項目を左右に並べる（`heading` に短い見出し、`prefix` に「約」など）。指標の定義が違うときは `note` に短く書く。
 
 キャラ配置は `layout` で切り替える：`normal`（通常）／`machine`（機種紹介中は縮小）／`hidden`（チャプター中）。
 
-## 3. 24分の本編に広げる手順
+## 3. 本編（episodes/ken_full）の作り方
 
-1. 台本のシーンIDごとに、`subs`（セリフ）と `cues`（その間に出す部品）を書く。1章＝1つの scene.json にすると扱いやすい。
-2. 章の頭に `chapter`、機種の初登場に `machine`、規制や年代の話に `timeline`、見せ場（各章1回まで）に `analysis` を置く。
-3. 実機画像は許諾を確認してから `episodes/<回>/images/` に置き、`image` に名前を書く。無ければ仮パネルのまま出る。
-4. 確認用の静止画で文字のはみ出しを見てから、全体を書き出す。
+本編は「台本」「資料データ」「素材」を分けて持ち、`lab/episode.py` が組み立てる。V2デモ（`episodes/lab_demo/scene.json`）はそのまま残してある。
+
+```
+python lab/episode.py episodes/ken_full                # 全章を書き出して結合（build/ken_full.mp4）
+python lab/episode.py episodes/ken_full --only 04       # 第4章だけ
+python lab/episode.py episodes/ken_full --stills        # 各資料の静止画だけ（レイアウト確認）
+python lab/episode.py episodes/ken_full --manifest      # MANIFEST.md（セリフIDと必要画像の一覧）を更新
+```
+
+| 置き場所 | 中身 | 差し替え方 |
+| --- | --- | --- |
+| `script/00_op.txt`〜`08_ed.txt` | 台本。1行＝1セリフ（`ナギ:` / `バク:` / ツッコミは `バク!:`） | テキストを直すだけ |
+| `data.json` | 機種カード・比較・年表・フロー・キーワード・並び・読み | 数字や文言を直す |
+| `images/` | 実機画像（ファイル名は data.json の `image`） | 置けば仮パネルから自動で差し替わる |
+| `voices/<セリフID>.wav` | 読み上げ音声（IDは MANIFEST.md） | 置けばその長さで全タイミングが決まり直す |
+
+台本の命令：`@chapter ch2`（章タイトル）／`@title`（動画タイトル）／`@show machine:hokuto`（中央の資料を切り替え。種類は machine・analysis・timeline・flow・keyword・lineup）／`@clear`（資料を消す）／`@year 2016.2`（上部年表の現在地）／`@pause 0.5`（間）。
+
+- 字幕は自動で作る：「。」で分け、30字を超えると「、」で分け、1行21字以内の2行に折る。数字＋単位（約80%、3000個、1/319.7 など）は自動で黄色。
+- 音声が無い間は、ナギ5.0字／秒・バク5.3字／秒で長さを推定する。
+- BGMは結合後に全体へ通しでかける（`generator/assets/bgm/main.wav`、音量0.10）。
 
 ## 4. まだ無いもの
 
-- 読み上げ音声：今は字幕の時間を手で指定している。反応集と同じ AivisSpeech（ナギ＝るな／バク＝らせつん）の音声を作り、その長さから字幕の時間を自動で決める処理を足す予定。
-- GitHub Actions：`make-reaction.yml` と同じ形で `lab/render.py` を回すワークフローを足す予定。
+- 読み上げ音声：AivisSpeech（ナギ＝るな／バク＝らせつん）で `voices/` を作る処理。置き場所と仕組みはできている。
+- GitHub Actions：`lab/episode.py` を回すワークフロー。
 - キャラの表情差分：今は各1枚（`generator/assets/characters/v2/`）。

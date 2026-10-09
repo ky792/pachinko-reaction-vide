@@ -188,13 +188,13 @@ def year_x(y):
     return TL_X0 + (TL_X1 - TL_X0) * (y - YEARS[0]) / (YEARS[1] - YEARS[0])
 
 
-def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=()):
+def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=(), label=None):
     """左：章タイトル（CHAPTER番号は小さく補助）／右：年表。今の年だけ強調、過去は薄く、未来は暗く"""
     if a <= 0:
         return
     lay = Image.new("RGBA", (W, 150), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    lab_label(d, (MARGIN, 40), f"CHAPTER {chapter_no:02d}", NAGI, 20)
+    lab_label(d, (MARGIN, 40), label or f"CHAPTER {chapter_no:02d}", NAGI, 20)
     d.text((MARGIN, 82), chapter_title, font=font("black", 44), fill=TEXT, anchor="lm")
     # 年表
     cx = year_x(year)
@@ -214,7 +214,7 @@ def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=())
     if era:   # 章が扱う期間
         d.line((year_x(era[0]), TL_Y, year_x(era[1]), TL_Y), fill=NAGI, width=5)
     d.ellipse((cx - 11, TL_Y - 11, cx + 11, TL_Y + 11), fill=KEY, outline=BG, width=3)
-    d.text((cx, TL_Y - 34), f"{int(year)}", font=font("black", 34), fill=KEY, anchor="mm")
+    d.text((cx, TL_Y - 34), f"{int(year + 1e-6)}", font=font("black", 34), fill=KEY, anchor="mm")
     paste(canvas, lay, (0, 0), a)
 
 
@@ -237,7 +237,7 @@ def chapter_card(canvas, tl, dur, data):
     rw = 420 * st["rule"]
     d.line((W / 2 - rw / 2, cy + 175, W / 2 + rw / 2, cy + 175), fill=PANEL_LINE, width=2)
     tmp = Image.new("RGBA", (W, 50), (0, 0, 0, 0))
-    lab_label(ImageDraw.Draw(tmp), (W / 2, 25), f"CHAPTER {data['no']:02d}", SUB, 24, anchor="mm")
+    lab_label(ImageDraw.Draw(tmp), (W / 2, 25), data.get("label") or f"CHAPTER {data['no']:02d}", SUB, 24, anchor="mm")
     paste(lay, tmp, (0, cy + 195), st["no"])
     paste(canvas, lay, (0, 0), out)
 
@@ -278,7 +278,10 @@ def machine_card(canvas, tl, dur, data, image=None):
     cd.rectangle((0, 24, 6, ch - 24), fill=NAGI)
     corner_ticks(cd, (10, 10, cw - 11, ch - 11), NAGI)
     lab_label(cd, (44, 34), data.get("tag", "DATA LOG"), NAGI, 18)
-    cd.text((44, 78), data["name"], font=font("black", 56), fill=TEXT, anchor="lm")
+    fsz = 56
+    while fsz > 34 and text_w(data["name"], font("black", fsz)) > cw - 100:
+        fsz -= 4
+    cd.text((44, 78), data["name"], font=font("black", fsz), fill=TEXT, anchor="lm")
     cd.text((46, 126), data.get("sub", ""), font=font("medium", 30), fill=SUB, anchor="lm")
     for i, r in enumerate(rows):
         ra = ease_out(prog(tl, 0.45 + 0.28 * i, 0.35))
@@ -418,7 +421,7 @@ def timeline(canvas, tl, dur, data):
     a = life(tl, dur, 0.4, 0.4)
     if a <= 0:
         return
-    x0, x1, y = 260, W - 260, data.get("y", 470)
+    x0, x1, y = 260, W - 260, data.get("y", 545)
     r0, r1 = data["range"]
     X = lambda v: x0 + (x1 - x0) * (v - r0) / (r1 - r0)
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -442,12 +445,12 @@ def timeline(canvas, tl, dur, data):
         if not latest:
             col = PAST
         up = i % 2 == 0
-        stem = 150 * ke
+        stem = 120 * ke
         e = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         ed = ImageDraw.Draw(e)
         ed.line((x, y, x, y - stem if up else y + stem), fill=col, width=3)
         ed.ellipse((x - 11, y - 11, x + 11, y + 11), fill=col, outline=BG, width=4)
-        ty = y - 150 - 70 if up else y + 150 + 20
+        ty = y - 120 - 110 if up else y + 120 + 20
         bw = max(text_w(ev["label"], font("black", 44)), text_w(ev.get("sub", ""), font("medium", 28))) + 56
         bx = min(max(x - bw / 2, MARGIN), W - MARGIN - bw)
         ed.rounded_rectangle((bx, ty - 10, bx + bw, ty + 100), RADIUS, fill=PANEL, outline=col, width=2)
@@ -460,7 +463,7 @@ def timeline(canvas, tl, dur, data):
         cdr = ImageDraw.Draw(c)
         lab_label(cdr, (W / 2, 22), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
         cdr.text((W / 2, 76), data["caption"], font=font("black", 50), fill=TEXT, anchor="mm")
-        lay.alpha_composite(fade(c, kc), (0, data.get("caption_y", 160)))
+        lay.alpha_composite(fade(c, kc), (0, data.get("caption_y", 140)))
     paste(canvas, lay, (0, 0), a)
 
 
@@ -469,6 +472,152 @@ def timeline(canvas, tl, dur, data):
 def tsukkomi_lines(canvas, tl, center):
     """簡素化：演出は字幕の橙アクセントと軽い拡大（emphasis）だけ。ここでは何も足さない"""
     return
+
+
+
+# ---------------------------------------------------------------- G キーワード（章の要点を1語で）
+def keyword(canvas, tl, dur, data):
+    a = life(tl, dur, 0.45, 0.35)
+    if a <= 0:
+        return
+    lines = data["word"].split("\n")
+    fw = font("black", 96 if max(len(l) for l in lines) <= 12 else 80)
+    fs = font("medium", 36)
+    tw = max([text_w(l, fw) for l in lines] + [text_w(data.get("sub", ""), fs)])
+    pw = int(min(1500, max(900, tw + 160)))
+    lh = int(fw.size * 1.22)
+    ph = 120 + lh * len(lines) + (80 if data.get("sub") else 20)
+    panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
+    d = ImageDraw.Draw(panel)
+    d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 240), outline=PANEL_LINE, width=2)
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
+    lab_label(d, (pw / 2, 52), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+    for i, l in enumerate(lines):
+        rich(d, (pw / 2, 100 + lh * i + lh / 2), l, fw, TEXT, KEY)
+    if data.get("sub"):
+        y = 100 + lh * len(lines) + 20
+        d.line((pw / 2 - 160, y, pw / 2 + 160, y), fill=PANEL_LINE, width=2)
+        d.text((pw / 2, y + 42), data["sub"], font=fs, fill=SUB, anchor="mm")
+    y0 = 170 + (560 - ph) / 2
+    paste(canvas, panel, ((W - pw) / 2, y0 + 18 * (1 - a)), a)
+
+
+# ---------------------------------------------------------------- H フロー（仕組みを順番に）
+def flow(canvas, tl, dur, data):
+    """手順を左→右へ1つずつ。いま出た段だけ枠を強調し、前の段は色を落とす"""
+    a = life(tl, dur, 0.4, 0.35)
+    if a <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    lab_label(d, (W / 2, 210), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+    d.text((W / 2, 268), data["heading"], font=font("black", 58), fill=TEXT, anchor="mm")
+    steps = data["steps"]
+    n = len(steps)
+    gap = 70
+    bw = min(440, (W - 2 * 200 - gap * (n - 1)) / n)
+    total = bw * n + gap * (n - 1)
+    x0 = (W - total) / 2
+    y0, bh = 380, 230
+    shown = [prog(tl, 0.35 + 0.45 * i, 0.35) for i in range(n)]
+    last = max([i for i in range(n) if shown[i] > 0], default=-1)
+    for i, st in enumerate(steps):
+        k = ease_out(shown[i])
+        if k <= 0:
+            continue
+        x = x0 + (bw + gap) * i
+        col = KEY if st.get("key") else NAGI
+        cur = i == last
+        box = Image.new("RGBA", (int(bw), bh), (0, 0, 0, 0))
+        bd = ImageDraw.Draw(box)
+        bd.rounded_rectangle((0, 0, bw - 1, bh - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 245),
+                             outline=col if (cur or st.get("key")) else PANEL_LINE, width=3 if cur else 2)
+        lab_label(bd, (28, 36), f"STEP {i + 1:02d}", col if cur else SUB, 18)
+        ft = font("black", 44 if text_w(st["t"], font("black", 44)) < bw - 40 else 36)
+        bd.text((bw / 2, bh / 2 + 6), st["t"], font=ft, fill=TEXT if (cur or st.get("key")) else SUB, anchor="mm")
+        if st.get("s"):
+            bd.text((bw / 2, bh - 46), st["s"], font=font("medium", 28), fill=SUB, anchor="mm")
+        lay.alpha_composite(fade(box, k), (int(x), int(y0 + 14 * (1 - k))))
+        if i < n - 1 and shown[i + 1] > 0:
+            ka = ease_out(shown[i + 1])
+            ax0, ax1, ay = x + bw + 12, x + bw + 12 + (gap - 24) * ka, y0 + bh / 2
+            d.line((ax0, ay, ax1, ay), fill=NAGI, width=3)
+            d.line((ax1 - 10, ay - 9, ax1, ay, ax1 - 10, ay + 9), fill=NAGI, width=3)
+    paste(canvas, lay, (0, 0), a)
+
+
+# ---------------------------------------------------------------- I ラインナップ（機種を並べて振り返る）
+def lineup(canvas, tl, dur, data):
+    """カードを順に並べる。fast=True は時代をさかのぼる早送り（今のカードだけ明るい）"""
+    a = life(tl, dur, 0.35, 0.35)
+    if a <= 0:
+        return
+    items = data["items"]
+    n = len(items)
+    rows = [items] if n <= 4 else [items[:4], items[4:]]
+    cw, ch, gx, gy = 380, 210, 34, 34
+    step = 0.32 if data.get("fast") else 0.55
+    total_h = ch * len(rows) + gy * (len(rows) - 1)
+    y_top = 190 + (600 - total_h) / 2
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    lab_label(d, (W / 2, y_top - 36), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+    idx = 0
+    appeared = [prog(tl, 0.3 + step * i, 0.3) for i in range(n)]
+    newest = max([i for i in range(n) if appeared[i] > 0], default=-1)
+    for r, row in enumerate(rows):
+        x0 = (W - (cw * len(row) + gx * (len(row) - 1))) / 2
+        for j, it in enumerate(row):
+            k = ease_out(appeared[idx])
+            if k > 0:
+                cur = idx == newest
+                hot = cur or (it.get("key") and not data.get("fast"))
+                col = KEY if it.get("key") else NAGI
+                c = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
+                cd = ImageDraw.Draw(c)
+                cd.rounded_rectangle((0, 0, cw - 1, ch - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 245),
+                                     outline=col if hot else PANEL_LINE, width=3 if hot else 2)
+                cd.text((30, 44), it["y"], font=font("black", 34), fill=KEY if hot else SUB, anchor="lm")
+                fn = font("black", 46 if text_w(it["name"], font("black", 46)) < cw - 60 else 36)
+                cd.text((30, 112), it["name"], font=fn, fill=TEXT if hot or not data.get("fast") else SUB, anchor="lm")
+                cd.text((30, 168), it["f"], font=font("medium", 30), fill=col if hot else SUB, anchor="lm")
+                lay.alpha_composite(fade(c, k if (hot or not data.get("fast")) else k * 0.55),
+                                    (int(x0 + (cw + gx) * j), int(y_top + (ch + gy) * r + 12 * (1 - k))))
+            idx += 1
+    paste(canvas, lay, (0, 0), a)
+
+
+# ---------------------------------------------------------------- J タイトル
+def title_card(canvas, tl, dur, data):
+    out = 1 - ease_in_out(prog(tl, dur - 0.45, 0.45))
+    if out <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    k1, k2, k3 = (ease_out(prog(tl, s, 0.5)) for s in (0.0, 0.2, 0.45))
+    lines = data["main"].split("\n")
+    tmp = Image.new("RGBA", (W, 60), (0, 0, 0, 0))
+    lab_label(ImageDraw.Draw(tmp), (W / 2, 30), data.get("label", ""), NAGI, 24, anchor="mm")
+    paste(lay, tmp, (0, 250), k1)
+    for i, l in enumerate(lines):
+        tmp = Image.new("RGBA", (W, 160), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((W / 2, 80), l, font=font("black", 124), fill=TEXT if i else KEY, anchor="mm")
+        paste(lay, tmp, (0, 330 + 150 * i + 20 * (1 - k2)), k2)
+    d.line((W / 2 - 240, 660, W / 2 + 240, 660), fill=PANEL_LINE, width=2)
+    tmp = Image.new("RGBA", (W, 70), (0, 0, 0, 0))
+    ImageDraw.Draw(tmp).text((W / 2, 35), data.get("sub", ""), font=font("medium", 42), fill=SUB, anchor="mm")
+    paste(lay, tmp, (0, 690), k3)
+    paste(canvas, lay, (0, 0), out)
+
+
+SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中は描画を使い回して高速化）
+    "chapter": lambda d: 0.8, "title": lambda d: 1.0, "keyword": lambda d: 0.5,
+    "machine": lambda d: 0.45 + 0.28 * len(d["rows"]) + 0.95,
+    "analysis": lambda d: 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
+    "flow": lambda d: 0.35 + 0.45 * len(d["steps"]) + 0.4,
+    "lineup": lambda d: 0.3 + (0.32 if d.get("fast") else 0.55) * len(d["items"]) + 0.35,
+}
+OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45}
 
 
 # ---------------------------------------------------------------- 字幕
@@ -493,7 +642,11 @@ def subtitle(canvas, tl, dur, who, text, accent=False):
     d.rounded_rectangle((nx, 20, nx + tw, 64), 8, fill=col)
     d.text((nx + tw / 2, 42), nm, font=fn, fill=BG, anchor="mm")
     lines = text.split("\n")
-    f = font("bold", 58 if len(lines) == 1 else 52)
+    size = 58 if len(lines) == 1 else 52
+    plain = [l.replace("{", "").replace("}", "") for l in lines]
+    while size > 40 and max(text_w(l, font("bold", size)) for l in plain) > pw - 90:
+        size -= 2
+    f = font("bold", size)
     lh = 64 if len(lines) > 1 else 0
     for i, line in enumerate(lines):
         rich(d, (pw / 2, 40 + ph / 2 + (i - (len(lines) - 1) / 2) * lh + 2), line, f, TEXT, KEY)
