@@ -1,0 +1,17 @@
+{
+ "photos": {
+  "front": {
+   "file": "front.png",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "license": "none",
+   "permission": "none"
+  }
+ },
+ "name": "CR海物語",
+ "short": "初代 CR海物語",
+ "maker": "三洋物産",
+ "date": "1999年2月",
+ "how": "メーカー公式・権利者の許諾を得た写真、または利用条件を確認できた写真を front.png として置き、metadata.json に出典・権利者・利用条件・確認日を記入する",
+ "date_source": "ドル箱 https://dorubako.biz/year/1999.html（二次資料）"
+}

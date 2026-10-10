@@ -65,7 +65,7 @@ def photo_notes(cv, ph, credit=True):
     if ph is None:
         return
     if ph.note:
-        chip(cv, f"{ph.note}（{ph.meta.get('file', ph.role)}）" if ph.placeholder else ph.note)
+        chip(cv, ph.note)
     if credit and ph.credit:
         source_line(cv, ph.credit)
 
@@ -183,7 +183,7 @@ class Photo:
         if not hasattr(self, "_cast"):
             self._cast = {}
         if key not in self._cast:
-            im = contain(ph.img, 380, 520, max_up=1.0)
+            im = contain(ph.img, 350, 480, max_up=1.0)
             self._cast[key] = with_shadow(im, strength=0.6, blur=20, offset=(14, 20)) + (im.size,)
         sh, pad, (iw, ih) = self._cast[key]
         k = prog(t, t0, 0.5)
@@ -191,7 +191,7 @@ class Photo:
         cx_end = 290 if side == "left" else W - 290
         cx_start = -260 if side == "left" else W + 260
         cx = cx_start + (cx_end - cx_start) * e
-        cy = 575
+        cy = 545
         rot = (8 if side == "left" else -8) * (1 - out3(k))
         img = sh.rotate(rot, resample=Image.BICUBIC) if abs(rot) > 0.2 else sh
         put(cv, img, (cx - img.width / 2, cy - img.height / 2), min(1.0, k * 3))
@@ -202,7 +202,7 @@ class Photo:
         nm = md.get("name", key)
         tag = f"{nm}" + (f"（{md['date']}）" if md.get("date") else "")
         lb = text_layer(tag, font("bold", 28), TEXT, stroke=5, pad=0)
-        put(cv, lb, (cx_end - lb.width / 2, cy + ih / 2 + 26), out3(prog(t, t0 + 0.45, 0.35)))
+        put(cv, lb, (cx_end - lb.width / 2, cy - ih / 2 - 48), out3(prog(t, t0 + 0.45, 0.35)))   # 札は台の上（字幕とぶつけない）
 
     def _center_title(self, cv, o, t, ph):
         k1 = out3(prog(t, 0.2, 0.5))
@@ -308,9 +308,18 @@ def _spot():
     return im.filter(ImageFilter.GaussianBlur(90))
 
 
-@lru_cache(maxsize=1)
-def _sunburst():
-    return sunburst(720, 28, GOLD, 70)
+ACCENTS = {"gold": GOLD, "purple": (176, 120, 255), "red": (255, 96, 96), "blue": BLUE, "green": (90, 220, 150),
+           "orange": (242, 140, 56)}
+
+
+def accent(sc):
+    """シーンの差し色（@B accent=purple など）。機種ごとに配色を変えて連続紹介を見分けやすくする"""
+    return ACCENTS.get(sc["opts"].get("accent", "gold"), GOLD)
+
+
+@lru_cache(maxsize=8)
+def _sunburst(col=GOLD):
+    return sunburst(720, 28, col, 70)
 
 
 @lru_cache(maxsize=8)
@@ -326,6 +335,24 @@ def _name_banner(name):
     return band
 
 GAUGE = 1.0     # 期待度ゲージが満ちる秒数
+
+
+@lru_cache(maxsize=32)
+def _name_block(name, maxw):
+    """機種名。長い正式名は「〜」や空白で2行に分けて、小さくなりすぎないようにする。(画像, 高さ)"""
+    size = fit_size(name, "black", 110, maxw)
+    if size < 76:
+        cut = max((name.find(c) for c in ("〜", " ", "　")), default=-1)
+        if 3 <= cut < len(name) - 2:
+            a, b = name[:cut].strip(), name[cut:].strip()
+            s1 = min(fit_size(a, "black", 96, maxw), 96)
+            s2 = min(fit_size(b, "black", 64, maxw), 64)
+            la = text_layer(a, font("black", s1), TEXT, pad=0)
+            lb = text_layer(b, font("black", s2), TEXT, pad=0)
+            im = Image.new("RGBA", (max(la.width, lb.width), la.height + lb.height + 6), (0, 0, 0, 0))
+            im.alpha_composite(la, (0, 0)); im.alpha_composite(lb, (0, la.height + 6))
+            return im, im.height
+    return text_layer(name, font("black", size), TEXT, pad=0), size
 
 
 def _specs(sc):
@@ -379,19 +406,19 @@ class Machine:
             k_in = out3(prog(t, te, 0.55))                   # 年表が上へ退いてから入る
             k_mv = inout(prog(t, t_left, 0.7))
             cx = lerp(W / 2 + 260 * (1 - k_in), 430, k_mv)        # プロフィールでは画面の左 40% を実機に
-            cy = lerp(H / 2 + 60, 515, k_mv)
+            cy = lerp(H / 2 + 60, 485, k_mv)
             # 放射状の光：着地で広がり、プロフィールでは薄く残して奥行きに
             ka = out3(prog(t, te, 0.4)) * lerp(1.0, 0.38, k_mv)
             if k_mv > 0:                                      # 実機の後ろに柔らかいスポットライト（切り抜き感をやわらげる）
                 gl = _spot()
                 put(cv, gl, (cx - gl.width / 2, cy - gl.height / 2), k_mv * 0.9)
             if ka > 0.01:
-                sb = _sunburst()
+                sb = _sunburst(accent(sc))
                 sb = sb.rotate(-8 * t, resample=Image.BILINEAR)
                 sbs = scaled(sb, lerp(1.0, 0.7, k_mv))
                 put(cv, sbs, (cx - sbs.width / 2, cy - sbs.height / 2), ka)
             # 縦横比に合わせて収める（横長の写真でもはみ出さない）。プロフィールではゆっくりズーム
-            h_box = lerp(760, 780, k_mv) * (1 + 0.03 * prog(t, t_left + 0.7, sc["dur"]))
+            h_box = lerp(760, 720, k_mv) * (1 + 0.03 * prog(t, t_left + 0.7, sc["dur"]))
             w_box = lerp(900, 700, k_mv)
             img = scaled(a.img, min(h_box / a.img.height, w_box / a.img.width))
             sh, pad = with_shadow(img)
@@ -419,13 +446,12 @@ class Machine:
         x = self.TEXT_X
         if t >= t_name:
             k1 = out3(prog(t, t_name, 0.45))
-            put(cv, label("MACHINE PROFILE", GOLD, 24), (x, 200), k1)
-            nm = m["name"]
-            size = fit_size(nm, "black", 110, 1860 - x)
-            put(cv, text_layer(nm, font("black", size), TEXT, pad=0), (x - 4, 250 + 18 * (1 - k1)), k1)
+            put(cv, label(sc["opts"].get("tag", "MACHINE PROFILE"), accent(sc), 24), (x, 200), k1)
+            nb, size = _name_block(m["name"], 1860 - x)
+            put(cv, nb, (x - 4, 250 + 18 * (1 - k1)), k1)
             k2 = out3(prog(t, t_name + 0.25, 0.45))
-            put(cv, text_layer(f"{m['maker']} ｜ {m['date']} 導入", font("bold", 40), GOLD, pad=0), (x, 250 + size + 34), k2)
-            ln = Image.new("RGBA", (max(1, int(900 * k2)), 3), GOLD + (255,))
+            put(cv, text_layer(f"{m['maker']} ｜ {m['date']} 導入", font("bold", 40), accent(sc), pad=0), (x, 250 + size + 34), k2)
+            ln = Image.new("RGBA", (max(1, int(900 * k2)), 3), accent(sc) + (255,))
             put(cv, ln, (x, 250 + size + 100), k2)
             y0 = 250 + size + 120
             for i, sp in enumerate(_specs(sc)):
@@ -460,7 +486,7 @@ class Machine:
     def focus_point(self, sc):
         """次の画面へズームで切り替えるときの中心＝注目スペックの数字"""
         m = sc["machine"]
-        size = fit_size(m["name"], "black", 110, 1860 - self.TEXT_X)
+        size = _name_block(m["name"], 1860 - self.TEXT_X)[1]
         y0 = 250 + size + 120
         i = next((i for i, sp in enumerate(_specs(sc)) if sp.get("key")), len(_specs(sc)) - 1)
         return (self.TEXT_X + 840, y0 + 92 * i + 46)
@@ -705,12 +731,12 @@ class Numbers:
             self._rc = {}
         # 1) 実機の正面：前の画面と同じ位置・大きさから縮んで左へ → 円グラフが出ると左右の間へ
         front = lib.photos.machine(key, "front")
-        h0, h1, h2 = 800, 360, 250
+        h0, h1, h2 = 740, 360, 250
         k1 = inout(prog(t, 0.0, 0.6))
         k2 = inout(prog(t, t_move, 0.7))
         hh = lerp(lerp(h0, h1, k1), h2, k2)
         cx = lerp(lerp(430, 300, k1), 880, k2)
-        cy = lerp(lerp(515, 560, k1), 610, k2)
+        cy = lerp(lerp(485, 560, k1), 610, k2)
         if "front" not in self._rc:
             self._rc["front"] = contain(front.img, 800, 800, max_up=1.0)
         fi = scaled(self._rc["front"], hh / self._rc["front"].height)
@@ -906,7 +932,7 @@ class Numbers:
         if o.get("note"):
             kn = out3(prog(t, sc["cue"](o.get("note_cue", "違う"), 1.6), 0.4))
             note = text_layer(o["note"], font("medium", 32), (200, 208, 222), pad=0)
-            put(cv, note, ((W - note.width) / 2, 795), kn)
+            put(cv, note, ((W - note.width) / 2, 775), kn)
         if sc.get("source"):
             source_line(cv, with_credit(sc["source"], thumb))
 
@@ -1046,3 +1072,12 @@ Talk.events = staticmethod(_events_F)
 
 
 TEMPLATES = {"A": Photo(), "B": Machine(), "C": History(), "D": Numbers(), "E": Points(), "F": Talk()}
+
+
+def _register_era():
+    """年代をまたぐ回のテンプレート（R / T / V）を追加"""
+    from . import templates_era
+    TEMPLATES.update(templates_era.TEMPLATES)
+
+
+_register_era()

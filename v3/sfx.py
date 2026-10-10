@@ -80,6 +80,15 @@ def make(kind):
         for st, fr in ((0.0, 2093.0), (0.07, 2637.0)):
             a = int(st * SR); tt = t[: n - a]
             x[a:] += (np.sin(2 * np.pi * fr * tt) + 0.3 * np.sin(2 * np.pi * fr * 2 * tt)) * np.exp(-tt / 0.05)
+    elif kind == "chapter":       # 章の入口：短い3音（ナギバクのジングルを短くしたもの）
+        notes = [(0.0, 1046.5, 0.08), (0.07, 1318.5, 0.08), (0.14, 1568.0, 0.35)]
+        n = int(0.7 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for st, fr, dc in notes:
+            a = int(st * SR); tt = t[: n - a]
+            x[a:] += (np.sin(2 * np.pi * fr * tt) + 0.3 * np.sin(2 * np.pi * fr * 2.76 * tt) * np.exp(-tt / 0.06)
+                      + 0.2 * np.sign(np.sin(2 * np.pi * fr * tt))) * np.exp(-tt / dc)
+        x += np.sin(2 * np.pi * (70 + 50 * np.exp(-t * 30)) * t) * np.exp(-t / 0.12)
     elif kind == "jingle":        # ナギバク研究所の専用ジングル（ソ・ド・ミ｜レ・ソー）ベル＋矩形波＋低音
         notes = [(0.0, 783.99, 0.1), (0.08, 1046.5, 0.1), (0.16, 1318.5, 0.1), (0.3, 1174.7, 0.1), (0.38, 1568.0, 0.55)]
         n = int(1.3 * SR); t = np.arange(n) / SR

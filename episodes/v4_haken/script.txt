@@ -1,0 +1,84 @@
+# ナギバク4分試作：各時代のパチンコ覇権台を振り返る（storyboard_and_script.md 準拠）
+# 「覇権台」＝番組が選んだ各時代の代表機。公式ランキングではない。
+@manual
+
+# ---- 00 冒頭「覇権は変わる」
+@R cards="daiku_gensan_1996@0:0.5|garo_2008@1:1.5|hokuto_musou@2:2.5|eva15@3:3.5" title="歴代の主役は誰だ？" title_at=4.6 note="※番組が選んだ各時代の代表機です（公式ランキングではありません）"
+バク: 昔のホールの主役って、今と全然ちゃうよな！
+@pause 0.6
+ナギ: 今回は、各時代を象徴したパチンコ台を、一気に振り返るよ。
+
+# ---- 01 1990年代後半「源さん、そして海」
+@T heading="1990年代後半　源さん、そして海" range=1995-2000 events="1996:daiku_gensan_1996:源さん" source="出典：ドル箱（年代別の機種一覧）" intro=chapter chapter=1990s chapter_sub="源さん、そして海" chapter_no="CHAPTER 1"
+ナギ: まずは90年代後半。1996年の『CR大工の源さん』は、当時の大ヒット機として知られているんだ。
+ナギ: 攻略誌が選ぶ『キングオブパチンコ大賞1996』でも、1位に選ばれている。
+バク: 源さんって、令和よりずっと前から人気やったんか！
+@B machine=umi_1999 accent=blue
+ナギ: そして1999年には、初代『CR海物語』が登場。海シリーズは、のちにホールの定番になっていく。
+
+# ---- 02 2000年代「海の安定感、牙狼の衝撃」
+@B machine=oumi_2005 accent=blue intro=chapter chapter=2000s chapter_sub="海の安定感、牙狼の衝撃" chapter_no="CHAPTER 2"
+ナギ: 2000年代は、2005年の『CR大海物語』など、海物語が根強い人気を持っていた。
+ナギ: 大海物語では、3つのステージを自由に選べる遊び方も話題になったんだ。
+@V heading="2000年代　海の安定感、牙狼の衝撃" left=oumi_2005 left_tag="根強い定番" left_at=0.3 q_at=おっ right=garo_2008 right_at=2008年 right_entry=1 right_tag="衝撃の金色" left_accent=blue right_accent=gold
+ナギ: その一方で、全く違う方向から注目を集めた台もあった。
+バク: おっ、ついにあいつか？
+ナギ: 2008年、初代『CR牙狼』が登場。
+@D:stat value=82 machine=garo_2008
+ナギ: 魔戒チャンスの継続率は82%。高い連チャンへの期待感で、話題になったんだ。
+バク!: あの金色のインパクト、そら忘れられへんわ！
+
+# ---- 03 2010年代前半「MAX機の黄金期」
+@A intro=chapter chapter=2010s chapter_sub="MAX機の黄金期" chapter_no="CHAPTER 3" hall=max_era role=photo year=2010年代前半 headline="MAX機の黄金期" sub="重い確率、大きな出玉" photo_note="イメージ写真（撮影時期不明・検証用）" left=garo_konjiki_2014 left_at=1.0 right=garo_makainohana right_at=2.2
+ナギ: 2010年代前半は、MAX機の存在感が大きかった時代。2014年の『牙狼 金色になれ』、2015年の『牙狼 魔戒ノ花』は、その象徴だね。
+バク: ホールであの金色の筐体を見たら、もう打ちたなるやろ！
+@E heading="2015年 総決算アンケート" sub="全国約100店舗の店長が回答（パチ7・2015年12月）" items="稼働に貢献した台の1位は{魔戒ノ花}|回答の{22.9%}を集めた" note="※対象と設問による結果です（販売台数の順位ではありません）"
+ナギ: 2015年のホール関係者向けアンケートでも、魔戒ノ花は稼働貢献を高く評価されていたよ。
+
+# ---- 04 2016年以降「北斗無双が残った」
+@B machine=hokuto_musou specs=2 intro=chapter chapter=2016 chapter_sub="北斗無双が残った" chapter_no="CHAPTER 4"
+ナギ: 2016年、初代『CR真・北斗無双』が登場。
+@D:stat value=80 layout=rush machine=hokuto_musou rush_name=幻闘RUSH
+@trans fade
+ナギ: ST継続率は約80%。
+@pause 2.2
+バク!: これや！ホールで何年も見かけたやつ！
+@host baku size=290 pos=br
+@D:compare pcts=80,65 heading="2016年　新しい内規の前と後" note="※約80%はST継続率、65%は2016年5月以降の新台に適用された上限。数え方も対象時期も違う"
+ナギ: 同じ年、後から新しい内規が適用されて、これまでの高継続機の存在感が際立つことになる。
+バク!: 規制の話、結局北斗無双が主役になるんかい！
+
+# ---- 05 2020年「速さで主役になった源さん」
+@B machine=gensan_chouidaten specs=2 accent=red tag="SPEED" intro=chapter chapter=2020 chapter_sub="速さで主役になった源さん" chapter_no="CHAPTER 5"
+ナギ: 2020年、今度は『P大工の源さん 超韋駄天』が大ヒット。
+@D:stat value=93 machine=gensan_chouidaten intro=era_shift reels="超源|RUSH|約93%" intro_title="SPEED"
+ナギ: 注目されたのは、超源RUSHの速さと、約93%の継続期待度。
+ナギ: RUSH1回あたりの平均は、約3.5秒。あっという間に決着がつくんだ。
+バク!: 待って！90年代の源さんが、今度は速さで帰ってきたんか！
+@E heading="PiDEAWARD2020　パチンコ部門 大賞" sub="推定販売台数・稼働貢献・ホールアンケートの合計で評価（PiDEA）" items="稼働貢献は{1位}|ホール関係者アンケートも{1位}" note="※出典：PiDEA（2020年12月10日の記事）"
+ナギ: 2020年の業界系アワードでも、高く評価された機種なんだ。
+
+# ---- 06 2021〜23年「エヴァ15とリゼロ」
+@B machine=eva15 specs=2 accent=purple intro=chapter chapter=2021〜23 chapter_sub="エヴァ15とリゼロ" chapter_no="CHAPTER 6"
+ナギ: その後の象徴として外せないのが、2021年の『エヴァ15』。王道のSTタイプが、長く支持されたんだ。
+バク: 源さんの高速RUSHとは、打ってる感覚も全然違うな！
+@E heading="エヴァ15が長く支持された" sub="P-WORLD パチンコ＆パチスロアワード2022（遊技通信・2023年2月）" items="ユーザー部門・ホール部門ともに{GOLD}|ホールの声：{老若男女}に支持された" note="※出典：P-WORLD ニュース"
+ナギ: P-WORLDのアワード2022でも、ユーザーとホールの両部門でGOLDを受賞しているよ。
+@B machine=rezero_onigakari specs=3 accent=red
+ナギ: さらに2022年の『リゼロ 鬼がかり』も、出玉性能と演出で強い存在感を示した。
+バク: 一台で全部決まる時代やなくなったってことやな。
+
+# ---- 07 2024〜現在「LTと新しい人気機」
+@V intro=chapter chapter=2024〜NOW chapter_sub="LTと新しい人気機" chapter_no="CHAPTER 7" heading="2024年〜現在　LTと新しい人気機" left=karakuri2_maou left_tag="LT搭載" right=tokyoghoul right_tag="LT搭載のe機" left_accent=red right_accent=purple left_at=1.0 right_at=東京喰種 note="※2026年10月時点の注目機（覇権が確定した機種ではありません）" note_at=1.5 mid="NOW"
+ナギ: 近年は、ラッキートリガーやスマパチが存在感を増している。2024年の『からくりサーカス2 魔王ver.』、そして2025年に登場した『e東京喰種』も、話題の機種だね。
+バク!: もう覇権争いのスピード、めちゃくちゃ速いやん！
+@F card="覇権は、まだ決まっていない" card2="2026年10月時点の話" card2_cue="ただ"
+ナギ: ただ、今の機種の長期的な評価は、これから変わる可能性もあるよ。
+
+# ---- 08 まとめ＋視聴者参加
+@R:summary groups="daiku_gensan_1996,umi_1999/oumi_2005,garo_2008/garo_konjiki_2014,garo_makainohana,hokuto_musou/gensan_chouidaten,eva15,rezero_onigakari/karakuri2_maou,tokyoghoul" logo_len=2.6
+ナギ: 源さん、海、牙狼、北斗無双、そして現代の人気機。時代ごとに支持される理由も、変わってきたんだね。
+バク!: でも一個だけ変わらん。結局、自分が一番打ち込んだ台が覇権や！
+ナギ: 君の時代の覇権台も、コメントで教えてね。
+@host nagi size=320 pos=l
+@host baku size=310 pos=r

@@ -31,8 +31,10 @@ from .moments import INTROS
 WHO = {"ナギ": "nagi", "バク": "baku"}
 CHARS_PER_SEC = {"nagi": 5.2, "baku": 5.6}
 GAP = 0.24
-MIN_DUR = {"A": 3.2, "B": 5.2, "C": 3.0, "D": 4.0, "E": 3.4, "F": 2.6}
-TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push"}
+MIN_DUR = {"A": 3.2, "B": 5.2, "C": 3.0, "D": 4.0, "E": 3.4, "F": 2.6, "R": 4.0, "T": 4.0, "V": 4.0}
+TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push", "R": "fade", "T": "push", "V": "fade"}
+VARIANT = {"A": "photo", "B": "machine", "C": "calendar", "D": "stat", "E": "points", "F": "talk",
+           "R": "rail", "T": "timeline", "V": "duo"}
 
 
 def parse_opts(s):
@@ -127,6 +129,11 @@ class Planner:
     def fill(self, sc, ctx):
         t, v, o = sc["template"], sc["variant"], sc["opts"]
         text = " ".join(l["text"] for l in sc["lines"])
+        if isinstance(o.get("reels"), str):          # リールの文字は「|」区切り（どのテンプレートでも）
+            o["reels"] = o["reels"].split("|")
+        if o.get("machine") and t != "B" and o["machine"] in self.machines:   # どのテンプレートでも machine= で機種を指定できる
+            sc["machine"] = self.machines[o["machine"]]
+            ctx["machine"] = sc["machine"]
         if t == "B":
             sc["machine"] = self.machines[o["machine"]]
             sc["source"] = sc["machine"].get("source")
@@ -150,7 +157,8 @@ class Planner:
         elif t == "D" and v == "compare":
             items = []
             m = ctx.get("machine")
-            for p in o.get("pcts", re.findall(r"([0-9]+(?:\.[0-9]+)?)%", text)):
+            pl = o.get("pcts", re.findall(r"([0-9]+(?:\.[0-9]+)?)%", text))
+            for p in (pl.split(",") if isinstance(pl, str) else pl):
                 spec = next((s for s in (m["specs"] if m else []) if f"{p}%" in s["v"]), None)
                 if spec:
                     items.append({"tag": m.get("compare_tag", ""), "name": m["name"].replace("CR", ""),
@@ -161,7 +169,7 @@ class Planner:
                     items.append(dict(fact))
             o["items"] = items
             sc["machine"] = m
-            if "違う" in text:
+            if "違う" in text and "note" not in o:
                 vals = "と".join(i["value"].replace("約", "") for i in items)
                 o.setdefault("note", f"※{vals}は数え方が違う指標。単純な比較はできない")
             o.setdefault("heading", self.data.get("compare_heading"))
@@ -207,6 +215,7 @@ class Planner:
         items = parse(self.ep / "script.txt")
         scenes, cur, pending, ctx = [], None, None, {"first": True}
         pause_next = 0.0
+        manual = False
         n = 0
         for it in items:
             c = it["cmd"]
@@ -216,14 +225,15 @@ class Planner:
                 pause_next = 0.0
                 if pending:
                     t, _, var = pending["cmd"].partition(":")
-                    cur = {"template": t, "variant": var or {"A": "photo", "B": "machine", "C": "calendar", "D": "stat",
-                                                            "E": "points", "F": "talk"}[t],
+                    cur = {"template": t, "variant": var or VARIANT[t],
                            "opts": dict(pending["opts"]), "lines": [], "hosts": dict(pending.get("hosts", {})),
                            "trans": pending.get("trans", TRANS[t]), "moments": pending.get("moments", [])}
                     if t == "B" and "machine" not in cur["opts"]:
                         cur["opts"]["machine"] = self.find_machine(ln["text"])
                     scenes.append(cur)
                     pending = None
+                elif manual and cur is not None:       # @manual：シーンは台本の @ 行だけで切り替える
+                    pass
                 else:
                     t, var, o, new = self.auto(ln, cur, ctx)
                     if new or cur is None:
@@ -232,7 +242,9 @@ class Planner:
                         scenes.append(cur)
                 cur["lines"].append(ln)
                 ctx["first"] = False
-            elif re.fullmatch(r"[A-F](:\w+)?", c):
+            elif c == "manual":
+                manual = True
+            elif re.fullmatch(r"[A-Z](:\w+)?", c):
                 pending = it
             elif c == "host" and cur is not None:
                 o = it["opts"]

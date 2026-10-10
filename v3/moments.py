@@ -256,7 +256,42 @@ def era_events(reels):
     return ev
 
 
-INTROS = {"era_shift": ERA["lead"]}      # 台本の intro= で使える導入演出と、ナレーションを待つ秒数
+# ================================================================ 章の入口（年代カード）
+CHAPTER = 1.5
+
+
+def chapter(cv, t, title, sub="", no=""):
+    """章の頭に1.5秒：年代の大きな文字が叩きつけられ、金の帯が走って本編へ（短いジングル）"""
+    if t > CHAPTER + 0.05:
+        return
+    a = 1 - inout(prog(t, CHAPTER - 0.35, 0.35))
+    cv.alpha_composite(Image.new("RGBA", (W, H), (8, 13, 26, int(245 * a))))
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    kb = out3(prog(t, 0.0, 0.35))
+    d.rectangle((0, H / 2 - 120, W * kb, H / 2 + 120), fill=(16, 26, 48, 255))
+    d.line((0, H / 2 - 120, W * kb, H / 2 - 120), fill=GOLD + (255,), width=6)
+    d.line((W * (1 - kb), H / 2 + 120, W, H / 2 + 120), fill=GOLD + (255,), width=6)
+    put(cv, lay, (0, 0), a)
+    if no:
+        spaced(ImageDraw.Draw(cv), (W / 2, H / 2 - 160), no, font("black", 30), BLUE, 12, anchor="m")
+    k = prog(t, 0.12, 0.3)
+    if k > 0:
+        g = gold_text(title, fit_size(title, "black", 150, 1600))
+        s = 1 + 0.5 * (1 - back(k, 2.2))
+        gs = scaled(g, s)
+        put(cv, gs, ((W - gs.width) / 2, H / 2 - gs.height / 2 - 10), min(1, k * 4) * a)
+        fx.glint(cv, ((W - g.width) / 2, H / 2 - 100, (W + g.width) / 2, H / 2 + 100), t, 0.5, 0.5)
+    if sub:
+        sb = text_layer(sub, font("black", 44), TEXT, stroke=6, pad=0)
+        put(cv, sb, ((W - sb.width) / 2, H / 2 + 150), out3(prog(t, 0.4, 0.3)) * a)
+
+
+def chapter_events():
+    return [(0.0, "whoosh"), (0.12, "chapter"), (0.5, "sparkle")]
+
+
+INTROS = {"era_shift": ERA["lead"], "chapter": CHAPTER}      # 台本の intro= で使える導入演出と、ナレーションを待つ秒数
 
 
 # ================================================================ 台本の @moment

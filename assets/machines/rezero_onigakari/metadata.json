@@ -1,0 +1,17 @@
+{
+ "photos": {
+  "front": {
+   "file": "front.png",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "license": "none",
+   "permission": "none"
+  }
+ },
+ "name": "P Re:ゼロから始める異世界生活 鬼がかりver.",
+ "short": "リゼロ 鬼がかり",
+ "maker": "大都技研",
+ "date": "2022年1月",
+ "how": "メーカー公式・権利者の許諾を得た写真、または利用条件を確認できた写真を front.png として置き、metadata.json に出典・権利者・利用条件・確認日を記入する",
+ "date_source": "P-TOWN https://p-town.dmm.com/specials/2507"
+}

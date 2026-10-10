@@ -69,6 +69,8 @@ def prepare(scenes):
                 ev += [(ln["start"] + t, k) for t, k in moments.tsukkomi_events(0.0)]
         if sc["opts"].get("intro") == "era_shift":
             ev += [(s0 + t, k) for t, k in moments.era_events(sc["opts"]["reels"])]
+        if sc["opts"].get("intro") == "chapter":
+            ev += [(s0 + t, k) for t, k in moments.chapter_events()]
         ev += [(s0 + t, k) for t, k in moments.overlay_events(sc)]
         sc["_events"] = ev
 
@@ -165,6 +167,9 @@ def scene_frame(sc, t_abs, lib, with_hosts=True):
     moments.overlay(cv, sc, t)
     if sc["opts"].get("intro") == "era_shift":
         moments.era_shift(cv, t, sc["opts"]["reels"], sc["opts"].get("intro_title", "TURNING POINT"))
+    if sc["opts"].get("intro") == "chapter":
+        o = sc["opts"]
+        moments.chapter(cv, t, o.get("chapter", ""), o.get("chapter_sub", ""), o.get("chapter_no", ""))
     if with_hosts:
         ln = current_line(sc, t_abs)
         who = ln["who"] if ln else (sc["lines"][-1]["who"] if sc["lines"] else None)
@@ -241,7 +246,7 @@ BPM = 120
 SE_GAIN = {"hold": 0.32, "hold_gold": 0.4, "tick": 0.14, "impact": 0.55, "fanfare": 0.3, "sparkle": 0.16,
            "boing": 0.3, "whoosh": 0.22, "pop": 0.2, "stamp": 0.4,
            "senbare": 0.22, "jingle": 0.34, "scan": 0.2, "slap": 0.3, "reel_tick": 0.08, "reel_stop": 0.4,
-           "reach": 0.18, "align": 0.32, "shock": 0.55}
+           "reach": 0.18, "align": 0.32, "shock": 0.55, "chapter": 0.3}
 
 
 def _kick(n):
@@ -352,7 +357,8 @@ def build_audio(scenes, total, path):
 def write_plan(ep, scenes, lib, total):
     rows = [f"# シーン構成（自動生成）  合計 {total:.1f}秒", "",
             "| # | 開始 | 長さ | テンプレート | 選び方 | キャラ | セリフ |", "| --- | --- | --- | --- | --- | --- | --- |"]
-    names = {"A": "A 写真", "B": "B 機種紹介", "C": "C 年表・カレンダー", "D": "D 数字・比較", "E": "E 要点", "F": "F 掛け合い"}
+    names = {"A": "A 写真", "B": "B 機種紹介", "C": "C 年表・カレンダー", "D": "D 数字・比較", "E": "E 要点", "F": "F 掛け合い",
+             "R": "R 時代のレール", "T": "T 年表", "V": "V 2台の対比"}
     for i, sc in enumerate(scenes):
         hs = sorted({w for ln in sc["lines"] for w in sc["_host_plan"](ln["who"], ln["exclaim"])})
         rows.append(f"| {i + 1} | {sc['start']:.1f} | {sc['dur']:.1f} | {names[sc['template']]}（{sc['variant']}） | "
@@ -382,10 +388,16 @@ def main():
     lib = Library(ep, final=a.final)
     lib.photos = PhotoLib(final=a.final)
     for sc in scenes:          # 必要素材を先に読み込んで一覧にする
-        if sc["template"] == "A":
+        if sc["template"] == "A" and not sc["opts"].get("hall") and sc["variant"] != "archive":
             lib.get(sc["opts"].get("asset", "hall"))
         if sc["template"] == "A" and sc["variant"] == "archive":
             lib.photos.hall(sc["opts"].get("hall", "max_era"), sc["opts"].get("role", "main"))
+        if sc["template"] == "A" and sc["opts"].get("hall"):
+            lib.photos.hall(sc["opts"]["hall"], sc["opts"].get("role", "photo"))
+    for m in pl.machines.values():                 # 回に出てくる機種の写真をすべて確認（不足一覧に出す）
+        if m.get("photos"):
+            lib.photos.machine(m["photos"], "front")
+    for sc in scenes:
         if sc.get("machine") and sc["machine"].get("photos"):
             for role in ("front", "detail", "cabinet"):
                 lib.photos.machine(sc["machine"]["photos"], role)

@@ -1,0 +1,17 @@
+{
+ "photos": {
+  "front": {
+   "file": "front.png",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "license": "none",
+   "permission": "none"
+  }
+ },
+ "name": "e東京喰種",
+ "short": "e東京喰種",
+ "maker": "ビスティ",
+ "date": "2025年4月",
+ "how": "メーカー公式・権利者の許諾を得た写真、または利用条件を確認できた写真を front.png として置き、metadata.json に出典・権利者・利用条件・確認日を記入する",
+ "date_source": "ちょんぼりすた https://chonborista.com/pachinko/bisty/230670/"
+}

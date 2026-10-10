@@ -148,6 +148,66 @@ def concept_machine():
     return im.resize((w // S, h // S), Image.LANCZOS)
 
 
+@lru_cache(maxsize=32)
+def name_card(name, when="", maker="", accent=(244, 201, 93)):
+    """写真が無い機種の代わり：年代＋機種名のオリジナル文字カード（実機の絵は描かない）"""
+    S = 2
+    w, h = 520 * S, 760 * S
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(im)
+    g = np.zeros((h, w, 4), np.uint8)
+    yy = np.linspace(0, 1, h)[:, None]
+    g[..., 0] = (18 + 10 * yy).astype(np.uint8)
+    g[..., 1] = (26 + 12 * yy).astype(np.uint8)
+    g[..., 2] = (48 + 18 * yy).astype(np.uint8)
+    g[..., 3] = 255
+    base = Image.fromarray(g, "RGBA")
+    mask = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, w - 1, h - 1), 36 * S, fill=255)
+    im.paste(base, (0, 0), mask)
+    d.rounded_rectangle((0, 0, w - 1, h - 1), 36 * S, outline=accent + (255,), width=6 * S)
+    d.rounded_rectangle((18 * S, 18 * S, w - 18 * S, h - 18 * S), 26 * S, outline=accent + (90,), width=2 * S)
+    yr = "".join(ch for ch in str(when)[:4] if ch.isdigit()) or ""
+    if yr:
+        d.text((w / 2, 190 * S), yr, font=font("black", 150 * S), fill=accent, anchor="mm",
+               stroke_width=4 * S, stroke_fill=(20, 12, 4))
+    if when and len(str(when)) > 4:
+        d.text((w / 2, 300 * S), str(when), font=font("bold", 34 * S), fill=TEXT, anchor="mm")
+    # 機種名は折り返して中央に
+    import re as _re
+    fn = font("black", 52 * S)
+    maxw = w - 90 * S
+    tokens = [x for x in _re.split(r"(?<=[ 　])|(?=〜)", name) if x]      # 空白と「〜」の前で区切る
+    lines, cur = [], ""
+    for tk in tokens:
+        if d.textlength(cur + tk, font=fn) <= maxw:
+            cur += tk
+            continue
+        if cur.strip():
+            lines.append(cur.strip()); cur = ""
+        for ch in tk:                                   # 1語が長いときだけ文字で折る
+            if d.textlength(cur + ch, font=fn) > maxw and cur:
+                lines.append(cur); cur = ch
+            else:
+                cur += ch
+    if cur.strip():
+        lines.append(cur.strip())
+    fixed = []
+    for ln in lines:                                    # 閉じ括弧などだけの行は前の行へ
+        if fixed and len(ln) <= 2 and all(c in "）)」』〜ー。、" for c in ln):
+            fixed[-1] += ln
+        else:
+            fixed.append(ln)
+    lines = fixed
+    y0 = 470 * S - (len(lines) - 1) * 36 * S
+    for i, ln in enumerate(lines[:4]):
+        d.text((w / 2, y0 + i * 72 * S), ln, font=fn, fill=TEXT, anchor="mm")
+    if maker:
+        d.text((w / 2, 650 * S), maker, font=font("bold", 30 * S), fill=SUB, anchor="mm")
+    d.text((w / 2, 712 * S), "画像準備中（機種名カード）", font=font("medium", 24 * S), fill=SUB, anchor="mm")
+    return im.resize((w // S, h // S), Image.LANCZOS)
+
+
 @lru_cache(maxsize=1)
 def concept_photo():
     im = Image.new("RGBA", (W, H), (20, 28, 44, 255))

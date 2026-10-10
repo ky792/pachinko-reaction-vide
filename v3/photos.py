@@ -44,7 +44,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageOps
 
 from .style import ROOT
-from .media import cutout, concept_machine, concept_photo
+from .media import cutout, concept_machine, concept_photo, name_card
 
 LIB = ROOT / "assets"
 OPEN_LICENSES = {"cc0", "cc-by", "cc-by-sa", "own", "ai", "public-domain"}
@@ -93,7 +93,8 @@ class PhotoLib:
         path = (self.root / kind / key / f).resolve() if f else None
         exists = bool(path and path.exists())
         lic, perm = info.get("license", "none"), info.get("permission", "none")
-        cleared = lic in OPEN_LICENSES or perm in CLEARED_PERMISSIONS
+        # 本番（--final）では、権利者の許諾 granted か自由なライセンスだけ。運営者提供（owner）は検証版でのみ使う
+        cleared = lic in OPEN_LICENSES or perm == "granted" or (perm == "owner" and not self.final)
         show = exists and (cleared or not self.final)
         rel = f"assets/{kind}/{key}/{f}" if f else f"assets/{kind}/{key}/{role}.png"
         if show:
@@ -111,6 +112,8 @@ class PhotoLib:
                 img = rgb
             if lic == "ai":
                 note = "イメージ（AI生成イラスト・実際の写真ではありません）"
+            elif perm == "owner":
+                note = "提供写真（権利未確認・検証用）"
             elif cleared:
                 note = ""
             else:
@@ -122,9 +125,13 @@ class PhotoLib:
                                 "license": lic, "permission": perm, "terms": info.get("terms", ""),
                                 "scope": info.get("scope", ""), "credit": info.get("credit", ""), "warn": warn})
         else:
-            img = concept_machine() if role in ("front", "cabinet") else concept_photo()
+            if role in ("front", "cabinet") and md.get("name"):
+                img = name_card(md["name"], md.get("date", ""), md.get("maker", ""))
+            else:
+                img = concept_machine() if role in ("front", "cabinet") else concept_photo()
             reason = "ファイルなし" if not exists else "許諾が未確認"
-            ph = Photo(kind, key, role, img, info, True, "仮素材（実機写真ではありません）")
+            ph = Photo(kind, key, role, img, info, True,
+                       "機種名カード（実機画像は準備中）" if md.get("name") else "仮素材（実機写真ではありません）")
             self.missing.append({"key": f"{kind}/{key}/{role}", "what": info.get("what", ROLES.get(role, role)),
                                  "file": rel, "reason": reason, "how": info.get("how", md.get("how", "")),
                                  "candidates": info.get("candidates", md.get("candidates", []))})
