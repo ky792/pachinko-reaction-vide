@@ -139,6 +139,11 @@ class PhotoLib:
         return ph
 
     def machine(self, key, role="front"):
+        if role == "front":                     # 正面の写真が無ければ、制作キットの写真（kit：許諾確認中）を使う
+            info = self.meta("machines", key).get("photos", {})
+            f = info.get("front", {}).get("file")
+            if not (f and (self.root / "machines" / key / f).exists()) and "kit" in info:
+                role = "kit"
         return self.get("machines", key, role)
 
     def hall(self, key, role="main"):

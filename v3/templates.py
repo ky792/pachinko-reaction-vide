@@ -1033,7 +1033,7 @@ class Points:
         if o.get("note"):
             last = sc["cue"](o["items"][-1].replace("{", "").replace("}", "")[:5], 0.7 + 0.9 * (len(o["items"]) - 1))
             note = text_layer(o["note"], font("medium", 34), (220, 210, 230), pad=0)
-            put(cv, note, ((W - note.width) / 2, 760), out3(prog(t, last + 1.0, 0.4)))
+            put(cv, note, ((W - note.width) / 2, max(760, 470 + 120 * len(o["items"]) - 10)), out3(prog(t, last + 1.0, 0.4)))
 
 
 def _events_E(sc):
@@ -1091,6 +1091,8 @@ def _register_era():
     """年代をまたぐ回のテンプレート（R / T / V）を追加"""
     from . import templates_era
     TEMPLATES.update(templates_era.TEMPLATES)
+    from . import templates_src
+    TEMPLATES.update(templates_src.TEMPLATES)
 
 
 _register_era()

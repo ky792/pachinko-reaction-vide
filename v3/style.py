@@ -253,6 +253,15 @@ def program_tag(cv):
     d.rounded_rectangle((44, 38, 44 + tw + 44, 82), 6, fill=(10, 16, 30, 200))
     d.rectangle((44, 38, 52, 82), fill=BLUE)
     d.text((66, 60), txt, font=f, fill=TEXT, anchor="lm")
+    if REVIEW:                                   # 非公開レビュー版の表示（権利未確認の素材を含む回）
+        f2 = font("black", 24)
+        x0 = 44 + tw + 60
+        w2 = d.textlength(REVIEW, font=f2)
+        d.rounded_rectangle((x0, 40, x0 + w2 + 28, 80), 6, fill=(200, 40, 52, 225))
+        d.text((x0 + 14, 60), REVIEW, font=f2, fill=(255, 255, 255), anchor="lm")
+
+
+REVIEW = None      # 例「非公開レビュー用」。build が data.json の review_label から設定（--final では出さない）
 
 
 def chip(cv, txt, xy=None, anchor="r"):

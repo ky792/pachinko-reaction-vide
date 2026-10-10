@@ -31,10 +31,10 @@ from .moments import INTROS
 WHO = {"ナギ": "nagi", "バク": "baku"}
 CHARS_PER_SEC = {"nagi": 5.2, "baku": 5.6}
 GAP = 0.24
-MIN_DUR = {"A": 3.2, "B": 5.2, "C": 3.0, "D": 4.0, "E": 3.4, "F": 2.6, "R": 4.0, "T": 4.0, "V": 4.0}
-TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push", "R": "fade", "T": "push", "V": "fade"}
+MIN_DUR = {"A": 3.2, "B": 5.2, "C": 3.0, "D": 4.0, "E": 3.4, "F": 2.6, "R": 4.0, "T": 4.0, "V": 4.0, "S": 3.0}
+TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push", "R": "fade", "T": "push", "V": "fade", "S": "zoom"}
 VARIANT = {"A": "photo", "B": "machine", "C": "calendar", "D": "stat", "E": "points", "F": "talk",
-           "R": "rail", "T": "timeline", "V": "duo"}
+           "R": "rail", "T": "timeline", "V": "duo", "S": "source"}
 
 
 def parse_opts(s):
@@ -154,6 +154,8 @@ class Planner:
             o.setdefault("prefix", "約" if (spec and spec["v"].startswith("約")) else "")
             o.setdefault("label", spec["k"] if spec else (fact["label"] if fact else "注目の数字"))
             o.setdefault("lines", self.data.get("explain", {}).get(o["label"], []))
+            if isinstance(o["lines"], str):
+                o["lines"] = o["lines"].split("|")
             sc["source"] = self.data.get("compare_source") if fact else (m.get("source") if m else None)
             sc["machine"] = m if spec else None          # 機種の数字なら、その機種の写真を添える
         elif t == "D" and v == "compare":
@@ -286,11 +288,18 @@ class Planner:
 
     def timing(self, scenes):
         t = 0.0
-        for sc in scenes:
+        prev_who = None
+        for k, sc in enumerate(scenes):
+            if k > 0 and sc["opts"].get("intro") == "chapter":     # 章の終わりに一呼吸（data.json の chapter_rest）
+                scenes[k - 1]["dur"] += float(self.data.get("chapter_rest", 0.0))
+                t += float(self.data.get("chapter_rest", 0.0))
             sc["start"] = t
             lt = t + (0.15 if sc is not scenes[0] else 0.3)
             lt += INTROS.get(sc["opts"].get("intro"), 0.0)          # 導入演出（リールなど）の間はナレーションを待つ
             for ln in sc["lines"]:
+                if prev_who and ln["who"] != prev_who:          # 話者が替わるときは少し長めの間（data.json の turn_gap）
+                    lt += max(0.0, float(self.data.get("turn_gap", GAP)) - GAP)
+                prev_who = ln["who"]
                 vp = self.ep / "voices" / f"{ln['id']}.wav"
                 ln["voice"] = str(vp) if vp.exists() else None
                 ln["dur"] = wav_len(vp) if vp.exists() else est_len(ln["who"], ln["text"])

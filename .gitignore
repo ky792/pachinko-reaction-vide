@@ -7,3 +7,5 @@ generator/output/
 generator/audio/generated/
 episodes/*/build/
 episodes/sample_garo_*/voices/*.wav
+episodes/*/voices/*.wav
+episodes/*/voices/cache/

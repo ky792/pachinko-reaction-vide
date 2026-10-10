@@ -56,9 +56,15 @@ def _cue_or(sc, v, default):
 def _notes_for(cv, lib, keys):
     """写真の注記は1つにまとめる（提供写真・文字カードの別）"""
     phs = [lib.photos.machine(k, "front") for k in keys]
-    if any(p.meta.get("permission") == "owner" and not p.placeholder for p in phs):
+    owner = any(p.meta.get("permission") == "owner" and not p.placeholder for p in phs)
+    pend = any(p.meta.get("permission") == "pending" and not p.placeholder for p in phs)
+    if owner and pend:
+        chip(cv, "提供写真・許諾確認中の写真を含む（検証用）")
+    elif owner:
         chip(cv, "提供写真は権利未確認（検証用）／他は機種名カード" if any(p.placeholder for p in phs)
              else "提供写真（権利未確認・検証用）")
+    elif any(p.meta.get("permission") == "pending" and not p.placeholder for p in phs):
+        chip(cv, "許諾確認中の写真（公開版では使いません）")
     elif any(p.placeholder for p in phs):
         chip(cv, "機種名カード（実機画像は準備中）")
 

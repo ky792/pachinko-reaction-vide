@@ -38,7 +38,8 @@ def check(ep):
     ep = Path(ep)
     d = voice.load_dict()
     voice.sync_dict(d)
-    cast = voice.cast()
+    cp = ep / "casting.json"                     # 回ごとの声の設定があればそれで読む
+    cast = json.loads(cp.read_text(encoding="utf-8")) if cp.exists() else voice.cast()
     facts_p = ep / "facts.json"
     facts = json.loads(facts_p.read_text(encoding="utf-8")) if facts_p.exists() else {"values": []}
     known = {f["v"]: f for f in facts["values"]}

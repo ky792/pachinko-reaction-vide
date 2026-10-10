@@ -155,8 +155,20 @@ def main():
         if it["cmd"] != "line":
             continue
         n += 1
+        if "--keep" in sys.argv and (out / f"{n:03d}.wav").exists():     # 途中から続きを作る（作り直さない）
+            continue
         mood = it.get("voice", {}).get("mood") or (c[it["who"]].get("exclaim_mood") if it["exclaim"] else None)
+        import hashlib                                  # 同じセリフ・同じ設定なら作り直さない（行の追加で番号がずれても再利用）
+        key = hashlib.sha1(json.dumps([it["text"], it["who"], mood, c[it["who"]], d], ensure_ascii=False,
+                                      sort_keys=True).encode()).hexdigest()[:16]
+        cache = out / "cache" / f"{key}.wav"
+        if cache.exists():
+            (out / f"{n:03d}.wav").write_bytes(cache.read_bytes())
+            print(f"{n:03d} {it['who']}[{mood or '-'}]: （再利用）")
+            continue
         wav, st, kana = line_audio(it["text"], it["who"], d, c, mood)
+        cache.parent.mkdir(exist_ok=True)
+        cache.write_bytes(wav)
         (out / f"{n:03d}.wav").write_bytes(wav)
         print(f"{n:03d} {it['who']}[{mood or '-'}]: {kana}")
 

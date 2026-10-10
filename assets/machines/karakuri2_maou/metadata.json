@@ -6,6 +6,20 @@
    "cutout": true,
    "license": "none",
    "permission": "none"
+  },
+  "kit": {
+   "file": "kit.jpg",
+   "what": "実機全体の正面（制作キット A12）",
+   "source_url": "https://www.p-world.co.jp/_machine/img/p10115_1.jpg",
+   "source_note": "P-WORLD・2024年e魔王ver",
+   "rights_holder": "未確認",
+   "license": "none",
+   "permission": "pending",
+   "terms": "権利未確認。非公開レイアウト検証用途に限定（制作キット 06_追加画像13機種_出典と使用条件.csv）",
+   "scope": "非公開レビューのみ",
+   "sha256": "a022b6d82d737d95ed2ab42a11054c84a957b73ab32872a1e7283e59b3195cd9",
+   "cutout": false,
+   "kit_id": "A12"
   }
  },
  "name": "eフィーバーからくりサーカス2 魔王ver.",

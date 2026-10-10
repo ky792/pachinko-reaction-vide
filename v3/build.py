@@ -235,6 +235,9 @@ def frame(scenes, total, t, lib):
     cv = screen_fx(cv, scenes, t)          # 揺れ・フラッシュは絵だけ。字幕は揺らさない
     program_tag(cv)
     cv.alpha_composite(bottom_shade(), (0, H - 300))
+    if sc["template"] in ("E", "F") and sc["opts"].get("source"):      # 要点・掛け合いの画面の出典（台本の source=）
+        from .style import source_line
+        source_line(cv, sc["opts"]["source"])
     draw_subtitle(cv, sc, t)
     if t > total - 0.6:
         cv = Image.blend(cv, Image.new("RGBA", (W, H), (0, 0, 0, 255)), prog(t, total - 0.6, 0.6))
@@ -360,7 +363,7 @@ def write_plan(ep, scenes, lib, total):
     rows = [f"# シーン構成（自動生成）  合計 {total:.1f}秒", "",
             "| # | 開始 | 長さ | テンプレート | 選び方 | キャラ | セリフ |", "| --- | --- | --- | --- | --- | --- | --- |"]
     names = {"A": "A 写真", "B": "B 機種紹介", "C": "C 年表・カレンダー", "D": "D 数字・比較", "E": "E 要点", "F": "F 掛け合い",
-             "R": "R 時代のレール", "T": "T 年表", "V": "V 2台の対比"}
+             "R": "R 時代のレール", "T": "T 年表", "V": "V 2台の対比", "S": "S 資料カード"}
     for i, sc in enumerate(scenes):
         hs = sorted({w for ln in sc["lines"] for w in sc["_host_plan"](ln["who"], ln["exclaim"])})
         rows.append(f"| {i + 1} | {sc['start']:.1f} | {sc['dur']:.1f} | {names[sc['template']]}（{sc['variant']}） | "
@@ -380,6 +383,9 @@ def main():
     ap.add_argument("--stills")
     ap.add_argument("--plan", action="store_true")
     ap.add_argument("--final", action="store_true")
+    ap.add_argument("--range", help="映像だけを a,b 秒の範囲で書き出す（章ごとの分割レンダリング用。音声なし）")
+    ap.add_argument("--audio", action="store_true", help="全編の音声（WAV）だけを書き出す")
+    ap.add_argument("--chapters", action="store_true", help="章の開始秒を JSON で表示する")
     a = ap.parse_args()
     ep = Path(a.episode)
     pl = Planner(ep)
@@ -388,6 +394,8 @@ def main():
     scenes[-1]["dur"] += 0.4
     prepare(scenes)
     lib = Library(ep, final=a.final)
+    from . import style as _style
+    _style.REVIEW = None if a.final else pl.data.get("review_label")
     lib.photos = PhotoLib(final=a.final)
     for sc in scenes:          # 必要素材を先に読み込んで一覧にする
         if sc["template"] == "A" and not sc["opts"].get("hall") and sc["variant"] != "archive":
@@ -407,8 +415,33 @@ def main():
     print("\n".join(lib.photos.write_missing(ep)))
     if a.plan:
         return
+    if a.chapters:
+        import json
+        ch = [{"start": round(sc["start"], 3), "name": sc["opts"].get("chapter", ""), "sub": sc["opts"].get("chapter_sub", ""),
+               "no": sc["opts"].get("chapter_no", "")} for sc in scenes if sc["opts"].get("intro") == "chapter"]
+        print(json.dumps({"total": total, "chapters": ch}, ensure_ascii=False))
+        return
     out = Path(a.output)
     out.parent.mkdir(parents=True, exist_ok=True)
+    if a.audio:
+        build_audio(scenes, total, out)
+        print("音声:", out)
+        return
+    if a.range:
+        r0, r1 = (float(x) for x in a.range.split(","))
+        f0, f1 = int(round(r0 * FPS)), min(int(round(total * FPS)), int(round(r1 * FPS)))
+        enc = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
+                                "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+                                "-pix_fmt", "yuv420p", str(out)], stdin=subprocess.PIPE)
+        import time
+        t0 = time.time()
+        for i in range(f0, f1):
+            enc.stdin.write(frame(scenes, total, i / FPS, lib).tobytes())
+            if (i - f0) % 300 == 0:
+                print(f"  {i / FPS:7.1f}秒（{f0 / FPS:.1f}〜{f1 / FPS:.1f}）経過{time.time() - t0:6.0f}s", flush=True)
+        enc.stdin.close(); enc.wait()
+        print(f"範囲完成: {out} フレーム{f1 - f0} 所要{time.time() - t0:.0f}s")
+        return
     if a.stills:
         for s in a.stills.split(","):
             frame(scenes, total, float(s), lib).save(out.with_name(f"{out.stem}_{float(s):05.2f}.png"))

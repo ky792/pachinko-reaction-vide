@@ -47,19 +47,22 @@
    "surface": "魔戒ノ花",
    "yomi": "マカイノハナ",
    "accent": 0,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "魔戒チャンス",
    "yomi": "マカイチャンス",
    "accent": 4,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "金色になれ",
    "yomi": "コンジキニナレ",
    "accent": 0,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "大工の源さん",
@@ -83,7 +86,8 @@
    "surface": "超源",
    "yomi": "チョウゲン",
    "accent": 0,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "北斗無双",
@@ -95,7 +99,8 @@
    "surface": "鬼がかり",
    "yomi": "オニガカリ",
    "accent": 0,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "海物語",
@@ -113,7 +118,8 @@
    "surface": "幻闘",
    "yomi": "ゲントウ",
    "accent": 0,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "東京喰種",
@@ -209,18 +215,98 @@
    "surface": "日工組",
    "yomi": "ニッコウクミ",
    "accent": 0,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "PiDEA",
    "yomi": "ピデア",
    "accent": 1,
-   "ok": false
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
   },
   {
    "surface": "P-WORLD",
    "yomi": "ピーワールド",
    "accent": 3,
+   "ok": true
+  },
+  {
+   "surface": "覇権台",
+   "yomi": "ハケンダイ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "戦姫絶唱",
+   "yomi": "センキゼッショウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "シンフォギア",
+   "yomi": "シンフォギア",
+   "accent": 3,
+   "ok": true
+  },
+  {
+   "surface": "残保留",
+   "yomi": "ザンホリュウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "電チュー",
+   "yomi": "デンチュー",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "魚群",
+   "yomi": "ギョグン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "大都技研",
+   "yomi": "ダイトギケン",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "ビスティ",
+   "yomi": "ビスティ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "パピモ",
+   "yomi": "パピモ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "ラッキートリガー",
+   "yomi": "ラッキートリガー",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "最終決戦",
+   "yomi": "サイシュウケッセン",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "右打ち",
+   "yomi": "ミギウチ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "打ち手",
+   "yomi": "ウチテ",
+   "accent": 0,
    "ok": true
   }
  ],
@@ -266,6 +352,11 @@
    "why": "分数は『〜ぶんのいち』（『分』と書くと 18分＝じゅうはっぷん と読まれる）"
   },
   {
+   "re": "([0-9]+(?:\\.[0-9]+)?)分の1",
+   "to": "\\1ぶんのいち",
+   "why": "台本に『397分の1』と書いた場合も『ぶんのいち』（『分』は『ふん』と読まれる）"
+  },
+  {
    "re": "(?<![A-Za-z])ver\\.",
    "to": "バージョン",
    "why": "ver. はバージョン"
@@ -279,6 +370,31 @@
    "re": "RUSH",
    "to": "ラッシュ",
    "why": "英字の読み"
+  },
+  {
+   "re": "AWARD",
+   "to": "アワード",
+   "why": "英字の読み"
+  },
+  {
+   "re": "MVP",
+   "to": "エムブイピー",
+   "why": "英字の読み"
+  },
+  {
+   "re": "SANKYO",
+   "to": "サンキョウ",
+   "why": "英字の読み（『サンキョー』と書くとサンキヨオと読まれる）"
+  },
+  {
+   "re": "PiDEA X",
+   "to": "ピデアエックス",
+   "why": "英字の読み"
+  },
+  {
+   "re": "V-ST",
+   "to": "ブイエスティー",
+   "why": "V-STタイプ"
   },
   {
    "re": "ST",
@@ -333,9 +449,9 @@
  ],
  "kana_fix": [
   {
-   "re": "ショダイ(?=[^/、'])",
+   "re": "ショダイ(?=シイアアル)",
    "to": "ショダイ'/",
-   "why": "初代はいつも上がり調子で区切る（初代↑／…）"
+   "why": "初代＋CR機の名前は、初代↑で区切る（初代↑／シーアール牙狼）。『初代は』などはそのまま"
   },
   {
    "re": "シイアアルガロ([^/、']*)'",

@@ -6,6 +6,20 @@
    "cutout": true,
    "license": "none",
    "permission": "none"
+  },
+  "kit": {
+   "file": "kit.jpg",
+   "what": "実機全体の正面（制作キット A10）",
+   "source_url": "https://stat.ameba.jp/user_images/20211028/08/chamadayo081/d5/45/j/o0493062115022419303.jpg",
+   "source_note": "個人ブログ掲載写真（権利者と公開利用許諾が未確認）",
+   "rights_holder": "未確認",
+   "license": "none",
+   "permission": "pending",
+   "terms": "権利未確認。非公開レイアウト検証用途に限定（制作キット 06_追加画像13機種_出典と使用条件.csv）",
+   "scope": "非公開レビューのみ",
+   "sha256": "768fe11d284939a053ee426d9184890bef939cca5e19df1715aa5ca610f1a9f1",
+   "cutout": false,
+   "kit_id": "A10"
   }
  },
  "name": "P新世紀エヴァンゲリオン〜未来への咆哮〜",

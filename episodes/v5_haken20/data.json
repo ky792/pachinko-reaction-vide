@@ -1,0 +1,282 @@
+{
+ "review_label": "非公開レビュー用｜権利未確認の写真を含む",
+ "machines": {
+  "daiku_gensan_1996": {
+   "name": "CR大工の源さん",
+   "short": "大工の源さん",
+   "maker": "三洋物産",
+   "date": "1996年",
+   "year": 1996,
+   "specs": [
+    {
+     "k": "時代",
+     "v": "確変2回ループの代表格"
+    }
+   ],
+   "source": "出典：三洋物産 製品紹介",
+   "asset": "",
+   "photos": "daiku_gensan_1996"
+  },
+  "umi_1999": {
+   "name": "CR海物語3R（初代）",
+   "short": "海物語",
+   "maker": "三洋物産",
+   "date": "1999年",
+   "year": 1999,
+   "specs": [
+    {
+     "k": "シリーズ",
+     "v": "海物語の始まり"
+    }
+   ],
+   "source": "出典：三洋物産 製品紹介",
+   "asset": "",
+   "photos": "umi_1999"
+  },
+  "oumi_2005": {
+   "name": "CR大海物語",
+   "short": "大海物語",
+   "maker": "三洋物産",
+   "date": "2005年",
+   "year": 2005,
+   "specs": [
+    {
+     "k": "演出モード",
+     "v": "3種類から選べる"
+    }
+   ],
+   "source": "出典：グリーンべると（2005年3月）／三洋グループ会社案内",
+   "asset": "",
+   "photos": "oumi_2005"
+  },
+  "garo_2008": {
+   "name": "CR牙狼XX（初代）",
+   "short": "初代CR牙狼",
+   "maker": "サンセイR&D",
+   "date": "2008年",
+   "year": 2008.9,
+   "source": "出典：サンセイR&D 牙狼公式アーカイブ",
+   "specs": [
+    {
+     "k": "大当たり確率",
+     "v": "1/397.18"
+    },
+    {
+     "k": "魔戒チャンス突入率",
+     "v": "50%",
+     "say": "50%"
+    },
+    {
+     "k": "魔戒チャンス継続率",
+     "v": "82%",
+     "say": "82%",
+     "key": true
+    }
+   ],
+   "asset": "",
+   "photos": "garo_2008"
+  },
+  "garo_konjiki_2014": {
+   "name": "CR牙狼金色になれXX",
+   "short": "金色になれ",
+   "maker": "サンセイR&D",
+   "date": "2014年",
+   "year": 2014,
+   "specs": [
+    {
+     "k": "専用枠",
+     "v": "金狼"
+    }
+   ],
+   "source": "出典：サンセイR&D 2014年製品情報",
+   "asset": "",
+   "photos": "garo_konjiki_2014"
+  },
+  "garo_makainohana": {
+   "name": "CR牙狼魔戒ノ花XX",
+   "short": "魔戒ノ花",
+   "maker": "サンセイR&D",
+   "date": "2015年",
+   "year": 2015,
+   "specs": [
+    {
+     "k": "役物",
+     "v": "ライトニングフェイスオブガロ"
+    },
+    {
+     "k": "受賞",
+     "v": "2015 AWARD MVP"
+    }
+   ],
+   "source": "出典：サンセイR&D 牙狼アーカイブ／娯楽産業",
+   "asset": "",
+   "photos": "garo_makainohana"
+  },
+  "hokuto_musou": {
+   "name": "CR真・北斗無双",
+   "short": "北斗無双",
+   "maker": "サミー",
+   "date": "2016年3月",
+   "year": 2016.17,
+   "compare_tag": "内規の変更前に登場",
+   "source": "出典：Sammy公式スペック",
+   "specs": [
+    {
+     "k": "大当たり確率",
+     "v": "約1/319.7"
+    },
+    {
+     "k": "ヘソのST直行",
+     "v": "50%",
+     "say": "50%"
+    },
+    {
+     "k": "ST継続率",
+     "v": "約80%",
+     "say": "80%",
+     "key": true
+    }
+   ],
+   "asset": "",
+   "photos": "hokuto_musou"
+  },
+  "symphogear_2017": {
+   "name": "CRフィーバー戦姫絶唱シンフォギア",
+   "short": "シンフォギア",
+   "maker": "SANKYO",
+   "date": "2017年",
+   "year": 2017,
+   "specs": [
+    {
+     "k": "大当たり確率",
+     "v": "約1/199.8"
+    }
+   ],
+   "source": "出典：SANKYOオンライン博物館",
+   "asset": "",
+   "photos": "symphogear_2017"
+  },
+  "gensan_chouidaten": {
+   "name": "P大工の源さん 超韋駄天",
+   "short": "超韋駄天",
+   "maker": "三洋物産",
+   "date": "2020年",
+   "year": 2020.3,
+   "source": "出典：三洋物産 公式サイト",
+   "specs": [
+    {
+     "k": "超源RUSH 継続期待度",
+     "v": "約93%",
+     "say": "93%",
+     "key": true
+    }
+   ],
+   "asset": "",
+   "photos": "gensan_chouidaten"
+  },
+  "eva15": {
+   "name": "P新世紀エヴァンゲリオン〜未来への咆哮〜",
+   "short": "エヴァ15",
+   "maker": "ビスティ",
+   "date": "2021年12月",
+   "year": 2021.95,
+   "source": "出典：SANKYOオンライン博物館／P-WORLD",
+   "specs": [
+    {
+     "k": "大当たり確率",
+     "v": "約1/319.7"
+    },
+    {
+     "k": "ST継続率（残保留込み）",
+     "v": "約81%",
+     "say": "81%"
+    }
+   ],
+   "asset": "",
+   "photos": "eva15"
+  },
+  "rezero_onigakari": {
+   "name": "P Re:ゼロから始める異世界生活 鬼がかりver.",
+   "short": "リゼロ 鬼がかり",
+   "maker": "大都技研",
+   "date": "2022年",
+   "year": 2022.03,
+   "source": "出典：大都技研 製品情報",
+   "specs": [
+    {
+     "k": "大当たり確率",
+     "v": "約1/319.6"
+    },
+    {
+     "k": "RUSH継続率",
+     "v": "約77%",
+     "say": "77%"
+    }
+   ],
+   "asset": "",
+   "photos": "rezero_onigakari"
+  },
+  "karakuri2_maou": {
+   "name": "eフィーバーからくりサーカス2 魔王ver.",
+   "short": "からくりサーカス2",
+   "maker": "SANKYO",
+   "date": "2024年11月",
+   "year": 2024.9,
+   "source": "出典：SANKYOオンライン博物館",
+   "specs": [
+    {
+     "k": "図柄揃い確率",
+     "v": "約1/399.9"
+    },
+    {
+     "k": "LT継続率",
+     "v": "約80%",
+     "say": "80%"
+    }
+   ],
+   "asset": "",
+   "photos": "karakuri2_maou"
+  },
+  "tokyoghoul": {
+   "name": "e東京喰種",
+   "short": "東京喰種",
+   "maker": "ビスティ",
+   "date": "2025年4月",
+   "year": 2025.3,
+   "source": "出典：SANKYOオンライン博物館",
+   "specs": [
+    {
+     "k": "LT中の当たり",
+     "v": "全て3000個以上"
+    }
+   ],
+   "asset": "",
+   "photos": "tokyoghoul"
+  }
+ },
+ "facts": [
+  {
+   "value": "65%",
+   "name": "2016年の内規変更後の新台",
+   "label": "確変継続率の上限",
+   "tag": "内規の変更後"
+  }
+ ],
+ "explain": {
+  "魔戒チャンス継続率": [
+   "魔戒チャンス中（突入50%）に",
+   "次の当たりを引く割合"
+  ],
+  "超源RUSH 継続期待度": [
+   "超源RUSH＋残保留込みの",
+   "継続期待度"
+  ],
+  "ST継続率": [
+   "ST突入後（ヘソのST直行は50%）に",
+   "次の当たりを引く割合"
+  ]
+ },
+ "compare_source": "出典：Sammy公式スペック／グリーンべると（2018-11-01）",
+ "turn_gap": 0.36,
+ "chapter_rest": 0.6
+}

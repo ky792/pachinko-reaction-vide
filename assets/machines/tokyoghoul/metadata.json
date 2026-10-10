@@ -6,6 +6,20 @@
    "cutout": true,
    "license": "none",
    "permission": "none"
+  },
+  "kit": {
+   "file": "kit.png",
+   "what": "実機全体の正面（制作キット A13）",
+   "source_url": "https://pachima.itembox.cloud/product/012/000000001246/000000001246-05.jpg",
+   "source_note": "パチマ・2025年e東京喰種",
+   "rights_holder": "未確認",
+   "license": "none",
+   "permission": "pending",
+   "terms": "権利未確認。非公開レイアウト検証用途に限定（制作キット 06_追加画像13機種_出典と使用条件.csv）",
+   "scope": "非公開レビューのみ",
+   "sha256": "80a73c72e26a04bb3442841986c95d54d174d2002cf7821f905e99bd704130f0",
+   "cutout": true,
+   "kit_id": "A13"
   }
  },
  "name": "e東京喰種",

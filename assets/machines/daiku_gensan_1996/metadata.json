@@ -6,6 +6,20 @@
    "cutout": true,
    "license": "none",
    "permission": "none"
+  },
+  "kit": {
+   "file": "kit.jpg",
+   "what": "実機全体の正面（制作キット A01）",
+   "source_url": "https://auctions.c.yimg.jp/images.auctions.yahoo.co.jp/image/dr000/auc0506/users/4afbc9fff3ba62a1fc53ff27ef75a7769d5d120c/i-img1200x1200-1718762288emnrpg7.jpg",
+   "source_note": "Yahoo!オークション・1996年初代、実機全景",
+   "rights_holder": "未確認",
+   "license": "none",
+   "permission": "pending",
+   "terms": "権利未確認。非公開レイアウト検証用途に限定（制作キット 06_追加画像13機種_出典と使用条件.csv）",
+   "scope": "非公開レビューのみ",
+   "sha256": "ed70277be74b5f900c0cb143a58b455669967ed1fe04752426c4f0ba9da07420",
+   "cutout": false,
+   "kit_id": "A01"
   }
  },
  "name": "CR大工の源さん",

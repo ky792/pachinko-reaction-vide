@@ -6,6 +6,20 @@
    "cutout": true,
    "license": "none",
    "permission": "none"
+  },
+  "kit": {
+   "file": "kit.jpg",
+   "what": "実機全体の正面（制作キット A11）",
+   "source_url": "https://www.p-world.co.jp/_machine/img/p9537_1.jpg",
+   "source_note": "P-WORLD・2022年鬼がかりver 319",
+   "rights_holder": "未確認",
+   "license": "none",
+   "permission": "pending",
+   "terms": "権利未確認。非公開レイアウト検証用途に限定（制作キット 06_追加画像13機種_出典と使用条件.csv）",
+   "scope": "非公開レビューのみ",
+   "sha256": "b194d29f362b4849cd085df71e7a979145cbcd49d4ae2d3d0863fe85b313cb47",
+   "cutout": false,
+   "kit_id": "A11"
   }
  },
  "name": "P Re:ゼロから始める異世界生活 鬼がかりver.",
