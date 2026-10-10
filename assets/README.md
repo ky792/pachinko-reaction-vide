@@ -10,3 +10,6 @@
 エピソードフォルダの `MISSING_PHOTOS.md` に不足一覧が出る。
 
 ※ 旧システム（反応集）の `generator/assets/machines/*.jpg` は出典・許諾の記録が無いので、このライブラリでは使わない。
+
+※ リポジトリは公開されているので、**写真ファイル自体は Git に上げない**（`assets/.gitignore`）。
+  写真は作業環境に置いて動画を作り、権利の記録（metadata.json）だけを管理する。

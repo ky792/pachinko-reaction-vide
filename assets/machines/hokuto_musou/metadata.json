@@ -8,17 +8,79 @@
   "自分で撮影した写真も、盤面のイラスト・ロゴは著作物なので、そのままでは自由に使えない（引用の条件を満たすかは要確認）"
  ],
  "photos": {
-  "front":    {"file": "front.png",    "what": "実機全体の正面", "cutout": true, "focus": [0.5, 0.45],
-               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー ほか（未確認）",
-               "terms": "", "scope": "", "credit": "", "credit_required": true},
-  "detail":   {"file": "detail.jpg",   "what": "盤面のアップ", "focus": [0.5, 0.4],
-               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー ほか（未確認）",
-               "terms": "", "scope": "", "credit": "", "credit_required": true},
-  "cabinet":  {"file": "cabinet.png",  "what": "筐体の特徴が分かる写真", "cutout": true, "focus": [0.5, 0.45],
-               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー ほか（未確認）",
-               "terms": "", "scope": "", "credit": "", "credit_required": true},
-  "official": {"file": "official.jpg", "what": "公式資料（チラシ・プレスリリース等）", "focus": [0.5, 0.4],
-               "license": "none", "permission": "none", "source_url": "", "rights_holder": "株式会社サミー（未確認）",
-               "terms": "", "scope": "", "credit": "", "credit_required": true}
+  "front": {
+   "file": "front.jpg",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "license": "provided",
+   "permission": "owner",
+   "source_url": "チャンネル運営者（きょうじ）がチャットで提供（2026-10-10）。元の掲載元は未記録",
+   "rights_holder": "株式会社サミー ほか（盤面：北斗の拳／無双シリーズの権利者）※未確認",
+   "terms": "運営者の指示で使用。権利者の許諾は未確認。左上の販売店ロゴ（赤丸のP）は消して使用",
+   "scope": "V4プレビュー動画",
+   "credit": "",
+   "credit_required": false,
+   "erase": [
+    [
+     70.5,
+     69.5,
+     54
+    ]
+   ],
+   "note": "500×500px と小さいため、大きく出すと粗く見える。高解像度版があれば差し替え"
+  },
+  "detail": {
+   "file": "detail.jpg",
+   "what": "盤面のアップ",
+   "focus": [
+    0.5,
+    0.4
+   ],
+   "license": "none",
+   "permission": "none",
+   "source_url": "",
+   "rights_holder": "株式会社サミー ほか（未確認）",
+   "terms": "",
+   "scope": "",
+   "credit": "",
+   "credit_required": true
+  },
+  "cabinet": {
+   "file": "cabinet.png",
+   "what": "筐体の特徴が分かる写真",
+   "cutout": true,
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "license": "none",
+   "permission": "none",
+   "source_url": "",
+   "rights_holder": "株式会社サミー ほか（未確認）",
+   "terms": "",
+   "scope": "",
+   "credit": "",
+   "credit_required": true
+  },
+  "official": {
+   "file": "official.jpg",
+   "what": "公式資料（チラシ・プレスリリース等）",
+   "focus": [
+    0.5,
+    0.4
+   ],
+   "license": "none",
+   "permission": "none",
+   "source_url": "",
+   "rights_holder": "株式会社サミー（未確認）",
+   "terms": "",
+   "scope": "",
+   "credit": "",
+   "credit_required": true
+  }
  }
 }

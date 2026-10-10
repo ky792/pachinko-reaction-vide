@@ -27,6 +27,16 @@ from .photos import contain, cover
 from . import fx, moments
 
 
+@lru_cache(maxsize=1)
+def _left_shade():
+    """左側だけ暗くして、写真の上の文字を読みやすく"""
+    g = np.zeros((H, W, 4), np.uint8)
+    xx = np.linspace(0, 1, W)[None, :]
+    g[..., :3] = (6, 10, 20)
+    g[..., 3] = (np.clip(1.15 - xx * 1.6, 0, 1) ** 1.3 * 200).astype(np.uint8).repeat(H, 0)
+    return Image.fromarray(g, "RGBA")
+
+
 def machine_photo(lib, sc, roles=("front",)):
     """シーンの機種の写真を、指定の順で探す（実物があればそれ、無ければ最初の役割の仮素材）"""
     key = (sc.get("machine") or {}).get("photos")
@@ -79,6 +89,8 @@ class Photo:
         if sc["variant"] == "archive":
             return self._archive(cv, sc, t, lib)
         o = sc["opts"]
+        if o.get("hall"):
+            return self._hall_photo(cv, sc, t, lib)
         a = lib.get(o.get("asset", "hall"))
         src = a.img.convert("RGB")
         s = max(W / src.width, H / src.height)
@@ -100,6 +112,49 @@ class Photo:
         if a.credit and not a.placeholder:
             source_line(cv, a.credit)
 
+
+    def _hall_photo(self, cv, sc, t, lib):
+        """全画面のホール写真：暗くして文字を載せる。ゆっくりズーム＋横パン。小さい写真は少しぼかして背景らしく"""
+        o = sc["opts"]
+        ph = lib.photos.hall(o["hall"], o.get("role", "photo"))
+        if not hasattr(self, "_bg"):
+            self._bg = {}
+        if id(ph) not in self._bg:
+            bw, bh = int(W * 1.12), int(H * 1.12)
+            base = cover(ph.img.convert("RGB"), bw, bh, ph.focus)
+            if ph.warn:
+                base = base.filter(ImageFilter.GaussianBlur(1.4))
+            base = ImageEnhance.Brightness(base).enhance(0.62)
+            self._bg[id(ph)] = base.convert("RGBA")
+        base = self._bg[id(ph)]
+        k = prog(t, 0, sc["dur"] + 0.5)
+        z = 1.0 + 0.06 * inout(k)
+        cw, ch = int(W / z), int(H / z)
+        x0 = int((base.width - cw) * (0.25 + 0.5 * k))          # 左→右へゆっくりパン
+        y0 = int((base.height - ch) / 2)
+        cv.paste(base.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, H), Image.BILINEAR))
+        cv.alpha_composite(_left_shade())
+        # タイトル：年号（金）→ 見出し → 補足
+        k1 = out3(prog(t, 0.25, 0.55))
+        yr = str(o.get("year", ""))
+        y = 150
+        if yr:
+            g = gold_text(yr, fit_size(yr, "black", 170, 760))
+            put(cv, g, (80 - 40 * (1 - k1), y), k1)
+            fx.glint(cv, (80, y, 80 + g.width, y + g.height), t, 0.9, 0.6)
+            y += g.height - 30
+        k2 = out3(prog(t, 0.5, 0.5))
+        if o.get("headline"):
+            hl = text_layer(o["headline"], font("black", fit_size(o["headline"], "black", 120, 900)), TEXT, stroke=8, pad=0)
+            put(cv, hl, (90, y + 20 * (1 - k2)), k2)
+            ln = Image.new("RGBA", (max(1, int(hl.width * k2)), 8), GOLD + (255,))
+            put(cv, ln, (90, y + hl.height + 26), k2)
+            y += hl.height + 60
+        if o.get("sub"):
+            put(cv, text_layer(o["sub"], font("bold", 48), TEXT, stroke=6, pad=0), (92, y), out3(prog(t, 0.75, 0.5)))
+        chip(cv, o.get("photo_note", ph.note or "イメージ写真"))
+        if ph.credit:
+            source_line(cv, ph.credit)
 
     def _archive(self, cv, sc, t, lib):
         """歴史資料：紙の上に額縁つきの写真。色はほんの少しだけ古く、ズームは控えめ"""
@@ -170,6 +225,13 @@ Photo.events = staticmethod(_events_A)
 
 # ================================================================ B 実機＋機種名＋スペック
 @lru_cache(maxsize=1)
+def _spot():
+    im = Image.new("RGBA", (900, 1000), (0, 0, 0, 0))
+    ImageDraw.Draw(im).ellipse((120, 120, 780, 880), fill=(120, 150, 210, 70))
+    return im.filter(ImageFilter.GaussianBlur(90))
+
+
+@lru_cache(maxsize=1)
 def _sunburst():
     return sunburst(720, 28, GOLD, 70)
 
@@ -233,18 +295,21 @@ class Machine:
         if t >= te:
             k_in = out3(prog(t, te, 0.55))                   # 年表が上へ退いてから入る
             k_mv = inout(prog(t, t_left, 0.7))
-            cx = lerp(W / 2 + 260 * (1 - k_in), 485, k_mv)
-            cy = lerp(H / 2 + 60, 570, k_mv)
+            cx = lerp(W / 2 + 260 * (1 - k_in), 430, k_mv)        # プロフィールでは画面の左 40% を実機に
+            cy = lerp(H / 2 + 60, 515, k_mv)
             # 放射状の光：着地で広がり、プロフィールでは薄く残して奥行きに
-            ka = out3(prog(t, te, 0.4)) * lerp(1.0, 0.28, k_mv)
+            ka = out3(prog(t, te, 0.4)) * lerp(1.0, 0.38, k_mv)
+            if k_mv > 0:                                      # 実機の後ろに柔らかいスポットライト（切り抜き感をやわらげる）
+                gl = _spot()
+                put(cv, gl, (cx - gl.width / 2, cy - gl.height / 2), k_mv * 0.9)
             if ka > 0.01:
                 sb = _sunburst()
                 sb = sb.rotate(-8 * t, resample=Image.BILINEAR)
                 sbs = scaled(sb, lerp(1.0, 0.7, k_mv))
                 put(cv, sbs, (cx - sbs.width / 2, cy - sbs.height / 2), ka)
             # 縦横比に合わせて収める（横長の写真でもはみ出さない）。プロフィールではゆっくりズーム
-            h_box = lerp(760, 720, k_mv) * (1 + 0.045 * prog(t, t_left + 0.7, sc["dur"]))
-            w_box = lerp(900, 640, k_mv)
+            h_box = lerp(760, 780, k_mv) * (1 + 0.03 * prog(t, t_left + 0.7, sc["dur"]))
+            w_box = lerp(900, 700, k_mv)
             img = scaled(a.img, min(h_box / a.img.height, w_box / a.img.width))
             sh, pad = with_shadow(img)
             bump = 1 + 0.06 * (1 - out3(prog(t, te, 0.45)))   # 着地の瞬間だけ少し弾む
@@ -475,7 +540,7 @@ class Numbers:
     def busy(self, sc):
         if sc["variant"] == "stat":
             if sc.get("machine") and sc["opts"].get("tone") != "shock":
-                return [(220, 180, 820, 820), (900, 280, 1400, 680), (1410, 110, 1870, 705)]
+                return [(220, 180, 820, 820), (900, 280, 1440, 680), (1480, 140, 1840, 660)]
             return [(280, 180, 920, 820), (1020, 280, 1820, 680)]
         return [(200, 140, W - 200, 860)]
 
@@ -495,6 +560,23 @@ class Numbers:
         if not hasattr(self, "_cards"):
             self._cards = {}
         ck = id(ph)
+        if ph.meta.get("cutout") and not ph.placeholder:
+            # 実機の正面写真は枠に入れず、影をつけて右側に小さく立たせる（主役は数字）
+            if ck not in self._cards:
+                im = contain(ph.img, 300, 430)
+                sh, pad = with_shadow(im, strength=0.55, blur=18, offset=(10, 16))
+                self._cards[ck] = (sh, pad, im.size)
+            sh, pad, (iw, ih) = self._cards[ck]
+            k = out3(prog(t, 0.05, 0.5))
+            gl = _spot()
+            gl = scaled(gl, 0.55)
+            cxp, cyp = 1660, 380
+            put(cv, gl, (cxp - gl.width / 2, cyp - gl.height / 2), k * 0.8)
+            put(cv, sh, (cxp - sh.width / 2 + 80 * (1 - k), cyp - sh.height / 2), k)
+            cap = text_layer((sc.get("machine") or {}).get("name", ""), font("black", 34), GOLD, stroke=5, pad=0)
+            put(cv, cap, (cxp - cap.width / 2, cyp + ih / 2 + 22), k)
+            photo_notes(cv, ph, credit=False)
+            return ph
         if ck not in self._cards:
             card = Image.new("RGBA", (cw, chh), (0, 0, 0, 0))
             cd = ImageDraw.Draw(card)
@@ -557,8 +639,9 @@ class Numbers:
                 fx.gauge(gl, (cx - 280, 850), 380, 40, stage / len(steps), label="期待度", segs=len(steps))
                 put(cv, gl, (0, 0), ga)
         rx = 900 if ph else 1030
+        mw = 500 if ph else 800
         if t < t_go:
-            return self._stat_text(cv, sc, t, rx, 470 if ph else 800, t_go)
+            return self._stat_text(cv, sc, t, rx, mw, t_go)
         pre = o.get("prefix", "")
         if shock:               # 規制の数字：赤で叩きつける（警告）
             fx.burst(cv, (cx, cy), t, SLAM, col=col, r_in=200, r_out=720)
@@ -579,7 +662,7 @@ class Numbers:
                     rr = r + 40 * out3(kr)
                     ImageDraw.Draw(ring).ellipse((cx - rr, cy - rr, cx + rr, cy + rr), outline=GOLD + (int(220 * (1 - kr)),), width=10)
                     cv.alpha_composite(ring)
-        self._stat_text(cv, sc, t, rx, 470 if ph else 800, t_go)
+        self._stat_text(cv, sc, t, rx, mw, t_go)
         if sc.get("source"):
             source_line(cv, with_credit(sc["source"], ph))
 

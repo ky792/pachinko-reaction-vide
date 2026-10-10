@@ -41,13 +41,15 @@ metadata.json の形式
 import json
 from pathlib import Path
 
-from PIL import Image, ImageOps
+from PIL import Image, ImageDraw, ImageFilter, ImageOps
 
 from .style import ROOT
 from .media import cutout, concept_machine, concept_photo
 
 LIB = ROOT / "assets"
 OPEN_LICENSES = {"cc0", "cc-by", "cc-by-sa", "own", "ai", "public-domain"}
+# permission: granted＝権利者の許諾あり／owner＝チャンネル運営者が用意して使用を指示（権利者の許諾は未確認。一覧に明記する）
+CLEARED_PERMISSIONS = {"granted", "owner"}
 ROLES = {
     "front": "実機全体の正面写真",
     "detail": "盤面のアップ写真",
@@ -91,23 +93,31 @@ class PhotoLib:
         path = (self.root / kind / key / f).resolve() if f else None
         exists = bool(path and path.exists())
         lic, perm = info.get("license", "none"), info.get("permission", "none")
-        cleared = lic in OPEN_LICENSES or perm == "granted"
+        cleared = lic in OPEN_LICENSES or perm in CLEARED_PERMISSIONS
         show = exists and (cleared or not self.final)
         rel = f"assets/{kind}/{key}/{f}" if f else f"assets/{kind}/{key}/{role}.png"
         if show:
             img = ImageOps.exif_transpose(Image.open(path)).convert("RGBA")
+            warn = f"元画像が小さい（{img.width}×{img.height}px）。高解像度版があれば差し替え" if max(img.size) < 900 else None
+            for cx, cy, r in info.get("erase", []):       # 販売店のロゴなど、被写体以外の印を白で消す（切り抜き前）
+                ImageDraw.Draw(img).ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 255, 255, 255))
             if info.get("cutout"):
                 img = cutout(img)
+            if max(img.size) < 900:                       # 小さい写真は一度だけ高品質に拡大（毎フレームの粗い拡大を避ける）
+                k = 900 / max(img.size)
+                big = img.resize((int(img.width * k), int(img.height * k)), Image.LANCZOS)
+                rgb = big.convert("RGB").filter(ImageFilter.UnsharpMask(2, 60, 2))
+                rgb.putalpha(big.split()[3].filter(ImageFilter.GaussianBlur(0.9)) if info.get("cutout") else big.split()[3])
+                img = rgb
             if lic == "ai":
                 note = "イメージ（AI生成イラスト・実際の写真ではありません）"
             elif cleared:
                 note = ""
             else:
                 note = "許諾確認中の写真（公開版では使いません）"
-            warn = f"解像度が低め（{img.width}×{img.height}）" if max(img.size) < 900 else None
             ph = Photo(kind, key, role, img, info, False, note, warn)
             self.report.append({"key": f"{kind}/{key}/{role}", "what": info.get("what", ROLES.get(role, role)),
-                                "state": "使用" if cleared else "表示のみ（許諾確認中）", "file": rel,
+                                "state": ("使用（権利者の許諾は未確認）" if perm == "owner" else "使用") if cleared else "表示のみ（許諾確認中）", "file": rel,
                                 "source": info.get("source_url", ""), "holder": info.get("rights_holder", ""),
                                 "license": lic, "permission": perm, "terms": info.get("terms", ""),
                                 "scope": info.get("scope", ""), "credit": info.get("credit", ""), "warn": warn})

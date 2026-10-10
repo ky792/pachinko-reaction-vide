@@ -1,7 +1,7 @@
 # V4デモ：MAX機の終焉と65%規制（写真演出つき）
 # @行はテンプレートの指定。書いていない行は自動で選ばれる（PLAN.md に結果が出る）
 
-@A:archive hall=max_era year=〜2015 headline="MAX機の時代" sub="ホールの主役だった時代"
+@A hall=max_era role=photo year=〜2015 headline="MAX機の時代" sub="ホールを席巻した、大当たりの重い台たち" photo_note="イメージ写真"
 ナギ: MAX機がホールを席巻した時代。
 @C:era band="MAX機の時代" end=2015.9 goto=2016
 ナギ: その終わりが、近づいていた。
