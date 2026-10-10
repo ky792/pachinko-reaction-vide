@@ -177,6 +177,8 @@ def draw(cv, scene, t_scene, who_speaking, line_t, exclaim, line_text=""):
             moments.tsukkomi_back(cv, (cx, (y0 + y1) / 2 - 20), cfg["size"], line_t)
         elif talking and line_t < 0.3:   # 話し始めに軽くうなずく
             dy += 8 * math.sin(math.pi * line_t / 0.3)
+        elif talking:                    # 話している間は小さく弾む（口の動きの代わり）
+            dy -= 5 * abs(math.sin(line_t * 7.5))
         if abs(s * sx - 1) > 1e-3 or abs(s * sy - 1) > 1e-3:
             img = img.resize((int(img.width * s * sx), int(img.height * s * sy)), Image.BILINEAR)
         if abs(rot) > 0.2:

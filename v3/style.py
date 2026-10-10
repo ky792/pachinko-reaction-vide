@@ -264,8 +264,13 @@ def program_tag(cv):
 REVIEW = None      # 例「非公開レビュー用」。build が data.json の review_label から設定（--final では出さない）
 
 
+QUIET = False      # True＝右上の注記（イメージ・許諾確認中など）を出さない。data.json の quiet_notes
+
+
 def chip(cv, txt, xy=None, anchor="r"):
     """右上などに出す小さな注記（イメージ・仮素材・出典）"""
+    if QUIET and xy is None:
+        return
     d = ImageDraw.Draw(cv)
     f = font("medium", 24)
     tw = d.textlength(txt, font=f)

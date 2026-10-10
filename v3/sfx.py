@@ -141,6 +141,101 @@ def make(kind):
         x += 0.35 * (np.sin(2 * np.pi * 233 * t) + np.sin(2 * np.pi * 247 * t)) * np.exp(-t / 0.3)
         noise = rng.standard_normal(n)
         x += np.convolve(noise, np.ones(30) / 30, "same") * np.exp(-t / 0.05) * 3
+    elif kind == "riser":         # 章の前の盛り上げ：ノイズが上がっていく（1.2秒）
+        n = int(1.2 * SR); t = np.arange(n) / SR
+        noise = rng.standard_normal(n)
+        y = np.zeros(n); acc = 0.0
+        for i in range(0, n):
+            a_ = 0.02 + 0.6 * (i / n) ** 2
+            acc += a_ * (noise[i] - acc); y[i] = noise[i] - acc
+        x = y * (t / t[-1]) ** 2 * 0.8 + np.sin(2 * np.pi * np.cumsum(200 * np.exp(t * 1.8)) / SR) * (t / t[-1]) ** 3 * 0.4
+    elif kind == "crash":         # シンバル
+        n = int(1.6 * SR); t = np.arange(n) / SR
+        noise = rng.standard_normal(n)
+        x = (noise - np.convolve(noise, np.ones(3) / 3, "same")) * np.exp(-t * 2.6)
+        x += np.sin(2 * np.pi * 60 * t) * np.exp(-t * 10) * 0.8
+    elif kind == "swipe":         # 画面切り替え：シュッ（短い）
+        n = int(0.24 * SR); t = np.arange(n) / SR
+        noise = rng.standard_normal(n)
+        y = np.zeros(n); acc = 0.0
+        for i in range(n):
+            a_ = 0.5 - 0.45 * (i / n)
+            acc += a_ * (noise[i] - acc); y[i] = acc
+        x = y * np.sin(np.pi * t / t[-1]) ** 2
+    elif kind == "shutter":       # 写真：カシャ
+        n = int(0.22 * SR); t = np.arange(n) / SR
+        noise = rng.standard_normal(n)
+        x = np.zeros(n)
+        for d0, g in ((0.0, 1.0), (0.09, 0.7)):
+            a_ = int(d0 * SR); tt = t[: n - a_]
+            x[a_:] += (noise[: n - a_] * np.exp(-tt * 70) + np.sin(2 * np.pi * 1800 * tt) * np.exp(-tt * 90)) * g
+    elif kind == "paper":         # 資料：紙をめくる
+        n = int(0.4 * SR); t = np.arange(n) / SR
+        noise = rng.standard_normal(n)
+        hp = noise - np.convolve(noise, np.ones(5) / 5, "same")
+        x = hp * (np.sin(np.pi * t / t[-1]) ** 3) * (0.6 + 0.4 * np.sin(2 * np.pi * 23 * t))
+    elif kind == "marker":        # 蛍光ペン：キュッ
+        n = int(0.32 * SR); t = np.arange(n) / SR
+        fr = 1400 + 900 * t / t[-1]
+        x = np.sin(2 * np.pi * np.cumsum(fr) / SR) * np.sin(np.pi * t / t[-1]) * 0.5
+        x += rng.standard_normal(n) * np.sin(np.pi * t / t[-1]) * 0.25
+    elif kind == "click":         # ブラウザ：カチッ
+        n = int(0.06 * SR); t = np.arange(n) / SR
+        x = np.sin(2 * np.pi * 3200 * t) * np.exp(-t * 160) + rng.standard_normal(n) * np.exp(-t * 300) * 0.5
+    elif kind == "balls":         # パチンコ玉：ジャラジャラ
+        n = int(1.1 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        tick = lambda fr: np.sin(2 * np.pi * fr * np.arange(int(0.02 * SR)) / SR) * np.exp(-np.arange(int(0.02 * SR)) / SR * 260)
+        for _ in range(160):
+            a_ = int(rng.uniform(0, 0.95) * SR)
+            tk = tick(rng.uniform(3500, 7500)) * rng.uniform(0.3, 1.0)
+            x[a_:a_ + len(tk)] += tk[: n - a_]
+        x *= np.minimum(1, t / 0.08) * np.minimum(1, (t[-1] - t) / 0.3)
+    elif kind == "question":      # 疑問：ピコ？
+        n = int(0.32 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for d0, fr in ((0.0, 880), (0.11, 1320)):
+            a_ = int(d0 * SR); tt = t[: n - a_]
+            x[a_:] += np.sin(2 * np.pi * fr * (1 + 0.15 * tt / 0.2) * tt) * np.exp(-tt * 14)
+    elif kind == "kira2":         # 軽いきらめき（下がる）
+        n = int(0.5 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for i, fr in enumerate([3136, 2637, 2349, 1976]):
+            a_ = int(i * 0.045 * SR); tt = t[: n - a_]
+            x[a_:] += np.sin(2 * np.pi * fr * tt) * np.exp(-tt / 0.09)
+    elif kind == "drumroll":      # 溜め：ダララ…
+        n = int(0.9 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for k in range(int(0.9 / 0.035)):
+            a_ = int(k * 0.035 * SR); tt = t[: n - a_]
+            x[a_:] += rng.standard_normal(n - a_) * np.exp(-tt * 60) * (0.3 + 0.7 * k / 26)
+    elif kind == "bubble":        # 海：ぽこぽこ
+        n = int(0.6 * SR); t = np.arange(n) / SR
+        x = np.zeros(n)
+        for d0, fr in ((0.0, 500), (0.12, 650), (0.22, 560), (0.34, 760)):
+            a_ = int(d0 * SR); tt = t[: n - a_]
+            x[a_:] += np.sin(2 * np.pi * fr * (1 + 2.5 * tt) * tt) * np.exp(-tt * 28)
     else:
         return None
     return _norm(x)
+
+
+VARIANT_PITCH = [1.0, 0.86, 1.14, 0.93, 1.07]
+
+
+def get(kind):
+    """'whoosh#2' のように番号をつけると、少し高さを変えた版（同じ音の繰り返しを避ける）"""
+    if "#" not in kind:
+        return make(kind)
+    base, v = kind.split("#")
+    return _pitched(base, int(v) % len(VARIANT_PITCH))
+
+
+@lru_cache(maxsize=None)
+def _pitched(base, v):
+    x = make(base)
+    if x is None:
+        return None
+    r = VARIANT_PITCH[v]
+    idx = np.arange(0, len(x) - 1, r)
+    return np.interp(idx, np.arange(len(x)), x).astype(np.float32)

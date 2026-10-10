@@ -48,7 +48,7 @@ def main():
     b, names = seg["bounds"], seg["names"]
     rows = [f"# 章ごとのレンダリングログ（{ep.name}）", "",
             "1920×1080・30fps・H.264（libx264 / CRF19 / yuv420p）。章ごとに映像だけを書き出して無劣化でつなぎ、全編の音声（AAC 192kbps）を重ねた。",
-            "**非公開レビュー用**：実機写真は権利未確認（許諾確認中）。", "",
+            "実機写真・記事ページの画面は権利未確認（運営者の指示で使用。画面上の注意書きは無し）。", "",
             "| 章 | 範囲 | 長さ | フレーム | レンダリング所要 | 検証 |", "| --- | --- | --- | --- | --- | --- |"]
     total_r = 0
     for i, nm in enumerate(names):
@@ -66,7 +66,9 @@ def main():
         ms, cards = [], []
         for s in scs:
             ms += [k for k in machines_in(s) if k not in ms]
-            if s["template"] == "S":
+            if s["template"] == "S" and s.get("variant") == "shot":
+                cards.append("shot:" + s["opts"]["shot"] + "|" + s["opts"].get("url", ""))
+            elif s["template"] == "S":
                 cards += [c for c in str(s["opts"].get("card", "")).split("|") if c and c not in cards]
             if s["template"] == "A" and s["opts"].get("hall"):
                 ms.append("hall:" + s["opts"]["hall"])
@@ -87,9 +89,13 @@ def main():
             md = pl.data.get("machines", {}).get(k) or lib.meta("machines", k)
             rows.append(f"- 実機写真：{md.get('name', k)}（{md.get('date', '')}）— {st}　出典：{info.get('source_url', '-')}")
         for c in cards:
+            if c.startswith("shot:"):
+                sid, url = c[5:].split("|")
+                rows.append(f"- 記事ページの画面：{sid}（{url}・assets/articles/{sid}.png・転載許諾は未確認）")
+                continue
             f = sorted((ep / "sources").glob(f"{c}_*.png"))
             rows.append(f"- 資料カード：{c}（{f[0].name if f else '-'}・出典付きの独自資料画面）")
-        rows.append("- 外部の実機動画・記事スクリーンショット：使用なし")
+        rows.append("- 外部の実機動画：使用なし")
         rows.append("")
     (ep / "RENDER_LOG.md").write_text("\n".join(rows), encoding="utf-8")
     print("\n".join(rows[:30]))

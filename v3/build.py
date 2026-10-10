@@ -28,11 +28,23 @@ from .style import (W, H, FPS, SR, ROOT, NAVY, TEXT, SPEAKER, NAME, font, prog, 
                     text_layer, bottom_shade, program_tag)
 from .templates import TEMPLATES
 
-TRANS_DUR = {"cut": 0.0, "fade": 0.35, "zoom": 0.45, "push": 0.45}
+TRANS_DUR = {"cut": 0.0, "fade": 0.35, "zoom": 0.45, "push": 0.45, "wipe": 0.45, "slide": 0.4, "iris": 0.45}
 
 
 # ---------------------------------------------------------------- シーンの準備
-def prepare(scenes):
+RICH_TRANS = ["push", "wipe", "slide", "iris", "zoom", "fade"]
+
+
+def prepare(scenes, data=None):
+    data = data or {}
+    rich = bool(data.get("rich_fx"))
+    style = (data.get("music") or {}).get("OPENING", "lab")
+    for i, sc in enumerate(scenes):                     # 章ごとの曲調（粒子・効果音に使う）＋切り替えの種類を散らす
+        if sc["opts"].get("intro") == "chapter":
+            style = (data.get("music") or {}).get(sc["opts"].get("chapter", ""), style)
+        sc["_style"] = style
+        if rich and i > 0 and sc["template"] in ("A", "E", "F", "R", "S", "T", "V") and not sc.get("_trans_set"):
+            sc["trans"] = RICH_TRANS[i % len(RICH_TRANS)]
     for sc in scenes:
         s0 = sc["start"]
         lines = sc["lines"]
@@ -72,7 +84,41 @@ def prepare(scenes):
         if sc["opts"].get("intro") == "chapter":
             ev += [(s0 + t, k) for t, k in moments.chapter_events()]
         ev += [(s0 + t, k) for t, k in moments.overlay_events(sc)]
+        if rich:
+            ev += rich_events(sc, scenes)
         sc["_events"] = ev
+
+
+def rich_events(sc, scenes):
+    """効果音を増やす：切り替え・章の前の盛り上げ・写真のシャッター・資料の紙・質問・冗談・パチンコ玉"""
+    s0, i = sc["start"], scenes.index(sc)
+    ev = []
+    if sc["opts"].get("intro") == "chapter":
+        ev += [(max(0.0, s0 - 1.15), "riser"), (s0, "crash")]
+    elif i > 0 and TRANS_DUR.get(sc["trans"], 0) > 0:
+        ev.append((s0, f"swipe#{i % 5}"))
+    if i == 0:
+        ev.append((0.3, "balls"))
+    if sc["template"] == "B":
+        tp = TEMPLATES["B"].phases(sc)[0]
+        ev.append((s0 + tp + 0.25, "shutter"))
+    if sc["template"] == "S":
+        ev.append((s0 + 0.15, "paper"))
+    if sc.get("_style") == "ocean" and sc["template"] in ("B", "E"):
+        ev.append((s0 + 0.4, "bubble"))
+    for k, ln in enumerate(sc["lines"]):
+        if ln.get("mood") == "ask":
+            ev.append((ln["start"] + 0.05, f"question#{k % 3}"))
+        elif ln.get("mood") == "joke":
+            ev.append((ln["start"] + 0.1, "kira2"))
+        if ln["exclaim"]:
+            ev.append((ln["start"], "punch"))
+    if sc["template"] == "D" and sc["variant"] == "stat" and sc["opts"].get("layout") != "rush":
+        from .templates import DONE, stat_shift
+        ev.append((s0 + stat_shift(sc) + DONE, "punch"))
+    if i == len(scenes) - 1:
+        ev.append((s0 + 0.5, "balls"))
+    return ev
 
 
 def current_line(sc, t_abs):
@@ -164,6 +210,11 @@ def scene_frame(sc, t_abs, lib, with_hosts=True):
     cv = Image.new("RGBA", (W, H), (0, 0, 0, 255))
     t = t_abs - sc["start"]
     TEMPLATES[sc["template"]].draw(cv, sc, t, lib)
+    if RICH:
+        from . import ambience
+        if sc["template"] in ("E", "F", "S", "T", "R", "V") and sc["variant"] != "shot":
+            cv = ambience.drift(cv, t, sc["dur"], scenes_index(sc))
+        ambience.particles(cv, sc.get("_style", "lab"), t_abs, 0.6 if sc["template"] in ("B", "D", "S") else 1.0)
     moments.overlay(cv, sc, t)
     if sc["opts"].get("intro") == "era_shift":
         moments.era_shift(cv, t, sc["opts"]["reels"], sc["opts"].get("intro_title", "TURNING POINT"))
@@ -183,7 +234,23 @@ FLASH = {"flash": (0.42, (255, 255, 255)), "flash_s": (0.22, (255, 255, 255)),  
 SHAKE = {"shake": 13, "shake_s": 6}
 
 
+RICH = False
+
+
+def scenes_index(sc):
+    return int(sc["start"] * 7) % 11
+
+
 def screen_fx(cv, scenes, t):
+    if RICH:                                            # 驚き・数字の瞬間に一瞬だけ寄る
+        from . import ambience
+        for sc in scenes:
+            if not (sc["start"] - 1 <= t <= sc["start"] + sc["dur"] + 1):
+                continue
+            for t0, kind in sc["_events"]:
+                if kind == "punch" and 0 <= t - t0 < 0.35:
+                    k = (t - t0) / 0.35
+                    cv = ambience.zoom(cv, 1 + 0.06 * (1 - k) ** 2)
     for sc in scenes:
         for t0, kind in sc["_events"]:
             if kind in FLASH and 0 <= t - t0 < 0.3:
@@ -224,6 +291,32 @@ def frame(scenes, total, t, lib):
             if p < 0.6:
                 cv = cv.filter(ImageFilter.GaussianBlur(10 * (1 - p / 0.6)))
             cv = Image.blend(prev, cv, inout(p))
+        elif sc["trans"] == "wipe":                     # 斜めのワイプ（色の帯つき）
+            k = inout(p)
+            m = Image.new("L", (W, H), 0)
+            x = -400 + (W + 800) * k
+            ImageDraw.Draw(m).polygon([(0, 0), (x, 0), (x - 400, H), (0, H)], fill=255)
+            out = prev.copy()
+            out.paste(cv, (0, 0), m)
+            band = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            ImageDraw.Draw(band).polygon([(x, 0), (x + 60, 0), (x - 340, H), (x - 400, H)], fill=(255, 205, 70, 230))
+            out.alpha_composite(band)
+            cv = out
+        elif sc["trans"] == "slide":                    # 下から押し上げる
+            k = inout(p)
+            out = Image.new("RGBA", (W, H), (0, 0, 0, 255))
+            out.paste(prev, (0, int(-H * k)))
+            out.paste(cv, (0, int(H * (1 - k))))
+            cv = out
+        elif sc["trans"] == "iris":                     # 円が広がって切り替わる
+            k = inout(p)
+            r = 1150 * k
+            m = Image.new("L", (W, H), 0)
+            ImageDraw.Draw(m).ellipse((W / 2 - r, H / 2 - r, W / 2 + r, H / 2 + r), fill=255)
+            out = prev.copy()
+            out.paste(cv, (0, 0), m)
+            ImageDraw.Draw(out).ellipse((W / 2 - r, H / 2 - r, W / 2 + r, H / 2 + r), outline=(255, 205, 70, 255), width=8)
+            cv = out
         elif sc["trans"] == "push":
             k = inout(p)
             out = Image.new("RGBA", (W, H), (0, 0, 0, 255))
@@ -249,7 +342,9 @@ BPM = 120
 SE_GAIN = {"hold": 0.32, "hold_gold": 0.4, "tick": 0.14, "impact": 0.55, "fanfare": 0.3, "sparkle": 0.16,
            "boing": 0.3, "whoosh": 0.22, "pop": 0.2, "stamp": 0.4,
            "senbare": 0.22, "jingle": 0.34, "scan": 0.2, "slap": 0.3, "reel_tick": 0.08, "reel_stop": 0.4,
-           "reach": 0.18, "align": 0.32, "shock": 0.55, "chapter": 0.3}
+           "reach": 0.18, "align": 0.32, "shock": 0.55, "chapter": 0.3,
+           "riser": 0.2, "crash": 0.22, "swipe": 0.15, "shutter": 0.22, "paper": 0.22, "marker": 0.16, "click": 0.2,
+           "balls": 0.2, "question": 0.18, "kira2": 0.11, "drumroll": 0.2, "bubble": 0.16}
 
 
 def _kick(n):
@@ -328,19 +423,74 @@ def synth_bgm(total, scenes):
     return out * np.minimum(1, t / 0.8) * np.minimum(1, (total - t) / 1.5)
 
 
+MUSIC = None          # data.json の "music"（章ごとの曲調）。main で設定
+
+
+def drum_gate(total, scenes):
+    """ドラムの強さ：F/A は軽く、数字の溜め・リールの間は止める"""
+    n = int(total * SR)
+    g = np.zeros(n, np.float32)
+    for sc in scenes:
+        a, b = int(sc["start"] * SR), min(n, int((sc["start"] + sc["dur"]) * SR))
+        g[a:b] = 1.0 if sc["template"] in ("B", "C", "D", "E", "T", "V") else 0.6
+        if sc["opts"].get("intro") == "era_shift":
+            g[a:int((sc["start"] + moments.ERA["align"]) * SR)] = 0.0
+        if sc["template"] == "D" and sc["variant"] == "stat":
+            from .templates import SLAM, DONE, stat_shift
+            sh = stat_shift(sc)
+            c0 = int((sc["start"] + sh) * SR)
+            c1 = int((sc["start"] + sh + (SLAM if sc["opts"].get("tone") == "shock" else DONE)) * SR)
+            g[c0:c1] = 0.0
+    return g
+
+
+def music_bgm(total, scenes):
+    """章ごとに曲調を切り替えたBGM（v3/music.py）"""
+    from . import music
+    n = int(total * SR)
+    out = np.zeros(n, np.float32)
+    gate = drum_gate(total, scenes)
+    marks = [(0.0, "OPENING", False)] + [(sc["start"], sc["opts"].get("chapter", ""), True)
+                                          for sc in scenes if sc["opts"].get("intro") == "chapter"]
+    for i, (a, name, is_ch) in enumerate(marks):
+        b = marks[i + 1][0] if i + 1 < len(marks) else total
+        style = MUSIC.get(name, MUSIC.get("default", "lab"))
+        s0 = a + (moments.CHAPTER - 0.25 if is_ch else 0.0)         # 章タイトルの間は無音 → 新しい曲を頭拍から
+        dur = b - s0
+        if dur <= 0.5:
+            continue
+        a0 = int(s0 * SR)
+        seg = music.render_style(style, dur, gate[a0:a0 + int(dur * SR)], seed=i)
+        r = float(np.sqrt(np.mean(seg ** 2)) + 1e-9)          # 曲調ごとの音量差をそろえる（RMS -22dB）
+        seg *= 10 ** (-22 / 20) / r
+        tt = np.arange(len(seg)) / SR
+        seg *= np.minimum(1, tt / 0.08) * np.clip((dur - tt) / 0.5, 0, 1)        # 頭はすぐ・終わりは0.5秒でフェード
+        m = min(len(seg), n - a0)
+        out[a0:a0 + m] += seg[:m]
+    t = np.arange(n) / SR
+    return out * np.minimum(1, (total - t) / 1.5).clip(0, 1)
+
+
 def build_audio(scenes, total, path):
     n = int(total * SR)
-    mix = synth_bgm(total, scenes) * 0.55
+    if MUSIC:
+        mix = np.zeros(n, np.float32)
+        bgm = music_bgm(total, scenes) * 0.5
+    else:
+        mix = synth_bgm(total, scenes) * 0.55
+        bgm = None
     for sc in scenes:
         for t0, kind in sc["_events"]:
-            if kind not in SE_GAIN:
+            base = kind.split("#")[0]
+            if base not in SE_GAIN:
                 continue
-            x = sfx.make(kind)
+            x = sfx.get(kind)
             a = int(t0 * SR)
-            if a >= n:
+            if a >= n or a < 0:
                 continue
-            seg = x[: n - a] * SE_GAIN[kind]
+            seg = x[: n - a] * SE_GAIN[base]
             mix[a:a + len(seg)] += seg
+    voice = np.zeros(n, np.float32)
     for sc in scenes:   # 声（voices/<ID>.wav があれば）
         for ln in sc["lines"]:
             if ln.get("voice"):
@@ -351,7 +501,11 @@ def build_audio(scenes, total, path):
                     if w.getframerate() != SR:
                         x = np.interp(np.arange(int(len(x) * SR / w.getframerate())) * w.getframerate() / SR, np.arange(len(x)), x)
                 a = int(ln["start"] * SR)
-                mix[a:a + len(x)] += x[: n - a]
+                voice[a:a + len(x)] += x[: n - a]
+    if bgm is not None:
+        from .music import duck
+        mix += duck(bgm, voice, 0.6)
+    mix += voice
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)
     with wave.open(str(path), "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
@@ -392,10 +546,14 @@ def main():
     scenes = pl.plan()
     total = scenes[-1]["start"] + scenes[-1]["dur"] + 0.4
     scenes[-1]["dur"] += 0.4
-    prepare(scenes)
+    prepare(scenes, pl.data)
     lib = Library(ep, final=a.final)
     from . import style as _style
     _style.REVIEW = None if a.final else pl.data.get("review_label")
+    _style.QUIET = bool(pl.data.get("quiet_notes"))
+    global MUSIC, RICH
+    MUSIC = pl.data.get("music")
+    RICH = bool(pl.data.get("rich_fx"))
     lib.photos = PhotoLib(final=a.final)
     for sc in scenes:          # 必要素材を先に読み込んで一覧にする
         if sc["template"] == "A" and not sc["opts"].get("hall") and sc["variant"] != "archive":

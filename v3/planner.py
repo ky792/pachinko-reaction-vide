@@ -232,7 +232,8 @@ class Planner:
                     t, _, var = pending["cmd"].partition(":")
                     cur = {"template": t, "variant": var or VARIANT[t],
                            "opts": dict(pending["opts"]), "lines": [], "hosts": dict(pending.get("hosts", {})),
-                           "trans": pending.get("trans", TRANS[t]), "moments": pending.get("moments", [])}
+                           "trans": pending.get("trans", TRANS[t]), "_trans_set": "trans" in pending,
+                           "moments": pending.get("moments", [])}
                     if t == "B" and "machine" not in cur["opts"]:
                         cur["opts"]["machine"] = self.find_machine(ln["text"])
                     scenes.append(cur)

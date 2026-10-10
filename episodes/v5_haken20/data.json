@@ -1,5 +1,4 @@
 {
- "review_label": "非公開レビュー用｜権利未確認の写真を含む",
  "machines": {
   "daiku_gensan_1996": {
    "name": "CR大工の源さん",
@@ -278,5 +277,22 @@
  },
  "compare_source": "出典：Sammy公式スペック／グリーンべると（2018-11-01）",
  "turn_gap": 0.36,
- "chapter_rest": 0.6
+ "chapter_rest": 0.6,
+ "quiet_notes": true,
+ "rich_fx": true,
+ "music": {
+  "OPENING": "lab",
+  "はじめに": "lab",
+  "1990s": "retro",
+  "2000s": "ocean",
+  "2008": "epic",
+  "2010s": "gold",
+  "2016": "battle",
+  "2017": "idol",
+  "2020": "speed",
+  "2021": "calm",
+  "2022": "edm",
+  "2024〜NOW": "future",
+  "まとめ": "warm"
+ }
 }
