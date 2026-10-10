@@ -69,6 +69,14 @@ def cast():
     return json.loads(CAST.read_text(encoding="utf-8"))
 
 
+def read_kana(text, speaker, d=None):
+    """音は作らずに「エンジンが実際に読むカナ」だけ返す（置き換え・辞書・イントネーション直しを全部通す）"""
+    d = d or load_dict()
+    q = query(speech_text(text, d), speaker)
+    kana_fix(q, speaker, d)
+    return q["kana"]
+
+
 def line_audio(text, who, d=None, c=None):
     """1セリフ → (wav バイト列, 読み上げ用の文, エンジンが読んだカナ)"""
     c = c or cast()
@@ -80,9 +88,25 @@ def line_audio(text, who, d=None, c=None):
     q["intonationScale"] = cfg.get("intonation", 1.0)
     q["volumeScale"] = cfg.get("volume", 1.0)
     q["prePhonemeLength"], q["postPhonemeLength"] = 0.05, 0.08
+    kana_fix(q, cfg["speaker"], d or load_dict())
     if cfg.get("drawl"):
         drawl(q, cfg["drawl"])
     return synth(q, cfg["speaker"]), st, q["kana"]
+
+
+def kana_fix(q, speaker, d):
+    """イントネーションの直し：エンジンが読むカナ（' がアクセント、/ が区切り）を辞書の kana_fix で書き換えて読み直す
+    例 {"re": "ショダイシイアアルガロ([^/、']*)'", "to": "ショダイ'/シイアアルガ'ロ\\1"}  →「初代↑／シーアールガロ」"""
+    fixes = d.get("kana_fix", [])
+    k = q["kana"]
+    new = k
+    for f in fixes:
+        new = re.sub(f["re"], f["to"], new)
+    if new != k:
+        parts = re.split(r"([/、])", new)               # 区切った結果アクセントの無い句は、平板（語末に '）にする
+        new = "".join(x if x in "/、" or "'" in x or not x else x + "'" for x in parts)
+        q["accent_phrases"] = _req("POST", "/accent_phrases", {"text": new, "speaker": speaker, "is_kana": "true"})
+        q["kana"] = new
 
 
 def drawl(q, p):

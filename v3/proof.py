@@ -51,7 +51,7 @@ def check(ep):
         who, text = it["who"], it["text"]
         spk = cast[who]["speaker"]
         st = voice.speech_text(text, d)
-        kana = kana_of(st, spk)
+        kana = voice.read_kana(text, spk, d)
         flags = []
         rest = re.findall(r"[A-Za-z][A-Za-z0-9\-\.:]*", st)
         if rest:
