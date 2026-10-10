@@ -1,0 +1,268 @@
+{
+ "_note": "読みの辞書。surface=台本の表記、yomi=読み（カタカナ）、accent=アクセント核の位置（0=平板、n=n拍目の後で下がる）、ok=人が確認済みなら true。台本はこの辞書で読み上げ前に自動で直す。",
+ "words": [
+  {
+   "surface": "牙狼",
+   "yomi": "ガロ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "魔戒ノ花",
+   "yomi": "マカイノハナ",
+   "accent": 0,
+   "ok": false
+  },
+  {
+   "surface": "魔戒チャンス",
+   "yomi": "マカイチャンス",
+   "accent": 4,
+   "ok": false
+  },
+  {
+   "surface": "金色になれ",
+   "yomi": "コンジキニナレ",
+   "accent": 0,
+   "ok": false
+  },
+  {
+   "surface": "大工の源さん",
+   "yomi": "ダイクノゲンサン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "源さん",
+   "yomi": "ゲンサン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "超韋駄天",
+   "yomi": "チョウイダテン",
+   "accent": 3,
+   "ok": true
+  },
+  {
+   "surface": "超源",
+   "yomi": "チョウゲン",
+   "accent": 0,
+   "ok": false
+  },
+  {
+   "surface": "北斗無双",
+   "yomi": "ホクトムソウ",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "鬼がかり",
+   "yomi": "オニガカリ",
+   "accent": 0,
+   "ok": false
+  },
+  {
+   "surface": "海物語",
+   "yomi": "ウミモノガタリ",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "大海物語",
+   "yomi": "オオウミモノガタリ",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "幻闘",
+   "yomi": "ゲントウ",
+   "accent": 0,
+   "ok": false
+  },
+  {
+   "surface": "東京喰種",
+   "yomi": "トウキョウグール",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "からくりサーカス",
+   "yomi": "カラクリサーカス",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "リゼロ",
+   "yomi": "リゼロ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "エヴァ",
+   "yomi": "エヴァ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "内規",
+   "yomi": "ナイキ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "回転",
+   "yomi": "カイテン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "継続率",
+   "yomi": "ケイゾクリツ",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "図柄",
+   "yomi": "ズガラ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "時短",
+   "yomi": "ジタン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "確変",
+   "yomi": "カクヘン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "保留",
+   "yomi": "ホリュウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "稼働",
+   "yomi": "カドウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "稼動",
+   "yomi": "カドウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "連チャン",
+   "yomi": "レンチャン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "スマパチ",
+   "yomi": "スマパチ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "日工組",
+   "yomi": "ニッコウクミ",
+   "accent": 0,
+   "ok": false
+  },
+  {
+   "surface": "PiDEA",
+   "yomi": "ピデア",
+   "accent": 1,
+   "ok": false
+  },
+  {
+   "surface": "P-WORLD",
+   "yomi": "ピーワールド",
+   "accent": 3,
+   "ok": true
+  }
+ ],
+ "rules": [
+  {
+   "re": "P-WORLD",
+   "to": "ピーワールド",
+   "why": "英字の読み"
+  },
+  {
+   "re": "1/([0-9]+(?:\\.[0-9]+)?)",
+   "to": "\\1分の1",
+   "why": "分数は『〜分の1』と読む"
+  },
+  {
+   "re": "(?<![A-Za-z])ver\\.",
+   "to": "バージョン",
+   "why": "ver. はバージョン"
+  },
+  {
+   "re": "XX",
+   "to": "ダブルエックス",
+   "why": "CR牙狼XX の XX（要確認）"
+  },
+  {
+   "re": "RUSH",
+   "to": "ラッシュ",
+   "why": "英字の読み"
+  },
+  {
+   "re": "ST",
+   "to": "エスティー",
+   "why": "英字の読み"
+  },
+  {
+   "re": "LT",
+   "to": "エルティー",
+   "why": "英字の読み"
+  },
+  {
+   "re": "(?<![A-Za-z])CR(?![A-Za-z])",
+   "to": "シーアール",
+   "why": "英字の読み"
+  },
+  {
+   "re": "(?<![A-Za-z])e(?=機|東京|フィーバー)",
+   "to": "イー",
+   "why": "e機・e東京喰種"
+  },
+  {
+   "re": "(?<![A-Za-z])P(?=大工|新世紀| Re|機)",
+   "to": "ピー",
+   "why": "P機の P"
+  },
+  {
+   "re": "Re:ゼロ",
+   "to": "リゼロ",
+   "why": "作品名の読み"
+  },
+  {
+   "re": "GOLD",
+   "to": "ゴールド",
+   "why": "英字の読み"
+  },
+  {
+   "re": "MAX機",
+   "to": "マックスき",
+   "why": "MAX機"
+  },
+  {
+   "re": "[『』「」]",
+   "to": "",
+   "why": "かぎ括弧は読まない"
+  },
+  {
+   "re": "・",
+   "to": "",
+   "why": "真・北斗無双 などの中黒は区切らずに読む"
+  }
+ ]
+}

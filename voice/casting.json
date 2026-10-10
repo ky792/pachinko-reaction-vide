@@ -1,0 +1,5 @@
+{
+ "_note": "キャラごとの声。speaker=VOICEVOX の話者ID。候補を聞き比べて決める（仮）",
+ "nagi": {"speaker": 30, "name": "No.7（アナウンス）", "speed": 1.12, "pitch": 0.0, "intonation": 1.0},
+ "baku": {"speaker": 32, "name": "白上虎太郎（わーい）", "speed": 1.15, "pitch": 0.0, "intonation": 1.15}
+}
