@@ -97,6 +97,9 @@ class Planner:
         if mk and re.search(r"登場|導入", text):
             return "B", "machine", {"machine": mk}, True
         pcts = re.findall(r"([0-9]+(?:\.[0-9]+)?)%", text)
+        if (cur and cur["template"] == "D" and cur["variant"] == "stat" and pcts
+                and pcts[0] == str(cur["opts"].get("value"))):          # 同じ数字への反応は、同じ画面のまま
+            return "D", None, {}, False
         if who == "baku" and ln["exclaim"] and len(pcts) == 1:     # 驚きは数字を大きく見せる方を優先
             return "D", "stat", {"value": pcts[0]}, True
         if cur and cur["template"] == "B":
@@ -203,12 +206,14 @@ class Planner:
     def plan(self):
         items = parse(self.ep / "script.txt")
         scenes, cur, pending, ctx = [], None, None, {"first": True}
+        pause_next = 0.0
         n = 0
         for it in items:
             c = it["cmd"]
             if c == "line":
                 n += 1
-                ln = {"id": f"{n:03d}", "who": it["who"], "exclaim": it["exclaim"], "text": it["text"]}
+                ln = {"id": f"{n:03d}", "who": it["who"], "exclaim": it["exclaim"], "text": it["text"], "pre": pause_next}
+                pause_next = 0.0
                 if pending:
                     t, _, var = pending["cmd"].partition(":")
                     cur = {"template": t, "variant": var or {"A": "photo", "B": "machine", "C": "calendar", "D": "stat",
@@ -243,6 +248,8 @@ class Planner:
                     cfg["pos"] = o["pos"]
                 cfg["force"] = True
                 (pending.setdefault("hosts", {}) if pending else cur["hosts"])[who] = cfg
+            elif c == "pause":                      # @pause 1.0 → 次のセリフの前に間をあける（演出を見せる）
+                pause_next = float(next(iter(it["opts"])))
             elif c == "moment":                     # @moment analysis at="65%" box=x,y,w,h
                 name = next(k for k, v in it["opts"].items() if v is True)
                 mo = {"name": name, **{k: v for k, v in it["opts"].items() if v is not True}}
@@ -272,6 +279,7 @@ class Planner:
                 vp = self.ep / "voices" / f"{ln['id']}.wav"
                 ln["voice"] = str(vp) if vp.exists() else None
                 ln["dur"] = wav_len(vp) if vp.exists() else est_len(ln["who"], ln["text"])
+                lt += ln.get("pre", 0.0)
                 ln["start"] = lt
                 lt += ln["dur"] + GAP
             end = max(lt + 0.1, t + MIN_DUR[sc["template"]])

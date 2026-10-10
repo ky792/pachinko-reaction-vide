@@ -1,0 +1,32 @@
+{
+ "name": "CR牙狼 魔戒ノ花",
+ "maker": "サンセイR&D",
+ "photos": {
+  "front": {
+   "license": "provided",
+   "permission": "owner",
+   "source_url": "チャンネル運営者（きょうじ）がチャットで提供（2026-10-10 09:26）。元の掲載元は未記録",
+   "credit": "",
+   "credit_required": false,
+   "file": "front.jpg",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "erase": [
+    [
+     71,
+     69.5,
+     51.5
+    ]
+   ],
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "rights_holder": "サンセイR&D ほか（牙狼〈GARO〉の権利者）※未確認",
+   "terms": "運営者の指示で使用。権利者の許諾は未確認。左上の販売店ロゴ（赤丸のP）は消して使用",
+   "scope": "V4動画"
+  }
+ },
+ "date": "2015年10月",
+ "date_source": "DMMぱちタウン https://p-town.dmm.com/machines/2276（導入 2015年10月13日・1/399.60）"
+}

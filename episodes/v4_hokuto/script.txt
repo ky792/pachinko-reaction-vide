@@ -1,14 +1,20 @@
 # V4デモ：MAX機の終焉と65%規制（写真演出つき）
 # @行はテンプレートの指定。書いていない行は自動で選ばれる（PLAN.md に結果が出る）
 
-@A hall=max_era role=photo year=〜2015 headline="MAX機の時代" sub="ホールを席巻した、大当たりの重い台たち" photo_note="イメージ写真"
+@A hall=max_era role=photo year=〜2015 headline="MAX機の時代" sub="ホールを席巻した、大当たりの重い台たち" photo_note="イメージ写真" left=garo_makainohana left_at=1.0 right=eva10 right_at=2.0
 ナギ: MAX機がホールを席巻した時代。
 @C:era band="MAX機の時代" end=2015.9 goto=2016
 ナギ: その終わりが、近づいていた。
+@B specs=2
 ナギ: 2016年3月、北斗無双が登場。
 バク!: 来たで、北斗無双！
-ナギ: 大当たり確率は319.7分の1。ST130回転で、継続率は約80%。
+ナギ: 大当たり確率は319.7分の1。
+@D:stat value=80 layout=rush rush_name=幻闘RUSH
+@trans fade
+ナギ: ST130回転で、継続率は約80%。
+@pause 0.9
 バク!: 80%て！そら打ちたなるわ！
+@host baku size=290 pos=br
 ナギ: だが、同じ年の5月。新しい内規の適用が始まった。
 ナギ: ポイントは2つ。新たに納品される台が対象で、継続率の上限は65%。
 バク!: 上限65%！？

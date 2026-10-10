@@ -37,6 +37,18 @@ def _left_shade():
     return Image.fromarray(g, "RGBA")
 
 
+@lru_cache(maxsize=1)
+def _center_shade():
+    """上の中央を暗く（タイトル用）＋全体を少し落とす"""
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    d = np.sqrt(((xx - W / 2) / (W * 0.38)) ** 2 + ((yy - H * 0.3) / (H * 0.42)) ** 2)
+    a = np.clip(1.1 - d * 0.7, 0, 1) * 170 + 40
+    g = np.zeros((H, W, 4), np.uint8)
+    g[..., :3] = (6, 10, 20)
+    g[..., 3] = np.clip(a, 0, 255).astype(np.uint8)
+    return Image.fromarray(g, "RGBA")
+
+
 def machine_photo(lib, sc, roles=("front",)):
     """シーンの機種の写真を、指定の順で探す（実物があればそれ、無ければ最初の役割の仮素材）"""
     key = (sc.get("machine") or {}).get("photos")
@@ -133,6 +145,13 @@ class Photo:
         x0 = int((base.width - cw) * (0.25 + 0.5 * k))          # 左→右へゆっくりパン
         y0 = int((base.height - ch) / 2)
         cv.paste(base.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, H), Image.BILINEAR))
+        cast = [(side, o[side], float(o.get(f"{side}_at", 1.0 if side == "left" else 2.0)))
+                for side in ("left", "right") if o.get(side)]
+        if cast:                                    # 人気機種が左右から集まる：タイトルは中央
+            cv.alpha_composite(_center_shade())
+            for side, key, t0 in cast:
+                self._cast_machine(cv, lib, key, side, t, t0)
+            return self._center_title(cv, o, t, ph)
         cv.alpha_composite(_left_shade())
         # タイトル：年号（金）→ 見出し → 補足
         k1 = out3(prog(t, 0.25, 0.55))
@@ -155,6 +174,56 @@ class Photo:
         chip(cv, o.get("photo_note", ph.note or "イメージ写真"))
         if ph.credit:
             source_line(cv, ph.credit)
+
+    def _cast_machine(self, cv, lib, key, side, t, t0):
+        """当時の人気機種が画面の端から入ってくる（影つき・着地で軽く弾む）"""
+        if t < t0:
+            return
+        ph = lib.photos.machine(key, "front")
+        if not hasattr(self, "_cast"):
+            self._cast = {}
+        if key not in self._cast:
+            im = contain(ph.img, 380, 520, max_up=1.0)
+            self._cast[key] = with_shadow(im, strength=0.6, blur=20, offset=(14, 20)) + (im.size,)
+        sh, pad, (iw, ih) = self._cast[key]
+        k = prog(t, t0, 0.5)
+        e = back(k, 1.6) if k < 1 else 1.0
+        cx_end = 290 if side == "left" else W - 290
+        cx_start = -260 if side == "left" else W + 260
+        cx = cx_start + (cx_end - cx_start) * e
+        cy = 575
+        rot = (8 if side == "left" else -8) * (1 - out3(k))
+        img = sh.rotate(rot, resample=Image.BICUBIC) if abs(rot) > 0.2 else sh
+        put(cv, img, (cx - img.width / 2, cy - img.height / 2), min(1.0, k * 3))
+        if k >= 1:
+            fx.glint(cv, (cx - iw / 2, cy - ih / 2, cx + iw / 2, cy + ih / 2), t, t0 + 0.5, 0.5)
+        fx.sparkles(cv, (cx, cy), t, t0 + 0.45, n=16, spread=300, seed=3 if side == "left" else 6)
+        md = lib.photos.meta("machines", key)
+        nm = md.get("name", key)
+        tag = f"{nm}" + (f"（{md['date']}）" if md.get("date") else "")
+        lb = text_layer(tag, font("bold", 28), TEXT, stroke=5, pad=0)
+        put(cv, lb, (cx_end - lb.width / 2, cy + ih / 2 + 26), out3(prog(t, t0 + 0.45, 0.35)))
+
+    def _center_title(self, cv, o, t, ph):
+        k1 = out3(prog(t, 0.2, 0.5))
+        y = 120
+        yr = str(o.get("year", ""))
+        if yr:
+            g = gold_text(yr, fit_size(yr, "black", 150, 700))
+            put(cv, g, ((W - g.width) / 2, y - 30 * (1 - k1)), k1)
+            fx.glint(cv, ((W - g.width) / 2, y, (W + g.width) / 2, y + g.height), t, 0.8, 0.6)
+            y += g.height - 26
+        k2 = out3(prog(t, 0.45, 0.5))
+        if o.get("headline"):
+            hl = text_layer(o["headline"], font("black", fit_size(o["headline"], "black", 120, 860)), TEXT, stroke=8, pad=0)
+            put(cv, hl, ((W - hl.width) / 2, y + 20 * (1 - k2)), k2)
+            ln = Image.new("RGBA", (max(1, int(hl.width * k2)), 8), GOLD + (255,))
+            put(cv, ln, ((W - ln.width) / 2, y + hl.height + 26), k2)
+            y += hl.height + 60
+        if o.get("sub"):
+            sb = text_layer(o["sub"], font("bold", 44), TEXT, stroke=6, pad=0)
+            put(cv, sb, ((W - sb.width) / 2, y), out3(prog(t, 0.7, 0.5)))
+        chip(cv, o.get("photo_note", ph.note or "イメージ写真"))
 
     def _archive(self, cv, sc, t, lib):
         """歴史資料：紙の上に額縁つきの写真。色はほんの少しだけ古く、ズームは控えめ"""
@@ -215,6 +284,14 @@ class Photo:
 
 
 def _events_A(sc):
+    o = sc["opts"]
+    if o.get("left") or o.get("right"):
+        ev = [(0.2, "whoosh"), (0.8, "sparkle")]
+        for side, d in (("left", 1.0), ("right", 2.0)):
+            if o.get(side):
+                t0 = float(o.get(f"{side}_at", d))
+                ev += [(t0, "whoosh"), (t0 + 0.42, "stamp"), (t0 + 0.45, "sparkle")]
+        return ev
     if sc["variant"] == "archive":
         return [(0.05, "whoosh"), (0.9, "sparkle")]
     return [(0.3, "whoosh"), (1.0, "sparkle")]
@@ -251,6 +328,12 @@ def _name_banner(name):
 GAUGE = 1.0     # 期待度ゲージが満ちる秒数
 
 
+def _specs(sc):
+    """B で出すスペック（@B specs=2 なら先頭の2つだけ。残りは次の数字の場面で見せる）"""
+    sp = sc["machine"]["specs"]
+    return sp[:int(sc["opts"]["specs"])] if sc["opts"].get("specs") else sp
+
+
 class Machine:
     TEXT_X = 900
 
@@ -264,7 +347,7 @@ class Machine:
         t_name = t_left + 0.45
         specs = []
         prev = t_left + 0.3
-        for i, sp in enumerate(m["specs"]):
+        for i, sp in enumerate(_specs(sc)):
             c = sc["cue"](sp.get("say", sp["v"]), None)
             ts = max(prev, (c - 0.15) if c is not None else prev + 0.45)
             if sp.get("key"):
@@ -345,7 +428,7 @@ class Machine:
             ln = Image.new("RGBA", (max(1, int(900 * k2)), 3), GOLD + (255,))
             put(cv, ln, (x, 250 + size + 100), k2)
             y0 = 250 + size + 120
-            for i, sp in enumerate(m["specs"]):
+            for i, sp in enumerate(_specs(sc)):
                 ts = t_specs[i]
                 big_v = sp.get("key")
                 ry = y0 + 92 * i
@@ -379,14 +462,14 @@ class Machine:
         m = sc["machine"]
         size = fit_size(m["name"], "black", 110, 1860 - self.TEXT_X)
         y0 = 250 + size + 120
-        i = next((i for i, sp in enumerate(m["specs"]) if sp.get("key")), len(m["specs"]) - 1)
+        i = next((i for i, sp in enumerate(_specs(sc)) if sp.get("key")), len(_specs(sc)) - 1)
         return (self.TEXT_X + 840, y0 + 92 * i + 46)
 
     def events(self, sc):
         tp, tn, tl, ts = self.phases(sc)
         te = tp + 0.25
         ev = [(0.05, "whoosh"), (tn, "pop"), (te + 0.12, "stamp")] + moments.entry_events(te)
-        for i, sp in enumerate(sc["machine"]["specs"]):
+        for i, sp in enumerate(_specs(sc)):
             if sp.get("key"):
                 ev += moments.analysis_events(ts[i] - GAUGE)
                 ev += [(ts[i] - GAUGE + k * (GAUGE - 0.1) / 10, "tick") for k in range(10)]
@@ -538,6 +621,8 @@ SHOCK_RED = (236, 72, 84)
 
 class Numbers:
     def busy(self, sc):
+        if sc["variant"] == "stat" and sc["opts"].get("layout") == "rush":
+            return [(100, 90, 900, 860), (1040, 140, 1700, 700)]
         if sc["variant"] == "stat":
             if sc.get("machine") and sc["opts"].get("tone") != "shock":
                 return [(220, 180, 820, 820), (900, 280, 1440, 680), (1480, 140, 1840, 660)]
@@ -546,7 +631,9 @@ class Numbers:
 
     def draw(self, cv, sc, t, lib):
         cv.paste(dark_grad())
-        if sc["variant"] == "stat":
+        if sc["variant"] == "stat" and sc["opts"].get("layout") == "rush":
+            self._rush(cv, sc, t, lib)
+        elif sc["variant"] == "stat":
             self._stat(cv, sc, t, lib)
         else:
             self._compare(cv, sc, t, lib)
@@ -598,6 +685,101 @@ class Numbers:
         put(cv, card, (x0 + 120 * (1 - k) - (card.width - cw) / 2, y0 - (card.height - chh) / 2), k)
         photo_notes(cv, ph, credit=False)
         return ph
+
+    # ---------------------------------------------------------- 実機 → ST中の液晶 → 円グラフ（layout=rush）
+    def rush_times(self, sc):
+        s0 = sc["start"]
+        t_lcd = max(0.9, sc["cue"](sc["opts"].get("lcd_cue", "継続率"), 1.0) - 0.6)
+        t_move = t_lcd + 2.0
+        t_pie = t_move + 0.9
+        t_done = (sc["lines"][1]["start"] - s0) if len(sc["lines"]) > 1 else t_pie + 1.2
+        t_done = max(t_done, t_pie + 0.8)
+        return t_lcd, t_move, t_pie, t_done
+
+    def _rush(self, cv, sc, t, lib):
+        o = sc["opts"]
+        t_lcd, t_move, t_pie, t_done = self.rush_times(sc)
+        m = sc.get("machine") or {}
+        key = m.get("photos")
+        if not hasattr(self, "_rc"):
+            self._rc = {}
+        # 1) 実機の正面：前の画面と同じ位置・大きさから縮んで左へ → 円グラフが出ると左右の間へ
+        front = lib.photos.machine(key, "front")
+        h0, h1, h2 = 800, 360, 250
+        k1 = inout(prog(t, 0.0, 0.6))
+        k2 = inout(prog(t, t_move, 0.7))
+        hh = lerp(lerp(h0, h1, k1), h2, k2)
+        cx = lerp(lerp(430, 300, k1), 880, k2)
+        cy = lerp(lerp(515, 560, k1), 610, k2)
+        if "front" not in self._rc:
+            self._rc["front"] = contain(front.img, 800, 800, max_up=1.0)
+        fi = scaled(self._rc["front"], hh / self._rc["front"].height)
+        sh, pad = with_shadow(fi, strength=0.55, blur=16, offset=(10, 14))
+        put(cv, sh, (cx - sh.width / 2, cy - sh.height / 2), 1.0)
+        # 2) ST中の液晶：中央にポンと出る（切り替わりの見せ場）→ 右へ移動
+        lcd = lib.photos.machine(key, "lcd")
+        if t >= t_lcd and not lcd.placeholder:
+            if "lcd" not in self._rc:
+                im = contain(lcd.img, 760, 570, max_up=1.2)      # 低解像度なので拡大は 1.2 倍まで
+                fr = Image.new("RGBA", (im.width + 20, im.height + 20), (0, 0, 0, 0))
+                fd = ImageDraw.Draw(fr)
+                fd.rounded_rectangle((0, 0, fr.width - 1, fr.height - 1), 18, fill=(10, 16, 30, 255))
+                mask = Image.new("L", im.size, 0)
+                ImageDraw.Draw(mask).rounded_rectangle((0, 0, im.width - 1, im.height - 1), 12, fill=255)
+                im2 = im.copy(); im2.putalpha(mask)
+                fr.alpha_composite(im2, (10, 10))
+                fd.rounded_rectangle((0, 0, fr.width - 1, fr.height - 1), 18, outline=GOLD + (255,), width=5)
+                self._rc["lcd"] = with_shadow(fr, strength=0.6, blur=22, offset=(12, 18), contact=False)
+            sh, pad = self._rc["lcd"]
+            kin = prog(t, t_lcd, 0.35)
+            pop = 1 + 0.25 * (1 - back(kin, 2.0)) if kin < 1 else 1.0
+            km = inout(prog(t, t_move, 0.7))
+            s_ = pop * lerp(1.0, 0.85, km)
+            lx = lerp(W / 2, 1370, km)                     # 右下はバクの場所なので、少し内側・上に置く
+            ly = lerp(470, 400, km)
+            img = scaled(sh, s_)
+            put(cv, img, (lx - img.width / 2, ly - img.height / 2), min(1.0, kin * 3))
+            iw, ih = (sh.width - pad * 2) * s_, (sh.height - pad * 2) * s_
+            box = (lx - iw / 2, ly - ih / 2, lx + iw / 2, ly + ih / 2)
+            moments.shockwave(cv, (lx, ly), t, t_lcd, r0=200, r1=700)
+            fx.glint(cv, box, t, t_lcd + 0.2, 0.6)
+            cap = text_layer(o.get("lcd_label", f"ST中の液晶「{o.get('rush_name', '幻闘RUSH')}」"), font("black", 34), TEXT, stroke=6, pad=0)
+            put(cv, cap, (lx - cap.width / 2, box[3] + 16), out3(prog(t, t_lcd + 0.3, 0.4)))
+        # 3) 左に円グラフ：カウントアップ → 完成で強調（バクの反応と同時）
+        val = float(o["value"])
+        kp = out3(prog(t, t_pie, 0.4))
+        if kp > 0:
+            cxp, cyp, r = 480, 470, 250
+            lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+            d = ImageDraw.Draw(lay)
+            d.ellipse((cxp - r, cyp - r, cxp + r, cyp + r), outline=(40, 52, 76, int(255 * kp)), width=30)
+            kc = prog(t, t_pie + 0.2, t_done - t_pie - 0.25) ** 0.8
+            v = val * kc
+            if v > 0.5:
+                d.arc((cxp - r, cyp - r, cxp + r, cyp + r), -90, -90 + 360 * v / 100, fill=GOLD, width=30)
+            cv.alpha_composite(lay)
+            pre = o.get("prefix", "")
+            num = self._num_img(f"{int(round(v))}%", pre, GOLD, False, 140)
+            if t >= t_done:
+                fx.burst(cv, (cxp, cyp), t, t_done, col=GOLD, r_in=180, r_out=640)
+                fx.sparkles(cv, (cxp, cyp), t, t_done + 0.05, n=30, spread=440)
+                num = scaled(num, 1 + 0.35 * (1 - back(prog(t, t_done, 0.3), 2.0)))
+                kr = prog(t, t_done, 0.5)
+                if kr < 1:
+                    ring = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+                    rr = r + 40 * out3(kr)
+                    ImageDraw.Draw(ring).ellipse((cxp - rr, cyp - rr, cxp + rr, cyp + rr), outline=GOLD + (int(220 * (1 - kr)),), width=10)
+                    cv.alpha_composite(ring)
+            put(cv, num, (cxp - num.width / 2, cyp - 8 - num.height / 2), kp)
+            put(cv, label(o.get("tag", "KEY NUMBER"), BLUE, 24), (130, 92), kp)
+            lb = text_layer(o.get("label", ""), font("black", 64), TEXT, stroke=6, pad=0)
+            put(cv, lb, (128, 128), kp)
+            ln = "".join(o.get("lines", []))
+            if ln:
+                put(cv, text_layer(ln, font("bold", fit_size(ln, "bold", 38, 800)), (205, 212, 224), stroke=4, pad=0),
+                    (cxp - 380, cyp + r + 40), out3(prog(t, t_done + 0.2, 0.5)))
+        if sc.get("source"):
+            source_line(cv, sc["source"])
 
     def _num_img(self, txt, pre, col, shock, size=170):
         fnum, fpre = font("black", size), font("black", int(size * 0.41))
@@ -729,7 +911,17 @@ class Numbers:
             source_line(cv, with_credit(sc["source"], thumb))
 
 
+def _events_rush(sc):
+    tl, tm, tp, td = Numbers().rush_times(sc)
+    ev = [(tl - 0.15, "whoosh"), (tl, "hold_gold"), (tl, "flash_s"), (tl + 0.25, "sparkle"), (tm, "whoosh"), (tp, "pop")]
+    ev += [(tp + 0.2 + k * 0.07, "tick") for k in range(int((td - tp - 0.25) / 0.07))]
+    ev += [(td, "impact"), (td, "flash"), (td, "shake"), (td + 0.1, "sparkle")]
+    return ev
+
+
 def _events_D(sc):
+    if sc["variant"] == "stat" and sc["opts"].get("layout") == "rush":
+        return _events_rush(sc)
     if sc["variant"] == "stat" and sc["opts"].get("tone") == "shock":
         return [(s, "hold") for s in SHOCK_STEPS] + [(SLAM, "shock"), (SLAM, "flash_r"), (SLAM, "shake")]
     if sc["variant"] == "stat":
