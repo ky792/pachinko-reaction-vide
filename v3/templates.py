@@ -1093,6 +1093,8 @@ def _register_era():
     TEMPLATES.update(templates_era.TEMPLATES)
     from . import templates_src
     TEMPLATES.update(templates_src.TEMPLATES)
+    from . import templates_img
+    TEMPLATES.update(templates_img.TEMPLATES)
 
 
 _register_era()

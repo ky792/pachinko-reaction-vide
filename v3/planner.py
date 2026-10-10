@@ -31,10 +31,10 @@ from .moments import INTROS
 WHO = {"ナギ": "nagi", "バク": "baku"}
 CHARS_PER_SEC = {"nagi": 5.2, "baku": 5.6}
 GAP = 0.24
-MIN_DUR = {"A": 3.2, "B": 5.2, "C": 3.0, "D": 4.0, "E": 3.4, "F": 2.6, "R": 4.0, "T": 4.0, "V": 4.0, "S": 3.0}
-TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push", "R": "fade", "T": "push", "V": "fade", "S": "zoom"}
+MIN_DUR = {"A": 3.2, "B": 5.2, "C": 3.0, "D": 4.0, "E": 3.4, "F": 2.6, "R": 4.0, "T": 4.0, "V": 4.0, "S": 3.0, "I": 3.0}
+TRANS = {"A": "fade", "B": "cut", "C": "fade", "D": "zoom", "E": "fade", "F": "push", "R": "fade", "T": "push", "V": "fade", "S": "zoom", "I": "fade"}
 VARIANT = {"A": "photo", "B": "machine", "C": "calendar", "D": "stat", "E": "points", "F": "talk",
-           "R": "rail", "T": "timeline", "V": "duo", "S": "source"}
+           "R": "rail", "T": "timeline", "V": "duo", "S": "source", "I": "image"}
 
 
 def parse_opts(s):
@@ -221,6 +221,7 @@ class Planner:
         pause_next = 0.0
         manual = False
         n = 0
+        overlay, ov_line, clear_line = None, False, False          # @show … mode=side/top/background と @clear
         for it in items:
             c = it["cmd"]
             if c == "line":
@@ -236,10 +237,17 @@ class Planner:
                            "moments": pending.get("moments", [])}
                     if t == "B" and "machine" not in cur["opts"]:
                         cur["opts"]["machine"] = self.find_machine(ln["text"])
+                    if overlay and t != "I":
+                        cur["overlay"] = dict(overlay)
                     scenes.append(cur)
                     pending = None
+                    ov_line = clear_line = False
                 elif manual and cur is not None:       # @manual：シーンは台本の @ 行だけで切り替える
-                    pass
+                    if ov_line and overlay and cur["template"] != "I":     # 同じシーンの途中から重ねる
+                        cur["overlay"] = dict(overlay, from_line=ln["id"])
+                    if clear_line and cur.get("overlay"):
+                        cur["overlay"]["until_line"] = ln["id"]
+                    ov_line = clear_line = False
                 else:
                     t, var, o, new = self.auto(ln, cur, ctx)
                     if new or cur is None:
@@ -250,6 +258,26 @@ class Planner:
                 ctx["first"] = False
             elif c == "manual":
                 manual = True
+            elif c == "show":                       # @show history:hall_2008 mode=full
+                from .images import DEFAULT_MODE, SCENE_MODES, split_ref
+                ref = next((k for k, v in it["opts"].items() if v is True and ":" in k), None)
+                if not ref:
+                    raise ValueError("@show の後に type:key を書く（例 @show history:hall_2008）")
+                typ, key = split_ref(ref)
+                d = self.data.get("images", {}).get(ref) or self.data.get("images", {}).get(key) or {}
+                mode = it["opts"].get("mode") or d.get("display_mode") or DEFAULT_MODE[typ]
+                o = {k: v for k, v in it["opts"].items() if v is not True}
+                o.update({"ref": ref, "mode": mode})
+                if typ == "gallery":
+                    o["items"] = d.get("items", [])
+                if mode in SCENE_MODES:
+                    pending = {"cmd": "I", "opts": o}
+                else:
+                    overlay = {"ref": ref, "mode": mode}
+                    ov_line = not pending
+            elif c == "clear":                      # 重ね表示を終える
+                overlay = None
+                clear_line = True
             elif re.fullmatch(r"[A-Z](:\w+)?", c):
                 pending = it
             elif c == "host" and cur is not None:

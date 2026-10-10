@@ -68,6 +68,20 @@ def prepare(scenes, data=None):
                 cache[(who, exclaim)] = hosts.resolve(sc, who, exclaim)
             return cache[(who, exclaim)]
 
+        if sc["template"] == "I" and sc["opts"].get("mode") == "full" and not sc.get("hosts"):
+            plan_for = lambda who, exclaim=False: {}              # 全画面の資料：ナギバクは隠して資料を主役に
+        ov = sc.get("overlay")
+        if ov and ov["mode"] in ("side", "top"):                  # 図解を縮める間はキャラも小さく／上下分割では隠す
+            base = plan_for
+
+            def plan_for(who, exclaim=False, base=base, mode=ov["mode"]):
+                if mode == "top":
+                    return {}
+                return {w: {**c, "size": min(c.get("size", 200), 190), "pos": "br", "force": True} for w, c in base(who, exclaim).items()}
+        if ov:                                                    # 重ねる時間（セリフ単位で指定されたもの）
+            ids = {ln["id"]: ln for ln in lines}
+            ov["t0"] = max(0.0, ids[ov["from_line"]]["start"] - s0 - 0.35) if ov.get("from_line") in ids else 0.0
+            ov["t1"] = ids[ov["until_line"]]["start"] - s0 - 0.2 if ov.get("until_line") in ids else 1e9
         sc["_host_plan"] = plan_for
         first = {}
         for ln in lines:
@@ -216,6 +230,9 @@ def scene_frame(sc, t_abs, lib, with_hosts=True):
             cv = ambience.drift(cv, t, sc["dur"], scenes_index(sc))
         ambience.particles(cv, sc.get("_style", "lab"), t_abs, 0.6 if sc["template"] in ("B", "D", "S") else 1.0)
     moments.overlay(cv, sc, t)
+    if sc.get("overlay"):                                   # @show … mode=side/top/background
+        from .templates_img import compose_overlay
+        cv = compose_overlay(cv, sc, t, lib)
     if sc["opts"].get("intro") == "era_shift":
         moments.era_shift(cv, t, sc["opts"]["reels"], sc["opts"].get("intro_title", "TURNING POINT"))
     if sc["opts"].get("intro") == "chapter":
@@ -517,7 +534,7 @@ def write_plan(ep, scenes, lib, total):
     rows = [f"# シーン構成（自動生成）  合計 {total:.1f}秒", "",
             "| # | 開始 | 長さ | テンプレート | 選び方 | キャラ | セリフ |", "| --- | --- | --- | --- | --- | --- | --- |"]
     names = {"A": "A 写真", "B": "B 機種紹介", "C": "C 年表・カレンダー", "D": "D 数字・比較", "E": "E 要点", "F": "F 掛け合い",
-             "R": "R 時代のレール", "T": "T 年表", "V": "V 2台の対比", "S": "S 資料カード"}
+             "R": "R 時代のレール", "T": "T 年表", "V": "V 2台の対比", "S": "S 資料カード", "I": "I 画像"}
     for i, sc in enumerate(scenes):
         hs = sorted({w for ln in sc["lines"] for w in sc["_host_plan"](ln["who"], ln["exclaim"])})
         rows.append(f"| {i + 1} | {sc['start']:.1f} | {sc['dur']:.1f} | {names[sc['template']]}（{sc['variant']}） | "
@@ -555,6 +572,15 @@ def main():
     MUSIC = pl.data.get("music")
     RICH = bool(pl.data.get("rich_fx"))
     lib.photos = PhotoLib(final=a.final)
+    from .images import ImageLib
+    lib.images = ImageLib(ep, lib.photos, pl.data)
+    for sc in scenes:                                   # @show の画像を確認して一覧に
+        if sc["template"] == "I":
+            lib.images.note_use(sc["opts"]["ref"], sc["start"])
+        if sc.get("overlay"):
+            lib.images.note_use(sc["overlay"]["ref"], sc["start"] + sc["overlay"].get("t0", 0))
+    if lib.images.used:
+        lib.images.write_manifest()
     for sc in scenes:          # 必要素材を先に読み込んで一覧にする
         if sc["template"] == "A" and not sc["opts"].get("hall") and sc["variant"] != "archive":
             lib.get(sc["opts"].get("asset", "hall"))
