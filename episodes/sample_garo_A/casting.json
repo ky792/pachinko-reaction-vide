@@ -1,0 +1,25 @@
+{
+ "_note": "キャラごとの声。speaker=VOICEVOX の話者ID。候補を聞き比べて決める（仮）",
+ "nagi": {
+  "speaker": 14,
+  "name": "冥鳴ひまり",
+  "speed": 1.02,
+  "pitch": 0.03,
+  "intonation": 1.15,
+  "drawl": {
+   "comma": 1.3,
+   "end": 1.7,
+   "fall": 0.08,
+   "pause": 1.15,
+   "punch": 0.06
+  },
+  "style": "ふわふわ系の女子高生っぽい話し方。語尾を軽く伸ばす（〜なんだよねー、〜なんだってー）"
+ },
+ "baku": {
+  "speaker": 32,
+  "name": "白上虎太郎（わーい）",
+  "speed": 1.15,
+  "pitch": 0.0,
+  "intonation": 1.15
+ }
+}

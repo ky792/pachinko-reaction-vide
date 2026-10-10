@@ -58,10 +58,12 @@ def parse(path):
             head, _, rest = line[1:].partition(" ")
             items.append({"cmd": head, "opts": parse_opts(rest)})
             continue
-        m = re.match(r"^(ナギ|バク)(!?)[:：]\s*(.+)$", line)
+        m = re.match(r"^(ナギ|バク)(!?)(?:\[([^\]]*)\])?[:：]\s*(.+)$", line)
         if not m:
             raise ValueError(f"読めない行: {raw}")
-        items.append({"cmd": "line", "who": WHO[m.group(1)], "exclaim": m.group(2) == "!", "text": m.group(3)})
+        vo = parse_opts(m.group(3) or "")              # ナギ[mood=joke pre=-0.1]: … → 声の演技と、前の間の調整
+        items.append({"cmd": "line", "who": WHO[m.group(1)], "exclaim": m.group(2) == "!", "text": m.group(4),
+                      "voice": vo})
     return items
 
 
@@ -221,7 +223,8 @@ class Planner:
             c = it["cmd"]
             if c == "line":
                 n += 1
-                ln = {"id": f"{n:03d}", "who": it["who"], "exclaim": it["exclaim"], "text": it["text"], "pre": pause_next}
+                ln = {"id": f"{n:03d}", "who": it["who"], "exclaim": it["exclaim"], "text": it["text"],
+                      "pre": pause_next + float(it.get("voice", {}).get("pre", 0) or 0), "mood": it.get("voice", {}).get("mood")}
                 pause_next = 0.0
                 if pending:
                     t, _, var = pending["cmd"].partition(":")

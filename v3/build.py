@@ -305,8 +305,10 @@ def synth_bgm(total, scenes):
         if sc["template"] == "D" and sc["variant"] == "stat":    # 保留変化の間は止めて溜める
             from .templates import SLAM
             from .templates import DONE
-            c0 = int(sc["start"] * SR)
-            c1 = int((sc["start"] + (SLAM if sc["opts"].get("tone") == "shock" else DONE)) * SR)
+            from .templates import stat_shift
+            sh = stat_shift(sc)
+            c0 = int((sc["start"] + sh) * SR)
+            c1 = int((sc["start"] + sh + (SLAM if sc["opts"].get("tone") == "shock" else DONE)) * SR)
             drum_on[c0:c1] = 0.0
     kick, hat = _kick(int(0.3 * SR)), _hat(int(0.08 * SR), rng)
     for bt in np.arange(0, total, beat / 2):

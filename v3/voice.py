@@ -77,10 +77,15 @@ def read_kana(text, speaker, d=None):
     return q["kana"]
 
 
-def line_audio(text, who, d=None, c=None):
+def line_audio(text, who, d=None, c=None, mood=None):
     """1セリフ → (wav バイト列, 読み上げ用の文, エンジンが読んだカナ)"""
     c = c or cast()
-    cfg = c[who]
+    cfg = dict(c[who])
+    if mood and mood in cfg.get("moods", {}):           # 場面ごとの演技（解説・冗談・ツッコミ・真剣 など）
+        mc = cfg["moods"][mood]
+        cfg.update({k: v for k, v in mc.items() if k != "drawl"})
+        if "drawl" in mc:
+            cfg["drawl"] = {**cfg.get("drawl", {}), **mc["drawl"]} if mc["drawl"] else None
     st = speech_text(text, d)
     q = query(st, cfg["speaker"])
     q["speedScale"] = cfg.get("speed", 1.0)
@@ -141,7 +146,8 @@ def main():
     ep = Path(sys.argv[1])
     d = load_dict()
     sync_dict(d)
-    c = cast()
+    cp = ep / "casting.json"                            # 回ごとに声の設定を変えたいときは、エピソードに casting.json を置く
+    c = json.loads(cp.read_text(encoding="utf-8")) if cp.exists() else cast()
     out = ep / "voices"
     out.mkdir(exist_ok=True)
     n = 0
@@ -149,9 +155,10 @@ def main():
         if it["cmd"] != "line":
             continue
         n += 1
-        wav, st, kana = line_audio(it["text"], it["who"], d, c)
+        mood = it.get("voice", {}).get("mood") or (c[it["who"]].get("exclaim_mood") if it["exclaim"] else None)
+        wav, st, kana = line_audio(it["text"], it["who"], d, c, mood)
         (out / f"{n:03d}.wav").write_bytes(wav)
-        print(f"{n:03d} {it['who']}: {kana}")
+        print(f"{n:03d} {it['who']}[{mood or '-'}]: {kana}")
 
 
 if __name__ == "__main__":

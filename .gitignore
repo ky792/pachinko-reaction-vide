@@ -6,3 +6,4 @@ generator/temp/
 generator/output/
 generator/audio/generated/
 episodes/*/build/
+episodes/sample_garo_*/voices/*.wav

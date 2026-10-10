@@ -824,6 +824,7 @@ class Numbers:
         o = sc["opts"]
         val = float(o["value"])
         shock = o.get("tone") == "shock"
+        t = t - stat_shift(sc)          # 数字が完成する瞬間を、その数字を言う瞬間に合わせる（ナレーションと同期）
         with_photo = bool(sc.get("machine")) and not shock
         ph = self._photo_card(cv, sc, t, lib) if with_photo else None
         col = SHOCK_RED if shock else GOLD
@@ -844,7 +845,7 @@ class Numbers:
             ga = 1 - prog(t, DONE + 0.3, 0.4)
             if ga > 0 and stage > 0:
                 gl = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-                fx.gauge(gl, (cx - 280, 850), 380, 40, stage / len(steps), label="期待度", segs=len(steps))
+                fx.gauge(gl, (cx - 280, 800), 380, 40, stage / len(steps), label="期待度", segs=len(steps))
                 put(cv, gl, (0, 0), ga)
         rx = 900 if ph else 1030
         mw = 500 if ph else 800
@@ -945,6 +946,16 @@ def _events_rush(sc):
     return ev
 
 
+def stat_shift(sc):
+    """D stat の演出全体を後ろへずらす秒数。セリフで『82%』と言う瞬間に円グラフが完成するように"""
+    o = sc["opts"]
+    if o.get("tone") == "shock" or o.get("layout") == "rush" or o.get("sync") == "off":
+        return 0.0
+    v = o.get("value")
+    c = sc["cue"](f"{v}%", None) if v is not None else None
+    return max(0.0, c - DONE + 0.15) if c is not None else 0.0
+
+
 def _events_D(sc):
     if sc["variant"] == "stat" and sc["opts"].get("layout") == "rush":
         return _events_rush(sc)
@@ -955,6 +966,8 @@ def _events_D(sc):
               (COUNT0, "pop")]
         ev += [(COUNT0 + k * 0.07, "tick") for k in range(int(COUNT_DUR / 0.07))]       # カウントアップの音
         ev += [(DONE, "impact"), (DONE, "flash"), (DONE, "shake"), (DONE + 0.1, "sparkle")]
+        sh = stat_shift(sc)
+        ev = [(t + sh, k) for t, k in ev]
         if sc.get("machine"):
             ev.insert(0, (0.05, "whoosh"))
         return ev

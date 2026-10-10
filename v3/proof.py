@@ -53,6 +53,8 @@ def check(ep):
         st = voice.speech_text(text, d)
         kana = voice.read_kana(text, spk, d)
         flags = []
+        if re.search(r"(ップ|ッフ|フ)ン", kana) and re.search(r"[0-9]", text):
+            flags.append("数字のあとが『〜ふん／ぷん』と読まれている（分数・時間の読み間違いの疑い）")
         rest = re.findall(r"[A-Za-z][A-Za-z0-9\-\.:]*", st)
         if rest:
             flags.append("英字のまま：" + "・".join(sorted(set(rest))))
