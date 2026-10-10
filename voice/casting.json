@@ -1,5 +1,24 @@
 {
  "_note": "キャラごとの声。speaker=VOICEVOX の話者ID。候補を聞き比べて決める（仮）",
- "nagi": {"speaker": 30, "name": "No.7（アナウンス）", "speed": 1.12, "pitch": 0.0, "intonation": 1.0},
- "baku": {"speaker": 32, "name": "白上虎太郎（わーい）", "speed": 1.15, "pitch": 0.0, "intonation": 1.15}
+ "nagi": {
+  "speaker": 14,
+  "name": "冥鳴ひまり",
+  "speed": 1.0,
+  "pitch": -0.02,
+  "intonation": 0.85,
+  "drawl": {
+   "comma": 1.5,
+   "end": 2.2,
+   "fall": 0.18,
+   "pause": 1.35
+  },
+  "style": "気だるげでタメのある話し方。文末は「〜なんだねー」「〜感じだよー」と伸ばす。数字の前に読点で一拍おく"
+ },
+ "baku": {
+  "speaker": 32,
+  "name": "白上虎太郎（わーい）",
+  "speed": 1.15,
+  "pitch": 0.0,
+  "intonation": 1.15
+ }
 }

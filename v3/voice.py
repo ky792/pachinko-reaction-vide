@@ -80,7 +80,29 @@ def line_audio(text, who, d=None, c=None):
     q["intonationScale"] = cfg.get("intonation", 1.0)
     q["volumeScale"] = cfg.get("volume", 1.0)
     q["prePhonemeLength"], q["postPhonemeLength"] = 0.05, 0.08
+    if cfg.get("drawl"):
+        drawl(q, cfg["drawl"])
     return synth(q, cfg["speaker"]), st, q["kana"]
+
+
+def drawl(q, p):
+    """気だるげな「タメ」：読点の前と文末の音を伸ばし、文末はゆるく下げる。読点の間も少し長く
+    p = {"comma": 読点前の伸ばし倍率, "end": 文末の伸ばし倍率, "fall": 文末の下げ幅, "pause": 間の倍率}"""
+    q["pauseLengthScale"] = p.get("pause", 1.3)
+    aps = q["accent_phrases"]
+    for i, ap in enumerate(aps):
+        ms = ap["moras"]
+        if not ms:
+            continue
+        last = ms[-1]
+        if ap.get("pause_mora") and i < len(aps) - 1:          # 「まぁ、」の「ぁ」をためる
+            last["vowel_length"] *= p.get("comma", 1.5)
+        if i == len(aps) - 1:                                   # 文末：「〜だねー」をゆるく伸ばして下げる
+            last["vowel_length"] *= p.get("end", 2.2)
+            fall = p.get("fall", 0.18)
+            for k, m in enumerate(ms[-3:]):
+                if m["pitch"] > 0:
+                    m["pitch"] -= fall * (k + 1) / 3
 
 
 def main():
