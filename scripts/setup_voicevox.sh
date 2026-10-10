@@ -11,6 +11,8 @@ if [ ! -x linux-cpu-x64/run ]; then
   curl -sSL -o engine.7z.001 "https://github.com/VOICEVOX/voicevox_engine/releases/download/$VER/voicevox_engine-linux-cpu-x64-$VER.7z.001"
   ./7zbin/7zz x -y engine.7z.001 > /dev/null && rm -f engine.7z.001 7z.tar.xz
 fi
-cd linux-cpu-x64 && nohup ./run --host 127.0.0.1 --port 50021 > "$DIR/engine.log" 2>&1 &
+if ! curl -s --noproxy '*' http://127.0.0.1:50021/version > /dev/null; then
+  (cd linux-cpu-x64 && setsid nohup ./run --host 127.0.0.1 --port 50021 > "$DIR/engine.log" 2>&1 < /dev/null &)
+fi
 for i in $(seq 1 60); do curl -s --noproxy '*' http://127.0.0.1:50021/version > /dev/null && break; sleep 2; done
 echo "VOICEVOX ENGINE $(curl -s --noproxy '*' http://127.0.0.1:50021/version) 起動"

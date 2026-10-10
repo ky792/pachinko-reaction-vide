@@ -87,7 +87,8 @@ def line_audio(text, who, d=None, c=None):
 
 def drawl(q, p):
     """気だるげな「タメ」：読点の前と文末の音を伸ばし、文末はゆるく下げる。読点の間も少し長く
-    p = {"comma": 読点前の伸ばし倍率, "end": 文末の伸ばし倍率, "fall": 文末の下げ幅, "pause": 間の倍率}"""
+    p = {"comma": 読点前の伸ばし倍率, "end": 文末の伸ばし倍率, "fall": 文末の下げ幅, "pause": 間の倍率,
+         "punch": 読点の次の言葉を上げる幅（メリハリ）}"""
     q["pauseLengthScale"] = p.get("pause", 1.3)
     aps = q["accent_phrases"]
     for i, ap in enumerate(aps):
@@ -97,6 +98,12 @@ def drawl(q, p):
         last = ms[-1]
         if ap.get("pause_mora") and i < len(aps) - 1:          # 「まぁ、」の「ぁ」をためる
             last["vowel_length"] *= p.get("comma", 1.5)
+        if p.get("punch") and i > 0 and aps[i - 1].get("pause_mora"):   # タメのあと（読点の次）を一段高く＝メリハリ
+            for m in ms:
+                if m["pitch"] > 0:
+                    m["pitch"] += p["punch"]
+            if ms[0].get("consonant_length"):
+                ms[0]["consonant_length"] *= 1.25
         if i == len(aps) - 1:                                   # 文末：「〜だねー」をゆるく伸ばして下げる
             last["vowel_length"] *= p.get("end", 2.2)
             fall = p.get("fall", 0.18)
