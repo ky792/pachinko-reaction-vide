@@ -1,0 +1,32 @@
+name: Download historical pachinko reference photos
+on:
+  pull_request:
+    paths:
+      - "haken_photo_research/**"
+      - ".github/workflows/download-haken-photos.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install Pillow and requests
+        run: python -m pip install --disable-pip-version-check Pillow requests
+      - name: Fetch exact-model public reference photos for private layout tests
+        run: python haken_photo_research/fetch_reference_photos.py
+      - name: Upload image files, provenance and missing report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: haken-reference-photos-review-only
+          path: haken_photos/
+          retention-days: 2
+          if-no-files-found: error
