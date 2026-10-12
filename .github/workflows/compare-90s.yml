@@ -1,0 +1,98 @@
+name: Generate 90-second A-B comparison
+
+on:
+  pull_request:
+    paths:
+      - "v3/**"
+      - "voice/**"
+      - "episodes/v5_preview_part2/**"
+      - "tests/test_compare90.py"
+      - ".github/workflows/compare-90s.yml"
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "回のフォルダ名（台本と素材を差し替えて再実行）"
+        required: true
+        default: "v5_preview_part2"
+      quality:
+        description: "確認用はfast。本番画質を確認する場合はfull"
+        type: choice
+        options: [fast, full]
+        default: fast
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compare90-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      EPISODE: ${{ inputs.episode || 'v5_preview_part2' }}
+      QUALITY: ${{ inputs.quality || 'fast' }}
+      VOICEVOX_DIR: ${{ github.workspace }}/cache/voicevox-engine
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            v3
+            voice
+            episodes
+            generator/assets/characters/v2
+            generator/assets/backgrounds
+            assets
+            scripts/setup_voicevox.sh
+            tests
+            lab
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install fixed production dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ffmpeg fonts-noto-cjk fonts-noto-cjk-extra
+          python -m pip install -r v3/requirements.txt
+      - name: Regression checks
+        run: |
+          python -m compileall -q v3 lab reaction generator/src src
+          python -m unittest discover -s tests -v
+      - uses: actions/cache@v4
+        with:
+          path: cache/voicevox-engine
+          key: voicevox-linux-cpu-0.25.2
+      - uses: actions/cache@v4
+        with:
+          path: cache/tts-v3
+          key: tts-v3-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: tts-v3-${{ runner.os }}-
+      - name: Start existing voice engine
+        run: |
+          bash scripts/setup_voicevox.sh
+          curl --fail --silent --show-error --noproxy '*' http://127.0.0.1:50021/version
+      - name: Generate A, B and side-by-side 90-second videos
+        run: |
+          if [[ ! "$EPISODE" =~ ^[A-Za-z0-9_-]+$ ]]; then
+            echo 'episode must be a folder name'; exit 1
+          fi
+          if [[ "$QUALITY" == full ]]; then
+            python -m v3.compare "episodes/$EPISODE" --voice --fps 30 --width 1920 --workers 2
+          else
+            python -m v3.compare "episodes/$EPISODE" --voice --fps 12 --width 1280 --workers 2
+          fi
+      - name: Publish generation report
+        if: always()
+        run: |
+          if [[ -f output/compare90/RESULT.md ]]; then
+            cat output/compare90/RESULT.md >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: comparison-90s
+          path: output/compare90/
+          if-no-files-found: warn
+          retention-days: 14
