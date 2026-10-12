@@ -6,3 +6,8 @@ generator/temp/
 generator/output/
 generator/audio/generated/
 episodes/*/build/
+episodes/sample_garo_*/voices/*.wav
+episodes/*/voices/*.wav
+episodes/*/voices/cache/
+episodes/*/images/*
+!episodes/*/images/README.md

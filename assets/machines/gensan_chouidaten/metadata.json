@@ -1,0 +1,31 @@
+{
+ "photos": {
+  "front": {
+   "file": "front.png",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "license": "none",
+   "permission": "none"
+  },
+  "kit": {
+   "file": "kit.png",
+   "what": "実機全体の正面（制作キット A09）",
+   "source_url": "https://image.nana-press.com/kaiseki/upload/machines/203/20211018171004_machine_image.png",
+   "source_note": "なな徹・2020超韋駄天",
+   "rights_holder": "未確認",
+   "license": "none",
+   "permission": "pending",
+   "terms": "権利未確認。非公開レイアウト検証用途に限定（制作キット 06_追加画像13機種_出典と使用条件.csv）",
+   "scope": "非公開レビューのみ",
+   "sha256": "6af1f0354957444dde5a33be13e2cc2400be01afc6da06a1b2045ae3d9ca36cf",
+   "cutout": false,
+   "kit_id": "A09"
+  }
+ },
+ "name": "P大工の源さん 超韋駄天",
+ "short": "源さん 超韋駄天",
+ "maker": "三洋物産",
+ "date": "2020年4月",
+ "how": "メーカー公式・権利者の許諾を得た写真、または利用条件を確認できた写真を front.png として置き、metadata.json に出典・権利者・利用条件・確認日を記入する",
+ "date_source": "1geki https://1geki.jp/pachinko/p_daigentyoida/"
+}

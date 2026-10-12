@@ -1,0 +1,6 @@
+{
+ "hall": {"file": "generator/assets/backgrounds/hall_anime.png", "kind": "photo", "ai": true, "license": "ok",
+          "credit": "イメージ（AI生成イラスト）"},
+ "hokuto_musou": {"file": "images/hokuto_musou.png", "kind": "cutout", "ai": false, "license": "unknown",
+                  "credit": "画像提供・出典をここに書く"}
+}

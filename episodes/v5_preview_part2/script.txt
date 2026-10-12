@@ -1,0 +1,51 @@
+# Part2 プレビュー：画像素材の差し込み（@show / @clear）— 初代牙狼／北斗無双／65%規制
+# 実機画像（machine）・歴史資料（history）・記事や制度の資料（document）・ギャラリー（gallery）と図解の組み合わせ
+@manual
+
+# ==== 初代牙狼：転換点はナギバクを隠して資料を主役に
+@show history:hall_2008 mode=full intro=chapter chapter=2008 chapter_sub="初代牙狼の衝撃" chapter_no="CHAPTER 3"
+ナギ: そんなホールの空気に、違う方向から飛び込んできたのが。
+ナギ: 2008年の、初代『CR牙狼XX』。
+バク!: 来た、牙狼！
+@B machine=garo_2008 specs=2 accent=gold
+バク: 確率、だいぶ重かったよな。
+ナギ: 約397分の1。いまの感覚だと、かなり重いよねー。
+# 左に図解（82%）、右に実機
+@show machine:garo_2008 mode=side
+@D:stat value=82 machine=garo_2008
+ナギ[mood=explain]: そして入ってからの継続率は、82%。
+バク![pre=-0.1]: 82%！ そら一回入ったら、止まらへんわ。
+@clear
+# 当時の資料をギャラリーで
+@show gallery:garo_materials
+ナギ: サンセイの公式アーカイブにも、突入50%、そのあと82%継続、そして大当たりは全て15ラウンドと書かれてる。
+ナギ[mood=joke]: 台の外でも話題だったんだよー。メーカーのコラムには、体験用のブログパーツが人気になりすぎて、サーバーが対応しきれなくなった話もある。
+
+# ==== 北斗無双：ホールの写真を薄く敷いて、数字の図解
+@B machine=hokuto_musou specs=2 intro=chapter chapter=2016 chapter_sub="北斗無双はなぜ残った？" chapter_no="CHAPTER 5"
+ナギ: 2016年3月、初代『CR真・北斗無双』が登場した。
+バク: 北斗無双！ この台、ほんま長かったなあ。
+@show history:hall_image mode=background
+@E heading="北斗無双の数字は、条件ごとに" items="ヘソのST直行　{50%}|ST継続率　{約80%}|電チューの16R　{50%}"
+ナギ[mood=explain]: 整理すると、ヘソのST直行が50%、ST継続率が約80%、そして電チューの16ラウンド確変が50%。
+@clear
+# スペック表の重要箇所を拡大
+@show document:hokuto_spec
+ナギ: メーカー公表の最大払い出し出玉は、約2400個だよ。
+バク: 80%の連チャンの中に、2400個がある。そら夢見るわな。
+
+# ==== 65%規制：上に資料、下に比較図
+@show document:rule65_2016 mode=top
+@D:compare pcts=80,65 heading="2016年　内規の変更の前と後" note="※約80%はST継続率、65%は内規の変更後に新台へ課された確変継続率の上限。数え方も対象時期も違う"
+ナギ[mood=explain]: ひとつの背景が、内規の変化。2016年ごろ、継続率をめぐる自主規制で、新しく出る台の設計に制約が強まったんだ。
+ナギ: ただ、80%と65%は、数え方も時期も違う。数字だけ並べて、優劣は決めないでね。
+@clear
+# 記事の重要箇所を拡大（転換点）
+@show document:regulation_2018
+ナギ[mood=explain]: もう一つ大事なのが2018年。日工組が、内規から確変継続率65%以下という項目を削除したと、業界ニュースが報じてる。
+バク: ほな、65%の時代が永遠に続いたわけでもないんやな。
+# 締め：会話＋右に実機
+@show machine:hokuto_musou mode=side
+@F card="長く選ばれ続けた" card2="時期・好み・ホールの扱い" card2_cue="出た時期"
+バク[mood=serious]: 出た時期がよかっただけやなく、長いあいだ選ばれ続けた。そこがすごいんやろな。
+@clear

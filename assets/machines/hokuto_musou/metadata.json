@@ -1,0 +1,97 @@
+{
+ "name": "CR真・北斗無双",
+ "maker": "サミー",
+ "how": "サミーに使用許諾を問い合わせる（下の candidates）。許諾が取れたら写真をこのフォルダに置き、license=permission・permission=granted・terms・credit を記入する",
+ "candidates": [
+  "サミー公式サイトの機種ページ（https://www.sammy.co.jp/）：画像の転載は許諾が必要。問い合わせフォームから『YouTubeの解説動画で実機画像を使いたい』と申請",
+  "版権元：北斗の拳（武論尊・原哲夫／コアミックス・NSP 等）、無双シリーズ（コーエーテクモゲームス）も権利者になる可能性があり、サミー経由で確認",
+  "自分で撮影した写真も、盤面のイラスト・ロゴは著作物なので、そのままでは自由に使えない（引用の条件を満たすかは要確認）"
+ ],
+ "photos": {
+  "front": {
+   "file": "front_zip.jpg",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "license": "provided",
+   "permission": "owner",
+   "source_url": "運営者がZIP「4分試作」で提供（2026-10-10 09:42）。元の掲載元は未記録",
+   "rights_holder": "株式会社サミー ほか（盤面：北斗の拳／無双シリーズの権利者）※未確認",
+   "terms": "運営者提供。権利者の許諾は未確認。左上の転載元ロゴ（赤丸のP）は無断で消さずにそのまま（検証版のみ）",
+   "scope": "検証版のみ（公開用には使わない）",
+   "credit": "",
+   "credit_required": false,
+   "note": "500×500px と小さいため、大きく出すと粗く見える。高解像度版があれば差し替え"
+  },
+  "detail": {
+   "file": "detail.jpg",
+   "what": "盤面のアップ",
+   "focus": [
+    0.5,
+    0.4
+   ],
+   "license": "none",
+   "permission": "none",
+   "source_url": "",
+   "rights_holder": "株式会社サミー ほか（未確認）",
+   "terms": "",
+   "scope": "",
+   "credit": "",
+   "credit_required": true
+  },
+  "cabinet": {
+   "file": "cabinet.png",
+   "what": "筐体の特徴が分かる写真",
+   "cutout": true,
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "license": "none",
+   "permission": "none",
+   "source_url": "",
+   "rights_holder": "株式会社サミー ほか（未確認）",
+   "terms": "",
+   "scope": "",
+   "credit": "",
+   "credit_required": true
+  },
+  "official": {
+   "file": "official.jpg",
+   "what": "公式資料（チラシ・プレスリリース等）",
+   "focus": [
+    0.5,
+    0.4
+   ],
+   "license": "none",
+   "permission": "none",
+   "source_url": "",
+   "rights_holder": "株式会社サミー（未確認）",
+   "terms": "",
+   "scope": "",
+   "credit": "",
+   "credit_required": true
+  },
+  "lcd": {
+   "license": "provided",
+   "permission": "owner",
+   "source_url": "チャンネル運営者（きょうじ）がチャットで提供（2026-10-10 09:26）。元の掲載元は未記録",
+   "credit": "",
+   "credit_required": false,
+   "file": "rush.jpg",
+   "what": "ST中の液晶（幻闘RUSH）",
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "rights_holder": "株式会社サミー ほか（北斗の拳／無双シリーズの権利者）※未確認",
+   "terms": "運営者の指示で使用。権利者の許諾は未確認",
+   "scope": "V4動画"
+  }
+ },
+ "short": "CR真・北斗無双",
+ "date": "2016年3月"
+}

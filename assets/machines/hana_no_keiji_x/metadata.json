@@ -1,0 +1,31 @@
+{
+ "name": "花の慶次X",
+ "maker": "ニューギン",
+ "photos": {
+  "front": {
+   "license": "provided",
+   "permission": "owner",
+   "source_url": "チャンネル運営者（きょうじ）がチャットで提供（2026-10-10 09:26）。元の掲載元は未記録",
+   "credit": "",
+   "credit_required": false,
+   "file": "front.jpg",
+   "what": "実機全体の正面",
+   "cutout": true,
+   "erase": [
+    [
+     70.5,
+     69.5,
+     54
+    ]
+   ],
+   "focus": [
+    0.5,
+    0.45
+   ],
+   "rights_holder": "ニューギン ほか ※未確認",
+   "terms": "運営者の指示で保存（今後の長尺動画用。V4では未使用）。権利者の許諾は未確認",
+   "scope": "未定"
+  }
+ },
+ "note": "機種の正式名・導入日は未確認。使うときに調べて記入する"
+}
