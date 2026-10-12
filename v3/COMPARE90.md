@@ -65,3 +65,5 @@ python -m v3.compare episodes/v5_preview_part2 --silent-preview --fps 6 --width 
 - PRのレビューとmain反映は利用者の判断で行う。
 
 既存のmake-episode、add-voice、make-reaction、labの実装とワークフローは変更しません。
+V3用の既存VOICEVOX起動スクリプトは、取得失敗を検出して即座に止め、
+起動を確認してから成功を表示するよう修正しました。

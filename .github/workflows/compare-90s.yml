@@ -7,6 +7,7 @@ on:
       - "voice/**"
       - "episodes/v5_preview_part2/**"
       - "tests/test_compare90.py"
+      - "scripts/setup_voicevox.sh"
       - ".github/workflows/compare-90s.yml"
   workflow_dispatch:
     inputs:
@@ -48,6 +49,9 @@ jobs:
             scripts/setup_voicevox.sh
             tests
             lab
+            reaction
+            generator/src
+            src
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
