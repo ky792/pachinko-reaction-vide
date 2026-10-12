@@ -63,6 +63,15 @@ def emphasis_at(scene, who, t):
     return 1.0
 
 
+def focus_state(scene, t):
+    """オチの寄り：(寄る相手, 0〜1)。0.4秒で寄り、終わりから0.4秒で戻す"""
+    for f in scene.get("focus", []):
+        if f["start"] <= t < f["end"] + 0.4:
+            k = min(ui.ease_out(ui.prog(t, f["start"], 0.4)), 1 - ui.ease_in_out(ui.prog(t, f["end"], 0.4)))
+            return f["who"], max(0.0, k)
+    return None, 0.0
+
+
 BACK = ("chapter", "title", "timeline", "machine", "keyword", "flow", "lineup")
 
 
@@ -112,6 +121,8 @@ def state_key(scene, t):
     """画面のUIが止まっていれば、その状態を表すキーを返す（動いている間は None）"""
     # 要素を動かす章では座標変化をキャッシュしてしまわないようにする。
     if scene.get("motion", {}).get("elements"):
+        return None
+    if focus_state(scene, t)[1] > 0:
         return None
     key = []
     y, still = year_at(scene, t)
@@ -199,11 +210,16 @@ def render_frame(scene, t, images):
     cv = motion.camera_image(under.copy(), motion.camera_state(scene, t))
     h, a = layout_state(scene, t)
     who = speaker_at(scene, t)
+    fw, fk = focus_state(scene, t)
+    if fk > 0:                                   # 背景を最大35%暗く
+        shade = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, int(255 * 0.35 * fk)))
+        cv.alpha_composite(shade)
     if a > 0.01:
-        lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
         for c in ("nagi", "baku"):
-            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=emphasis_at(scene, c, t))
-        ui.paste(cv, lay, (0, 0), a)
+            lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
+            ex = emphasis_at(scene, c, t) * (1 + 0.2 * fk if c == fw else 1.0)
+            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex)
+            ui.paste(cv, lay, (0, 0), a * (1 - 0.5 * fk if fw and c != fw else 1.0))
     cv.alpha_composite(over)
     return cv.convert("RGB")
 
