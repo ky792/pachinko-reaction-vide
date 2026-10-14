@@ -7,7 +7,7 @@
 import argparse, base64, sys, wave
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from gemini_tts import call  # noqa: E402
+from gemini_tts import call, save_audio  # noqa: E402
 
 
 def main():
@@ -28,9 +28,7 @@ def main():
                 "generationConfig": {"responseModalities": ["AUDIO"],
                                      "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": v}}}}}
         res = call(f"models/{a.model}:generateContent", body)
-        pcm = base64.b64decode(res["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
-        with wave.open(str(out / f"{v}.wav"), "wb") as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
+        save_audio(out / f"{v}.wav", res["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
         print(v, flush=True)
 
 

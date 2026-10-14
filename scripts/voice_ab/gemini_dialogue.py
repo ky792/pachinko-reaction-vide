@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "lab")); sys.path.insert(0, str(Path(__file__).resolve().parent))
 import episode  # noqa: E402
-from gemini_tts import call, TAIL  # noqa: E402
+from gemini_tts import call, save_audio, TAIL  # noqa: E402
 
 NAME = {"nagi": "Nagi", "baku": "Baku"}
 
@@ -22,10 +22,11 @@ def main():
     ap.add_argument("episode_dir")
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--model", default="gemini-3.8-flash-tts")
+    ap.add_argument("--legacy", action="store_true", help="3.1 以前の形式（台本全体を1つのテキストで渡す）")
     a = ap.parse_args()
     cast = json.loads((ROOT / "voice" / "casting_gemini.json").read_text(encoding="utf-8"))
     d = json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))
-    lines, notes = [], []
+    lines, notes, parts = [], [], []
     for sp in sorted((Path(a.episode_dir) / "script").glob("*.txt")):
         for n, it in enumerate(episode.lines_with_ids(sp), 1):
             text = it["text"]
@@ -38,19 +39,21 @@ def main():
                    [TAIL[t] for t in dr.get("tail", "").split("+") if t in TAIL]
             if bits:
                 notes.append(f"- {n}行目（{NAME[it['who']]}）：{'、'.join(bits)}")
+            # 3.8 系：テキストは台本どおりに読まれるので、話者と演技は speechMetadata に入れる
+            style = cast[it["who"]]["profile"] + (cast[it["who"]].get("notes") or "") + cast["notes"] + "、".join(bits)
+            parts.append({"text": text, "speechMetadata": {"speaker": NAME[it["who"]], "style": style}})
     prompt = ("# AUDIO PROFILE\n" + "\n".join(f"{NAME[w]}: {cast[w]['profile']}" for w in ("nagi", "baku")) +
               "\n\n## THE SCENE\n" + cast["scene"] +
               "\n\n### DIRECTOR'S NOTES\n" + cast["notes"] + "\n" +
               "".join(f"{NAME[w]}: {cast[w]['notes']}\n" for w in ("nagi", "baku") if cast[w].get("notes")) + "\n".join(notes) +
               "\nOnly the TRANSCRIPT is spoken. Do not read these notes or the speaker names.\n\n#### TRANSCRIPT\n" + "\n".join(lines))
-    body = {"contents": [{"parts": [{"text": prompt}]}],
+    body = {"contents": [{"parts": [{"text": prompt}] if a.legacy else parts}],
             "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": {"multiSpeakerVoiceConfig": {"speakerVoiceConfigs": [
                 {"speaker": NAME[w], "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": cast[w]["voice"]}}} for w in ("nagi", "baku")]}}}}
     res = call(f"models/{a.model}:generateContent", body)
-    pcm = base64.b64decode(res["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
-    with wave.open(a.out, "wb") as w:
-        w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
-    print(a.out, round(len(pcm) / 48000, 1), "秒")
+    save_audio(a.out, res["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
+    with wave.open(a.out) as w:
+        print(a.out, round(w.getnframes() / w.getframerate(), 1), "秒", w.getframerate(), "Hz")
 
 
 if __name__ == "__main__":

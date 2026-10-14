@@ -43,6 +43,16 @@ def call(path, body=None):
             time.sleep(wait)
 
 
+def save_audio(path, b64):
+    """3.8 系は WAV（RIFF付き）、それより前は 24kHz・16bit・モノラルの生PCMで返ってくる"""
+    data = base64.b64decode(b64)
+    if data[:4] == b"RIFF":
+        Path(path).write_bytes(data)
+        return
+    with wave.open(str(path), "wb") as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(data)
+
+
 def direction(it):
     d = it.get("dir", {})
     bits = [CHARA[it["who"]]]
@@ -86,9 +96,7 @@ def main():
                     "generationConfig": {"responseModalities": ["AUDIO"],
                                          "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE[it["who"]]}}}}}
             res = call(f"models/{a.model}:generateContent", body)
-            pcm = base64.b64decode(res["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
-            with wave.open(str(out / f"{it['id']}.wav"), "wb") as w:      # 24kHz・16bit・モノラル
-                w.setnchannels(1); w.setsampwidth(2); w.setframerate(24000); w.writeframes(pcm)
+            save_audio(out / f"{it['id']}.wav", res["candidates"][0]["content"]["parts"][0]["inlineData"]["data"])
             print(it["id"], it["who"], direction(it), flush=True)
 
 
