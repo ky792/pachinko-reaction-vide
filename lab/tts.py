@@ -12,6 +12,7 @@
 - 同じセリフ・同じ設定なら cache/tts_lab/ から再利用する（作り直さない）
 """
 import hashlib
+import math
 import json
 import re
 import sys
@@ -128,6 +129,24 @@ def tail(q, kinds):
             print(f"    tail の知らない型: {k}（up / down / flat / long）")
 
 
+def cap_pitch(q, pitch_scale, max_hz=None, min_hz=None):
+    """高すぎる・低すぎる音を抑える（声がかすれる／ガラガラする高さに入らないように）。
+    上限・下限の1半音手前から先は、はみ出した分を3割に縮める。
+    VOICEVOX は合成時に pitch × 2^pitchScale するので、その分を見込んで決める"""
+    for ap in q["accent_phrases"]:
+        for m in ap["moras"]:
+            if m["pitch"] <= 0:
+                continue
+            if max_hz:
+                knee = math.log(max_hz) / (2 ** pitch_scale) - SEMITONE
+                if m["pitch"] > knee:
+                    m["pitch"] = knee + (m["pitch"] - knee) * 0.3
+            if min_hz:
+                knee = math.log(min_hz) / (2 ** pitch_scale) + SEMITONE
+                if m["pitch"] < knee:
+                    m["pitch"] = knee - (knee - m["pitch"]) * 0.3
+
+
 def emphasize(q, word, speaker, d, rise=0.12, stretch=1.15):
     """強調語：その語のモーラだけ少し高く・長く。見つからなければ何もしない（警告だけ）"""
     wq = _req("POST", "/audio_query", {"text": speech_text(word, d), "speaker": speaker})
@@ -176,6 +195,8 @@ def line_audio(text, who, casting, d, direc, exclaim):
         emphasize(q, w, sp, d, rise=cfg.get("emph_rise", 0.12))
     if direc.get("tail"):
         tail(q, direc["tail"].split("+"))
+    if cfg.get("pitch_max_hz") or cfg.get("pitch_min_hz"):
+        cap_pitch(q, q["pitchScale"], cfg.get("pitch_max_hz"), cfg.get("pitch_min_hz"))
     return _req("POST", "/synthesis", {"speaker": sp}, body=q, raw=True), q["kana"], mood
 
 
