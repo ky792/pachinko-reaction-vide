@@ -6,7 +6,8 @@
 - 声の設定は エピソードの casting.json（無ければ voice/casting_b.json＝改善版B）
 - 読みは voice/dictionary.json（置き換え rules・ユーザー辞書 words・アクセント直し kana_fix）
 - 台本の @dir（直後の1セリフだけに効く）で、話速・抑揚・音量・強調語・声の種類を変える
-    speed=1.1  int=0.9  vol=0.85  emph=同じ条件,手かせ  mood=excited
+    speed=1.1  int=0.9  vol=0.85  emph=同じ条件,手かせ  mood=excited  tail=up+long
+- tail＝語尾の型（up 上げる／down 下げる／flat 平らに保つ／long 最後の音を伸ばす。up+long のように + でつなぐ）
 - 語尾の「タメ」（drawl）と辞書まわりは、PR #3（v3/voice.py）の処理をそのまま移したもの
 - 同じセリフ・同じ設定なら cache/tts_lab/ から再利用する（作り直さない）
 """
@@ -96,6 +97,37 @@ def drawl(q, p):
 
 
 # ---------------------------------------------------------------- 1セリフの演技
+SEMITONE = 0.0578     # VOICEVOX の pitch は ln(Hz)。1半音 ≒ ln(2)/12
+
+
+def tail(q, kinds):
+    """語尾の型。量は参考の声の実測（docs/analysis/voice_reference_2026-10-14.md）から：
+    up＝最後を約＋5半音（疑問文は VOICEVOX が上げるので約＋2半音だけ足す）、down＝最後の3拍で約−8半音、
+    flat＝最後の3拍を下げずに保つ、long＝最後の音を約2倍"""
+    voiced = [m for ap in q["accent_phrases"] for m in ap["moras"] if m["pitch"] > 0]
+    if len(voiced) < 2:
+        return
+    last = q["accent_phrases"][-1]
+    for k in kinds:
+        if k == "up":
+            amt = 2 if last.get("is_interrogative") else 5
+            voiced[-1]["pitch"] += amt * SEMITONE
+            voiced[-2]["pitch"] += amt * SEMITONE * 0.4
+            voiced[-1]["vowel_length"] *= 1.4
+        elif k == "down":
+            for i, m in enumerate(voiced[-3:]):
+                m["pitch"] -= 8 * SEMITONE * (i + 1) / 3
+        elif k == "flat":
+            ref = voiced[-4]["pitch"] if len(voiced) >= 4 else voiced[0]["pitch"]
+            for m in voiced[-3:]:
+                m["pitch"] = max(m["pitch"], ref - SEMITONE)
+        elif k == "long":
+            ms = last["moras"]
+            ms[-1]["vowel_length"] *= 2.0
+        else:
+            print(f"    tail の知らない型: {k}（up / down / flat / long）")
+
+
 def emphasize(q, word, speaker, d, rise=0.12, stretch=1.15):
     """強調語：その語のモーラだけ少し高く・長く。見つからなければ何もしない（警告だけ）"""
     wq = _req("POST", "/audio_query", {"text": speech_text(word, d), "speaker": speaker})
@@ -141,7 +173,9 @@ def line_audio(text, who, casting, d, direc, exclaim):
     if cfg.get("drawl"):
         drawl(q, cfg["drawl"])
     for w in [x for x in direc.get("emph", "").split(",") if x]:
-        emphasize(q, w, sp, d)
+        emphasize(q, w, sp, d, rise=cfg.get("emph_rise", 0.12))
+    if direc.get("tail"):
+        tail(q, direc["tail"].split("+"))
     return _req("POST", "/synthesis", {"speaker": sp}, body=q, raw=True), q["kana"], mood
 
 
@@ -159,7 +193,7 @@ def main():
     for sp in sorted((ep / "script").glob("*.txt")):
         for it in episode.lines_with_ids(sp):
             direc = it.get("dir", {})
-            voice_keys = {k: v for k, v in direc.items() if k in ("speed", "int", "vol", "emph", "mood")}
+            voice_keys = {k: v for k, v in direc.items() if k in ("speed", "int", "vol", "emph", "mood", "tail")}
             if direc and not voice_keys:
                 voice_keys = {"_directed": 1}        # 演出つき台本（前後の無音を最小にする）
             key = hashlib.sha1(json.dumps([it["text"], it["who"], it["tsukkomi"], voice_keys, casting[it["who"]], d, version],

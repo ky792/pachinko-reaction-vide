@@ -66,7 +66,7 @@ def parse_script(path):
 
 # @dir の値の範囲（直後の1セリフだけに効く演出）
 DIR_RANGE = {"pre": (0, 2), "post": (0, 2), "speed": (0.7, 1.4), "int": (0.5, 1.6), "vol": (0.5, 1.2)}
-DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood")
+DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail")
 
 
 def parse_dir(arg, name="台本"):
