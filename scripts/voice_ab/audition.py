@@ -23,8 +23,11 @@ def main():
     transcript = "\n".join(a.lines.split("|"))
     prompt = (f"# AUDIO PROFILE\n{a.profile}\n\n### DIRECTOR'S NOTES\n{a.notes}\n"
               f"Only the TRANSCRIPT is spoken. Do not read these notes.\n\n#### TRANSCRIPT\n{transcript}")
+    style = a.profile + a.notes
+    parts = ([{"text": s, "speechMetadata": {"style": style}} for s in a.lines.split("|")]   # 3.8 系はテキストをそのまま読むので、演技は speechMetadata に
+             if "3.8" in a.model else [{"text": prompt}])
     for v in a.voices.split(","):
-        body = {"contents": [{"parts": [{"text": prompt}]}],
+        body = {"contents": [{"parts": parts}],
                 "generationConfig": {"responseModalities": ["AUDIO"],
                                      "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": v}}}}}
         res = call(f"models/{a.model}:generateContent", body)
