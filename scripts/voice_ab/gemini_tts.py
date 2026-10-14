@@ -7,7 +7,7 @@
 - 演技は言葉で指示する（@dir の tail / mood を日本語の指示文に置き換える）
 - モデル名が分からないときは --list でキーで使えるTTSモデルを表示する
 """
-import argparse, base64, json, os, re, sys, urllib.request, wave
+import argparse, base64, json, os, re, sys, time, urllib.error, urllib.request, wave
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -24,11 +24,21 @@ TAIL = {"up": "語尾を上げて聞き返すように", "down": "語尾をし�
 
 def call(path, body=None):
     key = os.environ["GEMINI_API_KEY"]
-    req = urllib.request.Request(f"{API}/{path}{'&' if '?' in path else '?'}key={key}",
-                                 data=json.dumps(body).encode() if body else None,
-                                 headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=180) as r:
-        return json.loads(r.read())
+    req = urllib.request.Request(f"{API}/{path}", data=json.dumps(body).encode() if body else None,
+                                 headers={"Content-Type": "application/json", "X-goog-api-key": key})
+    for attempt in range(4):
+        try:
+            with urllib.request.urlopen(req, timeout=180) as r:
+                return json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            info = e.read().decode(errors="replace")
+            if e.code != 429 or attempt == 3:
+                raise SystemExit(f"Gemini API {e.code}: {info[:800]}")
+            m = re.search(r'"retryDelay":\s*"(\d+)', info)
+            wait = int(m.group(1)) + 2 if m else 30 * (attempt + 1)
+            quota = re.findall(r'"quotaId":\s*"([^"]+)"', info)
+            print(f"    上限に当たったので {wait} 秒待つ（{', '.join(quota) or '不明'}）", flush=True)
+            time.sleep(wait)
 
 
 def direction(it):
@@ -46,7 +56,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode_dir", nargs="?")
     ap.add_argument("-o", "--out")
-    ap.add_argument("--model", default="gemini-2.5-flash-preview-tts")
+    ap.add_argument("--model", default="gemini-3.8-flash-tts")
+    ap.add_argument("--only", help="作る行番号（例 1,4,17）")
     ap.add_argument("--list", action="store_true")
     a = ap.parse_args()
     if a.list:
@@ -58,10 +69,13 @@ def main():
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     for sp in sorted((Path(a.episode_dir) / "script").glob("*.txt")):
         for it in episode.lines_with_ids(sp):
+            if a.only and int(it["id"][-3:]) not in {int(x) for x in a.only.split(",")}:
+                continue
             text = it["text"]
             for r in d["rules"]:
                 text = re.sub(r["re"], r["to"], text)
-            prompt = f"次のセリフを、{direction(it)}読んでください。セリフ以外は読まないでください。\n{text}"
+            prompt = ("# AUDIO PROFILE\n" + CHARA[it["who"]] + "\n\n### DIRECTOR'S NOTES\n" + direction(it) +
+                      "\nOnly the TRANSCRIPT is spoken. Do not read these notes.\n\n#### TRANSCRIPT\n" + text)
             body = {"contents": [{"parts": [{"text": prompt}]}],
                     "generationConfig": {"responseModalities": ["AUDIO"],
                                          "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": VOICE[it["who"]]}}}}}
