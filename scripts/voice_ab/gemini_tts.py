@@ -37,6 +37,8 @@ def call(path, body=None):
             m = re.search(r'"retryDelay":\s*"(\d+)', info)
             wait = int(m.group(1)) + 2 if m else 30 * (attempt + 1)
             quota = re.findall(r'"quotaId":\s*"([^"]+)"', info)
+            if wait > 120:      # 1日の上限（無料枠はモデルごとに1日10回）。待たずに止める
+                raise SystemExit(f"Gemini の上限に達した（{', '.join(quota)}）。あと約{wait // 3600}時間は使えない。--model で別のモデルを使うか、明日続ける")
             print(f"    上限に当たったので {wait} 秒待つ（{', '.join(quota) or '不明'}）", flush=True)
             time.sleep(wait)
 
@@ -58,6 +60,9 @@ def main():
     ap.add_argument("-o", "--out")
     ap.add_argument("--model", default="gemini-3.8-flash-tts")
     ap.add_argument("--only", help="作る行番号（例 1,4,17）")
+    ap.add_argument("--voice-nagi", default=VOICE["nagi"])
+    ap.add_argument("--voice-baku", default=VOICE["baku"])
+    ap.add_argument("--style", default="", help="全行の演出メモに足す指示（例：アニメのキャラクターのように）")
     ap.add_argument("--list", action="store_true")
     a = ap.parse_args()
     if a.list:
@@ -65,6 +70,7 @@ def main():
             if "tts" in m["name"].lower():
                 print(m["name"])
         return
+    VOICE.update(nagi=a.voice_nagi, baku=a.voice_baku)
     d = json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     for sp in sorted((Path(a.episode_dir) / "script").glob("*.txt")):
@@ -74,7 +80,7 @@ def main():
             text = it["text"]
             for r in d["rules"]:
                 text = re.sub(r["re"], r["to"], text)
-            prompt = ("# AUDIO PROFILE\n" + CHARA[it["who"]] + "\n\n### DIRECTOR'S NOTES\n" + direction(it) +
+            prompt = ("# AUDIO PROFILE\n" + CHARA[it["who"]] + "\n\n### DIRECTOR'S NOTES\n" + (a.style + "。" if a.style else "") + direction(it) +
                       "\nOnly the TRANSCRIPT is spoken. Do not read these notes.\n\n#### TRANSCRIPT\n" + text)
             body = {"contents": [{"parts": [{"text": prompt}]}],
                     "generationConfig": {"responseModalities": ["AUDIO"],
