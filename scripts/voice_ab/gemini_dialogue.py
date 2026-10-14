@@ -40,7 +40,8 @@ def main():
                 notes.append(f"- {n}行目（{NAME[it['who']]}）：{'、'.join(bits)}")
     prompt = ("# AUDIO PROFILE\n" + "\n".join(f"{NAME[w]}: {cast[w]['profile']}" for w in ("nagi", "baku")) +
               "\n\n## THE SCENE\n" + cast["scene"] +
-              "\n\n### DIRECTOR'S NOTES\n" + cast["notes"] + "\n" + "\n".join(notes) +
+              "\n\n### DIRECTOR'S NOTES\n" + cast["notes"] + "\n" +
+              "".join(f"{NAME[w]}: {cast[w]['notes']}\n" for w in ("nagi", "baku") if cast[w].get("notes")) + "\n".join(notes) +
               "\nOnly the TRANSCRIPT is spoken. Do not read these notes or the speaker names.\n\n#### TRANSCRIPT\n" + "\n".join(lines))
     body = {"contents": [{"parts": [{"text": prompt}]}],
             "generationConfig": {"responseModalities": ["AUDIO"], "speechConfig": {"multiSpeakerVoiceConfig": {"speakerVoiceConfigs": [
