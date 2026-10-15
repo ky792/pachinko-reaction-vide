@@ -3,7 +3,7 @@
 
   python scripts/voice_ab/split_lines.py <まとめた.wav> <出力フォルダ> <行ID1> <行ID2> ... --texts <テキスト1>|<テキスト2>|...
 
-- 無音の区間（0.2秒以上）を切れ目の候補にして、「各行の長さ ≒ 文字数に比例」と「切れ目の無音が長い」が
+- 無音の区間（0.2秒以上）を切れ目の候補にして、「各行の長さ ≒ 文字数（--expect があればその長さ）に比例」と「切れ目の無音が長い」が
   両方いちばん合う組み合わせを動的計画法で選ぶ（文中の「？」「。」の間で切れてしまうのを防ぐ）
 """
 import argparse, wave
@@ -14,6 +14,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("wav"); ap.add_argument("out"); ap.add_argument("ids", nargs="+")
     ap.add_argument("--texts", required=True)
+    ap.add_argument("--expect", help="各行の長さの目安（秒、| 区切り）。同じ台本を別の声で切った長さなど。文字数より正確")
     a = ap.parse_args()
     texts = a.texts.split("|"); n = len(a.ids); assert len(texts) == n
     w = wave.open(a.wav); sr = w.getframerate(); x = np.frombuffer(w.readframes(w.getnframes()), np.int16)
@@ -28,7 +29,7 @@ def main():
             if i - st >= 20: runs.append((st, i))
             st = None
     cand = [(s + t) // 2 for s, t in runs]; gap = [t - s for s, t in runs]
-    L = np.array([len(t) for t in texts], float)
+    L = np.array([float(v) for v in a.expect.split("|")] if a.expect else [len(t) for t in texts], float)
     speech = (last - first) - sum(gap) * (n - 1) / max(len(gap), 1)
     rate = speech / L.sum()                           # 1文字あたりのフレーム数（目安）
     m = len(cand); INF = 1e18
