@@ -26,13 +26,18 @@ def post(path, params, body=None):
 def main():
     rq = json.load(open(sys.argv[1])); out = Path(sys.argv[2]); out.mkdir(parents=True, exist_ok=True)
     d = json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))
-    fix = lambda s: [s := re.sub(r["re"], r["to"], s) for r in d["rules"]][-1]
+    def fix(s):
+        for r in d["rules"]:
+            s = re.sub(r["re"], r["to"], s)
+        return s
     with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
         speakers = json.loads(r.read())
-    want = {m["uuid"]: m["for"] for m in rq["models"]}
+    want = {m["name"]: m["for"] for m in rq["models"]}     # /speakers の話者名＝AivisHub のモデル名で対応づける
     index = []
     for sp in speakers:
-        who = want.get(sp.get("speaker_uuid", "")) or next((w for u, w in want.items() if u in json.dumps(sp)), None) or "nagi"
+        who = want.get(sp["name"]) or next((w for n, w in want.items() if n in sp["name"] or sp["name"] in n), None)
+        if who is None:
+            print("対象外の話者:", sp["name"]); continue
         for st in sp["styles"]:
             pcm, sr = [], 44100
             for line in rq["lines"][who]:
