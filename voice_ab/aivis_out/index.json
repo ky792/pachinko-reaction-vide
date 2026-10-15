@@ -1,0 +1,242 @@
+[
+ {
+  "file": "Lux_ノーマル.wav",
+  "speaker": "Lux",
+  "style": "ノーマル",
+  "for": "baku"
+ },
+ {
+  "file": "kokuren_voice_ノーマル.wav",
+  "speaker": "kokuren_voice",
+  "style": "ノーマル",
+  "for": "baku"
+ },
+ {
+  "file": "kokuren_voice_Disgust.wav",
+  "speaker": "kokuren_voice",
+  "style": "Disgust",
+  "for": "baku"
+ },
+ {
+  "file": "kokuren_voice_Fear.wav",
+  "speaker": "kokuren_voice",
+  "style": "Fear",
+  "for": "baku"
+ },
+ {
+  "file": "kokuren_voice_Surprised.wav",
+  "speaker": "kokuren_voice",
+  "style": "Surprised",
+  "for": "baku"
+ },
+ {
+  "file": "kokuren_voice_Happy.wav",
+  "speaker": "kokuren_voice",
+  "style": "Happy",
+  "for": "baku"
+ },
+ {
+  "file": "kokuren_voice_Sad.wav",
+  "speaker": "kokuren_voice",
+  "style": "Sad",
+  "for": "baku"
+ },
+ {
+  "file": "にせ_ノーマル.wav",
+  "speaker": "にせ",
+  "style": "ノーマル",
+  "for": "baku"
+ },
+ {
+  "file": "まお_ノーマル.wav",
+  "speaker": "まお",
+  "style": "ノーマル",
+  "for": "nagi"
+ },
+ {
+  "file": "まお_ふつー.wav",
+  "speaker": "まお",
+  "style": "ふつー",
+  "for": "nagi"
+ },
+ {
+  "file": "まお_あまあま.wav",
+  "speaker": "まお",
+  "style": "あまあま",
+  "for": "nagi"
+ },
+ {
+  "file": "まお_おちつき.wav",
+  "speaker": "まお",
+  "style": "おちつき",
+  "for": "nagi"
+ },
+ {
+  "file": "まお_からかい.wav",
+  "speaker": "まお",
+  "style": "からかい",
+  "for": "nagi"
+ },
+ {
+  "file": "まお_せつなめ.wav",
+  "speaker": "まお",
+  "style": "せつなめ",
+  "for": "nagi"
+ },
+ {
+  "file": "みちのくあいり_標準.wav",
+  "speaker": "みちのくあいり",
+  "style": "標準",
+  "for": "nagi"
+ },
+ {
+  "file": "みちのくあいり_喜び.wav",
+  "speaker": "みちのくあいり",
+  "style": "喜び",
+  "for": "nagi"
+ },
+ {
+  "file": "みちのくあいり_悲しみ.wav",
+  "speaker": "みちのくあいり",
+  "style": "悲しみ",
+  "for": "nagi"
+ },
+ {
+  "file": "みちのくあいり_怒り.wav",
+  "speaker": "みちのくあいり",
+  "style": "怒り",
+  "for": "nagi"
+ },
+ {
+  "file": "みちのくあいり_驚き.wav",
+  "speaker": "みちのくあいり",
+  "style": "驚き",
+  "for": "nagi"
+ },
+ {
+  "file": "みちのくあいり_嫌悪.wav",
+  "speaker": "みちのくあいり",
+  "style": "嫌悪",
+  "for": "nagi"
+ },
+ {
+  "file": "みちのくあいり_恐怖.wav",
+  "speaker": "みちのくあいり",
+  "style": "恐怖",
+  "for": "nagi"
+ },
+ {
+  "file": "らせつん_標準.wav",
+  "speaker": "らせつん",
+  "style": "標準",
+  "for": "baku"
+ },
+ {
+  "file": "らせつん_標準２.wav",
+  "speaker": "らせつん",
+  "style": "標準２",
+  "for": "baku"
+ },
+ {
+  "file": "らせつん_喜び.wav",
+  "speaker": "らせつん",
+  "style": "喜び",
+  "for": "baku"
+ },
+ {
+  "file": "らせつん_悲しみ.wav",
+  "speaker": "らせつん",
+  "style": "悲しみ",
+  "for": "baku"
+ },
+ {
+  "file": "らせつん_怒り.wav",
+  "speaker": "らせつん",
+  "style": "怒り",
+  "for": "baku"
+ },
+ {
+  "file": "らせつん_驚き.wav",
+  "speaker": "らせつん",
+  "style": "驚き",
+  "for": "baku"
+ },
+ {
+  "file": "らせつん_嫌悪.wav",
+  "speaker": "らせつん",
+  "style": "嫌悪",
+  "for": "baku"
+ },
+ {
+  "file": "らせつん_恐怖.wav",
+  "speaker": "らせつん",
+  "style": "恐怖",
+  "for": "baku"
+ },
+ {
+  "file": "るな_ノーマル.wav",
+  "speaker": "るな",
+  "style": "ノーマル",
+  "for": "nagi"
+ },
+ {
+  "file": "コハク_ノーマル.wav",
+  "speaker": "コハク",
+  "style": "ノーマル",
+  "for": "nagi"
+ },
+ {
+  "file": "コハク_あまあま.wav",
+  "speaker": "コハク",
+  "style": "あまあま",
+  "for": "nagi"
+ },
+ {
+  "file": "コハク_せつなめ.wav",
+  "speaker": "コハク",
+  "style": "せつなめ",
+  "for": "nagi"
+ },
+ {
+  "file": "コハク_ねむたい.wav",
+  "speaker": "コハク",
+  "style": "ねむたい",
+  "for": "nagi"
+ },
+ {
+  "file": "宗周定昌_ノーマル.wav",
+  "speaker": "宗周定昌",
+  "style": "ノーマル",
+  "for": "baku"
+ },
+ {
+  "file": "澤原_玄二郎_ノーマル.wav",
+  "speaker": "澤原 玄二郎",
+  "style": "ノーマル",
+  "for": "baku"
+ },
+ {
+  "file": "澤原_玄二郎_close.wav",
+  "speaker": "澤原 玄二郎",
+  "style": "close",
+  "for": "baku"
+ },
+ {
+  "file": "澤原_玄二郎_close-shout.wav",
+  "speaker": "澤原 玄二郎",
+  "style": "close-shout",
+  "for": "baku"
+ },
+ {
+  "file": "澤原_玄二郎_far.wav",
+  "speaker": "澤原 玄二郎",
+  "style": "far",
+  "for": "baku"
+ },
+ {
+  "file": "澤原_玄二郎_far-shout.wav",
+  "speaker": "澤原 玄二郎",
+  "style": "far-shout",
+  "for": "baku"
+ }
+]
