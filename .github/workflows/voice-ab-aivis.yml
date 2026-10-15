@@ -1,0 +1,52 @@
+name: Voice A/B (AivisSpeech)
+
+# 作業ブランチの voice_ab/aivis_request.json を書き換えて push すると動く。
+#   {"action": "catalog"}                         … AivisHub のモデル一覧を voice_ab/aivis_catalog.md に
+#   {"action": "audition", "models": [...], ...}  … 指定モデルでセリフを読み、voice_ab/aivis_out/ に
+# 結果は同じブランチにコミットして戻す（voice_ab/aivis_request.json 以外の変更では動かない）
+on:
+  push:
+    paths:
+      - voice_ab/aivis_request.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Catalog
+        if: ${{ hashFiles('voice_ab/aivis_request.json') != '' }}
+        run: |
+          ACTION=$(python -c "import json;print(json.load(open('voice_ab/aivis_request.json'))['action'])")
+          echo "ACTION=$ACTION" >> $GITHUB_ENV
+          if [ "$ACTION" = "catalog" ]; then python scripts/voice_ab/aivis_catalog.py voice_ab/aivis_catalog; fi
+      - name: Start AivisSpeech
+        if: env.ACTION == 'audition'
+        run: |
+          mkdir -p ~/aivis/Models
+          for u in $(python -c "import json;print(' '.join(m['uuid'] for m in json.load(open('voice_ab/aivis_request.json'))['models']))"); do
+            curl -fL --retry 3 -o ~/aivis/Models/$u.aivmx "https://api.aivis-project.com/v1/aivm-models/$u/download?model_type=AIVMX"
+          done
+          sudo chmod -R 777 ~/aivis
+          docker run -d --name aivis -p 10101:10101 -v ~/aivis:/home/user/.local/share/AivisSpeech-Engine-Dev ghcr.io/aivis-project/aivisspeech-engine:cpu-latest
+          for i in $(seq 1 150); do curl -sf http://127.0.0.1:10101/version && break; sleep 4; done
+          curl -sf http://127.0.0.1:10101/version || { docker logs aivis | tail -50; exit 1; }
+      - name: Audition
+        if: env.ACTION == 'audition'
+        run: python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_out
+      - name: Commit results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add voice_ab
+          git diff --cached --quiet && { echo "変更なし"; exit 0; }
+          git commit -m "voice_ab: AivisSpeech ${ACTION} results"
+          git push

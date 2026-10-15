@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+"""AivisSpeech で、指定モデルの全話者・全スタイルにセリフを読ませる（GitHub Actions 用）
+
+  python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_out
+
+request: {"action": "audition", "models": [{"uuid": "...", "for": "nagi|baku"}],
+          "lines": {"nagi": ["..."], "baku": ["..."]}, "speed": 1.0, "intonation": 1.0}
+- 各スタイルで lines[for] を続けて読み、<モデル名>_<話者>_<スタイル>.wav に1本で書き出す（試聴用）
+- 読みは voice/dictionary.json の rules で直してから渡す
+"""
+import json, re, sys, urllib.parse, urllib.request, wave, io
+from pathlib import Path
+
+BASE = "http://127.0.0.1:10101"
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def post(path, params, body=None):
+    req = urllib.request.Request(f"{BASE}{path}?{urllib.parse.urlencode(params)}", method="POST",
+                                 data=json.dumps(body).encode() if body is not None else None,
+                                 headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=300) as r:
+        return r.read()
+
+
+def main():
+    rq = json.load(open(sys.argv[1])); out = Path(sys.argv[2]); out.mkdir(parents=True, exist_ok=True)
+    d = json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))
+    fix = lambda s: [s := re.sub(r["re"], r["to"], s) for r in d["rules"]][-1]
+    with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
+        speakers = json.loads(r.read())
+    want = {m["uuid"]: m["for"] for m in rq["models"]}
+    index = []
+    for sp in speakers:
+        who = want.get(sp.get("speaker_uuid", "")) or next((w for u, w in want.items() if u in json.dumps(sp)), None) or "nagi"
+        for st in sp["styles"]:
+            pcm, sr = [], 44100
+            for line in rq["lines"][who]:
+                q = json.loads(post("/audio_query", {"text": fix(line), "speaker": st["id"]}))
+                q.update({"speedScale": rq.get("speed", 1.0), "intonationScale": rq.get("intonation", 1.0)})
+                w = wave.open(io.BytesIO(post("/synthesis", {"speaker": st["id"]}, q)))
+                sr = w.getframerate(); pcm.append(w.readframes(w.getnframes())); pcm.append(b"\0\0" * int(sr * 0.5))
+            name = re.sub(r"[^\w\-]", "_", f"{sp['name']}_{st['name']}")
+            with wave.open(str(out / f"{name}.wav"), "wb") as w:
+                w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(b"".join(pcm))
+            index.append({"file": f"{name}.wav", "speaker": sp["name"], "style": st["name"], "for": who})
+            print(name, flush=True)
+    json.dump(index, open(out / "index.json", "w"), ensure_ascii=False, indent=1)
+
+
+if __name__ == "__main__":
+    main()
