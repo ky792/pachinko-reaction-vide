@@ -8,20 +8,28 @@
  ],
  "designs": [
   {
-   "name": "anime_genki_ja",
-   "instruct": "アニメの元気な女の子の声。10代後半くらい、高めで明るく張りのある声。語尾が跳ねるような弾む話し方。関西弁で、ツッコミは勢いよく大げさに。"
+   "name": "low_natural_ja",
+   "instruct": "アニメに出てくる元気な女の子の声。声の高さは低め〜中くらい（アルト）で、少しハスキー。自然な日本語のイントネーションで、アクセントを崩さずにはっきり話す。ツッコミは勢いよく。"
   },
   {
-   "name": "anime_genki_en",
-   "instruct": "Energetic anime girl voice, late teens, high-pitched, bright and bouncy, slightly tomboyish. Speaks Kansai-dialect Japanese with lively comedic timing and big exaggerated reactions."
+   "name": "low_natural_en",
+   "instruct": "Native Japanese speaker with completely natural standard Japanese intonation and pitch accent. Energetic tomboyish anime girl, low-to-mid pitch (alto), slightly husky, lively and punchy reactions."
   },
   {
-   "name": "anime_boyish",
-   "instruct": "少年っぽいアニメ声の女の子。中高音で、さっぱりした元気な声。関西弁で、ノリがよくテンポの速いツッコミ。"
+   "name": "low_boyish",
+   "instruct": "少年役を演じる女性声優のような、低めで張りのある元気な声。自然な日本語のアクセントで、テンポよく話す。"
   },
   {
-   "name": "anime_mascot",
-   "instruct": "アニメのマスコットキャラのような、かわいくて高い声。テンションが高く、語尾をはずませる。関西弁で、驚くときは声が裏返るくらい大げさ。"
+   "name": "anna_lower",
+   "model": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+   "speaker": "Ono_Anna",
+   "instruct": "少し低めの声で、元気に、ツッコミは勢いよく。"
+  },
+  {
+   "name": "anna_plain",
+   "model": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice",
+   "speaker": "Ono_Anna",
+   "instruct": ""
   }
  ]
 }

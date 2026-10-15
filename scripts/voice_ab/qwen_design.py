@@ -4,7 +4,10 @@
   python scripts/voice_ab/qwen_design.py voice_ab/qwen_request.json voice_ab/qwen_out
 
 request: {"model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign", "language": "Japanese",
-          "lines": ["..."], "designs": [{"name": "anime1", "instruct": "..."}]}
+          "lines": ["..."], "designs": [{"name": "anime1", "instruct": "..."},
+                                        {"name": "anna", "model": "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice", "speaker": "Ono_Anna", "instruct": ""}]}
+- designs[].model を省くと request の model（ボイスデザイン）。speaker があればプリセット声（generate_custom_voice）
+- メモリ節約のため、モデルは1種類ずつ読み込んで、使い終わったら解放する
 - 1つの説明につき、lines を1行ずつ作って 0.5秒の間でつなぎ、<name>.wav に書き出す
 - 読みは voice/dictionary.json の rules で直してから渡す
 """
@@ -27,16 +30,24 @@ def main():
             s = re.sub(r["re"], r["to"], s)
         return s
 
-    torch.set_num_threads(max(1, torch.get_num_threads()))
-    t0 = time.time()
-    model = Qwen3TTSModel.from_pretrained(rq["model"], device_map="cpu", dtype=torch.float32)
-    print(f"モデル読み込み {time.time() - t0:.0f}秒", flush=True)
     lines = [fix(s) for s in rq["lines"]]
-    index = []
-    for ds in rq["designs"]:
+    lang = [rq.get("language", "Japanese")] * len(lines)
+    index, model, loaded = [], None, None
+    for ds in sorted(rq["designs"], key=lambda x: x.get("model", rq["model"])):
+        name = ds.get("model", rq["model"])
+        if name != loaded:
+            model = None
+            import gc; gc.collect()
+            t0 = time.time()
+            model = Qwen3TTSModel.from_pretrained(name, device_map="cpu", dtype=torch.float32)
+            loaded = name
+            print(f"モデル読み込み {name} {time.time() - t0:.0f}秒", flush=True)
         t1 = time.time()
-        wavs, sr = model.generate_voice_design(text=lines, language=[rq.get("language", "Japanese")] * len(lines),
-                                               instruct=[ds["instruct"]] * len(lines))
+        if ds.get("speaker"):
+            kw = {"instruct": [ds["instruct"]] * len(lines)} if ds.get("instruct") else {}
+            wavs, sr = model.generate_custom_voice(text=lines, language=lang, speaker=[ds["speaker"]] * len(lines), **kw)
+        else:
+            wavs, sr = model.generate_voice_design(text=lines, language=lang, instruct=[ds["instruct"]] * len(lines))
         gap = np.zeros(int(sr * 0.5), dtype=np.float32)
         audio = np.concatenate([np.concatenate([np.asarray(w, dtype=np.float32), gap]) for w in wavs])
         sf.write(out / f"{ds['name']}.wav", audio, sr)
