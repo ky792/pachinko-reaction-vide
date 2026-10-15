@@ -42,7 +42,7 @@ jobs:
       - name: Audition
         if: env.ACTION == 'audition' || env.ACTION == 'lines'
         run: |
-          if [ "$ACTION" = "lines" ]; then pip install -q -r requirements.txt; python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_lines; exit 0; fi
+          if [ "$ACTION" = "lines" ]; then pip install -q -r requirements.txt pillow; python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_lines; exit 0; fi
           python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_out
           sudo apt-get install -y -qq ffmpeg > /dev/null
           for f in voice_ab/aivis_out/*.wav; do ffmpeg -v error -y -i "$f" -c:a aac -b:a 96k "${f%.wav}.m4a" && rm "$f"; done
