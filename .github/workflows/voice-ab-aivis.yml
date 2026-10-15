@@ -29,10 +29,10 @@ jobs:
           echo "ACTION=$ACTION" >> $GITHUB_ENV
           if [ "$ACTION" = "catalog" ]; then python scripts/voice_ab/aivis_catalog.py voice_ab/aivis_catalog; fi
       - name: Start AivisSpeech
-        if: env.ACTION == 'audition'
+        if: env.ACTION == 'audition' || env.ACTION == 'lines'
         run: |
           mkdir -p ~/aivis/Models
-          for u in $(python -c "import json;print(' '.join(m['uuid'] for m in json.load(open('voice_ab/aivis_request.json'))['models']))"); do
+          for u in $(python -c "import json;r=json.load(open('voice_ab/aivis_request.json'));print(' '.join(m['uuid'] for m in r.get('models',[r.get('model')])))"); do
             curl -fL --retry 3 -o ~/aivis/Models/$u.aivmx "https://api.aivis-project.com/v1/aivm-models/$u/download?model_type=AIVMX"
           done
           sudo chmod -R 777 ~/aivis
@@ -40,8 +40,9 @@ jobs:
           for i in $(seq 1 150); do curl -sf http://127.0.0.1:10101/version && break; sleep 4; done
           curl -sf http://127.0.0.1:10101/version || { docker logs aivis | tail -50; exit 1; }
       - name: Audition
-        if: env.ACTION == 'audition'
+        if: env.ACTION == 'audition' || env.ACTION == 'lines'
         run: |
+          if [ "$ACTION" = "lines" ]; then python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_lines; exit 0; fi
           python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_out
           sudo apt-get install -y -qq ffmpeg > /dev/null
           for f in voice_ab/aivis_out/*.wav; do ffmpeg -v error -y -i "$f" -c:a aac -b:a 96k "${f%.wav}.m4a" && rm "$f"; done

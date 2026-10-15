@@ -23,6 +23,23 @@ def post(path, params, body=None):
         return r.read()
 
 
+def lines(rq, out, fix):
+    """action=lines：台本のうち who の行だけを1行ずつ <行ID>.wav に書き出す（本番用の音声）"""
+    sys.path.insert(0, str(ROOT / "lab")); import episode  # noqa: E402
+    with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
+        sp = next(s for s in json.loads(r.read()) if rq["model"]["name"] in s["name"])
+    sid = next(st["id"] for st in sp["styles"] if st["name"] == rq["style"])
+    for sc in sorted((ROOT / rq["episode"] / "script").glob("*.txt")):
+        for it in episode.lines_with_ids(sc):
+            if it["who"] != rq["who"]:
+                continue
+            q = json.loads(post("/audio_query", {"text": fix(it["text"]), "speaker": sid}))
+            q.update({"speedScale": rq.get("speed", 1.0), "intonationScale": rq.get("intonation", 1.0),
+                      "prePhonemeLength": 0.05, "postPhonemeLength": 0.08})
+            (out / f"{it['id']}.wav").write_bytes(post("/synthesis", {"speaker": sid}, q))
+            print(it["id"], it["text"], flush=True)
+
+
 def main():
     rq = json.load(open(sys.argv[1])); out = Path(sys.argv[2]); out.mkdir(parents=True, exist_ok=True)
     d = json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))
@@ -30,6 +47,8 @@ def main():
         for r in d["rules"]:
             s = re.sub(r["re"], r["to"], s)
         return s
+    if rq["action"] == "lines":
+        return lines(rq, out, fix)
     with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
         speakers = json.loads(r.read())
     want = {m["name"]: m["for"] for m in rq["models"]}     # /speakers の話者名＝AivisHub のモデル名で対応づける

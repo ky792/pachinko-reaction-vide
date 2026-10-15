@@ -1,44 +1,12 @@
 {
- "action": "audition",
- "models": [
-  {
-   "uuid": "f5017410-fbb5-49e1-97cb-e785f42e15f5",
-   "name": "凛音エル",
-   "for": "baku"
-  },
-  {
-   "uuid": "1b2830f4-8cf1-4184-a0d9-3a1bace3a844",
-   "name": "みちのくあいり",
-   "for": "baku"
-  },
-  {
-   "uuid": "9107b8b6-1ed1-43f5-bebe-0de4df4d229d",
-   "name": "中2",
-   "for": "baku"
-  },
-  {
-   "uuid": "a670e6b8-0852-45b2-8704-1bc9862f2fe6",
-   "name": "花音",
-   "for": "baku"
-  },
-  {
-   "uuid": "3328da9a-8124-4619-a853-f7fc2f37889f",
-   "name": "桜音",
-   "for": "baku"
-  },
-  {
-   "uuid": "7fc08a41-b64d-456d-8b22-8e1284674775",
-   "name": "zonoko",
-   "for": "baku"
-  }
- ],
- "lines": {
-  "baku": [
-   "5月以降だけ？ほな4月までに入れた台は？",
-   "それな。入らん日はほんまに入らん。",
-   "規制が、北斗無双のライバル止めてくれとるやん！"
-  ]
+ "action": "lines",
+ "episode": "episodes/ken_test90_B2",
+ "who": "nagi",
+ "model": {
+  "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
+  "name": "コハク"
  },
- "speed": 1.1,
+ "style": "ねむたい",
+ "speed": 1.0,
  "intonation": 1.0
 }
