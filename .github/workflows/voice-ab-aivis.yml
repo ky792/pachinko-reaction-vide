@@ -29,7 +29,7 @@ jobs:
           echo "ACTION=$ACTION" >> $GITHUB_ENV
           if [ "$ACTION" = "catalog" ]; then python scripts/voice_ab/aivis_catalog.py voice_ab/aivis_catalog; fi
       - name: Start AivisSpeech
-        if: env.ACTION == 'audition' || env.ACTION == 'lines'
+        if: env.ACTION == 'audition' || env.ACTION == 'lines' || env.ACTION == 'variants'
         run: |
           mkdir -p ~/aivis/Models
           for u in $(python -c "import json;r=json.load(open('voice_ab/aivis_request.json'));print(' '.join(m['uuid'] for m in r.get('models',[r.get('model')])))"); do
@@ -40,7 +40,7 @@ jobs:
           for i in $(seq 1 150); do curl -sf http://127.0.0.1:10101/version && break; sleep 4; done
           curl -sf http://127.0.0.1:10101/version || { docker logs aivis | tail -50; exit 1; }
       - name: Audition
-        if: env.ACTION == 'audition' || env.ACTION == 'lines'
+        if: env.ACTION == 'audition' || env.ACTION == 'lines' || env.ACTION == 'variants'
         run: |
           if [ "$ACTION" = "lines" ]; then pip install -q -r requirements.txt pillow; python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_lines; exit 0; fi
           python scripts/voice_ab/aivis_audition.py voice_ab/aivis_request.json voice_ab/aivis_out

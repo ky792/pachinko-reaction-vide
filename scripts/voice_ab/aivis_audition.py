@@ -40,6 +40,28 @@ def lines(rq, out, fix):
             print(it["id"], it["text"], flush=True)
 
 
+def variants(rq, out, fix):
+    """action=variants：同じ声・スタイルで、速さ・抑揚などを変えた版を作る。<name>.wav に lines をつないで書き出す"""
+    with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
+        sp = next(s for s in json.loads(r.read()) if rq["model"]["name"] in s["name"])
+    sid = next(st["id"] for st in sp["styles"] if st["name"] == rq["style"])
+    index = []
+    for v in rq["variants"]:
+        pcm, sr = [], 44100
+        for line in rq["lines"]:
+            q = json.loads(post("/audio_query", {"text": fix(line), "speaker": sid}))
+            q.update({"speedScale": v.get("speed", 1.0), "intonationScale": v.get("intonation", 1.0),
+                      "pitchScale": v.get("pitch", 0.0)})
+            if "tempo_dynamics" in v:
+                q["tempoDynamicsScale"] = v["tempo_dynamics"]
+            w = wave.open(io.BytesIO(post("/synthesis", {"speaker": sid}, q)))
+            sr = w.getframerate(); pcm.append(w.readframes(w.getnframes())); pcm.append(b"\0\0" * int(sr * 0.5))
+        with wave.open(str(out / f"{v['name']}.wav"), "wb") as w:
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(b"".join(pcm))
+        index.append({"file": f"{v['name']}.wav", **v}); print(v["name"], flush=True)
+    json.dump(index, open(out / "index.json", "w"), ensure_ascii=False, indent=1)
+
+
 def main():
     rq = json.load(open(sys.argv[1])); out = Path(sys.argv[2]); out.mkdir(parents=True, exist_ok=True)
     d = json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))
@@ -49,6 +71,8 @@ def main():
         return s
     if rq["action"] == "lines":
         return lines(rq, out, fix)
+    if rq["action"] == "variants":
+        return variants(rq, out, fix)
     with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
         speakers = json.loads(r.read())
     want = {m["name"]: m["for"] for m in rq["models"]}     # /speakers の話者名＝AivisHub のモデル名で対応づける
