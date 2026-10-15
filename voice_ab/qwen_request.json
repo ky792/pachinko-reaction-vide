@@ -1,0 +1,27 @@
+{
+ "model": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+ "language": "Japanese",
+ "lines": [
+  "75%！4回に3回は入るんか！",
+  "そっちの話はせんでええねん！",
+  "23人に1人！島に1人はおるやん！"
+ ],
+ "designs": [
+  {
+   "name": "anime_genki_ja",
+   "instruct": "アニメの元気な女の子の声。10代後半くらい、高めで明るく張りのある声。語尾が跳ねるような弾む話し方。関西弁で、ツッコミは勢いよく大げさに。"
+  },
+  {
+   "name": "anime_genki_en",
+   "instruct": "Energetic anime girl voice, late teens, high-pitched, bright and bouncy, slightly tomboyish. Speaks Kansai-dialect Japanese with lively comedic timing and big exaggerated reactions."
+  },
+  {
+   "name": "anime_boyish",
+   "instruct": "少年っぽいアニメ声の女の子。中高音で、さっぱりした元気な声。関西弁で、ノリがよくテンポの速いツッコミ。"
+  },
+  {
+   "name": "anime_mascot",
+   "instruct": "アニメのマスコットキャラのような、かわいくて高い声。テンションが高く、語尾をはずませる。関西弁で、驚くときは声が裏返るくらい大げさ。"
+  }
+ ]
+}
