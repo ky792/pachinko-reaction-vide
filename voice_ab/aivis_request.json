@@ -2,68 +2,43 @@
  "action": "audition",
  "models": [
   {
-   "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
-   "name": "コハク",
-   "for": "nagi"
-  },
-  {
-   "uuid": "a59cb814-0083-4369-8542-f51a29e72af7",
-   "name": "まお",
-   "for": "nagi"
+   "uuid": "f5017410-fbb5-49e1-97cb-e785f42e15f5",
+   "name": "凛音エル",
+   "for": "baku"
   },
   {
    "uuid": "1b2830f4-8cf1-4184-a0d9-3a1bace3a844",
    "name": "みちのくあいり",
-   "for": "nagi"
-  },
-  {
-   "uuid": "4f281e78-eba6-495a-8e50-5c322d02b5b1",
-   "name": "るな",
-   "for": "nagi"
-  },
-  {
-   "uuid": "2e1fdde8-d089-42d7-b64f-cf89952b1bdc",
-   "name": "澤原 玄二郎",
    "for": "baku"
   },
   {
-   "uuid": "00f29eb2-e12b-4f64-a5e8-4188be62de33",
-   "name": "宗周定昌",
+   "uuid": "9107b8b6-1ed1-43f5-bebe-0de4df4d229d",
+   "name": "中2",
    "for": "baku"
   },
   {
-   "uuid": "e40d5b99-8cde-4442-a45b-0ebec9167506",
-   "name": "kokuren_voice",
+   "uuid": "a670e6b8-0852-45b2-8704-1bc9862f2fe6",
+   "name": "花音",
    "for": "baku"
   },
   {
-   "uuid": "3dabea2b-cc10-41da-955b-4618ce84e716",
-   "name": "Lux",
+   "uuid": "3328da9a-8124-4619-a853-f7fc2f37889f",
+   "name": "桜音",
    "for": "baku"
   },
   {
-   "uuid": "6d11c6c2-f4a4-4435-887e-23dd60f8b8dd",
-   "name": "にせ",
-   "for": "baku"
-  },
-  {
-   "uuid": "9f36ec0d-8dac-42dc-aff4-149c5f99faad",
-   "name": "らせつん",
+   "uuid": "7fc08a41-b64d-456d-8b22-8e1284674775",
+   "name": "zonoko",
    "for": "baku"
   }
  ],
  "lines": {
-  "nagi": [
-   "なのに同じ年、ホールには80%の台が普通にあった。",
-   "入るまでが半々だけどね。",
-   "間に合った者勝ち、だね。"
-  ],
   "baku": [
    "5月以降だけ？ほな4月までに入れた台は？",
    "それな。入らん日はほんまに入らん。",
    "規制が、北斗無双のライバル止めてくれとるやん！"
   ]
  },
- "speed": 1.0,
+ "speed": 1.1,
  "intonation": 1.0
 }
