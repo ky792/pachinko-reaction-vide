@@ -1,122 +1,27 @@
 [
  {
-  "file": "zonoko_ノーマル.m4a",
-  "speaker": "zonoko",
-  "style": "ノーマル",
-  "for": "baku"
+  "file": "v0_now.m4a",
+  "name": "v0_now",
+  "speed": 1.0,
+  "intonation": 1.0
  },
  {
-  "file": "zonoko_A.m4a",
-  "speaker": "zonoko",
-  "style": "A",
-  "for": "baku"
+  "file": "v1_slow_flat.m4a",
+  "name": "v1_slow_flat",
+  "speed": 0.92,
+  "intonation": 0.8
  },
  {
-  "file": "zonoko_B.m4a",
-  "speaker": "zonoko",
-  "style": "B",
-  "for": "baku"
+  "file": "v2_slower_flatter.m4a",
+  "name": "v2_slower_flatter",
+  "speed": 0.86,
+  "intonation": 0.65
  },
  {
-  "file": "zonoko_C.m4a",
-  "speaker": "zonoko",
-  "style": "C",
-  "for": "baku"
- },
- {
-  "file": "zonoko_D.m4a",
-  "speaker": "zonoko",
-  "style": "D",
-  "for": "baku"
- },
- {
-  "file": "みちのくあいり_標準.m4a",
-  "speaker": "みちのくあいり",
-  "style": "標準",
-  "for": "baku"
- },
- {
-  "file": "みちのくあいり_喜び.m4a",
-  "speaker": "みちのくあいり",
-  "style": "喜び",
-  "for": "baku"
- },
- {
-  "file": "みちのくあいり_悲しみ.m4a",
-  "speaker": "みちのくあいり",
-  "style": "悲しみ",
-  "for": "baku"
- },
- {
-  "file": "みちのくあいり_怒り.m4a",
-  "speaker": "みちのくあいり",
-  "style": "怒り",
-  "for": "baku"
- },
- {
-  "file": "みちのくあいり_驚き.m4a",
-  "speaker": "みちのくあいり",
-  "style": "驚き",
-  "for": "baku"
- },
- {
-  "file": "みちのくあいり_嫌悪.m4a",
-  "speaker": "みちのくあいり",
-  "style": "嫌悪",
-  "for": "baku"
- },
- {
-  "file": "みちのくあいり_恐怖.m4a",
-  "speaker": "みちのくあいり",
-  "style": "恐怖",
-  "for": "baku"
- },
- {
-  "file": "中2_ノーマル.m4a",
-  "speaker": "中2",
-  "style": "ノーマル",
-  "for": "baku"
- },
- {
-  "file": "凛音エル_ノーマル.m4a",
-  "speaker": "凛音エル",
-  "style": "ノーマル",
-  "for": "baku"
- },
- {
-  "file": "凛音エル_Angry.m4a",
-  "speaker": "凛音エル",
-  "style": "Angry",
-  "for": "baku"
- },
- {
-  "file": "凛音エル_Fear.m4a",
-  "speaker": "凛音エル",
-  "style": "Fear",
-  "for": "baku"
- },
- {
-  "file": "凛音エル_Happy.m4a",
-  "speaker": "凛音エル",
-  "style": "Happy",
-  "for": "baku"
- },
- {
-  "file": "凛音エル_Sad.m4a",
-  "speaker": "凛音エル",
-  "style": "Sad",
-  "for": "baku"
- },
- {
-  "file": "桜音_ノーマル.m4a",
-  "speaker": "桜音",
-  "style": "ノーマル",
-  "for": "baku"
- },
- {
-  "file": "花音_ノーマル.m4a",
-  "speaker": "花音",
-  "style": "ノーマル",
-  "for": "baku"
+  "file": "v3_pitch_down.m4a",
+  "name": "v3_pitch_down",
+  "speed": 0.92,
+  "intonation": 0.8,
+  "pitch": -0.05
  }
 ]
