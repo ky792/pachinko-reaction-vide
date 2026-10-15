@@ -8,5 +8,8 @@
  },
  "style": "ねむたい",
  "speed": 1.0,
- "intonation": 1.0
+ "intonation": 1.0,
+ "only": [
+  "01_eva319red-019"
+ ]
 }

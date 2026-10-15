@@ -31,7 +31,7 @@ def lines(rq, out, fix):
     sid = next(st["id"] for st in sp["styles"] if st["name"] == rq["style"])
     for sc in sorted((ROOT / rq["episode"] / "script").glob("*.txt")):
         for it in episode.lines_with_ids(sc):
-            if it["who"] != rq["who"]:
+            if it["who"] != rq["who"] or (rq.get("only") and it["id"] not in rq["only"]):
                 continue
             q = json.loads(post("/audio_query", {"text": fix(it["text"]), "speaker": sid}))
             q.update({"speedScale": rq.get("speed", 1.0), "intonationScale": rq.get("intonation", 1.0),
