@@ -1,5 +1,5 @@
 {
- "_note": "2026-10-15 ユーザー試聴で決定（候補）。ナギ＝AivisSpeech コハク『ねむたい』、バク＝AivisSpeech zonoko『D』（速さ1.1）を後から響きごと＋1.5半音。全部 AivisSpeech なので無料・回数制限なし。本番採用は短尺動画で確認してから。voice/casting_b.json（VOICEVOX）と voice/casting_gemini.json は残している",
+ "_note": "2026-10-15 ユーザー試聴で決定（候補）。ナギ＝AivisSpeech コハク『ねむたい』（無料・GitHub Actions で生成）、バク＝Gemini Zephyr（関西弁の猫キャラ・ボーイッシュな女の子の指示、加工なし。1章＝1リクエストで作り scripts/voice_ab/split_lines.py で1行ずつに切る）。本番採用は短尺動画で確認してから",
  "nagi": {
   "engine": "aivis",
   "model_uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
@@ -11,6 +11,13 @@
   "license": "ACML 1.0"
  },
  "baku": {
+  "engine": "gemini",
+  "model": "gemini-3.8-flash-tts",
+  "voice": "Zephyr",
+  "pitch_shift_semitones": 0,
+  "profile": "元気な猫のマスコットキャラ。ボーイッシュな女の子の声で、関西弁ネイティブ。パチンコ好きでノリがよく、普段はゆるく、ツッコミは勢いよく大げさ。アニメの声優が演じるような、はっきりキャラクターと分かる作った声で。地声っぽい生々しさは出さない。"
+ },
+ "baku_alt_zonoko": {
   "engine": "aivis",
   "model_uuid": "7fc08a41-b64d-456d-8b22-8e1284674775",
   "speaker": "zonoko",
