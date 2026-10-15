@@ -422,12 +422,12 @@ def bgm_volume_expr(track, gain):
     return f"{gain}*{e}"
 
 
-def concat(out_dir, stems, final, bgm_gain=0.10, bgm_track=()):
+def concat(out_dir, stems, final, bgm_gain=0.10, bgm_track=(), bgm_file="main.wav"):
     lst = out_dir / "concat.txt"
     lst.write_text("".join(f"file '{(out_dir / f'{s}.mp4').resolve()}'\n" for s in stems), encoding="utf-8")
     joined = out_dir / "joined.mp4"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", str(joined)], check=True)
-    bgm = ui.ASSETS / "bgm" / "main.wav"
+    bgm = ui.ASSETS / "bgm" / bgm_file          # 回ごとに episode.json の "bgm" で選べる（既定は main.wav）
     if bgm.exists():
         dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(joined)]))
         subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(joined), "-stream_loop", "-1", "-i", str(bgm),
@@ -485,7 +485,7 @@ def main():
         for stem in stems:
             track += [dict(b, t=b["t"] + off) for b in scenes[stem].get("bgm_track", [])]
             off += scenes[stem]["duration"]
-        concat(out_dir, stems, final, bgm_gain=conf.get("bgm_gain", 0.10), bgm_track=track)
+        concat(out_dir, stems, final, bgm_gain=conf.get("bgm_gain", 0.10), bgm_track=track, bgm_file=conf.get("bgm", "main.wav"))
         print("完成:", final)
 
 
