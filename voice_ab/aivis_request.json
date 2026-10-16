@@ -1,32 +1,12 @@
 {
- "action": "variants",
+ "action": "lines",
+ "episode": "episodes/news01",
+ "who": "nagi",
  "model": {
   "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
   "name": "コハク"
  },
  "style": "ねむたい",
- "lines": [
-  "ST突入率。約75%で、1/319のエヴァで一番高いって紹介されてる。",
-  "でも1000回転ハマる人も、23人に1人くらいいる計算。",
-  "私は様子見で。"
- ],
- "variants": [
-  {
-   "name": "v2_slower_flatter",
-   "speed": 0.86,
-   "intonation": 0.65
-  },
-  {
-   "name": "v5_engine_p10",
-   "speed": 0.86,
-   "intonation": 0.65,
-   "pitch": -0.1
-  },
-  {
-   "name": "v6_engine_p15",
-   "speed": 0.86,
-   "intonation": 0.65,
-   "pitch": -0.15
-  }
- ]
+ "speed": 0.86,
+ "intonation": 0.65
 }

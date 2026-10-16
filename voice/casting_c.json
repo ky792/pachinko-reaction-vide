@@ -1,14 +1,17 @@
 {
- "_note": "2026-10-15 ユーザー決定（候補）。ナギ＝AivisSpeech コハク『ねむたい』（Gemini Leda より前の方がよいとのこと。もっと気怠げ・低くする調整を検討中）、バク＝Gemini Fenrir（熱血な兄貴分）",
+ "_note": "2026-10-16 ユーザー決定。ナギ＝AivisSpeech コハク『ねむたい』速さ0.86・抑揚0.65＋響きごと−1.5半音、バク＝Gemini Fenrir（熱血な兄貴分）",
  "nagi": {
   "engine": "aivis",
   "model_uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
   "speaker": "コハク",
   "style": "ねむたい",
-  "speed": 1.0,
-  "intonation": 1.0,
+  "speed": 0.86,
+  "intonation": 0.65,
   "credit": "AivisSpeech: コハク（モデルの説明文のクレジット表記を採用前に確認）",
-  "license": "ACML 1.0"
+  "license": "ACML 1.0",
+  "pitch_shift_semitones": -1.5,
+  "pitch_shift_method": "asetrate",
+  "_pitch_shift": "生成後に、元の44.1kHzのまま響きごと下げる：asetrate=44100*2^(n/12),aresample=44100,atempo=2^(-n/12)（声質を保つ rubberband はケロケロ声になるので使わない）"
  },
  "baku": {
   "engine": "gemini",
