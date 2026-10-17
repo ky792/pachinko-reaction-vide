@@ -450,6 +450,7 @@ def concat(out_dir, stems, final, bgm_gain=0.10, bgm_track=(), bgm_file="main.wa
 
 
 def main():
+    global GAP
     ap = argparse.ArgumentParser()
     ap.add_argument("episode_dir")
     ap.add_argument("--only", help="この章だけ（ファイル名の頭、例 02_65）")
@@ -460,6 +461,7 @@ def main():
     args = ap.parse_args()
     ep = Path(args.episode_dir)
     data, conf = load_data(ep)
+    GAP = conf.get("gap", GAP)        # episode.json の "gap" でセリフ間の間を回ごとに変えられる（テンポ）
     out_dir = Path(args.out or (ep / "build"))
     out_dir.mkdir(parents=True, exist_ok=True)
     scripts = sorted((ep / "script").glob("*.txt"))

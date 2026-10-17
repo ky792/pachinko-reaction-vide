@@ -1,59 +1,12 @@
 {
- "action": "audition",
- "models": [
-  {
-   "uuid": "7fc08a41-b64d-456d-8b22-8e1284674775",
-   "name": "zonoko",
-   "for": "baku"
-  },
-  {
-   "uuid": "a59cb814-0083-4369-8542-f51a29e72af7",
-   "name": "まお",
-   "for": "baku"
-  },
-  {
-   "uuid": "e9339137-2ae3-4d41-9394-fb757a7e61e6",
-   "name": "まい",
-   "for": "baku"
-  },
-  {
-   "uuid": "4f281e78-eba6-495a-8e50-5c322d02b5b1",
-   "name": "るな",
-   "for": "baku"
-  },
-  {
-   "uuid": "0f6821f4-9f86-4da1-a41a-fbe6fff9ca88",
-   "name": "天深シノ",
-   "for": "baku"
-  },
-  {
-   "uuid": "9f36ec0d-8dac-42dc-aff4-149c5f99faad",
-   "name": "らせつん",
-   "for": "baku"
-  },
-  {
-   "uuid": "25b39db7-5757-47ef-9fe4-2b7aff328a18",
-   "name": "F2",
-   "for": "baku"
-  },
-  {
-   "uuid": "6acf95e8-11a9-414e-aa9c-6dbebf9113ca",
-   "name": "F1",
-   "for": "baku"
-  },
-  {
-   "uuid": "9107b8b6-1ed1-43f5-bebe-0de4df4d229d",
-   "name": "中2",
-   "for": "baku"
-  }
- ],
- "lines": {
-  "baku": [
-   "75%！4回に3回は入るんか！",
-   "そっちの話はせんでええねん！",
-   "23人に1人！島に1人はおるやん！"
-  ]
+ "action": "lines",
+ "episode": "episodes/eva_history",
+ "who": "nagi",
+ "model": {
+  "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
+  "name": "コハク"
  },
- "speed": 1.08,
- "intonation": 1.3
+ "style": "ねむたい",
+ "speed": 0.95,
+ "intonation": 0.65
 }
