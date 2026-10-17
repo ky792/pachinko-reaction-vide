@@ -1,0 +1,45 @@
+name: Voice A/B (Qwen3-TTS)
+
+# 作業ブランチの voice_ab/qwen_request.json を書き換えて push すると動く。
+# 結果（m4a と index.json）は voice_ab/qwen_out/ にコミットして戻す
+on:
+  push:
+    paths:
+      - voice_ab/qwen_request.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq sox ffmpeg > /dev/null
+          python -m pip install -q torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -q qwen-tts soundfile numpy
+      - name: Cache model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ hashFiles('voice_ab/qwen_request.json') }}
+          restore-keys: hf-
+      - name: Generate
+        run: python scripts/voice_ab/qwen_design.py voice_ab/qwen_request.json voice_ab/qwen_out
+      - name: Commit results
+        run: |
+          for f in voice_ab/qwen_out/*.wav; do ffmpeg -v error -y -i "$f" -c:a aac -b:a 96k "${f%.wav}.m4a" && rm "$f"; done
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add voice_ab/qwen_out
+          git diff --cached --quiet && { echo "変更なし"; exit 0; }
+          git commit -m "voice_ab: Qwen3-TTS results"
+          git pull --no-rebase -q origin "${GITHUB_REF_NAME}" || true
+          git push

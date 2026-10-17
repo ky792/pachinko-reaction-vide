@@ -26,9 +26,10 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ui  # noqa: E402
 import motion  # noqa: E402
+import skit  # noqa: E402
 
 SR = 44100
-CHAR_H = {"normal": 330, "machine": 250, "hidden": 330}
+CHAR_H = {"normal": 330, "machine": 250, "hidden": 330, "skit": 330}
 
 
 def layout_state(scene, t):
@@ -47,6 +48,22 @@ def layout_state(scene, t):
     return h0 + (h1 - h0) * k, a0 + (a1 - a0) * k
 
 
+def skit_state(scene, t):
+    """寸劇モードの濃さ（0〜1）と、寸劇が始まってからの秒数。切り替えは0.4秒で滑らかに"""
+    lays = sorted(scene["layout"], key=lambda x: x["start"])
+    k, since = 0.0, 0.0
+    for i, L in enumerate(lays):
+        if t < L["start"]:
+            break
+        on = 1.0 if L["mode"] == "skit" else 0.0
+        prev = k
+        p = ui.ease_in_out(ui.prog(t, L["start"], 0.4)) if i else 1.0   # 最初から寸劇なら、いきなり寸劇
+        k = prev + (on - prev) * p
+        if on:
+            since = t - L["start"]
+    return k, since
+
+
 def speaker_at(scene, t):
     for s in scene["subs"]:
         if s["start"] <= t < s["end"]:
@@ -63,7 +80,16 @@ def emphasis_at(scene, who, t):
     return 1.0
 
 
-BACK = ("chapter", "title", "timeline", "machine", "keyword", "flow", "lineup")
+def focus_state(scene, t):
+    """オチの寄り：(寄る相手, 0〜1)。0.4秒で寄り、終わりから0.4秒で戻す"""
+    for f in scene.get("focus", []):
+        if f["start"] <= t < f["end"] + 0.4:
+            k = min(ui.ease_out(ui.prog(t, f["start"], 0.4)), 1 - ui.ease_in_out(ui.prog(t, f["end"], 0.4)))
+            return f["who"], max(0.0, k)
+    return None, 0.0
+
+
+BACK = ("chapter", "title", "intro", "timeline", "machine", "keyword", "flow", "lineup")
 
 
 def year_at(scene, t):
@@ -94,6 +120,8 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
         ui.chapter_card(cv, tl, dur, d)
     elif tp == "title":
         ui.title_card(cv, tl, dur, d)
+    elif tp == "intro":
+        ui.intro_card(cv, tl, dur, d)
     elif tp == "timeline":
         ui.timeline(cv, tl, dur, d)
     elif tp == "machine":
@@ -113,12 +141,14 @@ def state_key(scene, t):
     # 要素を動かす章では座標変化をキャッシュしてしまわないようにする。
     if scene.get("motion", {}).get("elements"):
         return None
+    if focus_state(scene, t)[1] > 0 or skit_state(scene, t)[0] > 0:
+        return None
     key = []
     y, still = year_at(scene, t)
     if not still:
         return None
     cues = scene["cues"]
-    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title")), default=0)
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro")), default=0)
     if chap_end and chap_end - 0.4 <= t < chap_end + 0.15:
         return None
     key.append(round(y, 3))
@@ -150,17 +180,18 @@ def render_layers(scene, t, images):
     ch = scene["chapter"]
     cues = scene["cues"]
     under = ui.background().copy()
-    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title")), default=0)
-    first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title")), default=1e9)
-    in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title"))
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro")), default=0)
+    first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title", "intro")), default=1e9)
+    in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title", "intro"))
     if in_card:
         bar_a = 0.0 if t >= first_bg + 0.3 else 1 - ui.prog(t, first_bg, 0.3)
         # 全画面表示が終わる直前から上部バーを戻す
         for c in cues:
-            if c["type"] in ("chapter", "title") and c["start"] <= t < c["end"]:
+            if c["type"] in ("chapter", "title", "intro") and c["start"] <= t < c["end"]:
                 bar_a = max(bar_a, ui.ease_out(ui.prog(t, c["end"] - 0.4, 0.5)))
     else:
         bar_a = 1.0
+    bar_a *= 1 - skit_state(scene, t)[0]
     y, _ = year_at(scene, t)
     ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"))
     for c in cues:
@@ -199,11 +230,20 @@ def render_frame(scene, t, images):
     cv = motion.camera_image(under.copy(), motion.camera_state(scene, t))
     h, a = layout_state(scene, t)
     who = speaker_at(scene, t)
+    fw, fk = focus_state(scene, t)
+    if fk > 0:                                   # 背景を最大35%暗く
+        shade = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, int(255 * 0.35 * fk)))
+        cv.alpha_composite(shade)
+    sk, since = skit_state(scene, t)
+    if sk > 0.01:
+        skit.draw(cv, scene, t, who, ui.prog(since, 0, 0.7), sk)
+    a *= 1 - sk
     if a > 0.01:
-        lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
         for c in ("nagi", "baku"):
-            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=emphasis_at(scene, c, t))
-        ui.paste(cv, lay, (0, 0), a)
+            lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
+            ex = emphasis_at(scene, c, t) * (1 + 0.2 * fk if c == fw else 1.0)
+            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex)
+            ui.paste(cv, lay, (0, 0), a * (1 - 0.5 * fk if fw and c != fw else 1.0))
     cv.alpha_composite(over)
     return cv.convert("RGB")
 

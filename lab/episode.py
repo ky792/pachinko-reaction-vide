@@ -28,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import render  # noqa: E402
 import motion  # noqa: E402
 import ui  # noqa: E402
+import skit  # noqa: E402
 
 SR = 44100
 CHARS_PER_SEC = {"nagi": 5.0, "baku": 5.3}   # 音声が無いときの推定読み上げ速度
@@ -35,6 +36,7 @@ GAP = 0.40            # セリフ間の間
 SHOW_PAUSE = 0.35     # 資料が切り替わったあと、読む時間を少し取る
 CHAPTER_DUR = 2.6
 TITLE_DUR = 3.4
+INTRO_DUR = 2.2       # キャラ紹介カード（@intro nagi / @intro baku）
 WHO = {"ナギ": "nagi", "バク": "baku"}
 NUM = re.compile(r"(?:約)?(?:[0-9][0-9,.]*(?:%|個|回転|回|ラウンド|R|分の1|秒)|1/[0-9][0-9.]*)")
 
@@ -43,18 +45,58 @@ NUM = re.compile(r"(?:約)?(?:[0-9][0-9,.]*(?:%|個|回転|回|ラウンド|R|�
 def parse_script(path):
     """1行ずつ読む。戻り値は命令とセリフの並び"""
     out = []
+    pending = {}
     for raw in path.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if not line or line.startswith("#"):
             continue
         if line.startswith("@"):
             parts = line[1:].split(None, 1)
+            if parts[0] == "dir":
+                pending = parse_dir(parts[1] if len(parts) > 1 else "", path.name)
+                continue
             out.append({"cmd": parts[0], "arg": parts[1] if len(parts) > 1 else ""})
             continue
         m = re.match(r"^(ナギ|バク)(!?)[:：]\s*(.+)$", line)
         if not m:
             raise ValueError(f"{path.name}: 読めない行 → {raw}")
-        out.append({"cmd": "line", "who": WHO[m.group(1)], "tsukkomi": m.group(2) == "!", "text": m.group(3)})
+        out.append({"cmd": "line", "who": WHO[m.group(1)], "tsukkomi": m.group(2) == "!", "text": m.group(3),
+                    "dir": pending})
+        pending = {}
+    return out
+
+
+# @dir の値の範囲（直後の1セリフだけに効く演出）
+DIR_RANGE = {"pre": (0, 2), "post": (0, 2), "speed": (0.7, 1.4), "int": (0.5, 1.6), "vol": (0.5, 1.2)}
+DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail", "act")
+
+
+def parse_dir(arg, name="台本"):
+    d = {}
+    for tok in arg.split():
+        if "=" not in tok:
+            raise ValueError(f"{name}: @dir は key=value で書く → {tok}")
+        k, v = tok.split("=", 1)
+        if k in DIR_RANGE:
+            x = float(v)
+            lo, hi = DIR_RANGE[k]
+            if not lo <= x <= hi:
+                raise ValueError(f"{name}: @dir {k}={v} は {lo}〜{hi} の範囲で")
+            d[k] = x
+        elif k in DIR_TEXT:
+            d[k] = v
+        else:
+            raise ValueError(f"{name}: @dir の知らないキー → {k}")
+    return d
+
+
+def lines_with_ids(script_path):
+    """セリフだけを、音声ファイル名と同じID（<章>-001…）つきで返す（lab/tts.py 用）"""
+    out, n = [], 0
+    for it in parse_script(script_path):
+        if it["cmd"] == "line":
+            n += 1
+            out.append(dict(it, id=f"{script_path.stem}-{n:03d}"))
     return out
 
 
@@ -107,7 +149,7 @@ def wrap2(text, width=21):
     mid = n / 2
     cands = []
     for k in range(1, n):
-        if depth_at[k] or depth_at[k - 1]:
+        if depth_at[k] and depth_at[k - 1]:     # 強調数字の途中では折らない（直前・直後なら折ってよい）
             continue
         if plain[k] in "、。！？!?）」』ー…":
             continue
@@ -118,6 +160,8 @@ def wrap2(text, width=21):
         cands.append((score, k))
     k = min(cands)[1] if cands else int(mid)
     cut = idx[k]
+    while cut > 0 and text[cut - 1] == "{":    # 強調数字の直前で折るときは「{」ごと次の行へ
+        cut -= 1
     return text[:cut] + "\n" + text[cut:]
 
 
@@ -137,7 +181,9 @@ def build_chapter(ep_dir, script_path, data):
     stem = script_path.stem
     items = parse_script(script_path)
     scene = {"duration": 0, "cues": [], "layout": [], "subs": [], "emphasis": [], "se": [],
-             "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []}}
+             "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []},
+             "focus": [], "bgm_track": [], "acts": []}
+    directed = any(it.get("dir") for it in items if it["cmd"] == "line")   # @dir がある章だけ新しい間の付け方
     t = 0.25
     cur = None          # 今出ている資料
     chap = None
@@ -173,8 +219,18 @@ def build_chapter(ep_dir, script_path, data):
             scene["cues"].append({"type": "title", "start": t, "end": t + TITLE_DUR, "data": data["title"]})
             scene["se"].append({"t": t + 0.05, "kind": "don", "gain": 0.35})
             t += TITLE_DUR
+        elif c == "intro":
+            # @intro nagi … data["intro"][who] のキャラ紹介カードを全画面で出す（ニュース解説のOP）
+            close_cur(t)
+            set_layout("hidden", t)
+            scene["cues"].append({"type": "intro", "start": t, "end": t + INTRO_DUR, "data": dict(data["intro"][it["arg"]], who=it["arg"])})
+            scene["se"].append({"t": t + 0.05, "kind": "pon", "gain": 0.3})
+            t += INTRO_DUR
         elif c == "year":
             scene["year_track"].append([t, float(it["arg"])])
+        elif c == "skit":
+            # @skit on / @skit off … 寸劇（キャラを大きく向かい合わせ、セリフごとに動かす。lab/skit.py）
+            set_layout("normal" if it["arg"].strip() == "off" else "skit", t)
         elif c == "clear":
             close_cur(t)
             set_layout("normal", t)
@@ -222,7 +278,16 @@ def build_chapter(ep_dir, script_path, data):
                            "scale": scale, "rotate": rotate, "opacity": opacity})
         elif c == "pause":
             t += float(it["arg"])
+        elif c == "bgm":
+            # @bgm cut <秒> / @bgm resume <秒> … BGM をその場でフェードアウト／イン
+            bits = it["arg"].split()
+            if len(bits) != 2 or bits[0] not in ("cut", "resume"):
+                raise ValueError("@bgm cut 0.3 / @bgm resume 0.6 の形で書く")
+            scene["bgm_track"].append({"t": round(t, 3), "level": 0.0 if bits[0] == "cut" else 1.0, "dur": float(bits[1])})
         elif c == "line":
+            dr = it.get("dir", {})
+            if directed:
+                t += dr.get("pre", 0.15)
             line_no += 1
             lid = f"{stem}-{line_no:03d}"
             vpath = ep_dir / "voices" / f"{lid}.wav"
@@ -234,17 +299,29 @@ def build_chapter(ep_dir, script_path, data):
             tt = t
             for p in parts:
                 pd = dur * len(p) / total
-                scene["subs"].append({"start": tt, "end": tt + pd + (GAP * 0.8 if p is parts[-1] else 0.02),
-                                      "who": it["who"], "text": wrap2(highlight(p)), "accent": it["tsukkomi"]})
+                tail = (min(dr.get("post", 0) + 0.12, 0.45) if directed else GAP * 0.8) if p is parts[-1] else 0.02
+                scene["subs"].append({"start": tt, "end": tt + pd + tail,
+                                      "who": it["who"], "text": wrap2(highlight(p)),
+                                      "accent": it["tsukkomi"] or bool(dr.get("mark"))})
                 tt += pd
             scene["lines"].append({"id": lid, "who": it["who"], "text": it["text"], "start": round(t, 2),
-                                   "dur": round(dur, 2), "voice": vpath.name, "has_voice": vpath.exists()})
+                                   "dur": round(dur, 2), "voice": vpath.name, "has_voice": vpath.exists(),
+                                   "pre": dr.get("pre"), "post": dr.get("post"), "lv": dr.get("lv")})
+            if scene["layout"] and scene["layout"][-1]["mode"] == "skit":
+                act = dr.get("act") or skit.auto_act(it["who"], it["text"])
+                if act != "none":
+                    scene["acts"].append({"who": it["who"], "start": round(t, 3), "end": round(t + dur, 3), "act": act})
+            if dr.get("focus"):
+                scene["focus"].append({"who": dr["focus"], "start": round(t - 0.1, 3), "end": round(t + dur + dr.get("post", 0), 3)})
+            if dr.get("se"):
+                scene["se"].append({"t": t, "kind": dr["se"], "gain": 0.18})
             if vpath.exists():
                 scene["voices"].append({"t": t, "path": str(vpath)})
             if it["tsukkomi"]:
                 scene["emphasis"].append({"who": "baku", "start": t, "end": t + dur, "scale": 1.08})
-                scene["se"].append({"t": t, "kind": "piko", "gain": 0.18})
-            t += dur + GAP
+                if not dr.get("se"):
+                    scene["se"].append({"t": t, "kind": "piko", "gain": 0.18})
+            t += dur + (dr.get("post", 0) + 0.05 if directed else GAP)
     close_cur(t)
     t += 0.6
     for cue in scene["cues"]:
@@ -264,6 +341,25 @@ def build_chapter(ep_dir, script_path, data):
     if not scene["layout"]:
         scene["layout"] = [{"start": 0, "mode": "normal"}]
     return scene
+
+
+def _merge(a, b):
+    for k, v in b.items():
+        if isinstance(v, dict) and isinstance(a.get(k), dict):
+            _merge(a[k], v)
+        else:
+            a[k] = v
+    return a
+
+
+def load_data(ep):
+    """data.json を読む。episode.json があれば、別の回の data.json を土台に data_patch を重ねる（土台は変更しない）"""
+    conf_p = ep / "episode.json"
+    conf = json.loads(conf_p.read_text(encoding="utf-8")) if conf_p.exists() else {}
+    data = json.loads((ep / conf.get("data", "data.json")).read_text(encoding="utf-8"))
+    if conf.get("data_patch"):
+        _merge(data, json.loads((ep / conf["data_patch"]).read_text(encoding="utf-8")))
+    return data, conf
 
 
 # ---------------------------------------------------------------- 書き出し
@@ -325,17 +421,34 @@ def render_chapter(args):
     return str(out)
 
 
-def concat(out_dir, stems, final, bgm_gain=0.10):
+def bgm_volume_expr(track, gain):
+    """@bgm cut/resume を ffmpeg の volume 式（時刻 t の関数）にする"""
+    expr, level, cur = f"{gain}", 1.0, []
+    for b in sorted(track, key=lambda x: x["t"]):
+        a, d, to = b["t"], max(b["dur"], 0.01), b["level"]
+        cur.append((a, d, level, to))
+        level = to
+    if not cur:
+        return expr
+    # 区間ごとに線形補間。最後の状態がその後も続く
+    e = f"{cur[-1][3]}"
+    for a, d, fr, to in reversed(cur):
+        ramp = f"({fr}+({to}-{fr})*min(1,max(0,(t-{a})/{d})))"
+        e = f"if(lt(t,{a}),{fr},if(lt(t,{a + d}),{ramp},{e}))"
+    return f"{gain}*{e}"
+
+
+def concat(out_dir, stems, final, bgm_gain=0.10, bgm_track=(), bgm_file="main.wav"):
     lst = out_dir / "concat.txt"
     lst.write_text("".join(f"file '{(out_dir / f'{s}.mp4').resolve()}'\n" for s in stems), encoding="utf-8")
     joined = out_dir / "joined.mp4"
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", str(joined)], check=True)
-    bgm = ui.ASSETS / "bgm" / "main.wav"
+    bgm = ui.ASSETS / "bgm" / bgm_file          # 回ごとに episode.json の "bgm" で選べる（既定は main.wav）
     if bgm.exists():
         dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(joined)]))
         subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(joined), "-stream_loop", "-1", "-i", str(bgm),
                         "-filter_complex",
-                        f"[1:a]volume={bgm_gain},afade=t=in:d=1.5,afade=t=out:st={max(0, dur - 3)}:d=3[b];"
+                        f"[1:a]volume='{bgm_volume_expr(bgm_track, bgm_gain)}':eval=frame,afade=t=in:d=1.5,afade=t=out:st={max(0, dur - 3)}:d=3[b];"
                         f"[0:a][b]amix=inputs=2:duration=first:normalize=0[a]",
                         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-t", f"{dur}", str(final)], check=True)
         joined.unlink()
@@ -345,6 +458,7 @@ def concat(out_dir, stems, final, bgm_gain=0.10):
 
 
 def main():
+    global GAP
     ap = argparse.ArgumentParser()
     ap.add_argument("episode_dir")
     ap.add_argument("--only", help="この章だけ（ファイル名の頭、例 02_65）")
@@ -354,7 +468,8 @@ def main():
     ap.add_argument("--jobs", type=int, default=2)
     args = ap.parse_args()
     ep = Path(args.episode_dir)
-    data = json.loads((ep / "data.json").read_text(encoding="utf-8"))
+    data, conf = load_data(ep)
+    GAP = conf.get("gap", GAP)        # episode.json の "gap" でセリフ間の間を回ごとに変えられる（テンポ）
     out_dir = Path(args.out or (ep / "build"))
     out_dir.mkdir(parents=True, exist_ok=True)
     scripts = sorted((ep / "script").glob("*.txt"))
@@ -384,7 +499,11 @@ def main():
             print("章完成:", r, flush=True)
     if not args.only:
         final = out_dir / f"{ep.name}.mp4"
-        concat(out_dir, stems, final)
+        track, off = [], 0.0
+        for stem in stems:
+            track += [dict(b, t=b["t"] + off) for b in scenes[stem].get("bgm_track", [])]
+            off += scenes[stem]["duration"]
+        concat(out_dir, stems, final, bgm_gain=conf.get("bgm_gain", 0.10), bgm_track=track, bgm_file=conf.get("bgm", "main.wav"))
         print("完成:", final)
 
 

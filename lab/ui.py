@@ -610,14 +610,46 @@ def title_card(canvas, tl, dur, data):
     paste(canvas, lay, (0, 0), out)
 
 
+def intro_card(canvas, tl, dur, data):
+    """キャラ紹介（ニュース解説のOP）：左に大きな立ち絵、右に肩書き・名前・ひとことプロフィール"""
+    out = 1 - ease_in_out(prog(tl, dur - 0.35, 0.35))
+    if out <= 0:
+        return
+    who = data["who"]
+    col = SPEAKER[who]
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    k0, k1, k2, k3 = (ease_out(prog(tl, s, 0.45)) for s in (0.0, 0.12, 0.25, 0.4))
+    d.rectangle((0, 0, W, H), fill=(BG[0], BG[1], BG[2], int(200 * k0)))
+    ch = load_char(who)
+    hh = 900
+    ch = ch.resize((int(ch.width * hh / ch.height), hh))
+    paste(lay, ch, (int(140 - 80 * (1 - k1)), H - hh - 40), k1)
+    x = 980
+    tmp = Image.new("RGBA", (900, 70), (0, 0, 0, 0))
+    lab_label(ImageDraw.Draw(tmp), (0, 35), data.get("tag", ""), col, 26)
+    paste(lay, tmp, (x, 300), k2)
+    tmp = Image.new("RGBA", (900, 200), (0, 0, 0, 0))
+    ImageDraw.Draw(tmp).text((0, 100), data["name"], font=font("black", 170), fill=col, anchor="lm")
+    paste(lay, tmp, (x + int(40 * (1 - k2)), 360), k2)
+    tmp = Image.new("RGBA", (900, 70), (0, 0, 0, 0))
+    ImageDraw.Draw(tmp).text((0, 35), data.get("role", ""), font=font("bold", 46), fill=TEXT, anchor="lm")
+    paste(lay, tmp, (x, 570), k3)
+    for i, line in enumerate(data.get("profile", [])):
+        tmp = Image.new("RGBA", (900, 60), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((0, 30), line, font=font("medium", 38), fill=SUB, anchor="lm")
+        paste(lay, tmp, (x, 650 + 58 * i), k3)
+    paste(canvas, lay, (0, 0), out)
+
+
 SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中は描画を使い回して高速化）
-    "chapter": lambda d: 0.8, "title": lambda d: 1.0, "keyword": lambda d: 0.5,
+    "chapter": lambda d: 0.8, "title": lambda d: 1.0, "intro": lambda d: 0.9, "keyword": lambda d: 0.5,
     "machine": lambda d: 0.45 + 0.28 * len(d["rows"]) + 0.95,
     "analysis": lambda d: 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
     "flow": lambda d: 0.35 + 0.45 * len(d["steps"]) + 0.4,
     "lineup": lambda d: 0.3 + (0.32 if d.get("fast") else 0.55) * len(d["items"]) + 0.35,
 }
-OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45}
+OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45, "intro": 0.35}
 
 
 # ---------------------------------------------------------------- 字幕

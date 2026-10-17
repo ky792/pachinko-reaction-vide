@@ -1,0 +1,60 @@
+name: Voice A/B (Seed-VC)
+
+# 作業ブランチの voice_ab/vc_request.json を書き換えて push すると動く。
+# Gemini で作った声（voice_ab/vc_in/）を、AivisSpeech の声色に変えて voice_ab/vc_out/ にコミットして戻す
+on:
+  push:
+    paths:
+      - voice_ab/vc_request.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Start AivisSpeech
+        run: |
+          mkdir -p ~/aivis/Models
+          u=$(python -c "import json;print(json.load(open('voice_ab/vc_request.json'))['aivis']['uuid'])")
+          curl -fL --retry 3 -o ~/aivis/Models/$u.aivmx "https://api.aivis-project.com/v1/aivm-models/$u/download?model_type=AIVMX"
+          sudo chmod -R 777 ~/aivis
+          docker run -d --name aivis -p 10101:10101 -v ~/aivis:/home/user/.local/share/AivisSpeech-Engine-Dev ghcr.io/aivis-project/aivisspeech-engine:cpu-latest
+      - name: Install Seed-VC
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
+          git clone --depth 1 https://github.com/Plachtaa/seed-vc.git ~/seed-vc
+          python -m pip install -q "torch==2.8.0" "torchaudio==2.8.0" --index-url https://download.pytorch.org/whl/cpu  # 2.9 以降の torchaudio.save は torchcodec が要る
+          grep -viE '^(torch|torchaudio|torchvision)([=<> ]|$)' ~/seed-vc/requirements.txt > /tmp/req.txt
+          python -m pip install -q -r /tmp/req.txt
+      - name: Cache model
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/huggingface
+            ~/seed-vc/checkpoints
+          key: seedvc-${{ hashFiles('voice_ab/vc_request.json') }}
+          restore-keys: seedvc-
+      - name: Convert
+        run: |
+          for i in $(seq 1 150); do curl -sf http://127.0.0.1:10101/version && break; sleep 4; done
+          curl -sf http://127.0.0.1:10101/version || { docker logs aivis | tail -50; exit 1; }
+          python scripts/voice_ab/seedvc_run.py voice_ab/vc_request.json voice_ab/vc_out ~/seed-vc
+      - name: Commit results
+        if: always()
+        run: |
+          for f in voice_ab/vc_out/*.wav; do [ -e "$f" ] || continue; ffmpeg -v error -y -i "$f" -c:a aac -b:a 128k "${f%.wav}.m4a" && rm "$f"; done
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add voice_ab/vc_out
+          git diff --cached --quiet && { echo "変更なし"; exit 0; }
+          git commit -m "voice_ab: Seed-VC results"
+          git pull --no-rebase -q origin "${GITHUB_REF_NAME}" || true
+          git push

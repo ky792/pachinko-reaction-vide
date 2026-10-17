@@ -1,0 +1,8 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.22,
+ "_note": "歴史回（テイコウペンギン型）：エヴァ パチンコ20年。台本 docs/proposals/eva_history_script_v1.md。声は voice/casting_c.json（ナギ＝AivisSpeech コハク『ねむたい』speed 0.95、バク＝Irodori-TTS まおの見本・duration-scale 0.88）。実機画像は仮パネル"
+}
