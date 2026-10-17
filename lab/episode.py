@@ -28,6 +28,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import render  # noqa: E402
 import motion  # noqa: E402
 import ui  # noqa: E402
+import skit  # noqa: E402
 
 SR = 44100
 CHARS_PER_SEC = {"nagi": 5.0, "baku": 5.3}   # 音声が無いときの推定読み上げ速度
@@ -67,7 +68,7 @@ def parse_script(path):
 
 # @dir の値の範囲（直後の1セリフだけに効く演出）
 DIR_RANGE = {"pre": (0, 2), "post": (0, 2), "speed": (0.7, 1.4), "int": (0.5, 1.6), "vol": (0.5, 1.2)}
-DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail")
+DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail", "act")
 
 
 def parse_dir(arg, name="台本"):
@@ -181,7 +182,7 @@ def build_chapter(ep_dir, script_path, data):
     items = parse_script(script_path)
     scene = {"duration": 0, "cues": [], "layout": [], "subs": [], "emphasis": [], "se": [],
              "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []},
-             "focus": [], "bgm_track": []}
+             "focus": [], "bgm_track": [], "acts": []}
     directed = any(it.get("dir") for it in items if it["cmd"] == "line")   # @dir がある章だけ新しい間の付け方
     t = 0.25
     cur = None          # 今出ている資料
@@ -227,6 +228,9 @@ def build_chapter(ep_dir, script_path, data):
             t += INTRO_DUR
         elif c == "year":
             scene["year_track"].append([t, float(it["arg"])])
+        elif c == "skit":
+            # @skit on / @skit off … 寸劇（キャラを大きく向かい合わせ、セリフごとに動かす。lab/skit.py）
+            set_layout("normal" if it["arg"].strip() == "off" else "skit", t)
         elif c == "clear":
             close_cur(t)
             set_layout("normal", t)
@@ -303,6 +307,10 @@ def build_chapter(ep_dir, script_path, data):
             scene["lines"].append({"id": lid, "who": it["who"], "text": it["text"], "start": round(t, 2),
                                    "dur": round(dur, 2), "voice": vpath.name, "has_voice": vpath.exists(),
                                    "pre": dr.get("pre"), "post": dr.get("post"), "lv": dr.get("lv")})
+            if scene["layout"] and scene["layout"][-1]["mode"] == "skit":
+                act = dr.get("act") or skit.auto_act(it["who"], it["text"])
+                if act != "none":
+                    scene["acts"].append({"who": it["who"], "start": round(t, 3), "end": round(t + dur, 3), "act": act})
             if dr.get("focus"):
                 scene["focus"].append({"who": dr["focus"], "start": round(t - 0.1, 3), "end": round(t + dur + dr.get("post", 0), 3)})
             if dr.get("se"):

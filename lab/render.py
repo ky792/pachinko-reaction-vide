@@ -26,9 +26,10 @@ from PIL import Image
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ui  # noqa: E402
 import motion  # noqa: E402
+import skit  # noqa: E402
 
 SR = 44100
-CHAR_H = {"normal": 330, "machine": 250, "hidden": 330}
+CHAR_H = {"normal": 330, "machine": 250, "hidden": 330, "skit": 330}
 
 
 def layout_state(scene, t):
@@ -45,6 +46,22 @@ def layout_state(scene, t):
         return h1, a1
     h0, a0 = val(prev)
     return h0 + (h1 - h0) * k, a0 + (a1 - a0) * k
+
+
+def skit_state(scene, t):
+    """寸劇モードの濃さ（0〜1）と、寸劇が始まってからの秒数。切り替えは0.4秒で滑らかに"""
+    lays = sorted(scene["layout"], key=lambda x: x["start"])
+    k, since = 0.0, 0.0
+    for i, L in enumerate(lays):
+        if t < L["start"]:
+            break
+        on = 1.0 if L["mode"] == "skit" else 0.0
+        prev = k
+        p = ui.ease_in_out(ui.prog(t, L["start"], 0.4)) if i else 1.0   # 最初から寸劇なら、いきなり寸劇
+        k = prev + (on - prev) * p
+        if on:
+            since = t - L["start"]
+    return k, since
 
 
 def speaker_at(scene, t):
@@ -124,7 +141,7 @@ def state_key(scene, t):
     # 要素を動かす章では座標変化をキャッシュしてしまわないようにする。
     if scene.get("motion", {}).get("elements"):
         return None
-    if focus_state(scene, t)[1] > 0:
+    if focus_state(scene, t)[1] > 0 or skit_state(scene, t)[0] > 0:
         return None
     key = []
     y, still = year_at(scene, t)
@@ -174,6 +191,7 @@ def render_layers(scene, t, images):
                 bar_a = max(bar_a, ui.ease_out(ui.prog(t, c["end"] - 0.4, 0.5)))
     else:
         bar_a = 1.0
+    bar_a *= 1 - skit_state(scene, t)[0]
     y, _ = year_at(scene, t)
     ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"))
     for c in cues:
@@ -216,6 +234,10 @@ def render_frame(scene, t, images):
     if fk > 0:                                   # 背景を最大35%暗く
         shade = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, int(255 * 0.35 * fk)))
         cv.alpha_composite(shade)
+    sk, since = skit_state(scene, t)
+    if sk > 0.01:
+        skit.draw(cv, scene, t, who, ui.prog(since, 0, 0.7), sk)
+    a *= 1 - sk
     if a > 0.01:
         for c in ("nagi", "baku"):
             lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
