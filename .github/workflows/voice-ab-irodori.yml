@@ -17,12 +17,16 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - uses: astral-sh/setup-uv@v6
       - name: Install
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg > /dev/null
           git clone --depth 1 https://github.com/Aratako/Irodori-TTS.git ~/irodori
           cd ~/irodori && uv sync --extra cpu
+          python -m pip install -q -r $GITHUB_WORKSPACE/requirements.txt pillow
       - name: Cache model
         uses: actions/cache@v4
         with:
@@ -30,7 +34,18 @@ jobs:
           key: irodori-${{ hashFiles('voice_ab/irodori_request.json') }}
           restore-keys: irodori-
       - name: Generate
-        run: python3 scripts/voice_ab/irodori_run.py voice_ab/irodori_request.json voice_ab/irodori_out ~/irodori
+        run: |
+          OUT=voice_ab/irodori_out
+          [ "$(python3 -c "import json;print(json.load(open('voice_ab/irodori_request.json')).get('action',''))")" = "lines" ] && OUT=voice_ab/irodori_lines
+          echo "OUT=$OUT" >> $GITHUB_ENV
+          python3 scripts/voice_ab/irodori_run.py voice_ab/irodori_request.json $OUT ~/irodori
+      - name: Model licenses
+        if: always()
+        run: |
+          # 見本に使った AivisHub モデルの説明・ライセンスを控える（ローカルからは AivisHub に届かないため）
+          for u in $(python3 -c "import json;print(' '.join(json.load(open('voice_ab/irodori_request.json')).get('license_check',[])))"); do
+            curl -sf "https://api.aivis-project.com/v1/aivm-models/$u" -o voice_ab/irodori_out/model_$u.json || true
+          done
       - name: Commit results
         if: always()
         run: |
@@ -38,7 +53,7 @@ jobs:
           sed -i 's/\.wav"/.m4a"/g' voice_ab/irodori_out/index.json 2>/dev/null || true
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add voice_ab/irodori_out
+          git add voice_ab/irodori_out voice_ab/irodori_lines 2>/dev/null || git add voice_ab/irodori_out
           git diff --cached --quiet && { echo "変更なし"; exit 0; }
           git commit -m "voice_ab: Irodori-TTS results"
           for i in 1 2 3; do git pull --no-rebase -q origin "${GITHUB_REF_NAME}" && git push && break; sleep 5; done

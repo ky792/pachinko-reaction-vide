@@ -1,33 +1,20 @@
 {
- "checkpoint": "Aratako/Irodori-TTS-v4.1-Small",
- "lines": [
-  "75%！4回に3回は入るんか！",
-  "そっちの話はせんでええねん！",
-  "23人に1人！島に1人はおるやん！"
+ "action": "lines",
+ "episode": "episodes/news01",
+ "who": "baku",
+ "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
+ "license_check": [
+  "a59cb814-0083-4369-8542-f51a29e72af7"
  ],
  "variants": [
   {
-   "name": "mao_karakai_cap",
+   "name": "v4_mao",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。"
   },
   {
-   "name": "mao_normal_cap",
-   "ref": "voice_ab/vc_out/ref__ノーマル.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。"
-  },
-  {
-   "name": "mao_karakai_only",
-   "ref": "voice_ab/vc_out/ref__からかい.m4a"
-  },
-  {
-   "name": "mao_karakai_mf",
-   "ref": "voice_ab/vc_out/ref__からかい.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
-   "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF"
-  },
-  {
-   "name": "design_genki",
+   "name": "v5_design",
+   "ref": "voice_ab/irodori_out/design_genki.m4a",
    "caption": "元気でボーイッシュな、関西弁の猫のマスコットの女の子。アニメっぽいかわいい声で、ツッコミは勢いよく大げさ。"
   }
  ]
