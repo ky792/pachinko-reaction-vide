@@ -1,18 +1,74 @@
 {
- "action": "lines",
- "episode": "episodes/news01",
- "who": "nagi",
- "model": {
-  "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
-  "name": "コハク"
+ "action": "audition",
+ "models": [
+  {
+   "uuid": "47e53151-a378-46f3-abee-ce13aa07feb1",
+   "name": "阿井田 茂",
+   "for": "baku"
+  },
+  {
+   "uuid": "6d11c6c2-f4a4-4435-887e-23dd60f8b8dd",
+   "name": "にせ",
+   "for": "baku"
+  },
+  {
+   "uuid": "71e72188-2726-4739-9aa9-39567396fb2a",
+   "name": "fumifumi",
+   "for": "baku"
+  },
+  {
+   "uuid": "70a875a9-feae-41e6-a586-8cf9e47c6c0b",
+   "name": "猩々博士",
+   "for": "baku"
+  },
+  {
+   "uuid": "ed47c952-c253-405e-adba-1172399816a1",
+   "name": "観測症",
+   "for": "baku"
+  },
+  {
+   "uuid": "2e1fdde8-d089-42d7-b64f-cf89952b1bdc",
+   "name": "澤原 玄二郎",
+   "for": "baku"
+  },
+  {
+   "uuid": "098d4e66-2faf-4a00-889c-a1d2f05bde78",
+   "name": "Shinjou Tomoharu",
+   "for": "baku"
+  },
+  {
+   "uuid": "d1a7446f-230d-4077-afdf-923eddabe53c",
+   "name": "M2",
+   "for": "baku"
+  },
+  {
+   "uuid": "3dabea2b-cc10-41da-955b-4618ce84e716",
+   "name": "Lux",
+   "for": "baku"
+  },
+  {
+   "uuid": "1f04a608-916c-4d9e-bf6e-b9da5c176f85",
+   "name": "yukyu",
+   "for": "baku"
+  },
+  {
+   "uuid": "e5bd2b5e-90a8-4fb3-a69f-2fbd2d3a8a43",
+   "name": "hinakoyuhara",
+   "for": "baku"
+  },
+  {
+   "uuid": "d7255c2c-ddd0-425a-808c-662cd94c7f41",
+   "name": "M1",
+   "for": "baku"
+  }
+ ],
+ "lines": {
+  "baku": [
+   "75%！4回に3回は入るんか！",
+   "そっちの話はせんでええねん！",
+   "23人に1人！島に1人はおるやん！"
+  ]
  },
- "style": "ねむたい",
- "speed": 0.86,
- "intonation": 0.65,
- "only": [
-  "01_eva319red-003",
-  "01_eva319red-005",
-  "99_ed-001",
-  "99_ed-004"
- ]
+ "speed": 1.05,
+ "intonation": 1.2
 }
