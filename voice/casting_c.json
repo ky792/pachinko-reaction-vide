@@ -1,5 +1,5 @@
 {
- "_note": "2026-10-16 ユーザー決定。ナギ＝AivisSpeech コハク『ねむたい』速さ0.86・抑揚0.65＋響きごと−1.5半音、バク＝Gemini Fenrir（熱血な兄貴分）",
+ "_note": "2026-10-17 ユーザー決定。ナギ＝AivisSpeech コハク『ねむたい』速さ0.86・抑揚0.65＋響きごと−1.5半音、バク＝Irodori-TTS（まおの見本＋演技指示・関西弁の女の子）",
  "nagi": {
   "engine": "aivis",
   "model_uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
@@ -14,11 +14,15 @@
   "_pitch_shift": "生成後に、元の44.1kHzのまま響きごと下げる：asetrate=44100*2^(n/12),aresample=44100,atempo=2^(-n/12)（声質を保つ rubberband はケロケロ声になるので使わない）"
  },
  "baku": {
-  "engine": "gemini",
-  "model": "gemini-3.8-flash-tts",
-  "voice": "Fenrir",
-  "pitch_shift_semitones": 0,
-  "profile": "30代前半の男性。中低音でよく通る、張りのある声で、少しハスキー。熱血で豪快な兄貴分。テンションが上がると力強く声を張る。自然な日本語のイントネーションとアクセントで話す。"
+  "engine": "irodori",
+  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
+  "ref": "voice_ab/vc_out/ref__からかい.m4a",
+  "_ref": "見本＝AivisSpeech まお「からかい」に関西弁の5文を読ませたもの（scripts/voice_ab/seedvc_run.py で生成）",
+  "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
+  "post": "前後の無音を切り、文中の0.25秒超の無音を0.2秒に詰め、24kHz・RMS3000にそろえる",
+  "credit": "AivisSpeech: まお（任意。モデル説明の指定どおりの表記）",
+  "license": "Irodori-TTS v4.1-Small: MIT／見本の まお: ACML 1.0（派生・商用可。本人・公式と誤解させる使い方は禁止）",
+  "how": "voice_ab/irodori_request.json を action=lines で push → .github/workflows/voice-ab-irodori.yml → voice_ab/irodori_lines/<変種>/"
  },
  "baku_alt_zonoko": {
   "engine": "aivis",
@@ -43,5 +47,12 @@
   "model": "gemini-3.8-flash-tts",
   "voice": "Leda",
   "profile": "冷静で知的な若い女性。標準語。アニメやゲームのキャラクターを演じる声優のように、キャラクターらしい作った声で。地声っぽい生々しさは出さない。気怠げでダウナー、眠そう。ただし話す速さは普通で、文の途中で間を空けすぎない。語尾は少しだけ伸ばす。皮肉は興味なさそうに、冷めた感じで。"
+ },
+ "baku_alt_fenrir": {
+  "engine": "gemini",
+  "model": "gemini-3.8-flash-tts",
+  "voice": "Fenrir",
+  "pitch_shift_semitones": 0,
+  "profile": "30代前半の男性。中低音でよく通る、張りのある声で、少しハスキー。熱血で豪快な兄貴分。テンションが上がると力強く声を張る。自然な日本語のイントネーションとアクセントで話す。"
  }
 }
