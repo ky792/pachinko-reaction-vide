@@ -2,63 +2,48 @@
  "action": "audition",
  "models": [
   {
-   "uuid": "47e53151-a378-46f3-abee-ce13aa07feb1",
-   "name": "阿井田 茂",
+   "uuid": "7fc08a41-b64d-456d-8b22-8e1284674775",
+   "name": "zonoko",
    "for": "baku"
   },
   {
-   "uuid": "6d11c6c2-f4a4-4435-887e-23dd60f8b8dd",
-   "name": "にせ",
+   "uuid": "a59cb814-0083-4369-8542-f51a29e72af7",
+   "name": "まお",
    "for": "baku"
   },
   {
-   "uuid": "71e72188-2726-4739-9aa9-39567396fb2a",
-   "name": "fumifumi",
+   "uuid": "e9339137-2ae3-4d41-9394-fb757a7e61e6",
+   "name": "まい",
    "for": "baku"
   },
   {
-   "uuid": "70a875a9-feae-41e6-a586-8cf9e47c6c0b",
-   "name": "猩々博士",
+   "uuid": "4f281e78-eba6-495a-8e50-5c322d02b5b1",
+   "name": "るな",
    "for": "baku"
   },
   {
-   "uuid": "ed47c952-c253-405e-adba-1172399816a1",
-   "name": "観測症",
+   "uuid": "0f6821f4-9f86-4da1-a41a-fbe6fff9ca88",
+   "name": "天深シノ",
    "for": "baku"
   },
   {
-   "uuid": "2e1fdde8-d089-42d7-b64f-cf89952b1bdc",
-   "name": "澤原 玄二郎",
+   "uuid": "9f36ec0d-8dac-42dc-aff4-149c5f99faad",
+   "name": "らせつん",
    "for": "baku"
   },
   {
-   "uuid": "098d4e66-2faf-4a00-889c-a1d2f05bde78",
-   "name": "Shinjou Tomoharu",
+   "uuid": "25b39db7-5757-47ef-9fe4-2b7aff328a18",
+   "name": "F2",
    "for": "baku"
   },
   {
-   "uuid": "d1a7446f-230d-4077-afdf-923eddabe53c",
-   "name": "M2",
+   "uuid": "6acf95e8-11a9-414e-aa9c-6dbebf9113ca",
+   "name": "F1",
    "for": "baku"
   },
   {
-   "uuid": "3dabea2b-cc10-41da-955b-4618ce84e716",
-   "name": "Lux",
-   "for": "baku"
-  },
-  {
-   "uuid": "1f04a608-916c-4d9e-bf6e-b9da5c176f85",
-   "name": "yukyu",
-   "for": "baku"
-  },
-  {
-   "uuid": "e5bd2b5e-90a8-4fb3-a69f-2fbd2d3a8a43",
-   "name": "hinakoyuhara",
-   "for": "baku"
-  },
-  {
-   "uuid": "d7255c2c-ddd0-425a-808c-662cd94c7f41",
-   "name": "M1",
+   "uuid": "9107b8b6-1ed1-43f5-bebe-0de4df4d229d",
+   "name": "中2",
    "for": "baku"
   }
  ],
@@ -69,6 +54,6 @@
    "23人に1人！島に1人はおるやん！"
   ]
  },
- "speed": 1.05,
- "intonation": 1.2
+ "speed": 1.08,
+ "intonation": 1.3
 }
