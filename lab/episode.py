@@ -35,6 +35,7 @@ GAP = 0.40            # セリフ間の間
 SHOW_PAUSE = 0.35     # 資料が切り替わったあと、読む時間を少し取る
 CHAPTER_DUR = 2.6
 TITLE_DUR = 3.4
+INTRO_DUR = 2.2       # キャラ紹介カード（@intro nagi / @intro baku）
 WHO = {"ナギ": "nagi", "バク": "baku"}
 NUM = re.compile(r"(?:約)?(?:[0-9][0-9,.]*(?:%|個|回転|回|ラウンド|R|分の1|秒)|1/[0-9][0-9.]*)")
 
@@ -217,6 +218,13 @@ def build_chapter(ep_dir, script_path, data):
             scene["cues"].append({"type": "title", "start": t, "end": t + TITLE_DUR, "data": data["title"]})
             scene["se"].append({"t": t + 0.05, "kind": "don", "gain": 0.35})
             t += TITLE_DUR
+        elif c == "intro":
+            # @intro nagi … data["intro"][who] のキャラ紹介カードを全画面で出す（ニュース解説のOP）
+            close_cur(t)
+            set_layout("hidden", t)
+            scene["cues"].append({"type": "intro", "start": t, "end": t + INTRO_DUR, "data": dict(data["intro"][it["arg"]], who=it["arg"])})
+            scene["se"].append({"t": t + 0.05, "kind": "pon", "gain": 0.3})
+            t += INTRO_DUR
         elif c == "year":
             scene["year_track"].append([t, float(it["arg"])])
         elif c == "clear":
