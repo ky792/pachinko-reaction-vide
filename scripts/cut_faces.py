@@ -94,7 +94,23 @@ def main():
                 canvas = np.zeros((y1 - y0, cw + 2 * MARGIN, 4), np.uint8)
                 ox = ex0 - gx0
                 patch = src[y0:y1, ex0:ex1]
-                alpha = np.where(keep[y0:y1, ex0:ex1], 255, 0).astype(np.uint8)
+                # 切り分け線の近くの小さなかけら（隣のキャラの手など）を捨て、線のところは25pxでぼかす
+                kl, kn = ndimage.label(keep[y0:y1], structure=np.ones((3, 3)))
+                if kn > 1:
+                    sz = ndimage.sum(np.ones_like(kl), kl, range(1, kn + 1))
+                    for i, v in enumerate(sz, 1):
+                        comp = kl == i
+                        near = comp[:, max(0, x0 - 2):x0 + 3].any() or comp[:, max(0, x1 - 3):x1 + 2].any()
+                        if near and v < sz.max() * 0.08:
+                            keep[y0:y1][comp] = False
+                fade = np.ones(Ws, np.float32)
+                for xs, d in ((x0, 1), (x1, -1)):
+                    if 0 < xs < Ws and fg[y0:y1, xs].any():
+                        for k in range(25):
+                            xx = xs + d * k
+                            if 0 <= xx < Ws:
+                                fade[xx] = min(fade[xx], k / 25)
+                alpha = (keep[y0:y1, ex0:ex1] * fade[ex0:ex1][None, :] * 255).astype(np.uint8)
                 canvas[:, ox:ox + (ex1 - ex0), :3] = patch
                 canvas[:, ox:ox + (ex1 - ex0), 3] = alpha
                 Image.fromarray(canvas, "RGBA").save(out / f"{name}.png")
