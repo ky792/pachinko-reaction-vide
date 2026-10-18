@@ -1,4 +1,5 @@
 @chapter matome
+@bgm track bright_light.wav
 @show lineup:eva_legend
 ナギ: まとめ。エヴァの20年で、流れを変えた台を並べるとこう。
 ナギ: 2004年の初代で、暴走モード。2008年の使徒、再びで、名演出。

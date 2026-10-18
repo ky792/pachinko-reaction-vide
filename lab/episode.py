@@ -301,9 +301,13 @@ def build_chapter(ep_dir, script_path, data):
             t += float(it["arg"])
         elif c == "bgm":
             # @bgm cut <秒> / @bgm resume <秒> … BGM をその場でフェードアウト／イン
+            # @bgm track <ファイル> … ここから BGM の曲を替える（generator/assets/bgm/。前の曲と1.5秒でつなぐ）
             bits = it["arg"].split()
+            if len(bits) == 2 and bits[0] == "track":
+                scene.setdefault("bgm_switch", []).append({"t": round(t, 3), "file": bits[1]})
+                continue
             if len(bits) != 2 or bits[0] not in ("cut", "resume"):
-                raise ValueError("@bgm cut 0.3 / @bgm resume 0.6 の形で書く")
+                raise ValueError("@bgm cut 0.3 / @bgm resume 0.6 / @bgm track <ファイル> の形で書く")
             scene["bgm_track"].append({"t": round(t, 3), "level": 0.0 if bits[0] == "cut" else 1.0, "dur": float(bits[1])})
         elif c == "line":
             dr = it.get("dir", {})
@@ -479,7 +483,33 @@ def bgm_volume_expr(track, gain):
     return f"{gain}*{e}"
 
 
-def concat(out_dir, stems, final, bgm_gain=0.10, bgm_track=(), bgm_file="main.wav"):
+def bgm_bed(out_wav, dur, first, switch, xfade=1.5):
+    """曲の切り替え（@bgm track）を反映した BGM を1本の wav にする。各曲は頭から流してループ、つなぎ目は xfade 秒で重ねる"""
+    def load(name):
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(ui.ASSETS / "bgm" / name), "-ac", "2", "-ar", str(SR),
+                              "-f", "f32le", "-"], capture_output=True, check=True).stdout
+        return np.frombuffer(raw, np.float32).reshape(-1, 2)
+    n = int(dur * SR) + SR
+    bed = np.zeros((n, 2), np.float32)
+    segs = [(0.0, first)] + [(b["t"], b["file"]) for b in sorted(switch, key=lambda x: x["t"])]
+    for i, (t0, name) in enumerate(segs):
+        t1 = segs[i + 1][0] if i + 1 < len(segs) else dur
+        a, b = int(t0 * SR), min(n, int((t1 + xfade) * SR))
+        src = load(name)
+        reps = int(np.ceil((b - a) / len(src))) + 1
+        x = np.tile(src, (reps, 1))[: b - a].copy()
+        fi, fo = int(xfade * SR), int(xfade * SR)
+        if i:
+            x[:fi] *= np.linspace(0, 1, min(fi, len(x)))[:, None]
+        if i + 1 < len(segs):
+            x[-fo:] *= np.linspace(1, 0, min(fo, len(x)))[:, None]
+        bed[a:b] += x
+    with wave.open(str(out_wav), "wb") as w:
+        w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR)
+        w.writeframes((np.clip(bed, -1, 1) * 32767).astype(np.int16).tobytes())
+
+
+def concat(out_dir, stems, final, bgm_gain=0.10, bgm_track=(), bgm_file="main.wav", bgm_switch=()):
     lst = out_dir / "concat.txt"
     lst.write_text("".join(f"file '{(out_dir / f'{s}.mp4').resolve()}'\n" for s in stems), encoding="utf-8")
     joined = out_dir / "joined.mp4"
@@ -487,7 +517,12 @@ def concat(out_dir, stems, final, bgm_gain=0.10, bgm_track=(), bgm_file="main.wa
     bgm = ui.ASSETS / "bgm" / bgm_file          # 回ごとに episode.json の "bgm" で選べる（既定は main.wav）
     if bgm.exists():
         dur = float(subprocess.check_output(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(joined)]))
-        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(joined), "-stream_loop", "-1", "-i", str(bgm),
+        loop = ["-stream_loop", "-1"]
+        if bgm_switch:
+            bed = out_dir / "bgm_bed.wav"
+            bgm_bed(bed, dur, bgm_file, bgm_switch)
+            bgm, loop = bed, []
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(joined), *loop, "-i", str(bgm),
                         "-filter_complex",
                         f"[1:a]volume='{bgm_volume_expr(bgm_track, bgm_gain)}':eval=frame,afade=t=in:d=1.5,afade=t=out:st={max(0, dur - 3)}:d=3[b];"
                         f"[0:a][b]amix=inputs=2:duration=first:normalize=0[a]",
@@ -541,11 +576,13 @@ def main():
             print("章完成:", r, flush=True)
     if not args.only:
         final = out_dir / f"{ep.name}.mp4"
-        track, off = [], 0.0
+        track, switch, off = [], [], 0.0
         for stem in stems:
             track += [dict(b, t=b["t"] + off) for b in scenes[stem].get("bgm_track", [])]
+            switch += [dict(b, t=b["t"] + off) for b in scenes[stem].get("bgm_switch", [])]
             off += scenes[stem]["duration"]
-        concat(out_dir, stems, final, bgm_gain=conf.get("bgm_gain", 0.10), bgm_track=track, bgm_file=conf.get("bgm", "main.wav"))
+        concat(out_dir, stems, final, bgm_gain=conf.get("bgm_gain", 0.10), bgm_track=track, bgm_file=conf.get("bgm", "main.wav"),
+               bgm_switch=switch)
         print("完成:", final)
 
 

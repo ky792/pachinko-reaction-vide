@@ -1,5 +1,6 @@
 # ED：寸劇の形でしめる → ED曲＋ロゴ
 @chapter ed
+@bgm track bright_pop.wav
 @skit on
 @dir act=jump
 バク: 今日は、エヴァの20年ぜんぶ見たな！

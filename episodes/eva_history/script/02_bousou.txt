@@ -1,5 +1,6 @@
 @chapter eva1
 @bgm resume 0.8
+@bgm track mood_retro.wav
 @show timeline:eva_cr
 ナギ: 2004年12月、初代のCR新世紀エヴァンゲリオン。
 @show machine:eva_cr1
