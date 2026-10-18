@@ -51,3 +51,4 @@
 ## 実装済みの部品
 - キャラ紹介カード：`@intro nagi` / `@intro baku`（data の intro）
 - **寸劇モード**（2026-10-17）：台本で `@skit on` 〜 `@skit off`。キャラを大きく向かい合わせに出し、左右から登場、話している方が弾む。行ごとに `@dir act=` で動きを付ける（hop / jump / shake / tilt＋？ / shock＋！ / sweat / slump / lean / none）。指定がなければ「！」で終わる行は跳ねる、「？」で終わる行は首をかしげる。実装は `lab/skit.py`
+- **OPの曲**（2026-10-18）：台本で `@song <ファイル> [gain=0.8] [len=秒]`。曲は `episodes/<回>/music/` か `generator/assets/bgm/` に置く。鳴っている間はBGMを止め、終わりの1.5秒でフェードアウトしてBGMに戻る。曲の長さに合わせて `@title <秒>` でタイトルの表示時間を延ばせる（例：寸劇 → `@song op.mp3 len=12` → `@intro nagi` → `@intro baku` → `@title 7.6`）

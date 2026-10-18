@@ -182,7 +182,7 @@ def build_chapter(ep_dir, script_path, data):
     items = parse_script(script_path)
     scene = {"duration": 0, "cues": [], "layout": [], "subs": [], "emphasis": [], "se": [],
              "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []},
-             "focus": [], "bgm_track": [], "acts": []}
+             "focus": [], "bgm_track": [], "acts": [], "songs": []}
     directed = any(it.get("dir") for it in items if it["cmd"] == "line")   # @dir がある章だけ新しい間の付け方
     t = 0.25
     cur = None          # 今出ている資料
@@ -214,11 +214,23 @@ def build_chapter(ep_dir, script_path, data):
             scene["se"].append({"t": t + 0.05, "kind": "taiko", "gain": 0.4})
             t += CHAPTER_DUR - 0.25
         elif c == "title":
+            # @title [秒] … 秒を付けると、その長さだけタイトルを出す（OPの曲に合わせるとき）
             close_cur(t)
             set_layout("hidden", t)
-            scene["cues"].append({"type": "title", "start": t, "end": t + TITLE_DUR, "data": data["title"]})
+            td = float(it["arg"]) if it["arg"].strip() else TITLE_DUR
+            scene["cues"].append({"type": "title", "start": t, "end": t + td, "data": data["title"]})
             scene["se"].append({"t": t + 0.05, "kind": "don", "gain": 0.35})
-            t += TITLE_DUR
+            t += td
+        elif c == "song":
+            # @song <ファイル> [gain=0.8] [len=秒] … OPの曲など。その間はBGMを止め、終わりの1.5秒でフェードアウト
+            bits = it["arg"].split()
+            opt = dict(b.split("=", 1) for b in bits[1:])
+            f = song_path(ep_dir, bits[0])
+            ln = float(opt.get("len", 0)) or float(subprocess.check_output(
+                ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(f)]))
+            scene["songs"].append({"t": round(t, 3), "path": str(f), "gain": float(opt.get("gain", 0.8)), "len": ln})
+            scene["bgm_track"].append({"t": round(t, 3), "level": 0.0, "dur": 0.3})
+            scene["bgm_track"].append({"t": round(t + ln, 3), "level": 1.0, "dur": 1.5})
         elif c == "intro":
             # @intro nagi … data["intro"][who] のキャラ紹介カードを全画面で出す（ニュース解説のOP）
             close_cur(t)
@@ -381,10 +393,26 @@ def mix_chapter_audio(scene, out_wav):
         a = int(v["t"] * SR)
         seg = x[: max(0, n - a)]
         mix[a:a + len(seg)] += seg
+    for sg in scene.get("songs", []):
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", sg["path"], "-t", str(sg["len"]), "-ac", "1", "-ar", str(SR),
+                              "-af", f"afade=t=out:st={max(0, sg['len'] - 1.5)}:d=1.5", "-f", "f32le", "-"],
+                             capture_output=True, check=True).stdout
+        x = np.frombuffer(raw, np.float32) * sg["gain"]
+        a = int(sg["t"] * SR)
+        seg = x[: max(0, n - a)]
+        mix[a:a + len(seg)] += seg
     mix = np.clip(mix, -1, 1)[: int(scene["duration"] * SR)]
     with wave.open(str(out_wav), "wb") as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
         w.writeframes((mix * 32767).astype(np.int16).tobytes())
+
+
+def song_path(ep_dir, name):
+    """曲ファイルの場所：回の music/ → generator/assets/bgm/ の順に探す"""
+    for p in (ep_dir / "music" / name, ui.ROOT / "generator" / "assets" / "bgm" / name):
+        if p.exists():
+            return p
+    raise FileNotFoundError(f"@song の曲が見つからない: {name}（episodes/<回>/music/ に置く）")
 
 
 def load_images(ep_dir, scene):
