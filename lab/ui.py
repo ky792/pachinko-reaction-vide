@@ -155,12 +155,12 @@ def corner_ticks(d, box, col, n=16, w=2):
 
 
 # ---------------------------------------------------------------- 背景
-@lru_cache(maxsize=1)
-def background():
-    """研究室の背景画像（generator/assets/backgrounds/lab_room.png）を暗く・ぼかして敷く。
-    無ければ #101827 の無地＋方眼。文字が主役になる明るさに抑える"""
+@lru_cache(maxsize=4)
+def background(name="lab_room.png"):
+    """背景画像（generator/assets/backgrounds/<name>。既定は研究室）を暗く・ぼかして敷く。
+    無ければ #101827 の無地＋方眼。文字が主役になる明るさに抑える。回ごとに episode.json の "background" で変えられる"""
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
-    p = ASSETS / "backgrounds" / "lab_room.png"
+    p = ASSETS / "backgrounds" / (name or "lab_room.png")
     if p.exists():
         src = Image.open(p).convert("RGB")
         s = max(W / src.width, H / src.height)

@@ -36,4 +36,5 @@
   - バク：①happy ②normal（ウインク）③surprised ④smug ⑤excited ⑥angry ⑦sweat ⑧sad（confused＝sweat、despair＝sad で代用）
   - ナギ：①normal ②happy ③confused ④sweat ⑤sad ⑥surprised ⑦smug（⑧寝落ちは線画のすき間で切り抜けず未使用。angry＝sad、excited＝happy、despair＝sad で代用）
 - **寸劇ではバストアップを使う**（下端を画面の下に隠す。絵に漫符があるので、表情があるときは自前の漫符を出さない）。本編の小さいキャラは全身の normal.png のまま（ナギの脳タンクの位置合わせがあるため）
-- ロゴ：`generator/assets/logos/{news,history,newmachine}.png`。台本で `@logo history.png 3.6`
+- ロゴ：`generator/assets/logos/{news,history,newmachine}.png`（history は「パチスロクロニクル」に差し替え済み・白背景を透過に）。台本で `@logo history.png 3.6`
+- 背景：歴史回は `generator/assets/backgrounds/history_room.png`（`episode.json` の `"background"`）。研究室の背景と同じく、ぼかして暗くして敷く

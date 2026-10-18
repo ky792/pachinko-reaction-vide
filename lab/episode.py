@@ -519,6 +519,7 @@ def main():
     scenes = {}
     for p in scripts:
         sc = build_chapter(ep, p, data)
+        sc["background"] = conf.get("background")     # episode.json の "background"（generator/assets/backgrounds/）
         scenes[p.stem] = sc
         (out_dir / f"{p.stem}.scene.json").write_text(json.dumps(sc, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{p.stem}: {sc['duration'] / 60:5.2f}分  セリフ{len(sc['lines'])}  資料{len(sc['cues'])}")

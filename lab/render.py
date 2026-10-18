@@ -188,7 +188,7 @@ def state_key(scene, t):
 def render_layers(scene, t, images):
     ch = scene["chapter"]
     cues = scene["cues"]
-    under = ui.background().copy()
+    under = ui.background(scene.get("background") or "lab_room.png").copy()
     chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=0)
     first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=1e9)
     in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo"))
