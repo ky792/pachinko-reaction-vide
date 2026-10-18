@@ -26,6 +26,11 @@ FOOT_Y = ui.H - 150
 FACE = {"nagi": 1, "baku": -1}   # 相手のいる向き（+1＝右）
 
 
+# 動きに合う表情（表情差分の画像があるときだけ変わる。無ければ normal のまま）
+ACT_FACE = {"hop": "happy", "jump": "excited", "shake": "angry", "tilt": "confused", "shock": "surprised",
+            "sweat": "sweat", "slump": "sad", "lean": "smug"}
+
+
 def auto_act(who, text):
     t = text.rstrip()
     if t.endswith("？"):
@@ -63,7 +68,7 @@ def _mark(canvas, kind, x, y, k):
     ui.paste(canvas, lay, (int(x - lay.width / 2), int(y - lay.height / 2)), min(1.0, k * 1.5))
 
 
-def draw(canvas, scene, t, speaker, k_in, alpha):
+def draw(canvas, scene, t, speaker, k_in, alpha, face_at=lambda who, t: "normal"):
     """寸劇のキャラ2人を描く。k_in は登場（横から滑り込む 0→1）、alpha は全体の濃さ"""
     for who in ("nagi", "baku"):
         talking = speaker == who
@@ -107,7 +112,7 @@ def draw(canvas, scene, t, speaker, k_in, alpha):
         # 登場：左右の画面外から滑り込む
         dx += -FACE[who] * 760 * (1 - ui.ease_out(k_in))
         h = int(round(H_SKIT * sy / 8) * 8)
-        img, _ = ui._scaled(who, h, round(bright, 2))
+        img, _ = ui._scaled(who, h, round(bright, 2), face_at(who, t))
         if abs(sx - sy) > 0.004:
             img = img.resize((max(1, int(img.width * sx / sy)), img.height), Image.LANCZOS)
         if abs(ang) > 0.2:

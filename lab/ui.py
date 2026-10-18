@@ -686,13 +686,21 @@ def subtitle(canvas, tl, dur, who, text, accent=False):
 
 
 # ---------------------------------------------------------------- キャラクター
-def load_char(who):
-    return Image.open(ASSETS / "characters" / "v2" / who / "normal.png").convert("RGBA")
+FACES = ("normal", "happy", "surprised", "sad", "angry", "confused", "smug", "sweat", "excited", "despair")
+
+
+@lru_cache(maxsize=None)
+def load_char(who, face="normal"):
+    """表情差分 characters/v2/<who>/<face>.png。無ければ normal.png を使う"""
+    p = ASSETS / "characters" / "v2" / who / f"{face}.png"
+    if not p.exists():
+        p = ASSETS / "characters" / "v2" / who / "normal.png"
+    return Image.open(p).convert("RGBA")
 
 
 @lru_cache(maxsize=64)
-def _scaled(who, h, bright):
-    src = load_char(who)
+def _scaled(who, h, bright, face="normal"):
+    src = load_char(who, face)
     s = h / src.height
     im = src.resize((max(1, int(src.width * s)), int(h)), Image.LANCZOS)
     if bright < 0.999:
@@ -710,11 +718,11 @@ def _scaled(who, h, bright):
 CHAR_FOOT = {"nagi": (190, H - 24), "baku": (W - 200, H - 24)}
 
 
-def draw_char(canvas, who, h, t, talking, extra_scale=1.0):
+def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal"):
     """呼吸程度のわずかな上下だけ。話している方を明るく。戻り値：素材上の座標→画面座標の変換"""
     bright = 1.0 if talking else 0.78
     hq = int(round(h * extra_scale / 4) * 4)
-    img, s = _scaled(who, hq, bright)
+    img, s = _scaled(who, hq, bright, face)
     fx, fy = CHAR_FOOT[who]
     bob = 3 * math.sin(2 * math.pi * 0.4 * t + (0 if who == "nagi" else 1.9))
     x = fx - img.width / 2

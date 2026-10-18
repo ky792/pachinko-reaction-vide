@@ -64,6 +64,13 @@ def skit_state(scene, t):
     return k, since
 
 
+def face_at(scene, who, t):
+    for f in scene.get("faces", []):
+        if f["who"] == who and f["start"] <= t < f["end"]:
+            return f["face"]
+    return "normal"
+
+
 def speaker_at(scene, t):
     for s in scene["subs"]:
         if s["start"] <= t < s["end"]:
@@ -236,13 +243,13 @@ def render_frame(scene, t, images):
         cv.alpha_composite(shade)
     sk, since = skit_state(scene, t)
     if sk > 0.01:
-        skit.draw(cv, scene, t, who, ui.prog(since, 0, 0.7), sk)
+        skit.draw(cv, scene, t, who, ui.prog(since, 0, 0.7), sk, lambda w, tt: face_at(scene, w, tt))
     a *= 1 - sk
     if a > 0.01:
         for c in ("nagi", "baku"):
             lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
             ex = emphasis_at(scene, c, t) * (1 + 0.2 * fk if c == fw else 1.0)
-            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex)
+            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t))
             ui.paste(cv, lay, (0, 0), a * (1 - 0.5 * fk if fw and c != fw else 1.0))
     cv.alpha_composite(over)
     return cv.convert("RGB")

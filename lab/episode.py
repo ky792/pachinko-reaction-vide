@@ -182,7 +182,7 @@ def build_chapter(ep_dir, script_path, data):
     items = parse_script(script_path)
     scene = {"duration": 0, "cues": [], "layout": [], "subs": [], "emphasis": [], "se": [],
              "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []},
-             "focus": [], "bgm_track": [], "acts": [], "songs": []}
+             "focus": [], "bgm_track": [], "acts": [], "songs": [], "faces": []}
     directed = any(it.get("dir") for it in items if it["cmd"] == "line")   # @dir がある章だけ新しい間の付け方
     t = 0.25
     cur = None          # 今出ている資料
@@ -319,10 +319,14 @@ def build_chapter(ep_dir, script_path, data):
             scene["lines"].append({"id": lid, "who": it["who"], "text": it["text"], "start": round(t, 2),
                                    "dur": round(dur, 2), "voice": vpath.name, "has_voice": vpath.exists(),
                                    "pre": dr.get("pre"), "post": dr.get("post"), "lv": dr.get("lv")})
+            face = dr.get("face")
             if scene["layout"] and scene["layout"][-1]["mode"] == "skit":
                 act = dr.get("act") or skit.auto_act(it["who"], it["text"])
                 if act != "none":
                     scene["acts"].append({"who": it["who"], "start": round(t, 3), "end": round(t + dur, 3), "act": act})
+                    face = face or skit.ACT_FACE.get(act)
+            if face:   # @dir face=… 表情差分（characters/v2/<who>/<face>.png）。セリフの間＋0.3秒だけ
+                scene["faces"].append({"who": it["who"], "start": round(t, 3), "end": round(t + dur + 0.3, 3), "face": face})
             if dr.get("focus"):
                 scene["focus"].append({"who": dr["focus"], "start": round(t - 0.1, 3), "end": round(t + dur + dr.get("post", 0), 3)})
             if dr.get("se"):
