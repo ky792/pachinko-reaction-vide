@@ -15,13 +15,13 @@ from scipy import ndimage
 V2 = Path(__file__).resolve().parents[1] / "generator" / "assets" / "characters" / "v2"
 # シートのコマ順 → 表情名（ui.FACES の名前に合わせる）
 SHEETS = {
-    "baku": {"rows": [(0, 452), (522, 963)],
+    "baku": {"rows": [(0, 450), (525, 957)],
              "names": ["happy", "normal", "surprised", "smug", "excited", "angry", "sweat", "sad"]},
-    "nagi": {"rows": [(0, 475), (536, 984)],
-             "names": ["normal", "happy", "confused", "sweat", "sad", "surprised", "smug", None]},   # 8コマ目（寝落ち）は線画のすき間が多く切り抜けないので使わない
+    "nagi": {"rows": [(0, 472), (540, 978)],
+             "names": ["normal", "happy", "confused", "sweat", "sad", "surprised", "smug", "sleep"]},
 }
 ALIAS = {"baku": {"confused": "sweat", "despair": "sad"},
-         "nagi": {"angry": "sad", "excited": "happy", "despair": "sad"}}
+         "nagi": {"angry": "sad", "excited": "happy", "despair": "sleep"}}
 
 
 def bg_mask(a, thr=232, seal=3):

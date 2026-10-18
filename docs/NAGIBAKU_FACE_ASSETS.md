@@ -34,7 +34,8 @@
 ## 2026-10-18 受け取った素材
 - 表情シート：`generator/assets/characters/v2/sheets/{baku,nagi}_faces.png`（4×2、白背景、バストアップ）→ `python scripts/cut_faces.py` で `v2/<who>/face/<表情>.png` に切り出し
   - バク：①happy ②normal（ウインク）③surprised ④smug ⑤excited ⑥angry ⑦sweat ⑧sad（confused＝sweat、despair＝sad で代用）
-  - ナギ：①normal ②happy ③confused ④sweat ⑤sad ⑥surprised ⑦smug（⑧寝落ちは線画のすき間で切り抜けず未使用。angry＝sad、excited＝happy、despair＝sad で代用）
-- **寸劇ではバストアップを使う**（下端を画面の下に隠す。絵に漫符があるので、表情があるときは自前の漫符を出さない）。本編の小さいキャラは全身の normal.png のまま（ナギの脳タンクの位置合わせがあるため）
+  - ナギ：①normal ②happy ③confused ④sweat ⑤sad ⑥surprised ⑦smug ⑧sleep（angry＝sad、excited＝happy、despair＝sleep で代用）
+  - 2026-10-18 にコマの間を空けたシートに差し替え（隣と重ならないので、そのまま切り抜ける）
+- **寸劇ではバストアップを使う**（下端はセリフ欄の上辺に合わせてフェードで消す。セリフ欄の左右に配置。絵に漫符があるので、表情があるときは自前の漫符を出さない）。本編の小さいキャラは全身の normal.png のまま（ナギの脳タンクの位置合わせがあるため）
 - ロゴ：`generator/assets/logos/{news,history,newmachine}.png`（history は「パチスロクロニクル」に差し替え済み・白背景を透過に）。台本で `@logo history.png 3.6`
 - 背景：歴史回は `generator/assets/backgrounds/history_room.png`（`episode.json` の `"background"`）。研究室の背景と同じく、ぼかして暗くして敷く

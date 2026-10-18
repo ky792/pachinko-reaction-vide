@@ -735,13 +735,19 @@ def has_busts(who):
 
 
 @lru_cache(maxsize=96)
-def scaled_bust(who, h, bright, face="normal"):
+def scaled_bust(who, h, bright, face="normal", fade_px=0):
+    """バストアップを高さ h に。fade_px を付けると下端をその幅でフェードアウト（切れ目を見せない）"""
     src = load_bust(who, face)
     s = h / src.height
     im = src.resize((max(1, int(src.width * s)), int(h)), Image.LANCZOS)
     if bright < 0.999:
         rgb = Image.eval(im.convert("RGB"), lambda v: int(v * bright))
         im = Image.merge("RGBA", (*rgb.split(), im.split()[3]))
+    if fade_px:
+        a = np.asarray(im.split()[3]).astype(np.float32)
+        ramp = np.ones(im.height, np.float32)
+        ramp[-fade_px:] = np.linspace(1, 0, fade_px)
+        im.putalpha(Image.fromarray((a * ramp[:, None]).astype(np.uint8)))
     return im, s
 
 
