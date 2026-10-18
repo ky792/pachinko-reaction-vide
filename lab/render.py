@@ -96,7 +96,7 @@ def focus_state(scene, t):
     return None, 0.0
 
 
-BACK = ("chapter", "title", "intro", "timeline", "machine", "keyword", "flow", "lineup")
+BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup")
 
 
 def year_at(scene, t):
@@ -127,6 +127,8 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
         ui.chapter_card(cv, tl, dur, d)
     elif tp == "title":
         ui.title_card(cv, tl, dur, d)
+    elif tp == "logo":
+        ui.logo_card(cv, tl, dur, d)
     elif tp == "intro":
         ui.intro_card(cv, tl, dur, d)
     elif tp == "timeline":
@@ -155,7 +157,7 @@ def state_key(scene, t):
     if not still:
         return None
     cues = scene["cues"]
-    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro")), default=0)
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=0)
     if chap_end and chap_end - 0.4 <= t < chap_end + 0.15:
         return None
     key.append(round(y, 3))
@@ -187,14 +189,14 @@ def render_layers(scene, t, images):
     ch = scene["chapter"]
     cues = scene["cues"]
     under = ui.background().copy()
-    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro")), default=0)
-    first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title", "intro")), default=1e9)
-    in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title", "intro"))
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=0)
+    first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=1e9)
+    in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo"))
     if in_card:
         bar_a = 0.0 if t >= first_bg + 0.3 else 1 - ui.prog(t, first_bg, 0.3)
         # 全画面表示が終わる直前から上部バーを戻す
         for c in cues:
-            if c["type"] in ("chapter", "title", "intro") and c["start"] <= t < c["end"]:
+            if c["type"] in ("chapter", "title", "intro", "logo") and c["start"] <= t < c["end"]:
                 bar_a = max(bar_a, ui.ease_out(ui.prog(t, c["end"] - 0.4, 0.5)))
     else:
         bar_a = 1.0

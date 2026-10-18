@@ -20,4 +20,5 @@
 @song op_rock.wav gain=0.6 len=12
 @intro nagi
 @intro baku
-@title 7.6
+@logo history.png 3.6
+@title 4.0

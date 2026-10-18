@@ -231,6 +231,15 @@ def build_chapter(ep_dir, script_path, data):
             scene["songs"].append({"t": round(t, 3), "path": str(f), "gain": float(opt.get("gain", 0.8)), "len": ln})
             scene["bgm_track"].append({"t": round(t, 3), "level": 0.0, "dur": 0.3})
             scene["bgm_track"].append({"t": round(t + ln, 3), "level": 1.0, "dur": 1.5})
+        elif c == "logo":
+            # @logo <ファイル> [秒] … 番組ロゴ（generator/assets/logos/）を全画面で
+            bits = it["arg"].split()
+            ld = float(bits[1]) if len(bits) > 1 else 3.0
+            close_cur(t)
+            set_layout("hidden", t)
+            scene["cues"].append({"type": "logo", "start": t, "end": t + ld, "data": {"file": bits[0]}})
+            scene["se"].append({"t": t + 0.05, "kind": "pon", "gain": 0.3})
+            t += ld
         elif c == "intro":
             # @intro nagi … data["intro"][who] のキャラ紹介カードを全画面で出す（ニュース解説のOP）
             close_cur(t)

@@ -610,6 +610,27 @@ def title_card(canvas, tl, dur, data):
     paste(canvas, lay, (0, 0), out)
 
 
+@lru_cache(maxsize=8)
+def load_logo(name):
+    return Image.open(ASSETS / "logos" / name).convert("RGBA")
+
+
+def logo_card(canvas, tl, dur, data):
+    """番組ロゴ（generator/assets/logos/）を全画面で。ポンと弾んで出て、ゆっくり寄る"""
+    out = 1 - ease_in_out(prog(tl, dur - 0.35, 0.35))
+    if out <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ImageDraw.Draw(lay).rectangle((0, 0, W, H), fill=(BG[0], BG[1], BG[2], int(215 * ease_out(prog(tl, 0, 0.3)))))
+    logo = load_logo(data["file"])
+    k = ease_out_back(prog(tl, 0.05, 0.5), 1.8)
+    s = (0.55 + 0.45 * k) * (1 + 0.04 * prog(tl, 0.6, max(0.1, dur - 0.6)))
+    base = min(1400 / logo.width, 760 / logo.height)
+    im = logo.resize((max(1, int(logo.width * base * s)), max(1, int(logo.height * base * s))), Image.LANCZOS)
+    paste(lay, im, ((W - im.width) / 2, (H - im.height) / 2 - 20), min(1.0, prog(tl, 0.05, 0.2)))
+    paste(canvas, lay, (0, 0), out)
+
+
 def intro_card(canvas, tl, dur, data):
     """キャラ紹介（ニュース解説のOP）：左に大きな立ち絵、右に肩書き・名前・ひとことプロフィール"""
     out = 1 - ease_in_out(prog(tl, dur - 0.35, 0.35))
@@ -643,13 +664,13 @@ def intro_card(canvas, tl, dur, data):
 
 
 SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中は描画を使い回して高速化）
-    "chapter": lambda d: 0.8, "title": lambda d: 1.0, "intro": lambda d: 0.9, "keyword": lambda d: 0.5,
+    "chapter": lambda d: 0.8, "title": lambda d: 1.0, "intro": lambda d: 0.9, "logo": lambda d: 1e9, "keyword": lambda d: 0.5,
     "machine": lambda d: 0.45 + 0.28 * len(d["rows"]) + 0.95,
     "analysis": lambda d: 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
     "flow": lambda d: 0.35 + 0.45 * len(d["steps"]) + 0.4,
     "lineup": lambda d: 0.3 + (0.32 if d.get("fast") else 0.55) * len(d["items"]) + 0.35,
 }
-OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45, "intro": 0.35}
+OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45, "intro": 0.35, "logo": 0.35}
 
 
 # ---------------------------------------------------------------- 字幕
@@ -696,6 +717,32 @@ def load_char(who, face="normal"):
     if not p.exists():
         p = ASSETS / "characters" / "v2" / who / "normal.png"
     return Image.open(p).convert("RGBA")
+
+
+@lru_cache(maxsize=None)
+def load_bust(who, face="normal"):
+    """寸劇用のバストアップ表情 characters/v2/<who>/face/<face>.png（scripts/cut_faces.py で切り出し）。
+    無い表情は face/normal.png、それも無ければ全身の normal.png"""
+    d = ASSETS / "characters" / "v2" / who / "face"
+    for p in (d / f"{face}.png", d / "normal.png"):
+        if p.exists():
+            return Image.open(p).convert("RGBA")
+    return load_char(who)
+
+
+def has_busts(who):
+    return (ASSETS / "characters" / "v2" / who / "face" / "normal.png").exists()
+
+
+@lru_cache(maxsize=96)
+def scaled_bust(who, h, bright, face="normal"):
+    src = load_bust(who, face)
+    s = h / src.height
+    im = src.resize((max(1, int(src.width * s)), int(h)), Image.LANCZOS)
+    if bright < 0.999:
+        rgb = Image.eval(im.convert("RGB"), lambda v: int(v * bright))
+        im = Image.merge("RGBA", (*rgb.split(), im.split()[3]))
+    return im, s
 
 
 @lru_cache(maxsize=64)

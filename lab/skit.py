@@ -20,7 +20,8 @@ from PIL import Image, ImageDraw
 
 import ui
 
-H_SKIT = 600                     # 寸劇中のキャラの高さ
+H_SKIT = 600                     # 寸劇中のキャラの高さ（全身の絵）
+H_BUST = 760                     # バストアップの表情差分を使うときの高さ
 POS = {"nagi": 560, "baku": 1360}  # 足元の中心 x
 FOOT_Y = ui.H - 150
 FACE = {"nagi": 1, "baku": -1}   # 相手のいる向き（+1＝右）
@@ -112,14 +113,22 @@ def draw(canvas, scene, t, speaker, k_in, alpha, face_at=lambda who, t: "normal"
         # 登場：左右の画面外から滑り込む
         dx += -FACE[who] * 760 * (1 - ui.ease_out(k_in))
         h = int(round(H_SKIT * sy / 8) * 8)
-        img, _ = ui._scaled(who, h, round(bright, 2), face_at(who, t))
+        face = face_at(who, t)
+        bust = ui.has_busts(who)
+        if bust:      # バストアップの表情差分：下端を画面の下に隠す。漫符は絵に描いてあるので足さない
+            h = int(round(H_BUST * sy / 8) * 8)
+            img, _ = ui.scaled_bust(who, h, round(bright, 2), face)
+            if face != "normal":
+                mark = None
+        else:
+            img, _ = ui._scaled(who, h, round(bright, 2), face)
         if abs(sx - sy) > 0.004:
             img = img.resize((max(1, int(img.width * sx / sy)), img.height), Image.LANCZOS)
         if abs(ang) > 0.2:
             img = img.rotate(ang, resample=Image.BICUBIC, expand=True)
         x = POS[who] + dx - img.width / 2
-        y = FOOT_Y + dy - img.height
+        y = (ui.H + 20 if bust else FOOT_Y) + dy - img.height
         ui.paste(canvas, img, (int(x), int(y)), alpha)
         if mark:
             mx = POS[who] + dx + FACE[who] * -150
-            _mark(canvas, mark, mx, FOOT_Y + dy - img.height + 40 + my, mk * alpha)
+            _mark(canvas, mark, mx, y + 40 + my, mk * alpha)

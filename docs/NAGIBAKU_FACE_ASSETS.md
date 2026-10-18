@@ -30,3 +30,10 @@
 ## 台本での使い方
 - 寸劇（`@skit on`）では、動き（`@dir act=`）に合う表情が自動で付く：hop→happy、jump→excited、shake→angry、tilt→confused、shock→surprised、sweat→sweat、slump→sad、lean→smug。
 - 本編でも `@dir face=surprised` のように書けば、そのセリフの間だけ表情が変わる。
+
+## 2026-10-18 受け取った素材
+- 表情シート：`generator/assets/characters/v2/sheets/{baku,nagi}_faces.png`（4×2、白背景、バストアップ）→ `python scripts/cut_faces.py` で `v2/<who>/face/<表情>.png` に切り出し
+  - バク：①happy ②normal（ウインク）③surprised ④smug ⑤excited ⑥angry ⑦sweat ⑧sad（confused＝sweat、despair＝sad で代用）
+  - ナギ：①normal ②happy ③confused ④sweat ⑤sad ⑥surprised ⑦smug（⑧寝落ちは線画のすき間で切り抜けず未使用。angry＝sad、excited＝happy、despair＝sad で代用）
+- **寸劇ではバストアップを使う**（下端を画面の下に隠す。絵に漫符があるので、表情があるときは自前の漫符を出さない）。本編の小さいキャラは全身の normal.png のまま（ナギの脳タンクの位置合わせがあるため）
+- ロゴ：`generator/assets/logos/{news,history,newmachine}.png`。台本で `@logo history.png 3.6`
