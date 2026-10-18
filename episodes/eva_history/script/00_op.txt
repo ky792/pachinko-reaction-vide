@@ -1,7 +1,7 @@
 # OP：寸劇 → OP曲（op_rock）→ キャラ紹介 → タイトル（テイコウペンギン型）
 @skit on
 @dir act=jump
-バク: ナギ！エヴァの新台、来月入るで！REDやって！
+バク: ナギ！エヴァの新台が入るで！REDやって！
 @dir act=sweat
 ナギ: また初日に並ぶの。
 @dir act=lean
@@ -15,7 +15,7 @@
 バク: 暴走、そんな出世しとったん！？
 ナギ: 今日は、エヴァのゲーム性が20年でどう変わったか、全部見る。
 @dir act=jump
-バク: RED打つ前の予習や！
+バク: RED打つ前に、エヴァの歴史おさらいや！
 @skit off
 @song op_rock.wav gain=0.6 len=12
 @intro nagi

@@ -9,18 +9,8 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 6,
+ "_try": 7,
  "only": [
-  "08_matome-001",
-  "08_matome-002",
-  "08_matome-003",
-  "08_matome-004",
-  "08_matome-005",
-  "08_matome-006",
-  "08_matome-008",
-  "08_matome-012",
-  "08_matome-014",
-  "99_ed-002",
-  "99_ed-004"
+  "07_lt-006"
  ]
 }
