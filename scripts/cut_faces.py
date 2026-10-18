@@ -49,23 +49,55 @@ def drop_edge_bits(alpha):
     return alpha
 
 
+MARGIN = 130   # コマの左右にはみ出した腕・しっぽ・漫符も拾えるよう、横に広げた共通キャンバスにする
+
+
 def main():
     for who, cfg in SHEETS.items():
-        src = Image.open(V2 / "sheets" / f"{who}_faces.png").convert("RGB")
-        W = src.width
+        src = np.asarray(Image.open(V2 / "sheets" / f"{who}_faces.png").convert("RGB")).copy()
+        Hs, Ws = src.shape[:2]
+        fg = ~bg_mask(src)
+        lab, n = ndimage.label(fg, structure=np.ones((3, 3)))
+        objs = ndimage.find_objects(lab)
+        cw = Ws // 4
         out = V2 / who / "face"
         out.mkdir(parents=True, exist_ok=True)
         for r, (y0, y1) in enumerate(cfg["rows"]):
             for c in range(4):
-                cell = np.asarray(src.crop((c * W // 4 + 8, y0, (c + 1) * W // 4 - 8, y1))).copy()   # 左右8pxは隣のコマのはみ出しが入るので切る
                 name = cfg["names"][r * 4 + c]
                 if name is None:
                     continue
-                m = bg_mask(cell)
-                alpha = drop_edge_bits(np.where(m, 0, 255).astype(np.uint8))
-                rgba = np.dstack([cell, alpha])
-                im = Image.fromarray(rgba, "RGBA")
-                im.save(out / f"{name}.png")
+                # 隣のキャラとくっついているので、コマの境目付近で絵がいちばん薄い縦の列で切り分ける
+                def split(b):
+                    if b <= 0 or b >= Ws:
+                        return max(0, min(Ws, b))
+                    lo, hi = max(1, b - 110), min(Ws - 1, b + 110)
+                    colsum = fg[y0:y1, lo:hi].sum(0)
+                    return lo + int(colsum.argmin())
+                x0, x1 = split(c * cw), split((c + 1) * cw)
+                keep = np.zeros_like(fg)
+                cell = lab[y0:y1, x0:x1]
+                ids, cnt = np.unique(cell[cell > 0], return_counts=True)
+                main = ids[cnt.argmax()]
+                for i in ids:
+                    sl = objs[i - 1]
+                    cy = (sl[0].start + sl[0].stop) / 2
+                    cx = (sl[1].start + sl[1].stop) / 2
+                    if i == main or (x0 <= cx < x1 and y0 <= cy < y1):
+                        keep |= lab == i
+                keep[:, :x0] = False                   # 切り分けた線の外（隣のキャラ）は捨てる
+                keep[:, x1:] = False
+                keep[y1:] = False                      # ラベルの帯より下は使わない
+                keep[:y0] = False
+                gx0 = c * cw - MARGIN                  # 共通キャンバスの左端（コマの位置基準）
+                ex0, ex1 = max(0, gx0), min(Ws, (c + 1) * cw + MARGIN)
+                canvas = np.zeros((y1 - y0, cw + 2 * MARGIN, 4), np.uint8)
+                ox = ex0 - gx0
+                patch = src[y0:y1, ex0:ex1]
+                alpha = np.where(keep[y0:y1, ex0:ex1], 255, 0).astype(np.uint8)
+                canvas[:, ox:ox + (ex1 - ex0), :3] = patch
+                canvas[:, ox:ox + (ex1 - ex0), 3] = alpha
+                Image.fromarray(canvas, "RGBA").save(out / f"{name}.png")
         for a, b in ALIAS[who].items():
             Image.open(out / f"{b}.png").save(out / f"{a}.png")
         print(who, sorted(p.stem for p in out.glob("*.png")))
