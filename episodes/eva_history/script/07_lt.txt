@@ -1,4 +1,5 @@
 @chapter eva6
+@bgm resume 0.8
 @show machine:eva_kioku
 ナギ: 2025年、はじまりの記憶。スマパチで、LT付き。
 ナギ: LTの名前はインパクトモード。右打ちは、ほぼ約2400個。

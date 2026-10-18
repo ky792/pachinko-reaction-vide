@@ -9,8 +9,14 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 7,
+ "_try": 8,
  "only": [
-  "07_lt-006"
+  "01_basic-007",
+  "01_basic-009",
+  "02_bousou-029",
+  "03_shingeki-017",
+  "04_togari-014",
+  "05_fuyu-024",
+  "06_vst-018"
  ]
 }

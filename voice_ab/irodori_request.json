@@ -5,7 +5,7 @@
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "eva_baku7",
+   "name": "eva_baku8",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -15,8 +15,11 @@
   }
  ],
  "only": [
-  "00_op-001",
-  "00_op-009",
-  "99_ed-003"
+  "01_basic-008",
+  "02_bousou-030",
+  "03_shingeki-018",
+  "04_togari-015",
+  "05_fuyu-025",
+  "06_vst-019"
  ]
 }
