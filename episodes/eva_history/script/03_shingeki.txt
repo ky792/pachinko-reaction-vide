@@ -1,5 +1,6 @@
 @chapter eva2
 @bgm resume 0.8
+@bgm track bright_light.wav
 @show machine:eva_fukuin
 ナギ: 2010年、始まりの福音。ここから新劇場版。
 ナギ: シリーズで初めて、レバーの役物が付いた。

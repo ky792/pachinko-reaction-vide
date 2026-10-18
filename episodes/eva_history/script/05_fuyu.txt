@@ -1,5 +1,6 @@
 @chapter eva4
 @bgm resume 0.8
+@bgm track mood_winter.wav
 @show machine:eva_mezame
 ナギ: 2016年、いま、目覚めの時。1/319に戻って、確変65%。
 @show timeline:rule
@@ -15,6 +16,7 @@
 ナギ: 2018年2月に規則改正。大当たり1回の出玉は、最大1500個になった。
 バク: P機の始まりやな。ALL1500の1500は、ここからか。
 ナギ: 65%の申し合わせも、2019年2月で撤廃。
+@bgm track mood_hype.wav
 @show machine:eva_choubousou
 ナギ: その翌月、2019年3月。エヴァが2台同時に出る。まずは超暴走。
 ナギ: 1/199のV確変で、82%ループ。65%撤廃後の第1号って言われてる。

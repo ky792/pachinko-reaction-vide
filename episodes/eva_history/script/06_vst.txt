@@ -1,11 +1,13 @@
 @chapter eva5
 @bgm resume 0.8
+@bgm track bright_light.wav
 @show machine:eva_sinku
 ナギ: 2020年、決戦〜真紅〜。ここからV-ST。
 ナギ: 初当たりは全部、電サポ100回の決戦モード。奇数で揃えばST、偶数なら時短。
 バク: 前半が共鳴ステージ、後半が決戦ステージやったな。
 ナギ: シリーズ初の遊タイムも付いた。959回転で、時短1200回。
 バク: 天井狙いの台やったな。ハマり台、すぐ埋まっとった。
+@bgm track mood_hype.wav
 @show machine:eva15
 ナギ: 2021年、未来への咆哮。IMPACT MODEはST163回、右打ちはALL1500。
 @dir pre=0.25 focus=baku lv=3
@@ -17,6 +19,7 @@
 バク: 何年経っても、島から消えへんかったもんな。
 ナギ: 超ロング稼働、って書かれるくらい長く打たれた台。
 バク: 今のエヴァの形は、全部この咆哮が作ったんや。
+@bgm track bright_pop.wav
 @show machine:eva_rei
 ナギ: 2023年、シン・エヴァンゲリオン Type レイ。劇場版の映像が、初めてパチンコに入った。
 ナギ: 盤面には、新2号機αと改8号機γのギミック。
