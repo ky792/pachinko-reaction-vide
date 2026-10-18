@@ -52,6 +52,7 @@ def main():
     ap.add_argument("src"); ap.add_argument("dst")
     ap.add_argument("--ids-from"); ap.add_argument("--shift", type=float, default=0.0)
     ap.add_argument("--squeeze", action="store_true")
+    ap.add_argument("--only", help="この行IDだけ（カンマ区切り）。reuse_voices.py で出た作り直し分だけを処理するとき")
     a = ap.parse_args()
     src, dst = Path(a.src), Path(a.dst); dst.mkdir(parents=True, exist_ok=True)
     files = sorted(src.glob("*.wav"))
@@ -59,6 +60,9 @@ def main():
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "lab")); import episode  # noqa: E402
         ids = {it["id"] for sc in sorted((Path(a.ids_from) / "script").glob("*.txt")) for it in episode.lines_with_ids(sc)}
         files = [f for f in files if f.stem in ids]
+    if a.only:
+        keep = set(a.only.split(","))
+        files = [f for f in files if f.stem in keep]
     for f in files:
         x = load(f, a.shift)
         if a.squeeze:

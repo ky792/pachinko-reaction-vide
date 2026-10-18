@@ -9,5 +9,11 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 4
+ "_try": 5,
+ "only": [
+  "02_bousou-008",
+  "02_bousou-021",
+  "02_bousou-028",
+  "06_vst-013"
+ ]
 }
