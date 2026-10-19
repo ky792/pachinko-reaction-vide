@@ -20,7 +20,7 @@ def main():
     vdir = ep / "voices"
     old = {}
     for it in lines(old_dir):
-        old.setdefault((it["who"], it["text"]), it["id"])
+        old.setdefault((it["who"], it.get("say", it["text"])), it["id"])
     tmp = Path(tempfile.mkdtemp())
     for f in vdir.glob("*.wav"):
         shutil.copy(f, tmp / f.name)
@@ -28,7 +28,7 @@ def main():
     for f in vdir.glob("*.wav"):
         f.unlink()
     for it in lines(ep / "script"):
-        oid = old.get((it["who"], it["text"]))
+        oid = old.get((it["who"], it.get("say", it["text"])))
         if oid and (tmp / f"{oid}.wav").exists():
             shutil.copy(tmp / f"{oid}.wav", vdir / f"{it['id']}.wav")
         else:

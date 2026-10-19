@@ -99,6 +99,7 @@
 ### 2-4. 読みの確認
 - 生成後は `voices/_kana.txt` を見る。数字や機種名が `/` で割れていたら `voice/dictionary.json` の `kana_fix` で1語にする（例：65% → ロクジュウゴパ'アセント）。
 - 新しい％・機種名・業界用語が出たら、辞書に足してから生成する。
+- 読み間違いの検査・修正の手順は `docs/READING_CHECK.md`（声を作る前の `scripts/reading/precheck.py`、作ったあとの Whisper 照合、直した行だけ作り直す `scripts/reading/fix.py`）。字幕と読みを分けたいときは台本に `《表記|よみ》` と書く。
 
 ### 2-5. 変えないもの
 - 話者ID・casting の基本値（speed / pitch / intonation / drawl）は勝手に変えない。変えたいときは AB用の別ファイルで聞き比べを用意し、ユーザーに選んでもらう。

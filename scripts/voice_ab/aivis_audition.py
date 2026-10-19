@@ -6,7 +6,9 @@
 request: {"action": "audition", "models": [{"uuid": "...", "for": "nagi|baku"}],
           "lines": {"nagi": ["..."], "baku": ["..."]}, "speed": 1.0, "intonation": 1.0}
 - 各スタイルで lines[for] を続けて読み、<モデル名>_<話者>_<スタイル>.wav に1本で書き出す（試聴用）
-- 読みは voice/dictionary.json の rules で直してから渡す
+- 読みは voice/dictionary.json の rules で直してから渡す（台本の《表記|よみ》は よみ を読む）
+- action=lines では、エンジンが実際に使った読み（audio_query の kana）を <out>/kana.json に残す（読み間違い検査用）
+- "user_dict": true なら dictionary.json の words を AivisSpeech のユーザー辞書に入れてから読む（既定は入れない＝今の抑揚のまま）
 """
 import json, re, sys, urllib.parse, urllib.request, wave, io
 from pathlib import Path
@@ -29,15 +31,24 @@ def lines(rq, out, fix):
     with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
         sp = next(s for s in json.loads(r.read()) if rq["model"]["name"] in s["name"])
     sid = next(st["id"] for st in sp["styles"] if st["name"] == rq["style"])
+    if rq.get("user_dict"):
+        for w in json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))["words"]:
+            post("/user_dict_word", {"surface": w["surface"], "pronunciation": w["yomi"],
+                                     "accent_type": int(w.get("accent", 0)), "word_type": "PROPER_NOUN", "priority": 10})
+    kf = out / "kana.json"
+    kanas = json.loads(kf.read_text(encoding="utf-8")) if kf.exists() else {}
     for sc in sorted((ROOT / rq["episode"] / "script").glob("*.txt")):
         for it in episode.lines_with_ids(sc):
             if it["who"] != rq["who"] or (rq.get("only") and it["id"] not in rq["only"]):
                 continue
-            q = json.loads(post("/audio_query", {"text": fix(it["text"]), "speaker": sid}))
+            text = fix(it.get("say", it["text"]))
+            q = json.loads(post("/audio_query", {"text": text, "speaker": sid}))
             q.update({"speedScale": rq.get("speed", 1.0), "intonationScale": rq.get("intonation", 1.0),
                       "prePhonemeLength": 0.05, "postPhonemeLength": 0.08})
             (out / f"{it['id']}.wav").write_bytes(post("/synthesis", {"speaker": sid}, q))
+            kanas[it["id"]] = {"text": text, "kana": q.get("kana", "")}
             print(it["id"], it["text"], flush=True)
+    kf.write_text(json.dumps(kanas, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
 def variants(rq, out, fix):

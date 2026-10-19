@@ -8,7 +8,7 @@ request: {"checkpoint": "Aratako/Irodori-TTS-v4.1-Small", "lines": ["..."],
 - ref を省くと見本なし（caption だけで声を作る）
 - 1変種＝lines を0.5秒あけてつないだ <name>.wav
 action=lines：{"action": "lines", "episode": "episodes/news01", "who": "baku", "variants": [...]}
-- 台本の who の行を1行ずつ <out>/<変種名>/<行ID>.wav に（本番用）。読みは voice/dictionary.json の rules で直す
+- 台本の who の行を1行ずつ <out>/<変種名>/<行ID>.wav に（本番用）。読みは voice/dictionary.json の rules で直す（台本の《表記|よみ》は よみ を読む）
 """
 import json, re, subprocess, sys, time, wave
 from pathlib import Path
@@ -42,7 +42,7 @@ def lines(rq, out, repo, work):
     for v in rq["variants"]:
         args = base_args(rq, v, work); od = out / v["name"]; od.mkdir(parents=True, exist_ok=True)
         for it in items:
-            subprocess.run(["uv", "run", "--no-sync", "python", "infer.py", *args, "--text", fix(it["text"]),
+            subprocess.run(["uv", "run", "--no-sync", "python", "infer.py", *args, "--text", fix(it.get("say", it["text"])),
                             "--output-wav", str(od / f"{it['id']}.wav")], cwd=repo, check=True)
             print(v["name"], it["id"], it["text"], flush=True)
 

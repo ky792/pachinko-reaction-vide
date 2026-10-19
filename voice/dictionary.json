@@ -1,5 +1,5 @@
 {
- "_note": "読みの辞書。surface=台本の表記、yomi=読み（カタカナ）、accent=アクセント核の位置（0=平板、n=n拍目の後で下がる）、ok=人が確認済みなら true。台本はこの辞書で読み上げ前に自動で直す。",
+ "_note": "読みの辞書。surface=台本の表記、yomi=読み（カタカナ）、accent=アクセント核の位置（0=平板、n=n拍目の後で下がる）、ok=人が確認済みなら true。台本はこの辞書で読み上げ前に自動で直す。 terms＝読みの確認用の語（cat 分類、status ok＝確定／要確認＝人が確かめるまで確定しない。読み上げは変えない）。rules＝読み上げ前に当てる置き換え（直した読みはここへ）。history＝誤読を直した記録（scripts/reading/fix.py が足す）。台本の《表記|よみ》は字幕に表記、読み上げによみを使う。",
  "words": [
   {
    "surface": "シーアールガロ",
@@ -655,5 +655,614 @@
    "to": "シンホクトム'ソウ",
    "why": "真・北斗無双が文末で「しん／ほくとむ／そお」に割れるのを1語に"
   }
- ]
+ ],
+ "terms": [
+  {
+   "surface": "確変",
+   "yomi": "カクヘン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "時短",
+   "yomi": "ジタン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "保留",
+   "yomi": "ホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "潜伏",
+   "yomi": "センプク",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "甘デジ",
+   "yomi": "アマデジ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "小当たり",
+   "yomi": "コアタリ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "大当たり",
+   "yomi": "オオアタリ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "初当たり",
+   "yomi": "ハツアタリ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "単発",
+   "yomi": "タンパツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "連チャン",
+   "yomi": "レンチャン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "役物",
+   "yomi": "ヤクモノ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "先読み",
+   "yomi": "サキヨミ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "遊タイム",
+   "yomi": "ユウタイム",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "電サポ",
+   "yomi": "デンサポ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "出玉",
+   "yomi": "デダマ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "天井",
+   "yomi": "テンジョウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "筐体",
+   "yomi": "キョウタイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "盤面",
+   "yomi": "バンメン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "激アツ",
+   "yomi": "ゲキアツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "信頼度",
+   "yomi": "シンライド",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "期待度",
+   "yomi": "キタイド",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "継続率",
+   "yomi": "ケイゾクリツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "突入率",
+   "yomi": "トツニュウリツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "引き戻し",
+   "yomi": "ヒキモドシ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "赤保留",
+   "yomi": "アカホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "金保留",
+   "yomi": "キンホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "虹保留",
+   "yomi": "ニジホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "一撃",
+   "yomi": "イチゲキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "右打ち",
+   "yomi": "ミギウチ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "左打ち",
+   "yomi": "ヒダリウチ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "液晶",
+   "yomi": "エキショウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "通常時",
+   "yomi": "ツウジョウジ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "全回転",
+   "yomi": "ゼンカイテン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "擬似連",
+   "yomi": "ギジレン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "突確",
+   "yomi": "トツカク",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "残保留",
+   "yomi": "ザンホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "新台",
+   "yomi": "シンダイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "実機",
+   "yomi": "ジッキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "等価",
+   "yomi": "トウカ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "回転数",
+   "yomi": "カイテンスウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "打ち手",
+   "yomi": "ウチテ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "台数",
+   "yomi": "ダイスウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "規制",
+   "yomi": "キセイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "内規",
+   "yomi": "ナイキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "初号機",
+   "yomi": "ショゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "弐号機",
+   "yomi": "ニゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "零号機",
+   "yomi": "ゼロゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "四号機",
+   "yomi": "ヨンゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "使徒",
+   "yomi": "シト",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "覚醒",
+   "yomi": "カクセイ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "暴走",
+   "yomi": "ボウソウ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "新劇場版",
+   "yomi": "シンゲキジョウバン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "碇",
+   "yomi": "イカリ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "綾波",
+   "yomi": "アヤナミ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "渚カヲル",
+   "yomi": "ナギサカヲル",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "加持",
+   "yomi": "カジ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "葛城",
+   "yomi": "カツラギ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "赤木",
+   "yomi": "アカギ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "第3新東京市",
+   "yomi": "ダイサンシントウキョウシ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "最後のシ者",
+   "yomi": "サイゴノシシャ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "未来への咆哮",
+   "yomi": "アスヘノホウコウ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "咆哮",
+   "yomi": "ホウコウ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "始まりの福音",
+   "yomi": "ハジマリノフクイン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "奇跡の価値は",
+   "yomi": "キセキノカチワ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "使徒、再び",
+   "yomi": "シトフタタビ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "シト、新生",
+   "yomi": "シトシンセイ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "目覚めの時",
+   "yomi": "メザメノトキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "決戦",
+   "yomi": "ケッセン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "真紅",
+   "yomi": "シンク",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "集結の園へ",
+   "yomi": "シュウケツノソノエ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "魂のルフラン",
+   "yomi": "タマシイノルフラン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "残酷な天使のテーゼ",
+   "yomi": "ザンコクナテンシノテーゼ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "ロンギヌスの槍",
+   "yomi": "ロンギヌスノヤリ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "赤き月",
+   "yomi": "アカキツキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "最終号機",
+   "yomi": "サイシュウゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "無号機",
+   "yomi": "ムゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "改8号機",
+   "yomi": "カイハチゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "裏コード",
+   "yomi": "ウラコード",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "格納庫",
+   "yomi": "カクノウコ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "搭乗",
+   "yomi": "トウジョウ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "ビスティ",
+   "yomi": "ビスティ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "フィールズ",
+   "yomi": "フィールズ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "京楽",
+   "yomi": "キョウラク",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "三洋",
+   "yomi": "サンヨウ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "大一",
+   "yomi": "ダイイチ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "藤商事",
+   "yomi": "フジショウジ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "豊丸",
+   "yomi": "トヨマル",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "西陣",
+   "yomi": "ニシジン",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "高尾",
+   "yomi": "タカオ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "大都技研",
+   "yomi": "ダイトギケン",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "平和",
+   "yomi": "ヘイワ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "ニューギン",
+   "yomi": "ニューギン",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "サミー",
+   "yomi": "サミー",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "奥村",
+   "yomi": "オクムラ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "牙狼",
+   "yomi": "ガロ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "海物語",
+   "yomi": "ウミモノガタリ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "北斗無双",
+   "yomi": "ホクトムソウ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "慶次",
+   "yomi": "ケイジ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "源さん",
+   "yomi": "ゲンサン",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "リゼロ",
+   "yomi": "リゼロ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "竹屋",
+   "yomi": "タケヤ",
+   "cat": "要確認",
+   "status": "要確認"
+  }
+ ],
+ "history": []
 }

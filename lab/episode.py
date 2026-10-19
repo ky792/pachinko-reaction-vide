@@ -29,6 +29,7 @@ import render  # noqa: E402
 import motion  # noqa: E402
 import ui  # noqa: E402
 import skit  # noqa: E402
+import reading  # noqa: E402
 
 SR = 44100
 CHARS_PER_SEC = {"nagi": 5.0, "baku": 5.3}   # 音声が無いときの推定読み上げ速度
@@ -60,8 +61,8 @@ def parse_script(path):
         m = re.match(r"^(ナギ|バク)(!?)[:：]\s*(.+)$", line)
         if not m:
             raise ValueError(f"{path.name}: 読めない行 → {raw}")
-        out.append({"cmd": "line", "who": WHO[m.group(1)], "tsukkomi": m.group(2) == "!", "text": m.group(3),
-                    "dir": pending})
+        out.append({"cmd": "line", "who": WHO[m.group(1)], "tsukkomi": m.group(2) == "!", "text": reading.display(m.group(3)),
+                    "say": m.group(3), "dir": pending})   # text＝字幕、say＝読み上げの元（《表記|よみ》入り）
         pending = {}
     return out
 
@@ -442,6 +443,18 @@ def load_images(ep_dir, scene):
     return imgs
 
 
+def chapter_key(ep, scene):
+    """章の動画の中身を決めるもの（場面の設定・使う音声・実機画像）の指紋。--reuse で、変わっていない章を描き直さないために使う"""
+    import hashlib
+    h = hashlib.sha1(json.dumps(scene, ensure_ascii=False, sort_keys=True).encode())
+    for v in scene.get("voices", []):
+        p = Path(v["path"])
+        h.update(p.read_bytes() if p.exists() else b"-")
+    for name in sorted(load_images(ep, scene)):
+        h.update((ep / "images" / name).read_bytes())
+    return h.hexdigest()
+
+
 def render_chapter(args):
     ep_dir, stem, out_dir = Path(args[0]), args[1], Path(args[2])
     scene = json.loads((out_dir / f"{stem}.scene.json").read_text(encoding="utf-8"))
@@ -542,6 +555,7 @@ def main():
     ap.add_argument("--manifest", action="store_true", help="セリフID・必要素材の一覧だけ書き出す")
     ap.add_argument("--out", default=None)
     ap.add_argument("--jobs", type=int, default=2)
+    ap.add_argument("--reuse", action="store_true", help="前に作った章の動画を、中身（台本・音声・画像）が変わっていなければ使い回す")
     args = ap.parse_args()
     ep = Path(args.episode_dir)
     data, conf = load_data(ep)
@@ -571,8 +585,15 @@ def main():
                 render.render_frame(sc, tt, imgs).save(out_dir / f"{stem}_{tt:07.2f}.png")
         return
     stems = list(scenes)
+    keys = {s: chapter_key(ep, scenes[s]) for s in stems}
+    todo = [s for s in stems if not (args.reuse and (out_dir / f"{s}.mp4").exists()
+                                     and (out_dir / f"{s}.key").exists() and (out_dir / f"{s}.key").read_text() == keys[s])]
+    for s in stems:
+        if s not in todo:
+            print("使い回し:", s)
     with ProcessPoolExecutor(max_workers=args.jobs) as ex:
-        for r in ex.map(render_chapter, [(str(ep), s, str(out_dir)) for s in stems]):
+        for s, r in zip(todo, ex.map(render_chapter, [(str(ep), s, str(out_dir)) for s in todo])):
+            (out_dir / f"{s}.key").write_text(keys[s])
             print("章完成:", r, flush=True)
     if not args.only:
         final = out_dir / f"{ep.name}.mp4"

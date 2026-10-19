@@ -22,6 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import episode  # noqa: E402
+import reading  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 ENGINE = "http://127.0.0.1:50021"
@@ -46,7 +47,7 @@ def load_dict():
 
 
 def speech_text(text, d):
-    s = text
+    s = reading.say(text)           # 《表記|よみ》→ よみ
     for r in d["rules"]:
         s = re.sub(r["re"], r["to"], s)
     return s
@@ -217,12 +218,12 @@ def main():
             voice_keys = {k: v for k, v in direc.items() if k in ("speed", "int", "vol", "emph", "mood", "tail")}
             if direc and not voice_keys:
                 voice_keys = {"_directed": 1}        # 演出つき台本（前後の無音を最小にする）
-            key = hashlib.sha1(json.dumps([it["text"], it["who"], it["tsukkomi"], voice_keys, casting[it["who"]], d, version],
+            key = hashlib.sha1(json.dumps([it.get("say", it["text"]), it["who"], it["tsukkomi"], voice_keys, casting[it["who"]], d, version],
                                           ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:16]
             cache = CACHE / f"{key}.wav"
             kana = "(再利用)"
             if not cache.exists():
-                wav, kana, mood = line_audio(it["text"], it["who"], casting, d,
+                wav, kana, mood = line_audio(it.get("say", it["text"]), it["who"], casting, d,
                                              {k: v for k, v in voice_keys.items() if k != "_directed"} or ({"_": 1} if direc else {}),
                                              it["tsukkomi"])
                 cache.write_bytes(wav)
