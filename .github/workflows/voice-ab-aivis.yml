@@ -54,4 +54,4 @@ jobs:
           git add voice_ab
           git diff --cached --quiet && { echo "変更なし"; exit 0; }
           git commit -m "voice_ab: AivisSpeech ${ACTION} results"
-          git push
+          for i in 1 2 3; do git pull --no-rebase -q origin "${GITHUB_REF_NAME}" && git push && break; sleep 5; done

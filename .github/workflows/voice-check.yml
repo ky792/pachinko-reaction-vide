@@ -32,7 +32,7 @@ jobs:
       - name: Check
         run: |
           EP=$(python -c "import json;print(json.load(open('voice_ab/check_request.json'))['episode'])")
-          MODEL=$(python -c "import json;print(json.load(open('voice_ab/check_request.json')).get('model','small'))")
+          MODEL=$(python -c "import json;print(json.load(open('voice_ab/check_request.json')).get('model','kotoba-tech/kotoba-whisper-v2.0-faster'))")
           ONLY=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('only',[])))")
           echo "EP=$EP" >> $GITHUB_ENV
           python scripts/reading/precheck.py "$EP"

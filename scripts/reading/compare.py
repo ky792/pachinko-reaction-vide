@@ -45,7 +45,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
     ap.add_argument("--whisper", action="store_true")
-    ap.add_argument("--model", default="small")
+    ap.add_argument("--model", default=asr_check.DEFAULT_MODEL)
     a = ap.parse_args()
     ep = Path(a.episode)
     bdir = ep / "reading" / "before"

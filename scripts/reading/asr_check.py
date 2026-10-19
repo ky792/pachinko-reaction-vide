@@ -29,6 +29,7 @@ import reading  # noqa: E402
 from precheck import all_lines, write_md  # noqa: E402
 
 flat = lambda s: s.replace("|", "")  # noqa: E731
+DEFAULT_MODEL = "kotoba-tech/kotoba-whisper-v2.0-faster"   # 日本語向けに学習し直した Whisper（large-v3 を小さくしたもの・CPU で動く）
 
 
 def sha1(p):
@@ -56,15 +57,23 @@ def load16k(p):
     return x
 
 
+def hotwords():
+    """専門用語を Whisper に手がかりとして渡す（「確変」を「閣園」と書かないように）。台本の文そのものは渡さない"""
+    d = reading.load_dict()
+    words = sorted({t["surface"] for t in d.get("terms", []) if t.get("status") == "ok" and re.search(r"[一-龯]", t["surface"])})
+    return " ".join(words)
+
+
 def transcribe(items, ep, model_name, cache):
     todo = [it for it in items if cache.get(it["id"], {}).get("sha1") != it["sha1"] or cache[it["id"]].get("model") != model_name]
     if not todo:
         return
     from faster_whisper import WhisperModel
     model = WhisperModel(model_name, device="cpu", compute_type="int8")
+    hot = hotwords()
     for n, it in enumerate(todo, 1):
         segs, _ = model.transcribe(load16k(it["wav"]), language="ja", beam_size=5, temperature=0.0,
-                                   condition_on_previous_text=False, vad_filter=False)
+                                   condition_on_previous_text=False, vad_filter=False, hotwords=hot)
         cache[it["id"]] = {"sha1": it["sha1"], "model": model_name, "text": "".join(s.text for s in segs).strip()}
         print(f"[{n}/{len(todo)}] {it['id']} {cache[it['id']]['text']}", flush=True)
 
@@ -72,6 +81,9 @@ def transcribe(items, ep, model_name, cache):
 def engine_kana(k):
     """AivisSpeech の kana（AquesTalk 風：' / _ ？ 、 入り）→ ふつうのカタカナ"""
     return re.sub(r"[/'_]", "", k).replace("？", "、")
+
+
+PREDICTED = set()      # 声を作る前の検査（precheck.json）が怪しいと見た (行ID, 語)
 
 
 def compare(it, asr_text, terms, d):
@@ -103,8 +115,12 @@ def compare(it, asr_text, terms, d):
             kind, why = "誤読", f"台本は「{e}」、聞こえたのは「{g}」"
         level = "低"
         if hit:
-            kind, level = kind + "（辞書語）" if kind != "誤読" else "誤読（辞書語）", "高"
+            kind = kind + "（辞書語）" if kind != "誤読" else "誤読（辞書語）"
             why += f"（辞書語「{hit[0]}」のところ）"
+            if (it["id"], hit[0]) in PREDICTED:
+                level, why = "高", why + "。声を作る前の検査でも同じ語が怪しいと出ている"
+            else:   # 文字起こしだけの差：1〜2音は Whisper の聞き違い（濁点・似た音）も多い
+                level = "中" if max(len(e), len(g)) >= 3 else "低"
         elif max(len(e), len(g)) >= 4:
             level = "中"
         found.append({"kind": kind, "where": e or g, "expect": hit[1] if hit else e, "reason": why, "level": level})
@@ -116,7 +132,7 @@ def main():
     ap.add_argument("episode")
     ap.add_argument("--only")
     ap.add_argument("--chapter")
-    ap.add_argument("--model", default="small")
+    ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--transcripts", help="{行ID: 文字起こし} の JSON（Whisper を回さずに照合だけする）")
     ap.add_argument("--min-ratio", type=float, default=0.8, help="行全体の一致がこれより低ければ候補にする")
     a = ap.parse_args()
@@ -129,6 +145,9 @@ def main():
         wav = ep / "voices" / f"{it['id']}.wav"
         if wav.exists():
             items.append(dict(it, wav=wav, sha1=sha1(wav), dur=wav_len(wav)))
+    pf = out / "precheck.json"
+    if pf.exists():
+        PREDICTED.update((r["id"], r["where"]) for r in json.loads(pf.read_text(encoding="utf-8")) if r["kind"] == "辞書と違う")
     cf = out / "asr.json"
     cache = json.loads(cf.read_text(encoding="utf-8")) if cf.exists() else {}
     if a.transcripts:
