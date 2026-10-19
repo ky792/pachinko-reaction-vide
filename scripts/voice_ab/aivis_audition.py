@@ -64,7 +64,8 @@ def lines(rq, out, fix):
             q.update({"speedScale": rq.get("speed", 1.0), "intonationScale": rq.get("intonation", 1.0),
                       "prePhonemeLength": 0.05, "postPhonemeLength": 0.08})
             (out / f"{it['id']}.wav").write_bytes(post("/synthesis", {"speaker": sid}, q))
-            kanas[it["id"]] = {"text": text, "kana": q.get("kana", "")}
+            moras = "".join(m["text"] for ap in q.get("accent_phrases", []) for m in ap["moras"] + ([ap["pause_mora"]] if ap.get("pause_mora") else []))
+            kanas[it["id"]] = {"text": text, "kana": moras or q.get("kana", "")}   # AivisSpeech の kana は元の文のままなので、モーラから読みを作る
             print(it["id"], it["text"], flush=True)
     kf.write_text(json.dumps(kanas, ensure_ascii=False, indent=1), encoding="utf-8")
 
