@@ -29,7 +29,9 @@ import reading  # noqa: E402
 from precheck import all_lines, write_md  # noqa: E402
 
 flat = lambda s: s.replace("|", "")  # noqa: E731
-DEFAULT_MODEL = "kotoba-tech/kotoba-whisper-v2.0-faster"   # 日本語向けに学習し直した Whisper（large-v3 を小さくしたもの・CPU で動く）
+# 5行で比べた結果（asr_probe.py）：kotoba-whisper は faster-whisper では空になる。large-v3-turbo が専門用語と関西弁を一番正しく書いた。
+# hotwords（専門用語の手がかり）は良くも悪くもならず、単語の間に空白が入るので既定では使わない
+DEFAULT_MODEL = "large-v3-turbo"
 
 
 def sha1(p):
@@ -70,7 +72,7 @@ def transcribe(items, ep, model_name, cache):
         return
     from faster_whisper import WhisperModel
     model = WhisperModel(model_name, device="cpu", compute_type="int8")
-    hot = hotwords()
+    hot = hotwords() if USE_HOTWORDS[0] else None
     for n, it in enumerate(todo, 1):
         segs, _ = model.transcribe(load16k(it["wav"]), language="ja", beam_size=5, temperature=0.0,
                                    condition_on_previous_text=False, vad_filter=False, hotwords=hot)
@@ -83,6 +85,7 @@ def engine_kana(k):
     return re.sub(r"[/'_]", "", k).replace("？", "、")
 
 
+USE_HOTWORDS = [False]
 PREDICTED = set()      # 声を作る前の検査（precheck.json）が怪しいと見た (行ID, 語)
 
 
@@ -134,9 +137,11 @@ def main():
     ap.add_argument("--chapter")
     ap.add_argument("--model", default=DEFAULT_MODEL)
     ap.add_argument("--transcripts", help="{行ID: 文字起こし} の JSON（Whisper を回さずに照合だけする）")
+    ap.add_argument("--hotwords", action="store_true", help="専門用語を手がかりとして渡す")
     ap.add_argument("--min-ratio", type=float, default=0.8, help="行全体の一致がこれより低ければ候補にする")
     a = ap.parse_args()
     ep = Path(a.episode)
+    USE_HOTWORDS[0] = a.hotwords
     out = ep / "reading"; out.mkdir(exist_ok=True)
     d = reading.load_dict()
     terms = [t for t in reading.terms(d) if t[3] == "ok"]

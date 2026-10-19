@@ -1,7 +1,8 @@
 name: Voice check (Whisper)
 
 # 作業ブランチの voice_ab/check_request.json を書き換えて push すると動く。
-#   {"episode": "episodes/eva_history", "model": "small", "only": ["02_bousou-006", …]}   … only を省くと全行
+#   {"episode": "episodes/eva_history", "model": "large-v3-turbo", "only": ["02_bousou-006", …]}   … only を省くと全行
+#   {"episode": …, "probe": ["行ID", …]}   … 数行だけでモデル・設定を比べる（scripts/reading/asr_probe.py）
 # faster-whisper（無料・CPU）で文字起こしして台本と照合し、episodes/<回>/reading/ に report.md・report.json・asr.json を戻す
 on:
   push:
@@ -32,7 +33,7 @@ jobs:
       - name: Check
         run: |
           EP=$(python -c "import json;print(json.load(open('voice_ab/check_request.json'))['episode'])")
-          MODEL=$(python -c "import json;print(json.load(open('voice_ab/check_request.json')).get('model','kotoba-tech/kotoba-whisper-v2.0-faster'))")
+          MODEL=$(python -c "import json;print(json.load(open('voice_ab/check_request.json')).get('model','large-v3-turbo'))")
           ONLY=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('only',[])))")
           echo "EP=$EP" >> $GITHUB_ENV
           PROBE=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('probe',[])))")
