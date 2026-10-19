@@ -312,6 +312,13 @@
  ],
  "rules": [
   {
+   "re": "集結の運命",
+   "to": "しゅうけつのさだめ",
+   "why": "曲名。読みはユーザー確認済み（さだめ）",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
    "re": "神台",
    "to": "かみだい",
    "why": "誤読の修正",
@@ -1362,9 +1369,9 @@
   },
   {
    "surface": "集結の運命",
-   "yomi": "シュウケツノサダメ",
+   "yomi": "しゅうけつのさだめ",
    "cat": "エヴァ",
-   "status": "要確認",
+   "status": "ok",
    "note": "曲名。さだめ／うんめい どちらか未確認"
   },
   {
@@ -1454,6 +1461,16 @@
    "for": "baku",
    "action": "バク：送る前に 神台 → かみだい",
    "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "集結の運命",
+   "yomi": "しゅうけつのさだめ",
+   "heard": "シュウケツノウンメー",
+   "line": "eva_history:03_shingeki-014",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 集結の運命 → シュウケツノサダメ（アクセント 0・推定） / バク：送る前に 集結の運命 → しゅうけつのさだめ",
+   "note": "曲名。読みはユーザー確認済み（さだめ）"
   }
  ],
  "aivis_words": [
@@ -1514,6 +1531,15 @@
   {
    "surface": "奇跡の価値は",
    "pronunciation": "キセキノカチワ",
+   "accent_type": 0,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "集結の運命",
+   "pronunciation": "シュウケツノサダメ",
    "accent_type": 0,
    "word_type": "PROPER_NOUN",
    "priority": 8,
