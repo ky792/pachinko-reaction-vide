@@ -47,4 +47,11 @@ jobs:
           git add "$EP/reading"
           git diff --cached --quiet && { echo "変更なし"; exit 0; }
           git commit -m "reading: Whisper check results"
-          for i in 1 2 3; do git pull --no-rebase -q origin "${GITHUB_REF_NAME}" && git push && break; sleep 5; done
+          # 同じファイルを手元でも直していたら、ここで作った結果を優先する
+          for i in 1 2 3; do git pull --no-rebase -q -X ours origin "${GITHUB_REF_NAME}" && git push && break; sleep 5; done
+      - name: Keep results as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reading-results
+          path: ${{ env.EP }}/reading/*.json
