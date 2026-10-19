@@ -34,15 +34,65 @@ def save_dict(d, path=DICT):
     Path(path).write_text(json.dumps(d, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
-def apply_rules(s, d):
+ENGINE = {"nagi": "aivis", "baku": "irodori"}
+
+
+def apply_rules(s, d, engine=None):
+    """rules を順に当てる。engine を付けた rule（"aivis"／"irodori"）は、そのエンジンのときだけ当てる"""
     for r in d["rules"]:
+        if engine and r.get("engine", "all") not in ("all", engine):
+            continue
         s = re.sub(r["re"], r["to"], s)
     return s
 
 
-def speech_text(text, d):
+def speech_text(text, d, engine=None):
     """エンジンに渡すテキスト（台本の行 → 《》をよみに → rules）"""
-    return apply_rules(say(text), d)
+    return apply_rules(say(text), d, engine)
+
+
+def aivis_words(d, all_status=False):
+    """AivisSpeech のユーザー辞書に入れる語（status=要確認 は入れない）"""
+    return [w for w in d.get("aivis_words", []) if all_status or w.get("status", "ok") != "要確認"]
+
+
+def accent_guess(pron):
+    """カタカナの読みから、OpenJTalk が推すアクセント核の位置（推定。耳で確かめるまで accent_status=推定）"""
+    nodes = frontend(pron)
+    return int(nodes[0]["acc"]) if len(nodes) == 1 else 0
+
+
+def mora_count(pron):
+    return len(re.sub(r"[ャュョァィゥェォ]", "", pron))
+
+
+_ENGINE_NOW = [None]
+
+
+def use_engine(engine, d):
+    """OpenJTalk の読みを、そのエンジンに合わせる。aivis なら aivis_words をユーザー辞書として読み込む（AivisSpeech と同じ仕組み）"""
+    if _ENGINE_NOW[0] == engine:
+        return
+    ojt = _openjtalk()
+    ojt.unset_user_dict()
+    words = aivis_words(d) if engine == "aivis" else []
+    if words:
+        import tempfile
+        tmp = Path(tempfile.mkdtemp())
+        rows = []
+        for w in words:
+            pron = w["pronunciation"]
+            acc = int(w.get("accent_type", 0))
+            surf = w["surface"].translate(_FULL)
+            rows.append(f"{surf},1348,1348,{w.get('cost', 1000)},名詞,{'固有名詞' if w.get('word_type') == 'PROPER_NOUN' else '一般'},*,*,*,*,"
+                        f"{surf},{pron},{pron},{acc}/{mora_count(pron)},*")
+        (tmp / "u.csv").write_text("\n".join(rows) + "\n", encoding="utf-8")
+        import contextlib, io
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            ojt.mecab_dict_index(str(tmp / "u.csv"), str(tmp / "u.dic"))
+        ojt.update_global_jtalk_with_user_dict(str(tmp / "u.dic"))
+    kana.cache_clear()
+    _ENGINE_NOW[0] = engine
 
 
 def _literal(pat):
