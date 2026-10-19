@@ -1,57 +1,57 @@
 {
  "02_bousou-006": {
   "sha1": "33e9027c44b79f35597cbd689384fd84bb87209d",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "目玉は暴走モード1.3個が揃うと出玉なしの核変に入る"
  },
  "02_bousou-024": {
   "sha1": "d24ff1e05c7edbaea671e2d9d3c1425ceb59c691",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "型の台と比べると演出はかなり少ない試し作品みたいな台って評価もある"
  },
  "02_bousou-059": {
   "sha1": "f2366361eb940e5baf73b76c6d29ba7e62eaa5dd",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "ミッションはJAをとどめろ航走したジェットアローンを止める"
  },
  "02_bousou-063": {
   "sha1": "677de6094e193c48af42e79ed7e85173ddd63ad2",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "ダウンの中にも、奇跡の勝ち派っていう最中戦の演出がある。"
  },
  "02_bousou-069": {
   "sha1": "521c4a660995ed84f685f825cbb3447ee4f3d17d",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "深夜島作戦は47%3期攻撃は71%くらいってうちとの集計もある"
  },
  "04_togari-007": {
   "sha1": "d44c00f7bf2ac5be18cd2f4780f4df0f70427e7b",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "初号機、改め2号機データ、8号機アルファから乗る機体を選べる。"
  },
  "05_fuyu-005": {
   "sha1": "4a68b9edab3e48d7e9ce0b351cf7516e10ed95be",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "出たまなし各編から暴走モード昔からの武器で来た"
  },
  "05_fuyu-010": {
   "sha1": "f538b7e8e533e804c81d076a189bffff7aa15787",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "焼くものは4つ、劇場を覆う巨大なコア、左の初号機、右の2号機、上下のエヴァの手。"
  },
  "05_fuyu-039": {
   "sha1": "e28020351b9c472bb8dba771c5a1308933466c0a",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "2018年2月に規則改正、大当たり1回の出し玉は最大1500個になった。"
  },
  "05_fuyu-068": {
   "sha1": "a32d7957df2f9308c7bae8d25b81321cb74d1467",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "教会初の出し玉取りがあって紹介されてる"
  },
  "06_vst-010": {
   "sha1": "8c99e64d7fa8a73e8eb528db8d109b198b3a4620",
-  "model": "kotoba-tech/kotoba-whisper-v2.0-faster",
-  "text": ""
+  "model": "large-v3-turbo",
+  "text": "そしてシリーズ初のUタイム959回転げで時短戦200回"
  }
 }
