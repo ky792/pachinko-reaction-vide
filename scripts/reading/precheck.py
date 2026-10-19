@@ -79,7 +79,8 @@ def check_line(it, d, terms, known):
         if not ok:
             add("辞書と違う", surf, yomi,
                 f"辞書の読み「{yomi}」と違う（この行での OpenJTalk の読み：{got or reading.kana(surf)}）"
-                + ("。ナギはこの読みになる見込みが高い" if it["who"] == "nagi" else "。バク（Irodori）では目安"), "高" if it["who"] == "nagi" else "中")
+                + ("。ナギはこの読みになる見込みが高い" if it["who"] == "nagi" else "。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）"),
+                "高" if it["who"] == "nagi" else "低")
     for n in reading.frontend(sp):
         s = n["string"]
         if n["pos_group1"] == "固有名詞" and KANJI.search(s) and s not in known:
