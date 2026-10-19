@@ -87,9 +87,14 @@ def use_engine(engine, d):
             rows.append(f"{surf},1348,1348,{w.get('cost', 1000)},名詞,{'固有名詞' if w.get('word_type') == 'PROPER_NOUN' else '一般'},*,*,*,*,"
                         f"{surf},{pron},{pron},{acc}/{mora_count(pron)},*")
         (tmp / "u.csv").write_text("\n".join(rows) + "\n", encoding="utf-8")
-        import contextlib, io
-        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+        import os
+        saved = os.dup(1), os.dup(2)                 # 辞書を作るときの進み具合の表示（C から直接出る）を隠す
+        nul = os.open(os.devnull, os.O_WRONLY)
+        os.dup2(nul, 1); os.dup2(nul, 2)
+        try:
             ojt.mecab_dict_index(str(tmp / "u.csv"), str(tmp / "u.dic"))
+        finally:
+            os.dup2(saved[0], 1); os.dup2(saved[1], 2); os.close(nul)
         ojt.update_global_jtalk_with_user_dict(str(tmp / "u.dic"))
     kana.cache_clear()
     _ENGINE_NOW[0] = engine

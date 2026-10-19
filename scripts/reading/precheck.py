@@ -84,7 +84,12 @@ def check_line(it, d, terms, known):
         s = n["string"]
         if n["pos_group1"] == "固有名詞" and KANJI.search(s) and s not in known:
             add("辞書にない固有名詞", s, "", f"辞書にない固有名詞。OpenJTalk の読み（参考・未確定）：{n['pron'].replace('’', '')}", "低")
+    covered = {"nagi": {w["surface"] for w in reading.aivis_words(d)},
+               "baku": {r["to"] and reading._literal(r["re"]) for r in d["rules"] if r.get("engine", "all") in ("all", "irodori")}}
     for h in d.get("history", []):
+        target = h.get("for", "both")
+        if target not in ("both", it["who"]) or h["surface"] in covered[it["who"]]:
+            continue                  # この声は辞書（ユーザー辞書／送る前の置き換え）で直してある
         if h["surface"] in disp and h["surface"] in sp:
             add("再発注意", h["surface"], h["yomi"], f"前に「{h.get('heard', '?')}」と誤読して直した語が、直さないまま読み上げに残っている（{h.get('date', '')}）", "高")
     return found
@@ -108,7 +113,8 @@ def main():
     ep = Path(a.episode)
     d = reading.load_dict()
     terms = reading.terms(d)
-    known = {t[0] for t in terms} | {w["surface"] for w in d.get("words", [])}
+    known = {t[0] for t in terms} | {w["surface"] for w in d.get("words", [])} | {w["surface"] for w in d.get("aivis_words", [])}
+    known |= {k.translate(reading._FULL) for k in known}
     rows = []
     for it in sorted(all_lines(ep, set(a.only.split(",")) if a.only else None, a.chapter), key=lambda x: x["who"]):
         for r in check_line(it, d, terms, known):

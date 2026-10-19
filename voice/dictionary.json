@@ -743,7 +743,7 @@
   },
   {
    "surface": "出玉",
-   "yomi": "デダマ",
+   "yomi": "でだま",
    "cat": "用語",
    "status": "ok"
   },
@@ -899,7 +899,7 @@
   },
   {
    "surface": "打ち手",
-   "yomi": "ウチテ",
+   "yomi": "うちて",
    "cat": "用語",
    "status": "ok"
   },
@@ -1037,7 +1037,7 @@
   },
   {
    "surface": "奇跡の価値は",
-   "yomi": "キセキノカチワ",
+   "yomi": "きせきのかちわ",
    "cat": "エヴァ",
    "status": "ok"
   },
@@ -1265,25 +1265,25 @@
   },
   {
    "surface": "試作品",
-   "yomi": "シサクヒン",
-   "cat": "用語",
+   "yomi": "しさくひん",
+   "cat": "一般",
    "status": "ok"
   },
   {
    "surface": "改2号機",
-   "yomi": "カイニゴウキ",
+   "yomi": "かいにごうき",
    "cat": "エヴァ",
    "status": "ok"
   },
   {
    "surface": "上下",
-   "yomi": "ジョウゲ",
-   "cat": "用語",
+   "yomi": "じょうげ",
+   "cat": "一般",
    "status": "ok"
   },
   {
    "surface": "回転",
-   "yomi": "カイテン",
+   "yomi": "かいてん",
    "cat": "用語",
    "status": "ok"
   },
@@ -1361,5 +1361,141 @@
    "note": "曲名。さだめ／うんめい どちらか未確認"
   }
  ],
- "history": []
+ "history": [
+  {
+   "date": "2026-10-19",
+   "surface": "出玉",
+   "yomi": "でだま",
+   "heard": "ダシダマ/デタマ",
+   "line": "eva_history:05_fuyu-039",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 出玉 → デダマ（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "打ち手",
+   "yomi": "うちて",
+   "heard": "ウチシュ",
+   "line": "eva_history:02_bousou-069",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 打ち手 → ウチテ（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "試作品",
+   "yomi": "しさくひん",
+   "heard": "タメシサクヒン",
+   "line": "eva_history:02_bousou-024",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 試作品 → シサクヒン（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "上下",
+   "yomi": "じょうげ",
+   "heard": "アゲサゲ",
+   "line": "eva_history:05_fuyu-010",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 上下 → ジョウゲ（アクセント 1・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "回転",
+   "yomi": "かいてん",
+   "heard": "コロゲ",
+   "line": "eva_history:06_vst-010",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 回転 → カイテン（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "改2号機",
+   "yomi": "かいにごうき",
+   "heard": "アラタメニゴーキ",
+   "line": "eva_history:04_togari-007",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 改2号機 → カイニゴウキ（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "奇跡の価値は",
+   "yomi": "きせきのかちわ",
+   "heard": "キセキノカチハ",
+   "line": "eva_history:02_bousou-063",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 奇跡の価値は → キセキノカチワ（アクセント 0・推定）",
+   "note": ""
+  }
+ ],
+ "aivis_words": [
+  {
+   "surface": "出玉",
+   "pronunciation": "デダマ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "打ち手",
+   "pronunciation": "ウチテ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "試作品",
+   "pronunciation": "シサクヒン",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "上下",
+   "pronunciation": "ジョウゲ",
+   "accent_type": 1,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "回転",
+   "pronunciation": "カイテン",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "改2号機",
+   "pronunciation": "カイニゴウキ",
+   "accent_type": 0,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "奇跡の価値は",
+   "pronunciation": "キセキノカチワ",
+   "accent_type": 0,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  }
+ ]
 }
