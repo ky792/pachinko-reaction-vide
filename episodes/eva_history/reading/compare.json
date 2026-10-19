@@ -13,7 +13,17 @@
   "audio_before": "episodes/eva_history/reading/before/02_bousou-006.wav",
   "audio_after": "episodes/eva_history/voices/02_bousou-006.wav",
   "ab": "episodes/eva_history/reading/ab/02_bousou-006.wav",
-  "engine_kana_after": "目玉は暴走モード。いち、さん、ごが揃うと、出玉なしの確変に入る。"
+  "engine_kana_after": "目玉は暴走モード。いち、さん、ごが揃うと、出玉なしの確変に入る。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「メダマワボーソーモードイチサンゴガソロートデダマナシノカクヘンニハイル」が聞こえない（辞書語「確変」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「メダマワボーソーモードイチサンゴガソロートデダマナシノカクヘンニハイル」が聞こえない（辞書語「確変」のところ）"
+  ]
  },
  {
   "id": "02_bousou-024",
@@ -29,7 +39,17 @@
   "audio_before": "episodes/eva_history/reading/before/02_bousou-024.wav",
   "audio_after": "episodes/eva_history/voices/02_bousou-024.wav",
   "ab": "episodes/eva_history/reading/ab/02_bousou-024.wav",
-  "engine_kana_after": "あとの台と比べると、演出はかなり少ない。試作品みたいな台、って評価もある。"
+  "engine_kana_after": "あとの台と比べると、演出はかなり少ない。試作品みたいな台、って評価もある。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「アトノダイトクラベルトエンシュツワカナリスクナイシサクヒンミタイナダイッテヒョーカモアル」が聞こえない（辞書語「試作品」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「アトノダイトクラベルトエンシュツワカナリスクナイシサクヒンミタイナダイッテヒョーカモアル」が聞こえない（辞書語「試作品」のところ）"
+  ]
  },
  {
   "id": "02_bousou-059",
@@ -45,7 +65,17 @@
   "audio_before": "episodes/eva_history/reading/before/02_bousou-059.wav",
   "audio_after": "episodes/eva_history/voices/02_bousou-059.wav",
   "ab": "episodes/eva_history/reading/ab/02_bousou-059.wav",
-  "engine_kana_after": "ミッションはジェイエーをとめろ。暴走したジェットアローンを止める。"
+  "engine_kana_after": "ミッションはジェイエーをとめろ。暴走したジェットアローンを止める。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「ミッションワジェーエーオトメロボーソーシタジェットアローンオトメル」が聞こえない（辞書語「暴走」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ミッションワジェーエーオトメロボーソーシタジェットアローンオトメル」が聞こえない（辞書語「暴走」のところ）"
+  ]
  },
  {
   "id": "02_bousou-063",
@@ -61,7 +91,17 @@
   "audio_before": "episodes/eva_history/reading/before/02_bousou-063.wav",
   "audio_after": "episodes/eva_history/voices/02_bousou-063.wav",
   "ab": "episodes/eva_history/reading/ab/02_bousou-063.wav",
-  "engine_kana_after": "ラウンド中にも、奇跡の価値はっていう再抽選の演出がある。"
+  "engine_kana_after": "ラウンド中にも、奇跡の価値はっていう再抽選の演出がある。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「ラウンドチューニモキセキノカチワッテーウサイチューセンノエンシュツガアル」が聞こえない（辞書語「奇跡の価値は」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ラウンドチューニモキセキノカチワッテーウサイチューセンノエンシュツガアル」が聞こえない（辞書語「奇跡の価値は」のところ）"
+  ]
  },
  {
   "id": "02_bousou-069",
@@ -77,7 +117,17 @@
   "audio_before": "episodes/eva_history/reading/before/02_bousou-069.wav",
   "audio_after": "episodes/eva_history/voices/02_bousou-069.wav",
   "ab": "episodes/eva_history/reading/ab/02_bousou-069.wav",
-  "engine_kana_after": "新ヤシマ作戦は47%、三機攻撃は71%くらい、って打ち手の集計もある。"
+  "engine_kana_after": "新ヤシマ作戦は47%、三機攻撃は71%くらい、って打ち手の集計もある。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「シンヤシマサクセンワヨンジューナナパーセントサンキコーゲキワナナジューイチパーセントクライッテウチテノシューケーモアル」が聞こえない（辞書語「打ち手」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「シンヤシマサクセンワヨンジューナナパーセントサンキコーゲキワナナジューイチパーセントクライッテウチテノシューケーモアル」が聞こえない（辞書語「打ち手」のところ）"
+  ]
  },
  {
   "id": "04_togari-007",
@@ -93,7 +143,17 @@
   "audio_before": "episodes/eva_history/reading/before/04_togari-007.wav",
   "audio_after": "episodes/eva_history/voices/04_togari-007.wav",
   "ab": "episodes/eva_history/reading/ab/04_togari-007.wav",
-  "engine_kana_after": "初号機、改2号機ベータ、8号機アルファから、乗る機体を選べる。"
+  "engine_kana_after": "初号機、改2号機ベータ、8号機アルファから、乗る機体を選べる。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「ショゴーキカイニゴーキベータハチゴーキアルファカラノルキタイオエラベル」が聞こえない（辞書語「初号機」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ショゴーキカイニゴーキベータハチゴーキアルファカラノルキタイオエラベル」が聞こえない（辞書語「初号機」のところ）"
+  ]
  },
  {
   "id": "05_fuyu-005",
@@ -109,7 +169,17 @@
   "audio_before": "episodes/eva_history/reading/before/05_fuyu-005.wav",
   "audio_after": "episodes/eva_history/voices/05_fuyu-005.wav",
   "ab": "episodes/eva_history/reading/ab/05_fuyu-005.wav",
-  "engine_kana_after": "出玉なし確変から、暴走モード。昔からの武器で来た。"
+  "engine_kana_after": "出玉なし確変から、暴走モード。昔からの武器で来た。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「デダマナシカクヘンカラボーソーモードムカシカラノブキデキタ」が聞こえない（辞書語「確変」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「デダマナシカクヘンカラボーソーモードムカシカラノブキデキタ」が聞こえない（辞書語「確変」のところ）"
+  ]
  },
  {
   "id": "05_fuyu-010",
@@ -125,7 +195,17 @@
   "audio_before": "episodes/eva_history/reading/before/05_fuyu-010.wav",
   "audio_after": "episodes/eva_history/voices/05_fuyu-010.wav",
   "ab": "episodes/eva_history/reading/ab/05_fuyu-010.wav",
-  "engine_kana_after": "役物は4つ。液晶を覆う巨大なコア、左の初号機、右の2号機、上下のエヴァの手。"
+  "engine_kana_after": "役物は4つ。液晶を覆う巨大なコア、左の初号機、右の2号機、上下のエヴァの手。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「ヤクモノワヨッツエキショーオーオーキョダイナコアヒダリノショゴーキミギノニゴーキジョーゲノエバノテ」が聞こえない（辞書語「役物」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ヤクモノワヨッツエキショーオーオーキョダイナコアヒダリノショゴーキミギノニゴーキジョーゲノエバノテ」が聞こえない（辞書語「役物」のところ）"
+  ]
  },
  {
   "id": "05_fuyu-039",
@@ -141,7 +221,17 @@
   "audio_before": "episodes/eva_history/reading/before/05_fuyu-039.wav",
   "audio_after": "episodes/eva_history/voices/05_fuyu-039.wav",
   "ab": "episodes/eva_history/reading/ab/05_fuyu-039.wav",
-  "engine_kana_after": "2018年2月に規則改正。大当たり1回の出玉は、最大1500個になった。"
+  "engine_kana_after": "2018年2月に規則改正。大当たり1回の出玉は、最大1500個になった。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「ニセンジューハチネンニガツニキソクカイセーオーアタリーッカイノデダマワサイダイセンゴヒャッコニナッタ」が聞こえない（辞書語「大当たり」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ニセンジューハチネンニガツニキソクカイセーオーアタリーッカイノデダマワサイダイセンゴヒャッコニナッタ」が聞こえない（辞書語「大当たり」のところ）"
+  ]
  },
  {
   "id": "05_fuyu-068",
@@ -157,7 +247,17 @@
   "audio_before": "episodes/eva_history/reading/before/05_fuyu-068.wav",
   "audio_after": "episodes/eva_history/voices/05_fuyu-068.wav",
   "ab": "episodes/eva_history/reading/ab/05_fuyu-068.wav",
-  "engine_kana_after": "業界初の出玉トリガー、って紹介されてる。"
+  "engine_kana_after": "業界初の出玉トリガー、って紹介されてる。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「ギョーカイハツノデダマトリガーッテショーカイサレテル」が聞こえない（辞書語「出玉」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ギョーカイハツノデダマトリガーッテショーカイサレテル」が聞こえない（辞書語「出玉」のところ）"
+  ]
  },
  {
   "id": "06_vst-010",
@@ -173,6 +273,16 @@
   "audio_before": "episodes/eva_history/reading/before/06_vst-010.wav",
   "audio_after": "episodes/eva_history/voices/06_vst-010.wav",
   "ab": "episodes/eva_history/reading/ab/06_vst-010.wav",
-  "engine_kana_after": "そして、シリーズ初の遊タイム。959回転で、時短1200回。"
+  "engine_kana_after": "そして、シリーズ初の遊タイム。959回転で、時短1200回。",
+  "asr_before": "",
+  "ratio_before": 0.0,
+  "issues_before": [
+   "脱落（辞書語）：台本の「ソシテシリーズハツノユータイムキューヒャクゴジューキューカイテンデジタンセンニヒャッカイ」が聞こえない（辞書語「時短」のところ）"
+  ],
+  "asr_after": "",
+  "ratio_after": 0.0,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ソシテシリーズハツノユータイムキューヒャクゴジューキューカイテンデジタンセンニヒャッカイ」が聞こえない（辞書語「時短」のところ）"
+  ]
  }
 ]
