@@ -38,6 +38,7 @@ class Check(unittest.TestCase):
 
     def test_reading_in_context(self):
         self.assertIn("ハタ", reading.reading_in("右の初号機や！", "初号機"))      # 「機や」を ハタヤ と読む
+        self.assertEqual(reading.reading_in("決めの台詞", "台"), "")             # 別の語の一部は比べない
 
     def test_asr_compare(self):
         import asr_check

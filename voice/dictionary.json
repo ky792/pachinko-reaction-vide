@@ -1262,6 +1262,103 @@
    "yomi": "タケヤ",
    "cat": "要確認",
    "status": "要確認"
+  },
+  {
+   "surface": "試作品",
+   "yomi": "シサクヒン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "改2号機",
+   "yomi": "カイニゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "上下",
+   "yomi": "ジョウゲ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "回転",
+   "yomi": "カイテン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "止めろ",
+   "yomi": "トメロ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "完成形",
+   "yomi": "カンセイケイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "名前",
+   "yomi": "ナマエ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "目立つ",
+   "yomi": "メダツ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "帰され",
+   "yomi": "カエサレ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "一択",
+   "yomi": "イッタク",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "台",
+   "yomi": "ダイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "別って",
+   "yomi": "ベツッテ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "金かか",
+   "yomi": "カネカカ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "思たら",
+   "yomi": "オモタラ",
+   "cat": "関西弁",
+   "status": "ok"
+  },
+  {
+   "surface": "軽な",
+   "yomi": "カルナ",
+   "cat": "関西弁",
+   "status": "ok"
+  },
+  {
+   "surface": "集結の運命",
+   "yomi": "シュウケツノサダメ",
+   "cat": "エヴァ",
+   "status": "要確認",
+   "note": "曲名。さだめ／うんめい どちらか未確認"
   }
  ],
  "history": []

@@ -129,7 +129,12 @@ def reading_in(sp, target):
     if i < 0:
         return None
     j = i + len(t)
-    return "".join(pr for a, b, pr in spans if a < j and b > i)
+    cover = [(a, b, pr) for a, b, pr in spans if a < j and b > i]
+    if len(cover) == 1 and (cover[0][0] < i or cover[0][1] > j):
+        return ""                      # 長い別の語の一部（「台詞」の「台」など）→ 比べない
+    if cover[0][0] == i and cover[-1][1] == j:
+        return "=" + "".join(pr for a, b, pr in cover)     # 語の切れ目がぴったり → 読みが同じかで比べる
+    return "".join(pr for a, b, pr in cover)
 
 
 def canon(text, d, terms_ok, rules=True):

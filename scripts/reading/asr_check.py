@@ -40,6 +40,22 @@ def wav_len(p):
         return w.getnframes() / w.getframerate()
 
 
+def load16k(p):
+    """wav → 16kHz モノラル float32（faster-whisper に配列で渡す。PyAV の版の違いで読めないことがあるため）"""
+    import numpy as np
+    from scipy.signal import resample_poly
+    with wave.open(str(p)) as w:
+        sr, ch, n = w.getframerate(), w.getnchannels(), w.getnframes()
+        x = np.frombuffer(w.readframes(n), dtype=np.int16).astype(np.float32) / 32768
+    if ch > 1:
+        x = x.reshape(-1, ch).mean(axis=1)
+    if sr != 16000:
+        from math import gcd
+        g = gcd(sr, 16000)
+        x = resample_poly(x, 16000 // g, sr // g).astype(np.float32)
+    return x
+
+
 def transcribe(items, ep, model_name, cache):
     todo = [it for it in items if cache.get(it["id"], {}).get("sha1") != it["sha1"] or cache[it["id"]].get("model") != model_name]
     if not todo:
@@ -47,7 +63,7 @@ def transcribe(items, ep, model_name, cache):
     from faster_whisper import WhisperModel
     model = WhisperModel(model_name, device="cpu", compute_type="int8")
     for n, it in enumerate(todo, 1):
-        segs, _ = model.transcribe(str(it["wav"]), language="ja", beam_size=5, temperature=0.0,
+        segs, _ = model.transcribe(load16k(it["wav"]), language="ja", beam_size=5, temperature=0.0,
                                    condition_on_previous_text=False, vad_filter=False)
         cache[it["id"]] = {"sha1": it["sha1"], "model": model_name, "text": "".join(s.text for s in segs).strip()}
         print(f"[{n}/{len(todo)}] {it['id']} {cache[it['id']]['text']}", flush=True)

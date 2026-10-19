@@ -63,9 +63,16 @@ def check_line(it, d, terms, known):
         if tgt is None:
             continue                       # ほかの rules で書き換わっている
         got = reading.reading_in(sp, tgt)
+        if got == "":
+            continue
         exp = reading.yomi_kana(yomi)
-        flat = lambda x: x.replace("|", "")
-        ok = flat(exp) in flat(reading.norm(got) if got is not None else nk)
+        flat = lambda x: x.replace("|", "")  # noqa: E731
+        if got is None:
+            ok = flat(exp) in flat(nk)
+        elif got.startswith("="):
+            got = got[1:]; ok = flat(exp) == flat(reading.norm(got))
+        else:
+            ok = flat(exp) in flat(reading.norm(got))
         if not ok:
             add("辞書と違う", surf, yomi,
                 f"辞書の読み「{yomi}」と違う（この行での OpenJTalk の読み：{got or reading.kana(surf)}）"
