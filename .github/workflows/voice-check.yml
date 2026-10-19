@@ -37,6 +37,8 @@ jobs:
           echo "EP=$EP" >> $GITHUB_ENV
           python scripts/reading/precheck.py "$EP"
           python scripts/reading/asr_check.py "$EP" --model "$MODEL" ${ONLY:+--only "$ONLY"}
+          # 作り直した行があれば、修正前後も文字起こしして比べる
+          if [ -f "$EP/reading/before/info.json" ]; then python scripts/reading/compare.py "$EP" --whisper --model "$MODEL"; fi
       - name: Commit results
         if: always()
         run: |

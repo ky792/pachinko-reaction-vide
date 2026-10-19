@@ -7,8 +7,9 @@
 見ること（どれも「候補」。直すかどうかは人が決める）
 - 英字残り    ：読み上げ用テキストに英字が残っている（エンジンごとに読みがぶれる）→ rules か《表記|よみ》で読みを決める
 - 小数        ：「1.2%」のような小数（台本ルールでは小数を読ませない）
-- 辞書と違う  ：辞書で読みが決まっている語なのに、OpenJTalk の読みに辞書の読みが出てこない
-                ナギ（AivisSpeech＝中身は OpenJTalk）はこのとおりに読む見込みが高い。バク（Irodori）は目安
+- 辞書と違う  ：辞書で読みが決まっている語なのに、その行での OpenJTalk の読みが辞書の読みと違う
+                ナギは AivisSpeech と同じく aivis_words をユーザー辞書に入れて読むので、このとおりに読む見込みが高い。
+                バク（Irodori）は文字をそのまま読むモデルなので目安
 - 要確認の語  ：辞書で status=要確認 の語を使っている（読みを推測で決めない）
 - 辞書にない固有名詞：OpenJTalk が固有名詞と見た漢字の語で、辞書にないもの（OpenJTalk の読みは参考）
 - 再発注意    ：前に誤読を直した語（history）が、直す rules を通らずに残っている
@@ -40,7 +41,9 @@ def all_lines(ep, only=None, chapter=None):
 
 
 def check_line(it, d, terms, known):
-    disp, sp = it["text"], reading.speech_text(it["say"], d)
+    eng = reading.ENGINE[it["who"]]
+    reading.use_engine(eng, d)            # ナギは AivisSpeech のユーザー辞書（aivis_words）を入れた OpenJTalk で読む
+    disp, sp = it["text"], reading.speech_text(it["say"], d, eng)
     kana = reading.kana(sp)
     nk = reading.norm(kana)
     found = []
@@ -81,7 +84,12 @@ def check_line(it, d, terms, known):
         s = n["string"]
         if n["pos_group1"] == "固有名詞" and KANJI.search(s) and s not in known:
             add("辞書にない固有名詞", s, "", f"辞書にない固有名詞。OpenJTalk の読み（参考・未確定）：{n['pron'].replace('’', '')}", "低")
+    covered = {"nagi": {w["surface"] for w in reading.aivis_words(d)},
+               "baku": {r["to"] and reading._literal(r["re"]) for r in d["rules"] if r.get("engine", "all") in ("all", "irodori")}}
     for h in d.get("history", []):
+        target = h.get("for", "both")
+        if target not in ("both", it["who"]) or h["surface"] in covered[it["who"]]:
+            continue                  # この声は辞書（ユーザー辞書／送る前の置き換え）で直してある
         if h["surface"] in disp and h["surface"] in sp:
             add("再発注意", h["surface"], h["yomi"], f"前に「{h.get('heard', '?')}」と誤読して直した語が、直さないまま読み上げに残っている（{h.get('date', '')}）", "高")
     return found
@@ -105,9 +113,10 @@ def main():
     ep = Path(a.episode)
     d = reading.load_dict()
     terms = reading.terms(d)
-    known = {t[0] for t in terms} | {w["surface"] for w in d.get("words", [])}
+    known = {t[0] for t in terms} | {w["surface"] for w in d.get("words", [])} | {w["surface"] for w in d.get("aivis_words", [])}
+    known |= {k.translate(reading._FULL) for k in known}
     rows = []
-    for it in all_lines(ep, set(a.only.split(",")) if a.only else None, a.chapter):
+    for it in sorted(all_lines(ep, set(a.only.split(",")) if a.only else None, a.chapter), key=lambda x: x["who"]):
         for r in check_line(it, d, terms, known):
             r["audio"] = f"episodes/{ep.name}/voices/{r['id']}.wav"
             rows.append(r)

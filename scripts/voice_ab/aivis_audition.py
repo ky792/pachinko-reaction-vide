@@ -8,7 +8,8 @@ request: {"action": "audition", "models": [{"uuid": "...", "for": "nagi|baku"}],
 - 各スタイルで lines[for] を続けて読み、<モデル名>_<話者>_<スタイル>.wav に1本で書き出す（試聴用）
 - 読みは voice/dictionary.json の rules で直してから渡す（台本の《表記|よみ》は よみ を読む）
 - action=lines では、エンジンが実際に使った読み（audio_query の kana）を <out>/kana.json に残す（読み間違い検査用）
-- "user_dict": true なら dictionary.json の words を AivisSpeech のユーザー辞書に入れてから読む（既定は入れない＝今の抑揚のまま）
+- dictionary.json の aivis_words（漢字の表記・読み・アクセント）を AivisSpeech のユーザー辞書に入れてから読む（"user_dict": false で入れない）
+  字幕の漢字はそのままで、読みだけエンジンの辞書で直す。kana_fix のうち engine=aivis のものでアクセントも直す
 """
 import json, re, sys, urllib.parse, urllib.request, wave, io
 from pathlib import Path
@@ -31,18 +32,35 @@ def lines(rq, out, fix):
     with urllib.request.urlopen(f"{BASE}/speakers", timeout=60) as r:
         sp = next(s for s in json.loads(r.read()) if rq["model"]["name"] in s["name"])
     sid = next(st["id"] for st in sp["styles"] if st["name"] == rq["style"])
-    if rq.get("user_dict"):
-        for w in json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))["words"]:
+    d = json.loads((ROOT / "voice" / "dictionary.json").read_text(encoding="utf-8"))
+    import reading  # noqa: E402
+    if rq.get("user_dict", True):          # aivis_words（読みとアクセント）を AivisSpeech のユーザー辞書に入れる
+        n = 0
+        for w in reading.aivis_words(d):
+            post("/user_dict_word", {"surface": w["surface"], "pronunciation": w["pronunciation"],
+                                     "accent_type": int(w.get("accent_type", 0)), "word_type": w.get("word_type", "COMMON_NOUN"),
+                                     "priority": int(w.get("priority", 8))})
+            n += 1
+        print("ユーザー辞書に登録:", n, "語", flush=True)
+    if rq.get("legacy_words"):             # 前の VOICEVOX 用の words も入れる（既定は入れない）
+        for w in d["words"]:
             post("/user_dict_word", {"surface": w["surface"], "pronunciation": w["yomi"],
                                      "accent_type": int(w.get("accent", 0)), "word_type": "PROPER_NOUN", "priority": 10})
+    kfix = [f for f in d.get("kana_fix", []) if f.get("engine") == "aivis"]   # アクセントの直し（AivisSpeech 用だけ）
     kf = out / "kana.json"
     kanas = json.loads(kf.read_text(encoding="utf-8")) if kf.exists() else {}
     for sc in sorted((ROOT / rq["episode"] / "script").glob("*.txt")):
         for it in episode.lines_with_ids(sc):
             if it["who"] != rq["who"] or (rq.get("only") and it["id"] not in rq["only"]):
                 continue
-            text = fix(it.get("say", it["text"]))
+            text = reading.speech_text(it.get("say", it["text"]), d, "aivis")
             q = json.loads(post("/audio_query", {"text": text, "speaker": sid}))
+            new = q.get("kana", "")
+            for f in kfix:
+                new = re.sub(f["re"], f["to"], new)
+            if kfix and new != q.get("kana", ""):
+                q["accent_phrases"] = json.loads(post("/accent_phrases", {"text": new, "speaker": sid, "is_kana": "true"}))
+                q["kana"] = new
             q.update({"speedScale": rq.get("speed", 1.0), "intonationScale": rq.get("intonation", 1.0),
                       "prePhonemeLength": 0.05, "postPhonemeLength": 0.08})
             (out / f"{it['id']}.wav").write_bytes(post("/synthesis", {"speaker": sid}, q))

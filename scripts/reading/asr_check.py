@@ -75,7 +75,8 @@ def engine_kana(k):
 
 
 def compare(it, asr_text, terms, d):
-    sp = reading.speech_text(it["say"], d)
+    sp = reading.speech_text(it["say"], d, reading.ENGINE[it["who"]])
+    reading.use_engine(None, d)          # 照合は辞書語を読みに置き換えてから比べるので、ユーザー辞書は使わない
     exp = reading.canon(sp, d, terms, rules=False)
     got = reading.canon(asr_text, d, terms) if asr_text else ""
     sm = SequenceMatcher(None, exp, got, autojunk=False)
@@ -162,7 +163,7 @@ def main():
                           "reason": f"1秒あたり {rate:.1f} 音（この話者のふつうは {m:.1f}）。"
                                     + ("脱落・早口の疑い" if rate > m else "くり返し・間延び・余分な音の疑い")})
         ek = ekana.get(it["id"])
-        if it["who"] == "nagi" and ek and ek.get("text") == reading.speech_text(it["say"], d):
+        if it["who"] == "nagi" and ek and ek.get("text") == reading.speech_text(it["say"], d, "aivis"):
             nk = flat(reading.norm(engine_kana(ek["kana"])))
             for surf, yomi, src, status in terms:
                 if surf in it["text"] and flat(reading.yomi_kana(yomi)) not in nk:
