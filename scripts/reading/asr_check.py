@@ -158,6 +158,9 @@ def main():
     else:
         transcribe(items, ep, a.model, cache)
     cf.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
+    texts = [cache.get(it["id"], {}).get("text", "") for it in items]
+    if texts and sum(1 for t in texts if not t.strip()) > len(texts) * 0.3:
+        raise SystemExit(f"文字起こしが空の行が多すぎる（{sum(1 for t in texts if not t.strip())}/{len(texts)}）。モデルか設定がおかしいので照合しない")
     kf = ROOT / "voice_ab" / "aivis_lines" / "kana.json"
     ekana = json.loads(kf.read_text(encoding="utf-8")) if kf.exists() else {}
 
@@ -165,8 +168,8 @@ def main():
     results = []
     for it in items:
         asr = cache.get(it["id"], {}).get("text")
-        if asr is None:
-            continue
+        if not asr:
+            continue                      # 文字起こしできなかった行は照合しない（全部「脱落」にしない）
         exp, got, ratio, found = compare(it, asr, terms, d)
         rate = len(exp) / max(0.3, it["dur"])
         rates[it["who"]].append(rate)
@@ -182,6 +185,8 @@ def main():
                           "reason": f"1秒あたり {rate:.1f} 音（この話者のふつうは {m:.1f}）。"
                                     + ("脱落・早口の疑い" if rate > m else "くり返し・間延び・余分な音の疑い")})
         ek = ekana.get(it["id"])
+        if ek and re.search(r"[一-龯]", ek.get("kana", "")):
+            ek = None                     # 古い形式（元の文のまま）の控えは使わない
         if it["who"] == "nagi" and ek and ek.get("text") == reading.speech_text(it["say"], d, "aivis"):
             nk = flat(reading.norm(engine_kana(ek["kana"])))
             for surf, yomi, src, status in terms:

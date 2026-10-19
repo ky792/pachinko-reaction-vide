@@ -1,1 +1,1 @@
-{"episode": "episodes/eva_history", "model": "kotoba-tech/kotoba-whisper-v2.0-faster", "run": 4}
+{"episode": "episodes/eva_history", "probe": ["02_bousou-006", "02_bousou-069", "03_shingeki-053", "05_fuyu-039", "06_vst-010"]}

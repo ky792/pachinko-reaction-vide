@@ -35,6 +35,8 @@ jobs:
           MODEL=$(python -c "import json;print(json.load(open('voice_ab/check_request.json')).get('model','kotoba-tech/kotoba-whisper-v2.0-faster'))")
           ONLY=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('only',[])))")
           echo "EP=$EP" >> $GITHUB_ENV
+          PROBE=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('probe',[])))")
+          if [ -n "$PROBE" ]; then python scripts/reading/asr_probe.py "$EP" "$PROBE"; exit 0; fi
           python scripts/reading/precheck.py "$EP"
           python scripts/reading/asr_check.py "$EP" --model "$MODEL" ${ONLY:+--only "$ONLY"}
           # 作り直した行があれば、修正前後も文字起こしして比べる
