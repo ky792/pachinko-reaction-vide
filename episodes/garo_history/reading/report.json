@@ -1,1 +1,80 @@
-[]
+[
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 77%（80% 未満）",
+  "id": "01_basic-011",
+  "who": "nagi",
+  "text": "それは、あとで。",
+  "asr": "それはパートで",
+  "ratio": 0.769,
+  "audio": "episodes/garo_history/voices/01_basic-011.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ゼロ",
+  "expect": "ゼロ",
+  "reason": "台本は「ゼロ」、聞こえたのは「ジューマン」",
+  "level": "中",
+  "id": "06_lt-017",
+  "who": "nagi",
+  "text": "そう。ストックが0の状態で負けたら、通常に戻る。",
+  "asr": "そう、ストックが10万の状態で負けたら通常に戻る",
+  "ratio": 0.885,
+  "audio": "episodes/garo_history/voices/06_lt-017.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ア",
+  "expect": "ア",
+  "reason": "台本は「ア」、聞こえたのは「パー」",
+  "level": "低",
+  "id": "01_basic-011",
+  "who": "nagi",
+  "text": "それは、あとで。",
+  "asr": "それはパートで",
+  "ratio": 0.769,
+  "audio": "episodes/garo_history/voices/01_basic-011.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ラガン",
+  "expect": "ラガン",
+  "reason": "台本は「ラガン」、聞こえたのは「タメ」",
+  "level": "低",
+  "id": "03_konjiki-009",
+  "who": "nagi",
+  "text": "裸眼で見られる、立体3Dの演出も入った。",
+  "asr": "多眼で見られる立体3Dの演出も入った",
+  "ratio": 0.912,
+  "audio": "episodes/garo_history/voices/03_konjiki-009.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ッコ",
+  "expect": "ッコ",
+  "reason": "台本は「ッコ」、聞こえたのは「ク」",
+  "level": "低",
+  "id": "06_lt-008",
+  "who": "nagi",
+  "text": "図柄が揃ったら、極限7500バトル。勝てば7500個。",
+  "asr": "図柄は揃ったら、極年7500バトル。勝てば7500。",
+  "ratio": 0.904,
+  "audio": "episodes/garo_history/voices/06_lt-008.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ヤ",
+  "expect": "ヤ",
+  "reason": "台本は「ヤ」、聞こえたのは「ヒャ」",
+  "level": "低",
+  "id": "06_lt-011",
+  "who": "nagi",
+  "text": "LT中の当たりの約25%が、また7500個。",
+  "asr": "デルキー中のあたりの125%がまた7500個。",
+  "ratio": 0.892,
+  "audio": "episodes/garo_history/voices/06_lt-011.wav"
+ }
+]
