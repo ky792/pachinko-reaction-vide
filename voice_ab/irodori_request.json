@@ -1,6 +1,6 @@
 {
  "action": "lines",
- "episode": "episodes/_takes_baku",
+ "episode": "episodes/eva_history",
  "who": "baku",
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
