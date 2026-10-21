@@ -192,12 +192,23 @@ def main():
         ek = ekana.get(it["id"])
         if ek and re.search(r"[一-龯]", ek.get("kana", "")):
             ek = None                     # 古い形式（元の文のまま）の控えは使わない
+        sure = set()      # 読みが確かめられている辞書語（ここでの文字起こしのずれは Whisper の聞き違い・字の選び違い）
         if it["who"] == "nagi" and ek and ek.get("text") == reading.speech_text(it["say"], d, "aivis"):
             nk = flat(reading.norm(engine_kana(ek["kana"])))
             for surf, yomi, src, status in terms:
-                if surf in it["text"] and flat(reading.yomi_kana(yomi)) not in nk:
+                if surf not in it["text"]:
+                    continue
+                if flat(reading.norm(reading.yomi_kana(yomi))) in nk:   # 長音の書き方（ボウソウ／ボオソオ）の差はならしてから比べる
+                    sure.add(surf)
+                else:
                     found.append({"kind": "誤読（エンジンの読み）", "where": surf, "expect": yomi, "level": "高",
                                   "reason": f"合成に使った読みに「{yomi}」がない（エンジンの読み：{engine_kana(ek['kana'])}）"})
+        if it["who"] == "baku":   # バクは、辞書で読みをかなに置き換えて送った語なら読みは決まっている
+            sp = reading.speech_text(it["say"], d, "irodori")
+            sure.update(surf for surf, yomi, src, status in terms if surf in it["text"] and surf not in sp)
+        if sure:
+            found = [f for f in found if not (f["kind"].endswith("（辞書語）") and
+                                              any(f.get("expect") == y for s2, y, _, _ in terms if s2 in sure))]
         for f in found:
             rows.append(dict(f, id=it["id"], who=it["who"], text=it["text"], asr=asr, ratio=round(ratio, 3),
                              audio=f"episodes/{ep.name}/voices/{it['id']}.wav"))
