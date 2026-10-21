@@ -25,6 +25,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ui  # noqa: E402
+import fx as fxmod  # noqa: E402
 import motion  # noqa: E402
 import skit  # noqa: E402
 
@@ -296,9 +297,11 @@ def render_frame(scene, t, images):
             ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t))
             dim = (1 - 0.5 * fk if fw and c != fw else 1.0) * (1 - 0.45 * hk if who and c != who else 1.0)
             ui.paste(cv, lay, (0, 0), a * dim)
-    for fx in scene.get("fx", []):            # 再現演出（キャラの上・字幕の下）
-        if fx["btn"] <= t < fx["end"] + 0.6 and fx["kind"] == "bousou":
-            ui.bousou_fx(cv, t, fx)
+    fxmod.draw(cv, scene, t)                 # 再現演出（キャラの上・字幕の下。lab/fx.py）
+    dx, dy = fxmod.shake(scene, t)
+    if dx or dy:                             # レバー振動：字幕以外を画面ごと揺らす（端が見えないよう少し拡大）
+        z = cv.resize((int(ui.W * 1.02), int(ui.H * 1.02)), ui.Image.BILINEAR)
+        cv.paste(z, (int(-ui.W * 0.01 + dx), int(-ui.H * 0.01 + dy)))
     cv.alpha_composite(over)
     return cv.convert("RGB")
 
