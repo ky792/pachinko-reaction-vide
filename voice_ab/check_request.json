@@ -1,5 +1,10 @@
 {
  "episode": "episodes/eva_history",
  "model": "large-v3-turbo",
- "_run": "full-2026-10-21-d"
+ "_run": "karu",
+ "only": [
+  "02_bousou-032",
+  "02_bousou-057",
+  "03_shingeki-027"
+ ]
 }
