@@ -1,57 +1,62 @@
 {
  "action": "lines",
- "episode": "episodes/eva_history",
+ "episode": "episodes/_takes_baku",
  "who": "baku",
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "take_s11",
+   "name": "take2_s101",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
     "--duration-scale",
     "0.88",
     "--seed",
-    "11"
+    "101"
    ]
   },
   {
-   "name": "take_s22",
+   "name": "take2_s102",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
     "--duration-scale",
     "0.88",
     "--seed",
-    "22"
+    "102"
    ]
   },
   {
-   "name": "take_s33",
+   "name": "take2_s103",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
     "--duration-scale",
     "0.88",
     "--seed",
-    "33"
+    "103"
    ]
   },
   {
-   "name": "take_s44",
+   "name": "take2_s104",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
     "--duration-scale",
     "0.88",
     "--seed",
-    "44"
+    "104"
    ]
   }
  ],
  "only": [
-  "02_bousou-032",
-  "02_bousou-057",
-  "03_shingeki-027"
+  "t-001",
+  "t-002",
+  "t-003",
+  "t-004",
+  "t-005",
+  "t-006",
+  "t-007",
+  "t-008"
  ]
 }
