@@ -1,0 +1,922 @@
+{
+ "00_op-001": {
+  "sha1": "00879a1a5cd6806cb9df0589265d6acf3f8449ec",
+  "model": "large-v3-turbo",
+  "text": "凪、ガロケンが飛び出したで!"
+ },
+ "00_op-002": {
+  "sha1": "ffeb6b98e29456b1447acb9fc1f572a05d8c1578",
+  "model": "large-v3-turbo",
+  "text": "当たったの"
+ },
+ "00_op-003": {
+  "sha1": "ecb13c77c061586709c770b545410d8c2b4e5b98",
+  "model": "large-v3-turbo",
+  "text": "それがハズレ点!剣まで出たのに!"
+ },
+ "00_op-004": {
+  "sha1": "0f54bdedd57558e2ab032452868735d809975f21",
+  "model": "large-v3-turbo",
+  "text": "カロケンは出ても外れることがある演出"
+ },
+ "00_op-005": {
+  "sha1": "89bcbd8ac06e10bbd72e1c5a91986f3e10050c5e",
+  "model": "large-v3-turbo",
+  "text": "知っとるわ!知ったけどど悔しいんや!"
+ },
+ "00_op-006": {
+  "sha1": "5857da820cfb700a9cce58a657af54706695648b",
+  "model": "large-v3-turbo",
+  "text": "じゃあ聞くけど、初代の頃ってどんな仕組みだったか覚えてる?"
+ },
+ "00_op-007": {
+  "sha1": "0d66b9e3c0db146350e8e312b3efe739f9de6891",
+  "model": "large-v3-turbo",
+  "text": "魔界チャンスやろ?入ったら止まらんやつ"
+ },
+ "00_op-008": {
+  "sha1": "d0b9b69e8f2f6e7b6c02f7defbfc42a1399cdf3a",
+  "model": "large-v3-turbo",
+  "text": "そう突入50%継続82%その形が18年で何回も変わってまた戻ってくる"
+ },
+ "00_op-009": {
+  "sha1": "4134fe2de746f67595c76648e6a1d8eaf5649a46",
+  "model": "large-v3-turbo",
+  "text": "戻ってくるん?"
+ },
+ "00_op-010": {
+  "sha1": "fa74423dc47803413fbe3b1ace75eea4afd6924c",
+  "model": "large-v3-turbo",
+  "text": "今日はガロの18年を全部見る"
+ },
+ "00_op-011": {
+  "sha1": "588dfb40e1b453205feb2e97fdd1df25b76ea2ab",
+  "model": "large-v3-turbo",
+  "text": "よっしゃ!こんじきになるまで付き合うで!"
+ },
+ "01_basic-001": {
+  "sha1": "e68c4787d7cdf223418db9e429c7ebed0ba9cdab",
+  "model": "large-v3-turbo",
+  "text": "まず基本、パチンコのカロは3世R&Dの対"
+ },
+ "01_basic-002": {
+  "sha1": "031f209fc8c6afcdb064df4255e3b639d6a6eccf",
+  "model": "large-v3-turbo",
+  "text": "初代が2008年やからもう18年か"
+ },
+ "01_basic-003": {
+  "sha1": "16682f7be2c9947e034bd7bcc6dacbaf2e76cbfa",
+  "model": "large-v3-turbo",
+  "text": "元は2005年にテレビで始まった特撮ドラマ"
+ },
+ "01_basic-004": {
+  "sha1": "657514b70c8728fbdc12659e001e079caa05537f",
+  "model": "large-v3-turbo",
+  "text": "黄金騎士ガロがホラーを切るやつな"
+ },
+ "01_basic-005": {
+  "sha1": "0f48be958d0405111f60acc0ec958466622a9ffe",
+  "model": "large-v3-turbo",
+  "text": "初代の大ヒットで賛成は大きいメーカーになったって言われてる"
+ },
+ "01_basic-006": {
+  "sha1": "51f1795880e8c0fc3d03314ce6739c0ef18bf307",
+  "model": "large-v3-turbo",
+  "text": "ガロの前と後でホールの景色が変わったもんな"
+ },
+ "01_basic-007": {
+  "sha1": "cc70fb400aa12d23548ea2d783f04c11959ee8f3",
+  "model": "large-v3-turbo",
+  "text": "今日見るのは3つ右打ちの速さ顔の焼く物それとラッシュの中身"
+ },
+ "01_basic-008": {
+  "sha1": "77343ded677ef9b40bbbf1ab2f246f957a84d5a4",
+  "model": "large-v3-turbo",
+  "text": "どれも打ったら一発で思い出すとこやん"
+ },
+ "01_basic-009": {
+  "sha1": "1588938e453765b011b142eed0871343dd6fee3a",
+  "model": "large-v3-turbo",
+  "text": "先に言っておくと初代の形は一度作れなくなる"
+ },
+ "01_basic-010": {
+  "sha1": "af3ee5c2794d05a30c82ff24adf4f7ee0b61588c",
+  "model": "large-v3-turbo",
+  "text": "作れなくなる?なんで?"
+ },
+ "01_basic-011": {
+  "sha1": "20bc7f3f258776c78c5fb3c165f102905895a75b",
+  "model": "large-v3-turbo",
+  "text": "それはパートで"
+ },
+ "02_kaisen-001": {
+  "sha1": "3eeb9541b252bca68bebb8b59a7701e4a900726b",
+  "model": "large-v3-turbo",
+  "text": "2008年11月初代のCRガロWX"
+ },
+ "02_kaisen-002": {
+  "sha1": "258494b188b82ca588f64371fcff79db920a4b55",
+  "model": "large-v3-turbo",
+  "text": "確率は397分の1で、お当たりは全部15ラウンド。"
+ },
+ "02_kaisen-003": {
+  "sha1": "2d193b634f9a50bc984a057fecf167e03779f4a0",
+  "model": "large-v3-turbo",
+  "text": "397か今の399分の1とほとんど変わらんな"
+ },
+ "02_kaisen-004": {
+  "sha1": "c4138fc02a58f3eacd7ddb2ac82f0f8e79aa058f",
+  "model": "large-v3-turbo",
+  "text": "仕組みは医師に仕込む、手伝と羽物を合わせたたい。"
+ },
+ "02_kaisen-005": {
+  "sha1": "ff2ce264cf87545a4440855b9800bbd1a4d660de",
+  "model": "large-v3-turbo",
+  "text": "右打ちで羽に拾わせてVに入れるやつやろ?"
+ },
+ "02_kaisen-006": {
+  "sha1": "dfeba9177881536b3c2ac3d2c8824b0adb4c5392",
+  "model": "large-v3-turbo",
+  "text": "そう、初当たりの50%で魔界チャンスに入って、そこからは82%で続く。"
+ },
+ "02_kaisen-007": {
+  "sha1": "6b43882861948646052f4bd580448286434c6680",
+  "model": "large-v3-turbo",
+  "text": "82%で全部15ラウンドでそら止まらんわ"
+ },
+ "02_kaisen-008": {
+  "sha1": "254b1844c10935800209bd1dd9c9032be2aa07ca",
+  "model": "large-v3-turbo",
+  "text": "入るのはゴールドズダラの当たりかお当たり中の牙バトルに勝った時"
+ },
+ "02_kaisen-009": {
+  "sha1": "42255f698abebe2362c3d867cdc35769a97f4e2a",
+  "model": "large-v3-turbo",
+  "text": "牙バトル、手汗すごかったで!勝ったら天国や!"
+ },
+ "02_kaisen-010": {
+  "sha1": "1c6e86d192574c1b543f680f117bce98b153bd82",
+  "model": "large-v3-turbo",
+  "text": "平均の連チャンは3点8回って資料もある"
+ },
+ "02_kaisen-011": {
+  "sha1": "a686b32160d1eeedf40d811d7b7fdd32981c716b",
+  "model": "large-v3-turbo",
+  "text": "平均で4回近いんか勝った話ばっかり聞こえてくるわけや"
+ },
+ "02_kaisen-012": {
+  "sha1": "01925ee538c9cd0a2fc8914932a106fb20e7e41e",
+  "model": "large-v3-turbo",
+  "text": "演出は実写を使わずに、全部CGとアニメ。"
+ },
+ "02_kaisen-013": {
+  "sha1": "2c991d775e0b9b370b284cc14212c93efa1594fe",
+  "model": "large-v3-turbo",
+  "text": "アメミアスペシャルリーチでは魔界猟が初めて出てきた。"
+ },
+ "02_kaisen-014": {
+  "sha1": "7ea24234aa3b15dffeac29e0b22c8c77da0ced41",
+  "model": "large-v3-turbo",
+  "text": "魔界竜リーチ来たらもう祈るしかないねん"
+ },
+ "02_kaisen-015": {
+  "sha1": "499c86b8390a2a6de8bce570388bb4be9eb8e0f7",
+  "model": "large-v3-turbo",
+  "text": "最初はひっそり入って、そこから何回も増産された。"
+ },
+ "02_kaisen-016": {
+  "sha1": "782eed49d3d7771179aaddd31656f32dcd7962d0",
+  "model": "large-v3-turbo",
+  "text": "シマが全部ガロになっていったんやあの頃のホール覚えとるで"
+ },
+ "02_kaisen-017": {
+  "sha1": "55b52b4ef7383af5a64fa2a6c63f1f57942d6170",
+  "model": "large-v3-turbo",
+  "text": "パチンコパチスローアワード2009ではMVPを取ってる"
+ },
+ "02_kaisen-018": {
+  "sha1": "c622a815e1a9de37caf31d6770e32cf130cb0963",
+  "model": "large-v3-turbo",
+  "text": "ただ強すぎた。2009年4月、教会が混合器を自主規制する。"
+ },
+ "02_kaisen-019": {
+  "sha1": "f6a6591eba76cf1e7bf06c043dc33b0138a82d4e",
+  "model": "large-v3-turbo",
+  "text": "ガロが強すぎてルールが変わったんか"
+ },
+ "02_kaisen-020": {
+  "sha1": "2d2553e5dd7283d78875ac64a4e35ad190ed3703",
+  "model": "large-v3-turbo",
+  "text": "時短の継続率は約3分の2までになった"
+ },
+ "02_kaisen-021": {
+  "sha1": "2100e39e35303f3f76dec49852b1b2a7e500026c",
+  "model": "large-v3-turbo",
+  "text": "ほな、82%はもう作られへんのか"
+ },
+ "02_kaisen-022": {
+  "sha1": "e43dba622092e2cc18937a4a70b5a0742cc702ee",
+  "model": "large-v3-turbo",
+  "text": "新しく作る台だけの話、もう出てる初代はかずさなくていい。"
+ },
+ "02_kaisen-023": {
+  "sha1": "78649c59a6ae2fb8d1576873f666ee6442d25c14",
+  "model": "large-v3-turbo",
+  "text": "初代だけ82%のまま打てたわけか"
+ },
+ "02_kaisen-024": {
+  "sha1": "2028359e96accb76a63b7e409ffefc183a610120",
+  "model": "large-v3-turbo",
+  "text": "捜査も続いた"
+ },
+ "02_kaisen-025": {
+  "sha1": "032a216850d87bb05b7e267b050c1ff79bd0b766",
+  "model": "large-v3-turbo",
+  "text": "2010年12月、ネットレクイエム。確率は358分の1。"
+ },
+ "02_kaisen-026": {
+  "sha1": "db9a8a7ba82fa9fb6add618e189f64c6131f83b7",
+  "model": "large-v3-turbo",
+  "text": "シリーズで初めて顔の焼く物のFOGがついたフェイスオブカロー"
+ },
+ "02_kaisen-027": {
+  "sha1": "5f1a32aefb38cd6a0775f738fb1a65dda7714bd4",
+  "model": "large-v3-turbo",
+  "text": "出た!顔や!あれが動いたら背中ゾクッとすんねん!"
+ },
+ "02_kaisen-028": {
+  "sha1": "83f978631cda81f2c612e5525eea41efda3c35f0",
+  "model": "large-v3-turbo",
+  "text": "図柄からリーチまで自社をたくさん使ってる"
+ },
+ "02_kaisen-029": {
+  "sha1": "2df56d88db6e4b2c1594e9f184df7d49c9675926",
+  "model": "large-v3-turbo",
+  "text": "連チャンは魔界ラッシュ。トータルの継続率は約86%って紹介されてる。"
+ },
+ "02_kaisen-030": {
+  "sha1": "bce41bfebde798d1c445c45a0d6ff6b27b3ff4fd",
+  "model": "large-v3-turbo",
+  "text": "86%?初代より上やん"
+ },
+ "02_kaisen-031": {
+  "sha1": "505b0e0904d85f76141d2dee80d1a197c10f95e0",
+  "model": "large-v3-turbo",
+  "text": "確変と終わった後も時短の引き戻しを足した数字"
+ },
+ "02_kaisen-032": {
+  "sha1": "da2c3c0175dffa0f3bafb5eeeaf49ffebaf3ccea",
+  "model": "large-v3-turbo",
+  "text": "なんや足し算か、それでも強いけどな"
+ },
+ "02_kaisen-033": {
+  "sha1": "18204771f336f5e41ade7efd3b2b8fce956c9f70",
+  "model": "large-v3-turbo",
+  "text": "その代わりねんちゃん中のスピード感は落ちたって言われてる"
+ },
+ "02_kaisen-034": {
+  "sha1": "4555938f0bb5c3b3c9602be0d7780951d9271fed",
+  "model": "large-v3-turbo",
+  "text": "速さがガローンの売りやったのにな"
+ },
+ "02_kaisen-035": {
+  "sha1": "1e14a41fc4cc3331fc0d777c0ae25d256a78650c",
+  "model": "large-v3-turbo",
+  "text": "初代と同じ形はもう作れないでも次のカロはルールの中で初代に近づいてくる"
+ },
+ "02_kaisen-036": {
+  "sha1": "5a182680bc007ef106f069fa361d074b24f16c2a",
+  "model": "large-v3-turbo",
+  "text": "え?どうやって?"
+ },
+ "03_konjiki-001": {
+  "sha1": "8ad29b3e68aa8ab876a538427aaac405635738a2",
+  "model": "large-v3-turbo",
+  "text": "2012年3月、魔界線帰港。答えはVカカヘンだった。"
+ },
+ "03_konjiki-002": {
+  "sha1": "ffd1720b5a2a799e0125768db30fa46c8c66ce68",
+  "model": "large-v3-turbo",
+  "text": "突入51%、継続77%、初代に近いステックを復活させたってメーカーが書いてる。"
+ },
+ "03_konjiki-003": {
+  "sha1": "a5ce79064a51660c2511ba2045e1dbe7b8b6ebb2",
+  "model": "large-v3-turbo",
+  "text": "50%と82%に寄せてきたんやな"
+ },
+ "03_konjiki-004": {
+  "sha1": "09c81de86ed69363f9510cc93434cf8ae814ac04",
+  "model": "large-v3-turbo",
+  "text": "Vに入ったら145回のST、新魔界ラッシュ。"
+ },
+ "03_konjiki-005": {
+  "sha1": "3a798a45f60662a31748f3b14f62a3f2fd75b718",
+  "model": "large-v3-turbo",
+  "text": "回数切りのSTかガロもここからST機やな"
+ },
+ "03_konjiki-006": {
+  "sha1": "51efee0dc3e0910a873c0d492527c287e1a4ec62",
+  "model": "large-v3-turbo",
+  "text": "大当たり中はファーストバトル。敵の攻撃に耐えたらエスティ。"
+ },
+ "03_konjiki-007": {
+  "sha1": "d72f9725b7c36e93d60d126230b713dc88d7d05a",
+  "model": "large-v3-turbo",
+  "text": "攻撃が弱なら約82%、強だと約13%。"
+ },
+ "03_konjiki-008": {
+  "sha1": "39082e55876f173fa22fd70a6d6db2c57fbf10b4",
+  "model": "large-v3-turbo",
+  "text": "強攻撃きたらもう目つぶっとったわ"
+ },
+ "03_konjiki-009": {
+  "sha1": "793fe92e6656929d5527f83eb7483c88f4d8f195",
+  "model": "large-v3-turbo",
+  "text": "多眼で見られる立体3Dの演出も入った"
+ },
+ "03_konjiki-010": {
+  "sha1": "06ac287a94424417515e771779ccddedf3cac1dd",
+  "model": "large-v3-turbo",
+  "text": "メガネいらんやつな目は疲れたけど"
+ },
+ "03_konjiki-011": {
+  "sha1": "6b76a2fbccddd4c5b0d0d494b70e4c39e778a661",
+  "model": "large-v3-turbo",
+  "text": "2013年5月、カロファイナル、埼島甲賀のシリーズの集大成。"
+ },
+ "03_konjiki-012": {
+  "sha1": "7b406383f3e7e087c2d82d9ad244dbe11f0818c4",
+  "model": "large-v3-turbo",
+  "text": "確率399分の1、ST160回、通常のあたりでもチタン100回。"
+ },
+ "03_konjiki-013": {
+  "sha1": "a6cd9943f2490c57a0e7e9567c25ebe705380d88",
+  "model": "large-v3-turbo",
+  "text": "コウガの最後か、ちょっと寂しいな"
+ },
+ "03_konjiki-014": {
+  "sha1": "ad783f7f3615510e46b749159d98bdd37566fb6d",
+  "model": "large-v3-turbo",
+  "text": "顔の焼くものは大きくなってFFOG"
+ },
+ "03_konjiki-015": {
+  "sha1": "444b232eb0cf8bc948d3fc70723276826a39e45c",
+  "model": "large-v3-turbo",
+  "text": "状態の左下から来る進撃アタックも話題になった"
+ },
+ "03_konjiki-016": {
+  "sha1": "d6b1bf81f9e58704c8ffba48b8ca90246fcef4c5",
+  "model": "large-v3-turbo",
+  "text": "醍醐と揺れるやつや 隣の人までビクッとしとったで"
+ },
+ "03_konjiki-017": {
+  "sha1": "bf5c20cbff9f55ff103f0332ad4925da61acf793",
+  "model": "large-v3-turbo",
+  "text": "2014年7月、ガロコン時期になれ、主人公は道外龍我に変わった。"
+ },
+ "03_konjiki-018": {
+  "sha1": "32e867c8f6d287eacbc4d89ec5f4d0b376593fc4",
+  "model": "large-v3-turbo",
+  "text": "確率399分の1、ST161回で、継続は約77%。"
+ },
+ "03_konjiki-019": {
+  "sha1": "244f20bf4fd8648543bb118cd8402aaede075ab4",
+  "model": "large-v3-turbo",
+  "text": "ここで来たか、こんじきや"
+ },
+ "03_konjiki-020": {
+  "sha1": "ec6e3014e8417e97ba6234dcf816a86b97d4c81d",
+  "model": "large-v3-turbo",
+  "text": "目玉はコーンと一緒に出てくるキエホージと筐体の右のカラケン"
+ },
+ "03_konjiki-021": {
+  "sha1": "ac17a13c757c5c5d763d778cf740fe03375a797c",
+  "model": "large-v3-turbo",
+  "text": "カロケンはST前半の即当たり演出三馬ケンなら約76%"
+ },
+ "03_konjiki-022": {
+  "sha1": "cd7f67c0f0f888aa61ec44713b302c0475fe2e7d",
+  "model": "large-v3-turbo",
+  "text": "剣を押し込むときのあの手応えや"
+ },
+ "03_konjiki-023": {
+  "sha1": "464138045c8942195cff06bc75db452ec6d278ab",
+  "model": "large-v3-turbo",
+  "text": "エスティ後半は金色になる演出全部で10種類"
+ },
+ "03_konjiki-024": {
+  "sha1": "af178ec01ad1c310a6839a95ef2e176c1f807b4d",
+  "model": "large-v3-turbo",
+  "text": "画面が金色になったら当たれ!言うて叫ぶんよ!"
+ },
+ "03_konjiki-025": {
+  "sha1": "2505458a71514bb55e71364b15edb1aedfcd78c9",
+  "model": "large-v3-turbo",
+  "text": "パチンコパチスロアワード2014年MVG"
+ },
+ "03_konjiki-026": {
+  "sha1": "286e8d21b121904bf085ce256ffaa04235f19748",
+  "model": "large-v3-turbo",
+  "text": "中古の大が一時期一台100万円を超えたって言われてる"
+ },
+ "03_konjiki-027": {
+  "sha1": "047402c82d0544281128a2385f9f50d4eb3ede14",
+  "model": "large-v3-turbo",
+  "text": "100万?中古で?店も必死やったんやな"
+ },
+ "03_konjiki-028": {
+  "sha1": "b242e694b67cd3fed3e0f7bd0afd6f936324a77c",
+  "model": "large-v3-turbo",
+  "text": "2015年10月、魔界の花。主人公はサイジマライが。"
+ },
+ "03_konjiki-029": {
+  "sha1": "3bf50fc65aafd41ac8e32f0d61bf34385cd1c4ae",
+  "model": "large-v3-turbo",
+  "text": "確率399分の1エスティ160以下へへそからエスティに行くのは53%"
+ },
+ "03_konjiki-030": {
+  "sha1": "1d1a347fa7685157b08552956f517869d24fccb8",
+  "model": "large-v3-turbo",
+  "text": "顔の焼くものはレルエホージ、チリーズ最速で完成して7色に光る。"
+ },
+ "03_konjiki-031": {
+  "sha1": "9e98a0d2d3419c7e3250e375556ae062c2722c11",
+  "model": "large-v3-turbo",
+  "text": "一瞬で顔ができるんよ目で終われへんかった"
+ },
+ "03_konjiki-032": {
+  "sha1": "fc6f8395d5ecbae9faa70b61262ab11c33811063",
+  "model": "large-v3-turbo",
+  "text": "2年連続でアワードもMVT売り上げは約14万台って言われてる"
+ },
+ "03_konjiki-033": {
+  "sha1": "14ec724025ac8a224b12617f0d144adf13bbeba5",
+  "model": "large-v3-turbo",
+  "text": "今時期の次でもまだそんなに売れるんか"
+ },
+ "03_konjiki-034": {
+  "sha1": "752285054dcf6650270af822db94708a866ee20d",
+  "model": "large-v3-turbo",
+  "text": "そしてこの代が、帰省前の事実上最後のマックス。"
+ },
+ "03_konjiki-035": {
+  "sha1": "f5cfc6281ad2353938d76a0574e98778b487a210",
+  "model": "large-v3-turbo",
+  "text": "2015年11月から新しい台の確率は320分の1までになる"
+ },
+ "03_konjiki-036": {
+  "sha1": "81ad2d080d030a8a9fd17149a0196907e511a1c9",
+  "model": "large-v3-turbo",
+  "text": "399分の1のガロはしばらく出えへんのか"
+ },
+ "03_konjiki-037": {
+  "sha1": "d3cb580d97d5a7d1058a938f2e0f715fd5ccf682",
+  "model": "large-v3-turbo",
+  "text": "マックスが終わった次の年、カロは319番の1で出直す。"
+ },
+ "03_konjiki-038": {
+  "sha1": "c965e2909a7df881166a9abb67d95ed70c455ed6",
+  "model": "large-v3-turbo",
+  "text": "ガロのミドルか!どうなるんや!"
+ },
+ "04_after-001": {
+  "sha1": "bffefb1497797fde9cf337b10c75bce875dfea3e",
+  "model": "large-v3-turbo",
+  "text": "2016年10月軽闇を照らす者今時期になれば319番の1で戻ってきた"
+ },
+ "04_after-002": {
+  "sha1": "947a4e951cbe08f08858784e59917060a54fe9e7",
+  "model": "large-v3-turbo",
+  "text": "ST160以下はそのまま"
+ },
+ "04_after-003": {
+  "sha1": "49b1369fbfc96e26c2dd059291afa2168eda8608",
+  "model": "large-v3-turbo",
+  "text": "同じ161回でも当たりにくなったんやん"
+ },
+ "04_after-004": {
+  "sha1": "282a538984e76719af5135916b6bd6018ab46105",
+  "model": "large-v3-turbo",
+  "text": "今時期になれのST中は109番の1それが154番の1になった"
+ },
+ "04_after-005": {
+  "sha1": "d17ce7dc65532c61b7616ad0207e081095564f57",
+  "model": "large-v3-turbo",
+  "text": "初当たりが軽なった分、そっちで調整せえか。"
+ },
+ "04_after-006": {
+  "sha1": "e7596a7c479e7e196c4fa7b0ae616e54f5ed8740",
+  "model": "large-v3-turbo",
+  "text": "2017年7月、ゴールドストームショー、筐体は新しい金賞枠。"
+ },
+ "04_after-007": {
+  "sha1": "1f54aaa6d2b8ffcc789d9d1d40b63a55c0be6d03",
+  "model": "large-v3-turbo",
+  "text": "17インチと13.3インチ2枚の液晶を縦に使う大画面"
+ },
+ "04_after-008": {
+  "sha1": "f8e9e3d64dc64179f465048de1783da5c9fafd92",
+  "model": "large-v3-turbo",
+  "text": "上と下の画面が繋がるやつなあれは迫力あったで"
+ },
+ "04_after-009": {
+  "sha1": "00de06e667c2fd7627cbd6d66f868b6c4e91b677",
+  "model": "large-v3-turbo",
+  "text": "V角エスティは187回、エスティ突入は61%、点差ポチューは82%。"
+ },
+ "04_after-010": {
+  "sha1": "00d238e4c50cf6583666c850eb976ad230e6ea47",
+  "model": "large-v3-turbo",
+  "text": "82%!初代の数字やん!"
+ },
+ "04_after-011": {
+  "sha1": "f6a999f4d17ade03442af69942a27b32929d3194",
+  "model": "large-v3-turbo",
+  "text": "電差ポチューの大当たりは全部16ラウンド"
+ },
+ "04_after-012": {
+  "sha1": "93e4f897428166e480e5e2f26d75e4679e5bcb15",
+  "model": "large-v3-turbo",
+  "text": "保留に赤い稲妻が落ちたら、激アツに変われ保留、約83%。"
+ },
+ "04_after-013": {
+  "sha1": "6f5218be831462b9f499d3a903dd6873e38c83e8",
+  "model": "large-v3-turbo",
+  "text": "稲妻が落ちた瞬間もう立ち上がっとるわ"
+ },
+ "04_after-014": {
+  "sha1": "1033bad501a51262ebc1bf29dbbe58c421678b34",
+  "model": "large-v3-turbo",
+  "text": "2019年7月、ギーガロサイジマコウガダブルX、コウガがシリーズに戻ってきた。"
+ },
+ "04_after-015": {
+  "sha1": "43ef71d9f9e1b0ce846dbf8da834f8a92afccc21",
+  "model": "large-v3-turbo",
+  "text": "ST160回で計測80%大当たりは全部約1500個"
+ },
+ "04_after-016": {
+  "sha1": "20c2e3784d54e79ec784f540e1ff22a9035ba996",
+  "model": "large-v3-turbo",
+  "text": "当たったら全部全部1500かわかりやすいな"
+ },
+ "04_after-017": {
+  "sha1": "acd2b140237d2c18bdb88855d11d976a2e2b4f56",
+  "model": "large-v3-turbo",
+  "text": "液晶はシャープと作ったギガゴーストビジョン"
+ },
+ "04_after-018": {
+  "sha1": "f03de1df64f1201773d8e077dd7461c446869c99",
+  "model": "large-v3-turbo",
+  "text": "液晶と薬物を合わせたIFOGも載ってる"
+ },
+ "04_after-019": {
+  "sha1": "20567f1e60181e1cf436999021d7922977e23a70",
+  "model": "large-v3-turbo",
+  "text": "ただ、ST中の変動が長いのは欠点って書かれてる。"
+ },
+ "04_after-020": {
+  "sha1": "5ef2346b13f421bdc6b3604bbc21a9f4c4d632de",
+  "model": "large-v3-turbo",
+  "text": "160回がなかなか終わらんのよ待つのがしんどかった"
+ },
+ "04_after-021": {
+  "sha1": "58773b0aa8aa3aa6d4721d0404c2dd14914f78b7",
+  "model": "large-v3-turbo",
+  "text": "そしてガロは一度速さを取り戻しに行く"
+ },
+ "04_after-022": {
+  "sha1": "946253f29c46114038721adde01c3ff24b71096e",
+  "model": "large-v3-turbo",
+  "text": "速さか、それや!"
+ },
+ "05_kaiki-001": {
+  "sha1": "c4a5e89ce81d99dd14bb63ed76a32d3c813290c2",
+  "model": "large-v3-turbo",
+  "text": "2020年10月、キーシンガロ、デスティは秒速タイプに戻った。"
+ },
+ "05_kaiki-002": {
+  "sha1": "bce8367527594793f4bdc76cb895a859c9be6706",
+  "model": "large-v3-turbo",
+  "text": "確率319群の位置、ST130回で、継続は約84%。"
+ },
+ "05_kaiki-003": {
+  "sha1": "9cb24dd23da99ffb6e4d91250ae451270588bcc9",
+  "model": "large-v3-turbo",
+  "text": "130回でも回るのが早いから一瞬なんよ"
+ },
+ "05_kaiki-004": {
+  "sha1": "4050e0a87006b2acbec3359484f6e9241512bd09",
+  "model": "large-v3-turbo",
+  "text": "Uタイムもある900回はまったらチタンセン200回"
+ },
+ "05_kaiki-005": {
+  "sha1": "391e342c100dfe24e8c946ae1bd6f86613718c19",
+  "model": "large-v3-turbo",
+  "text": "天井まで行ったらほぼもらえるやつやな"
+ },
+ "05_kaiki-006": {
+  "sha1": "77aac3d36f03495c87b08a752bbd0feb568677fe",
+  "model": "large-v3-turbo",
+  "text": "突然時短もある主にシンガロパとの間に抽選される"
+ },
+ "05_kaiki-007": {
+  "sha1": "e58f431fcd977eb228356dae427013a68b2716d2",
+  "model": "large-v3-turbo",
+  "text": "パトランプ回ったらもう心臓バクバクや"
+ },
+ "05_kaiki-008": {
+  "sha1": "a16e5d4808df9018a1a88de5f37016c593c34c8a",
+  "model": "large-v3-turbo",
+  "text": "2021年6月、月光の旅人、埼島家の3世代が出てくる。"
+ },
+ "05_kaiki-009": {
+  "sha1": "377c3140d991ade2f7e0a095ce98e9a04d5e6555",
+  "model": "large-v3-turbo",
+  "text": "魔界チャンスは突入50%、継続81%、ゲーム性は初代に近い。"
+ },
+ "05_kaiki-010": {
+  "sha1": "ba5d01713737fd8f1911d5de29dcb252079755bb",
+  "model": "large-v3-turbo",
+  "text": "50%と81%って初代の50%と82%もどけきとるやん"
+ },
+ "05_kaiki-011": {
+  "sha1": "ed393797175673cc2b6fc5594d1e6bd695b0342e",
+  "model": "large-v3-turbo",
+  "text": "右打ちの大当たりは全部10ラウンドで約1500個"
+ },
+ "05_kaiki-012": {
+  "sha1": "5cdcb2554a08b4c0122e1f80faedc706aaa129a3",
+  "model": "large-v3-turbo",
+  "text": "Uタイムは950回"
+ },
+ "05_kaiki-013": {
+  "sha1": "dca0eadffb062575591695ed0088cf179eec1b77",
+  "model": "large-v3-turbo",
+  "text": "初代の形に天井までついたんか"
+ },
+ "05_kaiki-014": {
+  "sha1": "395c522ead8a77fc44e885af37e5fcdfb0ec5390",
+  "model": "large-v3-turbo",
+  "text": "2023年1月 ギーガロゴールドインパクト シリーズ対10作"
+ },
+ "05_kaiki-015": {
+  "sha1": "bf46780599f89babd3ef6c97819cbb6c44194707",
+  "model": "large-v3-turbo",
+  "text": "突入50%、継続81%、初代を思わせる右打ちモード。"
+ },
+ "05_kaiki-016": {
+  "sha1": "6bfd59f489a5e3ce243a8f33d1847e0f1f2c3af4",
+  "model": "large-v3-turbo",
+  "text": "魔界チャンスは1回転で大当たりが決まる"
+ },
+ "05_kaiki-017": {
+  "sha1": "8780e146f86382653b3209b8e1ba83efd5f3f4a9",
+  "model": "large-v3-turbo",
+  "text": "一回転で決着か早すぎてまばたきできへん"
+ },
+ "05_kaiki-018": {
+  "sha1": "8ab94c70b0aa9f89309b2e9bfdd50a05daf3859e",
+  "model": "large-v3-turbo",
+  "text": "3000のモードを選ぶと約3000個のボーナスもある"
+ },
+ "05_kaiki-019": {
+  "sha1": "60a6f334a3b6fcff00c8f5e83844cda49f7ee0bf",
+  "model": "large-v3-turbo",
+  "text": "顔の焼くものは3DFOG"
+ },
+ "05_kaiki-020": {
+  "sha1": "52da9d640dbb3f649f4ff45c14bd83de220ac6c4",
+  "model": "large-v3-turbo",
+  "text": "顔の焼くもの結局ずっと進化しとるな"
+ },
+ "05_kaiki-021": {
+  "sha1": "baab38b603e63a25b16108351f8dd6b429f10a6c",
+  "model": "large-v3-turbo",
+  "text": "2024年4月 カロ11歳島大合 シリーズ第11作"
+ },
+ "05_kaiki-022": {
+  "sha1": "648b4a9583e13fa3232f3c2b5e6dc2e97ac7aea8",
+  "model": "large-v3-turbo",
+  "text": "確率319分の1、V角レスティン150回、継続は約81%。"
+ },
+ "05_kaiki-023": {
+  "sha1": "6650eb8ee4af1f0e1085701fab233e7b782cd8ba",
+  "model": "large-v3-turbo",
+  "text": "新しい枠はグイライト心滅獣神ガロンも出てくる"
+ },
+ "05_kaiki-024": {
+  "sha1": "b1eda1335e5a3cc8290ea5ad8cc957c544317cf5",
+  "model": "large-v3-turbo",
+  "text": "コウガのお父さんが主役か渋いとこ来たな"
+ },
+ "05_kaiki-025": {
+  "sha1": "023d00db4817cd10b79f162d86bd0e3ca69afe43",
+  "model": "large-v3-turbo",
+  "text": "その先は1回転で全部決まる世界"
+ },
+ "05_kaiki-026": {
+  "sha1": "2ca8b4003651a2b6f8863ff76ba6dacb84932c4c",
+  "model": "large-v3-turbo",
+  "text": "ぜーんぶ!?"
+ },
+ "06_lt-001": {
+  "sha1": "383763cd1410cee05ba2e188ada4e3c36577d4f0",
+  "model": "large-v3-turbo",
+  "text": "2025年4月イガロ新速進撃3000LT確率は199分の1"
+ },
+ "06_lt-002": {
+  "sha1": "369fbd1c9e348907ca50334e5d603fa83c9c7a2e",
+  "model": "large-v3-turbo",
+  "text": "初当たりの70%でLTチャレンジ突破は約31%"
+ },
+ "06_lt-003": {
+  "sha1": "d7a090484a0001d4e80b7c7814331a3a7f086ba8",
+  "model": "large-v3-turbo",
+  "text": "LTに入ったら継続は約76%、大当たりは全部約3000個。"
+ },
+ "06_lt-004": {
+  "sha1": "50121ff8a942211d41748ee1814b39c2f36ad569",
+  "model": "large-v3-turbo",
+  "text": "全部3000ってオール1500がちっちゃく見えるやん"
+ },
+ "06_lt-005": {
+  "sha1": "4c902c35167d2f6abaf5e6c019abdf20b14f6e4e",
+  "model": "large-v3-turbo",
+  "text": "しかも全部1回転で決着"
+ },
+ "06_lt-006": {
+  "sha1": "0e9d305f3817d37ffb65f0105e973f1d608dea4c",
+  "model": "large-v3-turbo",
+  "text": "一回転ごとに心臓止まりそうになるやつや"
+ },
+ "06_lt-007": {
+  "sha1": "df6bee119b6f47709869acd0feda5b5cfc510109",
+  "model": "large-v3-turbo",
+  "text": "2025年8月、伊賀路十二黄金騎士曲連。確率は349分の1。"
+ },
+ "06_lt-008": {
+  "sha1": "09c6a17dfb78e3b81c636af41c9753b034418599",
+  "model": "large-v3-turbo",
+  "text": "図柄は揃ったら、極年7500バトル。勝てば7500。"
+ },
+ "06_lt-009": {
+  "sha1": "de4a05935caac8bdc3f684c3e07c5635353795d4",
+  "model": "large-v3-turbo",
+  "text": "7500?1回で?"
+ },
+ "06_lt-010": {
+  "sha1": "6d03fd5a7e5d52aff939dd59a4d971de0625181d",
+  "model": "large-v3-turbo",
+  "text": "勝ったらエルティの魔界チャンス継続は約76%"
+ },
+ "06_lt-011": {
+  "sha1": "f4b595567efa8dc49286fc457459b2db6d0f028a",
+  "model": "large-v3-turbo",
+  "text": "デルキー中のあたりの125%がまた7500個。"
+ },
+ "06_lt-012": {
+  "sha1": "231737febdd74f34f2b8ef1ed4ec709daa2e9fef",
+  "model": "large-v3-turbo",
+  "text": "そんなん財布の感覚おかしなるわ"
+ },
+ "06_lt-013": {
+  "sha1": "0bd98314245787b9693a1162dde7ac635b0312a4",
+  "model": "large-v3-turbo",
+  "text": "2026年3月、イガロ11魔界バースト、カロ11のデルティ版。"
+ },
+ "06_lt-014": {
+  "sha1": "0465bfaa5da4449d20343f2fea0cf7193a91858d",
+  "model": "large-v3-turbo",
+  "text": "初当たりの約25%で魔界バースト入らなくても1500個はもらえる"
+ },
+ "06_lt-015": {
+  "sha1": "9a481b1e3ca5c3d3081b87f69c0645594d729648",
+  "model": "large-v3-turbo",
+  "text": "突破したらストックを持って魔界チャンス"
+ },
+ "06_lt-016": {
+  "sha1": "9c5e44894a9b0c3c7375e45066ced38f35b18413",
+  "model": "large-v3-turbo",
+  "text": "負けてもストックが残っとったら戻れるんか"
+ },
+ "06_lt-017": {
+  "sha1": "4d9fe940bb5e22a6d8f356d87235718d2ee5ba9c",
+  "model": "large-v3-turbo",
+  "text": "そう、ストックが10万の状態で負けたら通常に戻る"
+ },
+ "06_lt-018": {
+  "sha1": "0a5236ea116b93b659600c212150588a72572b5e",
+  "model": "large-v3-turbo",
+  "text": "初代は82%の一本勝負やったのにえらい変わったな"
+ },
+ "07_matome-001": {
+  "sha1": "daa1c38c4b14c2ddbd17e89d7c4bd992a6e3df0d",
+  "model": "large-v3-turbo",
+  "text": "まとめ ガロの18年で流れを変えた台を並べるとこう"
+ },
+ "07_matome-002": {
+  "sha1": "6bf21af56692b1fdb428c9c9e339564f9fb34e6c",
+  "model": "large-v3-turbo",
+  "text": "2008年の初代で魔界チャンスの50%と82%"
+ },
+ "07_matome-003": {
+  "sha1": "a63a0e76d3a23826823c799150c7880a6fcfc815",
+  "model": "large-v3-turbo",
+  "text": "2010年のレッドレクイエムで顔の役物"
+ },
+ "07_matome-004": {
+  "sha1": "0b2881758a46d3c2ea63b8fb17c3aeb23d02a166",
+  "model": "large-v3-turbo",
+  "text": "2014年の今時期に慣れでカロケンとキヤフオジ"
+ },
+ "07_matome-005": {
+  "sha1": "0e2f2840c0fc87f632baa6fe2573551048cdcdfd",
+  "model": "large-v3-turbo",
+  "text": "2015年の魔界の花で最後のマックス"
+ },
+ "07_matome-006": {
+  "sha1": "d29374723369783e66dc6efb3a627474a0f17efb",
+  "model": "large-v3-turbo",
+  "text": "2021年の月光の旅人で初代の形に戻る"
+ },
+ "07_matome-007": {
+  "sha1": "5612718e8d863d9cbe66238073e722f46196df9c",
+  "model": "large-v3-turbo",
+  "text": "そして2025年の3000LTで全部1回転、全部3000個。"
+ },
+ "07_matome-008": {
+  "sha1": "3a93e6cd0876e7735725d1b004860c34552a4a50",
+  "model": "large-v3-turbo",
+  "text": "顔の焼くものもFOGから3DFOGまでずっと進化しとったな"
+ },
+ "07_matome-009": {
+  "sha1": "1ded2342399121b9ceb56354e3864f5a856f44a6",
+  "model": "large-v3-turbo",
+  "text": "速さも速い遅い秒速1回転と行ったり来たりした"
+ },
+ "07_matome-010": {
+  "sha1": "468618ed34f0ae022403dbed385d5acaa96a7d94",
+  "model": "large-v3-turbo",
+  "text": "結局みんな初代の速さを追いかけとったんやな"
+ },
+ "07_matome-011": {
+  "sha1": "2ee2d0b9ef8e17e68240520e18b07fd70ca70fb9",
+  "model": "large-v3-turbo",
+  "text": "形は何回も変わったけど、50%と80%台は何度も戻ってきた。"
+ },
+ "07_matome-012": {
+  "sha1": "3aa016b6cf8b4b8a707eab5c60b07d6f19ab2579",
+  "model": "large-v3-turbo",
+  "text": "で、うちの一番はやっぱり金色になるや剣の手応えは一生忘れへん"
+ },
+ "07_matome-013": {
+  "sha1": "077c804d570414fcdfefd33dfe83627429f57a72",
+  "model": "large-v3-turbo",
+  "text": "私が選ぶなら初代。ルールを変えさせた代はそうない。"
+ },
+ "07_matome-014": {
+  "sha1": "1797bccb0098b98f950f07716859c6e4aca9769d",
+  "model": "large-v3-turbo",
+  "text": "それ、褒めとるんか?"
+ },
+ "07_matome-015": {
+  "sha1": "a2dc5f184e6d5e8bc78e0dc7dd337743ad5a31e5",
+  "model": "large-v3-turbo",
+  "text": "褒めてる"
+ },
+ "07_matome-016": {
+  "sha1": "8254f22d3f32be98088f23bf0779d6fe601c863d",
+  "model": "large-v3-turbo",
+  "text": "わかりにくいわ"
+ },
+ "99_ed-001": {
+  "sha1": "ef130c8c90f0a0f99d514104337d05764bdb6353",
+  "model": "large-v3-turbo",
+  "text": "今日はガロの18年全部見たな"
+ },
+ "99_ed-002": {
+  "sha1": "a5b4aca53aa35d8c0367f456cab18134629ef37b",
+  "model": "large-v3-turbo",
+  "text": "魔界チャンスからLTまで"
+ },
+ "99_ed-003": {
+  "sha1": "e7aba9bb42f70c56ff427b352a9f1b5eb9d89470",
+  "model": "large-v3-turbo",
+  "text": "次にガラ打つときは剣の手応えちゃんと味わうで"
+ },
+ "99_ed-004": {
+  "sha1": "e96800c35a8bc0e34f99608de6c5d70b3023564f",
+  "model": "large-v3-turbo",
+  "text": "よかったら高評価とチャンネル登録お願いします"
+ },
+ "99_ed-005": {
+  "sha1": "2e266b7737c15bf3d72ad45a12995afc31fd364b",
+  "model": "large-v3-turbo",
+  "text": "コメントでみんなの思い出のガロも教えてよ"
+ },
+ "99_ed-006": {
+  "sha1": "5939a77e1629a6a08722ac1a548fa58cb205117c",
+  "model": "large-v3-turbo",
+  "text": "また次回おやすみ"
+ }
+}
