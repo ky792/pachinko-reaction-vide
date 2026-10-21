@@ -1,13 +1,8 @@
 {
  "episode": "episodes/garo_history",
  "model": "large-v3-turbo",
- "_run": "garo-fix-s11",
+ "_run": "garo-fix-s23",
  "only": [
-  "00_op-005",
-  "02_kaisen-034",
-  "04_after-003",
-  "04_after-005",
-  "04_after-016",
-  "05_kaiki-010"
+  "02_kaisen-034"
  ]
 }
