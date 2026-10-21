@@ -6,6 +6,7 @@
 - retro ：ピコピコした8bit風。昔の台の話（2004〜2009年）
 - winter：ゆっくりした短調。規制で冷えた時代（2016〜2019年）
 - hype  ：速いドラムとベースで走る。神台・連チャンの話（エヴァ10、超暴走、咆哮）
+- dark_gold：低い弦と太鼓、短調の重い刻み。黒と金の騎士もの（牙狼回）
 どれも16小節で、頭とお尻がつながるループ
 """
 import numpy as np
@@ -92,5 +93,48 @@ def hype():
     loop_write(buf, "mood_hype.wav")
 
 
+def taiko():
+    """低い太鼓（音程が下がるサイン＋こもったノイズ）"""
+    ln = int(0.7 * SR); t = np.arange(ln) / SR
+    f = 95 * np.exp(-t * 6) + 48
+    body = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 5.5)
+    skin = op.lp(np.random.default_rng(7).standard_normal(ln), 700) * np.exp(-t * 18) * 0.5
+    return body + skin
+
+
+def dark_gold():
+    bpm = 96; beat = 60 / bpm; bar = 4 * beat
+    prog = [(50, 53, 57), (46, 50, 53), (43, 46, 50), (45, 49, 52)] * 4     # Dm B♭ Gm A
+    n = int(16 * bar * SR); buf = np.zeros(n)
+    rng = np.random.default_rng(3)
+    for b, ch in enumerate(prog):
+        t0 = b * bar
+        ln = int(bar * 1.05 * SR)                                        # 低い弦（ゆっくり膨らむ）
+        pad = sum(op.saw(op.note(m), ln, detune=0.005) for m in ch) + op.saw(op.note(ch[0] - 12), ln, detune=0.003)
+        op.add(buf, t0, op.lp(pad, 1100) * op.env(ln, a=0.35, d=2.5, s=0.75, r=0.3), 0.06)
+        for e in range(8):                                               # 8分で刻む低音（騎士ものの推進力）
+            le = int(beat / 2 * 0.8 * SR)
+            m = ch[0] - 12 if e % 4 != 3 else ch[2] - 12
+            op.add(buf, t0 + e * beat / 2, op.lp(op.saw(op.note(m), le), 650) * op.env(le, d=0.15, s=0.4, r=0.03), 0.22)
+        for q, g in ((0, 0.9), (1.5, 0.55), (2, 0.8), (3.5, 0.45)):     # 太鼓
+            op.add(buf, t0 + q * beat, taiko(), g)
+        if b % 2 == 0:                                                   # 金管っぽい和音の一撃
+            ls = int(0.9 * SR)
+            stab = op.lp(sum(op.saw(op.note(m + 12), ls, detune=0.007) for m in ch), 1800) * op.env(ls, a=0.01, d=0.5, s=0.15, r=0.2)
+            op.add(buf, t0, stab, 0.10)
+        if b % 4 == 3:                                                   # 金属の響き（金の騎士っぽさ。音程はずらして鐘風に）
+            lb = int(2.2 * SR); t = np.arange(lb) / SR
+            fb = op.note(ch[1] + 24)
+            bell = sum(a * np.sin(2 * np.pi * fb * r * t) for r, a in ((1, 1), (2.76, 0.5), (5.4, 0.25))) * np.exp(-t * 2.2)
+            op.add(buf, t0 + 2 * beat, bell, 0.07)
+        if b % 4 == 3:
+            op.add(buf, t0 + 3 * beat, op.riser(beat), 0.05)
+    loop_write(buf, "dark_gold.wav")
+
+
 if __name__ == "__main__":
-    retro(); winter(); hype()
+    import sys
+    only = sys.argv[1:]
+    for name, fn in (("retro", retro), ("winter", winter), ("hype", hype), ("dark_gold", dark_gold)):
+        if not only or name in only:
+            fn()
