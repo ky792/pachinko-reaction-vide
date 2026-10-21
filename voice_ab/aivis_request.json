@@ -9,8 +9,6 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 12,
- "only": [
-  "02_kaisen-023"
- ]
+ "_try": 13,
+ "kana_only": true
 }
