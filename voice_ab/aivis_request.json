@@ -10,5 +10,9 @@
  "speed": 0.95,
  "intonation": 0.65,
  "_try": 10,
- "kana_only": true
+ "only": [
+  "02_bousou-123",
+  "03_shingeki-028",
+  "04_togari-013"
+ ]
 }

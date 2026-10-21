@@ -312,6 +312,20 @@
  ],
  "rules": [
   {
+   "re": "初当たり",
+   "to": "はつあたり",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "通常時",
+   "to": "つうじょうじ",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
    "re": "役物",
    "to": "やくもの",
    "why": "誤読の修正",
@@ -634,6 +648,12 @@
    "re": "・",
    "to": "",
    "why": "真・北斗無双 などの中黒は区切らずに読む"
+  },
+  {
+   "re": "次の",
+   "to": "つぎの",
+   "engine": "aivis",
+   "why": "AivisSpeech が「次の台」「次の大当たり」をジノと読む"
   }
  ],
  "kana_fix": [
@@ -728,7 +748,7 @@
   },
   {
    "surface": "初当たり",
-   "yomi": "ハツアタリ",
+   "yomi": "はつあたり",
    "cat": "用語",
    "status": "ok"
   },
@@ -872,7 +892,7 @@
   },
   {
    "surface": "通常時",
-   "yomi": "ツウジョウジ",
+   "yomi": "つうじょうじ",
    "cat": "用語",
    "status": "ok"
   },
@@ -1046,7 +1066,7 @@
   },
   {
    "surface": "未来への咆哮",
-   "yomi": "アスヘノホウコウ",
+   "yomi": "あすへのほうこう",
    "cat": "エヴァ",
    "status": "ok"
   },
@@ -1502,6 +1522,34 @@
    "for": "both",
    "action": "ナギ：ユーザー辞書 役物 → ヤクモノ（アクセント 0） / バク：送る前に 役物 → やくもの",
    "note": ""
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "通常時",
+   "yomi": "つうじょうじ",
+   "heard": "ツウジョウトキ",
+   "line": "eva_history:04_togari-013",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 通常時 → ツウジョウジ（アクセント 3） / バク：送る前に 通常時 → つうじょうじ",
+   "note": ""
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "初当たり",
+   "yomi": "はつあたり",
+   "heard": "コアタリ",
+   "line": "eva_history:06_vst-007",
+   "for": "baku",
+   "action": "バク：送る前に 初当たり → はつあたり",
+   "note": ""
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "次の",
+   "yomi": "つぎの",
+   "heard": "ジノ（エンジンの読み）",
+   "line": "eva_history:02_bousou-123,03_shingeki-028",
+   "engine": "aivis"
   }
  ],
  "aivis_words": [
@@ -1581,6 +1629,15 @@
    "surface": "役物",
    "pronunciation": "ヤクモノ",
    "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "通常時",
+   "pronunciation": "ツウジョウジ",
+   "accent_type": 3,
    "word_type": "COMMON_NOUN",
    "priority": 8,
    "status": "ok",
