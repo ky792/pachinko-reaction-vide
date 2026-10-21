@@ -312,6 +312,13 @@
  ],
  "rules": [
   {
+   "re": "軽な",
+   "to": "かるな",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
    "re": "初当たり",
    "to": "はつあたり",
    "why": "誤読の修正",
@@ -1396,7 +1403,7 @@
   },
   {
    "surface": "軽な",
-   "yomi": "カルナ",
+   "yomi": "かるな",
    "cat": "関西弁",
    "status": "ok"
   },
@@ -1550,6 +1557,16 @@
    "heard": "ジノ（エンジンの読み）",
    "line": "eva_history:02_bousou-123,03_shingeki-028",
    "engine": "aivis"
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "軽な",
+   "yomi": "かるな",
+   "heard": "ケイナ",
+   "line": "eva_history:02_bousou-032,03_shingeki-027",
+   "for": "baku",
+   "action": "バク：送る前に 軽な → かるな",
+   "note": ""
   }
  ],
  "aivis_words": [
