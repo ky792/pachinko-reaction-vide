@@ -243,6 +243,68 @@ def chapter_card(canvas, tl, dur, data):
 
 
 # ---------------------------------------------------------------- A 機種紹介カード
+MACHINE_ZOOM = 0.06            # 表示中にゆっくり寄る量（1.00 → 1.06）
+MACHINE_PAN = (0.5, 0.40)      # 寄っていく先（画像内の比率。既定は盤面〜液晶のあたり）
+
+
+_FIT_CACHE = {}
+
+
+def _machine_fit(image, iw, ih):
+    """実機画像を枠に収まる最大サイズへ（小さい画像は拡大。縦横比はそのまま）"""
+    key = (id(image), iw, ih)
+    if key not in _FIT_CACHE:
+        _FIT_CACHE[key] = (image, _fit(image, iw, ih))   # image も持って id の使い回しを防ぐ
+    return _FIT_CACHE[key][1]
+
+
+def _drop_white_bg(image, tol=28):
+    """四隅が白い画像（白背景の実機写真）だけ、隅からつながった白い背景を透明にする。台の中の白は残す"""
+    rgb = np.asarray(image.convert("RGB")).astype(np.int16)
+    h, w = rgb.shape[:2]
+    near = (255 - rgb).max(axis=2) <= tol
+    corners = [near[0, 0], near[0, w - 1], near[h - 1, 0], near[h - 1, w - 1]]
+    if sum(corners) < 3:
+        return image
+    from scipy import ndimage
+    lab, _ = ndimage.label(near)
+    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
+    bg = np.isin(lab, list(edge))
+    alpha = np.asarray(image.convert("RGBA"))[..., 3].copy()
+    soft = ndimage.gaussian_filter(bg.astype(np.float32), 0.8)   # 輪郭のギザギザを少しなじませる
+    alpha = (alpha * (1 - soft)).clip(0, 255).astype(np.uint8)
+    out = image.convert("RGBA"); out.putalpha(Image.fromarray(alpha))
+    return out
+
+
+def _fit(image, iw, ih):
+    image = _drop_white_bg(image)
+    k = min(iw / image.width, ih / image.height)
+    fw, fh = max(1, round(image.width * k)), max(1, round(image.height * k))
+    out = image.convert("RGBA").resize((fw, fh), Image.LANCZOS)
+    if k > 1.2:   # 拡大したぶんの甘さを少しだけ締める
+        out = out.filter(ImageFilter.UnsharpMask(radius=1.6, percent=60, threshold=2))
+    return out
+
+
+def _machine_photo(image, iw, ih, tl, dur, pan=None):
+    """枠（iw×ih）の中央に実機を置き、枠の中だけでゆっくりズーム＆パン（はみ出さない）"""
+    base = _machine_fit(image, iw, ih)
+    fw, fh = base.size
+    p = ease_in_out(prog(tl, 0, max(dur or 0, 0.01)))
+    z = 1 + MACHINE_ZOOM * p
+    px, py = pan or MACHINE_PAN
+    cx = fw / 2 + (px * fw - fw / 2) * p
+    cy = fh / 2 + (py * fh - fh / 2) * p
+    vw, vh = fw / z, fh / z
+    x0 = min(max(cx - vw / 2, 0), fw - vw)
+    y0 = min(max(cy - vh / 2, 0), fh - vh)
+    frame = base.transform((fw, fh), Image.AFFINE, (1 / z, 0, x0, 0, 1 / z, y0), Image.BICUBIC)
+    box = Image.new("RGBA", (iw, ih), (0, 0, 0, 0))
+    box.alpha_composite(frame, ((iw - fw) // 2, (ih - fh) // 2))
+    return box
+
+
 def machine_card(canvas, tl, dur, data, image=None):
     """左：実機（無ければ差し替え用の仮パネル）／右：スペック。行は順番に出る"""
     a_in = ease_out(prog(tl, 0, 0.45))
@@ -256,8 +318,7 @@ def machine_card(canvas, tl, dur, data, image=None):
     box = Image.new("RGBA", (iw, ih), (0, 0, 0, 0))
     bd = ImageDraw.Draw(box)
     if image is not None:
-        src = image.copy(); src.thumbnail((iw, ih))
-        box.alpha_composite(src.convert("RGBA"), ((iw - src.width) // 2, (ih - src.height) // 2))
+        box.alpha_composite(_machine_photo(image, iw, ih, tl, dur, data.get("pan")), (0, 0))
     else:
         bd.rounded_rectangle((0, 0, iw - 1, ih - 1), RADIUS, fill=PANEL)
         for k in range(0, iw + ih, 28):   # 斜線＝「ここは仮」の目印

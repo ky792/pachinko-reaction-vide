@@ -574,7 +574,9 @@ def main():
         print(f"{p.stem}: {sc['duration'] / 60:5.2f}分  セリフ{len(sc['lines'])}  資料{len(sc['cues'])}")
     total = sum(s["duration"] for s in scenes.values())
     print(f"合計 {total / 60:.2f}分")
-    write_manifest(ep, data, scenes)
+    if not args.only:          # 1章だけのときは一覧を書き換えない（他の章のセリフが消えるため）
+        write_manifest(ep, data, scenes)
+    warn_unlicensed(ep, scenes)
     if args.manifest:
         return
     if args.stills:
@@ -607,12 +609,41 @@ def main():
         print("完成:", final)
 
 
+def image_rights(ep):
+    """images/SOURCES.csv の rights 列（ファイル名→権利の状態）。無い画像は「未確認」扱い"""
+    import csv
+    f = ep / "images" / "SOURCES.csv"
+    if not f.exists():
+        return {}
+    with f.open(encoding="utf-8-sig", newline="") as fh:
+        return {r["filename"]: (r.get("rights") or "未確認") for r in csv.DictReader(fh)}
+
+
+def warn_unlicensed(ep, scenes):
+    """動画に使う実機画像のうち、権利確認が済んでいないものを書き出しのたびに知らせる（公開前チェック用）"""
+    rights = image_rights(ep)
+    used = sorted({c["image"] for sc in scenes.values() for c in sc["cues"]
+                   if c.get("image") and (ep / "images" / c["image"]).exists()})
+    bad = [n for n in used if not rights.get(n, "未確認").startswith("確認済")]
+    if bad:
+        print(f"⚠ 権利未確認の実機画像 {len(bad)}枚を使用中（公開前に許諾確認が必要。images/SOURCES.csv の rights を「確認済」に）:")
+        for n in bad:
+            print("   -", n, rights.get(n, "SOURCES.csv に記載なし"))
+
+
 def write_manifest(ep, data, scenes):
     """差し替え用の一覧：セリフID（音声ファイル名）と、必要な実機画像"""
     rows = ["# 差し替え素材の一覧（自動生成）", "", "## 実機画像（images/ に置く）", "", "| ファイル名 | 機種 | 状態 |", "| --- | --- | --- |"]
+    rights = image_rights(ep)
     for k, m in data["machine"].items():
         ok = (ep / "images" / m["image"]).exists()
-        rows.append(f"| {m['image']} | {m['name']} | {'あり' if ok else '仮パネル'} |")
+        if not ok:
+            state = "仮パネル"
+        elif rights.get(m["image"], "未確認").startswith("確認済"):
+            state = "実機写真あり（権利確認済）"
+        else:
+            state = "実機写真追加済（権利未確認）"
+        rows.append(f"| {m['image']} | {m['name']} | {state} |")
     rows += ["", "## セリフと音声（voices/<ID>.wav を置くとその長さでタイミングが決まる）", "",
              "| ID | 話者 | 開始(推定) | セリフ |", "| --- | --- | --- | --- |"]
     offset = 0.0
