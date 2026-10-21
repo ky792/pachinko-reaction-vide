@@ -201,6 +201,16 @@ def main():
         for f in found:
             rows.append(dict(f, id=it["id"], who=it["who"], text=it["text"], asr=asr, ratio=round(ratio, 3),
                              audio=f"episodes/{ep.name}/voices/{it['id']}.wav"))
+    # 同じ辞書語が2行以上で違って聞こえたら、たまたまではないので「高」に上げる（例：役物→薬物）
+    seen = {}
+    for r in rows:
+        if r["kind"].startswith("誤読") and r.get("expect"):
+            seen.setdefault(r["expect"], set()).add(r["id"])
+    for r in rows:
+        ids = seen.get(r.get("expect"), ())
+        if r["kind"].startswith("誤読") and len(ids) >= 2 and r["level"] != "高":
+            r["level"] = "高"
+            r["reason"] += f"。同じ語が {len(ids)} 行で違って聞こえる"
     order = {"高": 0, "中": 1, "低": 2}
     rows.sort(key=lambda r: (order[r["level"]], r["id"]))
     (out / "report.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")

@@ -8,6 +8,7 @@ request: {"action": "audition", "models": [{"uuid": "...", "for": "nagi|baku"}],
 - 各スタイルで lines[for] を続けて読み、<モデル名>_<話者>_<スタイル>.wav に1本で書き出す（試聴用）
 - 読みは voice/dictionary.json の rules で直してから渡す（台本の《表記|よみ》は よみ を読む）
 - action=lines では、エンジンが実際に使った読み（audio_query の kana）を <out>/kana.json に残す（読み間違い検査用）
+  "kana_only": true なら声は作らず読みだけ控える（only を省けば全行。公開前の総点検で使う）
 - dictionary.json の aivis_words（漢字の表記・読み・アクセント）を AivisSpeech のユーザー辞書に入れてから読む（"user_dict": false で入れない）
   字幕の漢字はそのままで、読みだけエンジンの辞書で直す。kana_fix のうち engine=aivis のものでアクセントも直す
 """
@@ -63,7 +64,8 @@ def lines(rq, out, fix):
                 q["kana"] = new
             q.update({"speedScale": rq.get("speed", 1.0), "intonationScale": rq.get("intonation", 1.0),
                       "prePhonemeLength": 0.05, "postPhonemeLength": 0.08})
-            (out / f"{it['id']}.wav").write_bytes(post("/synthesis", {"speaker": sid}, q))
+            if not rq.get("kana_only"):      # kana_only＝声は作らず、エンジンの読みだけ全行ぶん控える（読みの総点検用）
+                (out / f"{it['id']}.wav").write_bytes(post("/synthesis", {"speaker": sid}, q))
             moras = "".join(m["text"] for ap in q.get("accent_phrases", []) for m in ap["moras"] + ([ap["pause_mora"]] if ap.get("pause_mora") else []))
             kanas[it["id"]] = {"text": text, "kana": moras or q.get("kana", "")}   # AivisSpeech の kana は元の文のままなので、モーラから読みを作る
             print(it["id"], it["text"], flush=True)
