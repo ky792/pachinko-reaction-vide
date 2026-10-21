@@ -2,12 +2,14 @@
 @chapter garo3
 @bgm resume 0.8
 @bgm track mood_winter.wav
+@year 2016
 @show machine:garo_yami
 ナギ: 2016年10月、牙狼闇を照らす者。金色になれが、1/319で戻ってきた。
 ナギ: ST161回は、そのまま。
 バク: 同じ161回でも、当たりにくなっとるやん。
 ナギ: 金色になれのST中は1/109。それが1/154になった。
 バク: 初当りが軽なったぶん、そっちで調整か。
+@year 2017
 @show machine:garo_sho
 @bgm track mood_hype.wav
 ナギ: 2017年7月、GOLDSTORM翔。筐体は新しい金翔枠。
@@ -20,6 +22,7 @@
 ナギ: 保留に赤い稲妻が落ちたら、撃アツに変われ保留。約83%。
 @dir focus=baku lv=3
 バク!: 稲妻が落ちた瞬間、もう立ち上がっとるわ！
+@year 2019
 @show machine:garo_koga
 ナギ: 2019年7月、P牙狼 冴島鋼牙XX。鋼牙がシリーズに戻ってきた。
 ナギ: ST160回で、継続80%。大当りは全部約1500個。

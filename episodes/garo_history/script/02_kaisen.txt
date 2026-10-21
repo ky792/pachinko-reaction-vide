@@ -3,6 +3,7 @@
 @chapter garo1
 @bgm resume 0.8
 @bgm track mood_retro.wav
+@year 2008
 @show machine:garo_xx
 ナギ: 2008年11月、初代のCR牙狼XX。
 ナギ: 確率は1/397で、大当りは全部15ラウンド。
@@ -30,6 +31,7 @@
 ナギ: 新しく作る台だけの話。もう出てる初代は、外さなくていい。
 バク: 初代だけ、82%のまま打てたわけか。
 ナギ: 増産も続いた。
+@year 2010
 @show machine:garo_red
 ナギ: 2010年12月、RED REQUIEM。確率は1/358。
 @dir fx=fog
