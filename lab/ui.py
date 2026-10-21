@@ -280,6 +280,9 @@ def _drop_white_bg(image, tol=28):
 
 def _fit(image, iw, ih):
     image = _drop_white_bg(image)
+    bb = image.convert("RGBA").getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox()
+    if bb and (bb[2] - bb[0]) * (bb[3] - bb[1]) < image.width * image.height * 0.9:
+        image = image.crop(bb)            # 透明な余白（公式画像の上半分など）を切り落としてから枠に合わせる
     k = min(iw / image.width, ih / image.height)
     fw, fh = max(1, round(image.width * k)), max(1, round(image.height * k))
     out = image.convert("RGBA").resize((fw, fh), Image.LANCZOS)

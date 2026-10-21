@@ -45,6 +45,12 @@ FX = {
     "emergency": {"span": 2, "marks": {"go": ["EMERGENCY"]}},
     "spiral": {"span": 1, "marks": {"go": ["スパイラル"]}},
     "beat": {"span": 1, "marks": {"beat": ["鼓動"]}},
+    # ---- 牙狼
+    "garo_ken": {"span": 2, "marks": {"stab": ["牙狼剣", "斬馬剣"], "push": ["押し込む"]}},
+    "fog": {"span": 2, "marks": {"go": ["F.O.G."], "pulse": ["顔や"]}},
+    "konjiki": {"span": 1, "marks": {"go": ["金色"]}},
+    "inazuma": {"span": 2, "marks": {"strike": ["稲妻"]}},
+    "door": {"span": 2, "marks": {"go": ["1回転"]}},
 }
 
 
@@ -116,6 +122,20 @@ def finish(fx, end, scene):
         b = _m(fx, "beat", default=s0 + 1)
         add(b, "heartbeat", 0.5)
         add(b + 0.85, "heartbeat", 0.4)
+
+    elif k == "garo_ken":
+        st = _m(fx, "stab", default=s0 + 0.5)
+        add(st - 0.18, "shu", 0.2); add(st, "impact", 0.32)
+        add(_m(fx, "push"), "don", 0.25)
+    elif k == "fog":
+        add(_m(fx, "go"), "don", 0.25); add(_m(fx, "pulse"), "pon", 0.2)
+    elif k == "konjiki":
+        g = _m(fx, "go", default=s0); add(g, "shu", 0.15); add(g + 0.35, "piko", 0.14)
+    elif k == "inazuma":
+        for b in fx["marks"].get("strike", [])[:2]:
+            add(b, "impact", 0.28)
+    elif k == "door":
+        g = _m(fx, "go", default=s0); add(g, "shu", 0.2); add(g + 0.35, "don", 0.3)
 
     bgm = FX[k].get("bgm")
     if bgm:
@@ -407,6 +427,12 @@ def shake(scene, t):
     """レバー振動：画面ごと震わせる量（px）"""
     dx = dy = 0.0
     for fx in scene.get("fx", []):
+        for name, d0 in (("stab", 0.3),) if fx["kind"] == "garo_ken" else (("go", 0.25),) if fx["kind"] == "door" else ():
+            s = _m(fx, name)
+            s = (s + 0.35) if (s is not None and fx["kind"] == "door") else s
+            if s is not None and s <= t < s + d0:
+                k = 1 - (t - s) / d0
+                dx += 12 * k * math.sin(t * 2 * math.pi * 27); dy += 8 * k * math.sin(t * 2 * math.pi * 33 + 1)
         if fx["kind"] != "lever":
             continue
         for name, d, amp in (("shake", 1.0, 9), ("long", 2.0, 11)):
@@ -590,7 +616,214 @@ def _beat(cv, t, fx):
         cv.alpha_composite(fade(_edge(RED), 0.85 * p * a))
 
 
-DRAW = {"bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
+# ---------------------------------------------------------------- 牙狼の演出（オリジナルの絵）
+GOLDC = (255, 205, 70)
+
+
+def _sword():
+    """牙狼剣のイメージ（オリジナル）：金の鍔と柄、銀の刀身。切っ先が下"""
+    if "sword" not in _C:
+        w, h = 200, 700
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        cx = w / 2
+        d.ellipse((cx - 22, 6, cx + 22, 50), fill=GOLDC + (255,), outline=(120, 80, 10, 255), width=3)        # 柄頭
+        d.rectangle((cx - 15, 46, cx + 15, 150), fill=(40, 30, 20, 255))                                      # 柄
+        for y in range(54, 150, 14):
+            d.line((cx - 15, y, cx + 15, y + 8), fill=(120, 90, 40, 255), width=3)
+        d.polygon([(cx - 92, 150), (cx + 92, 150), (cx + 70, 180), (cx - 70, 180)], fill=GOLDC + (255,), outline=(120, 80, 10, 255))  # 鍔
+        d.polygon([(cx - 26, 180), (cx + 26, 180), (cx + 22, h - 70), (cx, h - 8), (cx - 22, h - 70)], fill=(215, 222, 232, 255))    # 刀身
+        d.polygon([(cx - 4, 190), (cx + 4, 190), (cx + 3, h - 80), (cx, h - 40), (cx - 3, h - 80)], fill=(255, 255, 255, 255))         # 樋の光
+        d.line((cx - 26, 180, cx - 22, h - 70), fill=(140, 150, 165, 255), width=2)
+        g = Image.new("RGBA", (w, h), (255, 230, 150, 0)); g.putalpha(im.getchannel("A").filter(ImageFilter.GaussianBlur(14)))
+        out = Image.new("RGBA", (w, h), (0, 0, 0, 0)); out.alpha_composite(g); out.alpha_composite(im)
+        _C["sword"] = out
+    return _C["sword"]
+
+
+def _rays(cv, cx, cy, k, color=GOLDC, n=26, r0=60, r1=900):
+    if k <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    for i in range(n):
+        a = i / n * 2 * math.pi
+        w = 0.035
+        d.polygon([(cx + r0 * math.cos(a - w), cy + r0 * math.sin(a - w)), (cx + r1 * math.cos(a), cy + r1 * math.sin(a)),
+                   (cx + r0 * math.cos(a + w), cy + r0 * math.sin(a + w))], fill=color + (int(150 * k),))
+    cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(2)))
+
+
+def _garo_ken(cv, t, fx):
+    st = _m(fx, "stab", default=fx["start"] + 0.5)
+    if t < st - 0.25:
+        return
+    out = 1 - ease_in_out(prog(t, fx["end"], 0.45))
+    _black(cv, 0.4 * min(1, prog(t, st - 0.25, 0.25)) * out)
+    sw = _sword()
+    tip_y = 650
+    fall = ease_in_out(prog(t, st - 0.22, 0.22)) ** 2
+    y0, y1 = -sw.height - 40, tip_y - sw.height          # 画面の上から、切っ先が tip_y に刺さるまで
+    y = y0 + (y1 - y0) * fall
+    push = _m(fx, "push")
+    if push and t >= push:
+        y += 34 * ease_out(prog(t, push, 0.15))
+    if t >= st:
+        _rays(cv, W / 2, tip_y - 20, math.exp(-(t - st) / 0.35) * out)
+        fl = 1 - prog(t, st, 0.16)
+        if fl > 0:
+            cv.alpha_composite(Image.new("RGBA", (W, H), (255, 250, 230, int(150 * fl))))
+        # 刺さった所の割れ目
+        d = ImageDraw.Draw(cv)
+        for i in range(7):
+            a = math.pi * (0.1 + 0.8 * i / 6)
+            d.line((W / 2, tip_y, W / 2 + 120 * math.cos(a) * (1 if i % 2 else -1), tip_y + 26 * math.sin(a)), fill=(255, 220, 140, int(200 * out)), width=3)
+    paste(cv, sw, (W / 2 - sw.width / 2, y), out)
+    if push and t >= push:
+        p = math.exp(-(t - push) / 0.4)
+        cv.alpha_composite(fade(_edge(GOLDC), 0.7 * p * out))
+        _rays(cv, W / 2, 360, p * out, (255, 240, 180), 32, 40, 1000)
+
+
+def _emblem():
+    """金の紋章の枠（オリジナル。顔は描かない）：6つの部品"""
+    if "emb" not in _C:
+        parts = []
+        cx, cy, R = 300, 300, 230
+        for k in range(6):
+            im = Image.new("RGBA", (600, 600), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+            a0, a1 = math.pi / 3 * k - math.pi / 2, math.pi / 3 * (k + 1) - math.pi / 2
+            pts = [(cx + R * math.cos(a0), cy + R * math.sin(a0)), (cx + R * math.cos(a1), cy + R * math.sin(a1)),
+                   (cx + (R - 46) * math.cos(a1), cy + (R - 46) * math.sin(a1)), (cx + (R - 46) * math.cos(a0), cy + (R - 46) * math.sin(a0))]
+            d.polygon(pts, fill=GOLDC + (255,), outline=(130, 80, 10, 255))
+            am = (a0 + a1) / 2                                              # 外に伸びる飾り
+            d.polygon([(cx + R * math.cos(am - 0.12), cy + R * math.sin(am - 0.12)), (cx + (R + 70) * math.cos(am), cy + (R + 70) * math.sin(am)),
+                       (cx + R * math.cos(am + 0.12), cy + R * math.sin(am + 0.12))], fill=(255, 225, 120, 255), outline=(130, 80, 10, 255))
+            parts.append((im, am))
+        _C["emb"] = parts
+    return _C["emb"]
+
+
+def _fog(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"] + 0.3)
+    if t < g - 0.05:
+        return
+    out = 1 - ease_in_out(prog(t, fx["end"], 0.5))
+    _black(cv, 0.5 * min(1, prog(t, g - 0.05, 0.2)) * out)
+    layer = Image.new("RGBA", (600, 600), (0, 0, 0, 0))
+    inner = Image.new("RGBA", (600, 600), (0, 0, 0, 0)); ImageDraw.Draw(inner).regular_polygon((300, 300, 184), 6, rotation=0, fill=(30, 20, 5, 170))
+    layer.alpha_composite(inner)
+    for i, (im, am) in enumerate(_emblem()):
+        k = ease_out(prog(t, g + 0.06 * i, 0.4))
+        dx, dy = (1 - k) * 420 * math.cos(am), (1 - k) * 420 * math.sin(am)
+        tmp = Image.new("RGBA", (600, 600), (0, 0, 0, 0)); tmp.paste(im, (int(dx), int(dy)), im)
+        layer.alpha_composite(ui.fade(tmp, k))
+    done = g + 0.75
+    p = _pulse(t, [done] + fx["marks"].get("pulse", []), 0.35)
+    glow = Image.new("RGBA", layer.size, GOLDC + (0,)); glow.putalpha(layer.getchannel("A").filter(ImageFilter.GaussianBlur(18)))
+    paste(cv, glow, (W / 2 - 300, 330 - 300), (0.5 + 0.5 * p) * out)
+    paste(cv, layer, (W / 2 - 300, 330 - 300), out)
+    if t >= done:
+        _rays(cv, W / 2, 330, p * out, GOLDC, 24, 230, 900)
+
+
+def _konjiki(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    if t < g:
+        return
+    a = 1 - ease_in_out(prog(t, fx["end"] + 0.4, 0.6))
+    k = ease_out(prog(t, g, 0.55))
+    if "gold" not in _C:
+        yy = np.linspace(0, 1, H)[:, None] * np.ones((1, W))
+        arr = np.zeros((H, W, 4), np.uint8)
+        arr[..., 0], arr[..., 1], arr[..., 2] = 255, (190 + 50 * (1 - yy)).astype(np.uint8), (40 + 80 * (1 - yy)).astype(np.uint8)
+        arr[..., 3] = (110 + 60 * yy).astype(np.uint8)
+        _C["gold"] = Image.fromarray(arr, "RGBA")
+    m = Image.new("L", (W, H), 0); ImageDraw.Draw(m).rectangle((0, H - H * k, W, H), fill=int(255 * a))
+    cv.paste(Image.alpha_composite(cv, _C["gold"]), (0, 0), m.filter(ImageFilter.GaussianBlur(30)))
+    rng = np.random.default_rng(21)
+    d = ImageDraw.Draw(cv)
+    for i in range(70):                                   # 舞い上がる金の光
+        x0 = rng.uniform(0, W); sp = rng.uniform(120, 320); ph = rng.uniform(0, 3)
+        tt = (t - g + ph) % 3.0
+        y = H + 20 - sp * tt
+        if y < -20:
+            continue
+        r = rng.uniform(2, 5)
+        d.ellipse((x0 - r, y - r, x0 + r, y + r), fill=(255, 245, 190, int(220 * a * k)))
+    cv.alpha_composite(fade(_edge(GOLDC), 0.5 * a * k))
+
+
+def _bolt(seed, x0, y0, x1, y1):
+    rng = np.random.default_rng(seed); pts = [(x0, y0)]
+    n = 9
+    for i in range(1, n):
+        f = i / n
+        pts.append((x0 + (x1 - x0) * f + rng.uniform(-60, 60), y0 + (y1 - y0) * f + rng.uniform(-10, 10)))
+    pts.append((x1, y1))
+    return pts
+
+
+def _inazuma(cv, t, fx):
+    strikes = fx["marks"].get("strike", [])[:2]
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    hx = [540, 610, 680, 750]; hy = 818                   # 保留の玉（4つ）
+    d = ImageDraw.Draw(cv)
+    d.rounded_rectangle((500, hy - 34, 790, hy + 34), 34, fill=(0, 0, 0, int(150 * a)))
+    hit = any(t >= s for s in strikes)
+    for i, x in enumerate(hx):
+        col = (220, 30, 40) if (hit and i == 3) else (90, 150, 255)
+        d.ellipse((x - 22, hy - 22, x + 22, hy + 22), fill=col + (int(255 * a),), outline=(255, 255, 255, int(200 * a)), width=3)
+    for k, s in enumerate(strikes):
+        tl = t - s
+        if not 0 <= tl < 0.45:
+            continue
+        v = 1 - prog(tl, 0.1, 0.35)
+        pts = _bolt(5 + k, 640 + (k * 80 - 40), -20, hx[3], hy - 22)
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(lay)
+        ld.line(pts, fill=(255, 40, 40, 255), width=16, joint="curve"); ld.line(pts, fill=(255, 235, 235, 255), width=5, joint="curve")
+        g = lay.filter(ImageFilter.GaussianBlur(10))
+        paste(cv, g, (0, 0), v); paste(cv, lay, (0, 0), v)
+        if tl < 0.12:
+            cv.alpha_composite(Image.new("RGBA", (W, H), (255, 60, 60, int(110 * (1 - tl / 0.12)))))
+        cv.alpha_composite(fade(_edge((255, 30, 30)), 0.7 * v))
+
+
+def _door(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    if t < g:
+        return
+    close = ease_in_out(prog(t, g, 0.35))
+    opn = ease_in_out(prog(t, fx["end"] - 0.7, 0.6))
+    k = close * (1 - opn)
+    if k <= 0:
+        return
+    if "doorL" not in _C:
+        dw = W // 2
+        L = Image.new("RGBA", (dw, H), (18, 16, 22, 255)); d = ImageDraw.Draw(L)
+        for y in range(40, H, 120):
+            d.rectangle((30, y, dw - 30, y + 80), outline=(70, 64, 80, 255), width=3)
+        d.rectangle((dw - 14, 0, dw, H), fill=GOLDC + (255,))
+        d.line((dw - 20, 0, dw - 20, H), fill=(120, 80, 10, 255), width=3)
+        _C["doorL"] = L; _C["doorR"] = L.transpose(Image.FLIP_LEFT_RIGHT)
+    L, R = _C["doorL"], _C["doorR"]
+    cv.alpha_composite(L, (int(-L.width + L.width * k), 0))
+    cv.alpha_composite(R, (int(W - R.width * k), 0))
+    shut = g + 0.35
+    if t >= shut and opn <= 0:
+        p = math.exp(-(t - shut) / 0.3)
+        d = ImageDraw.Draw(cv)
+        d.rectangle((W / 2 - 3, 0, W / 2 + 3, H), fill=(255, 245, 200, int(255 * min(1, 0.4 + p))))
+        cv.alpha_composite(fade(_edge(GOLDC), 0.6 * p))
+        glow = ease_out(prog(t, shut + 0.6, 0.5))
+        if glow > 0:                                       # 最終ジャッジ：合わせ目から光が漏れる
+            lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(lay)
+            ld.rectangle((W / 2 - 40 * glow, 0, W / 2 + 40 * glow, H), fill=(255, 235, 160, int(200 * glow)))
+            cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(24)))
+
+
+DRAW = {"garo_ken": _garo_ken, "fog": _fog, "konjiki": _konjiki, "inazuma": _inazuma, "door": _door,
+        "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
         "beat": _beat}
 
