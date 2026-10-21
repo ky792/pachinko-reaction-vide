@@ -80,6 +80,20 @@ def transcribe(items, ep, model_name, cache):
         print(f"[{n}/{len(todo)}] {it['id']} {cache[it['id']]['text']}", flush=True)
 
 
+def has_term(surf, text):
+    """台本に辞書語があるか。英字の語は、もっと長い英単語の一部（GOLDSTORM・BURST の中の ST）なら数えない"""
+    if re.search(r"[A-Za-z]", surf):
+        return re.search(r"(?<![A-Za-z])" + re.escape(surf) + r"(?![A-Za-z])", text) is not None
+    return surf in text
+
+
+def kana_in(yk, nk):
+    """読み yk がエンジンの読み nk に入っているか。語の頭の母音は前の音とつながって「ー」にならされることがある（ナッテ＋エフ→ナッテーフ）"""
+    if yk in nk:
+        return True
+    return bool(yk) and yk[0] in "アイウエオ" and ("ー" + yk[1:]) in nk
+
+
 def engine_kana(k):
     """AivisSpeech の kana（AquesTalk 風：' / _ ？ 、 入り）→ ふつうのカタカナ"""
     return re.sub(r"[/'_]", "", k).replace("？", "、")
@@ -97,7 +111,7 @@ def compare(it, asr_text, terms, d):
     sm = SequenceMatcher(None, exp, got, autojunk=False)
     spans = []
     for surf, yomi, src, status in terms:
-        if surf in it["text"]:
+        if has_term(surf, it["text"]):
             tk = flat(reading.yomi_kana(yomi))
             for m in re.finditer(re.escape(tk), exp):
                 spans.append((m.start(), m.end(), surf, yomi))
@@ -196,16 +210,16 @@ def main():
         if it["who"] == "nagi" and ek and ek.get("text") == reading.speech_text(it["say"], d, "aivis"):
             nk = flat(reading.norm(engine_kana(ek["kana"])))
             for surf, yomi, src, status in terms:
-                if surf not in it["text"]:
+                if not has_term(surf, it["text"]):
                     continue
-                if flat(reading.norm(reading.yomi_kana(yomi))) in nk:   # 長音の書き方（ボウソウ／ボオソオ）の差はならしてから比べる
+                if kana_in(flat(reading.norm(reading.yomi_kana(yomi))), nk):   # 長音の書き方（ボウソウ／ボオソオ）の差はならしてから比べる
                     sure.add(surf)
                 else:
                     found.append({"kind": "誤読（エンジンの読み）", "where": surf, "expect": yomi, "level": "高",
                                   "reason": f"合成に使った読みに「{yomi}」がない（エンジンの読み：{engine_kana(ek['kana'])}）"})
         if it["who"] == "baku":   # バクは、辞書で読みをかなに置き換えて送った語なら読みは決まっている
             sp = reading.speech_text(it["say"], d, "irodori")
-            sure.update(surf for surf, yomi, src, status in terms if surf in it["text"] and surf not in sp)
+            sure.update(surf for surf, yomi, src, status in terms if has_term(surf, it["text"]) and surf not in sp)
         if sure:
             found = [f for f in found if not (f["kind"].endswith("（辞書語）") and
                                               any(f.get("expect") == y for s2, y, _, _ in terms if s2 in sure))]

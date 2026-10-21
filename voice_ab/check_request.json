@@ -1,5 +1,5 @@
 {
  "episode": "episodes/garo_history",
  "model": "large-v3-turbo",
- "_run": "garo-full"
+ "_run": "garo-full-2"
 }
