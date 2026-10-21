@@ -228,5 +228,20 @@
   "sha1": "6977d2ced99795211c6ab76e42308ef0f2cb4f8c",
   "model": "large-v3-turbo",
   "text": "触るところも、初号機の焼く物からネバーハンドルまで変わってきた。"
+ },
+ "02_bousou-123": {
+  "sha1": "d50edeafa57ff6b152cad0c4da15cace52ce703a",
+  "model": "large-v3-turbo",
+  "text": "ここまではずっと右肩上がりでも血の代で初めてつまずく"
+ },
+ "03_shingeki-028": {
+  "sha1": "12c0ac316925f168afdd937c425cc90dee949264",
+  "model": "large-v3-turbo",
+  "text": "その代わり、合想モードが変わった。とつかくの後、地の渡りまで点差歩が続く。"
+ },
+ "06_vst-007": {
+  "sha1": "d759d5076c97385fc217ea5b4fe51d0e97389293",
+  "model": "large-v3-turbo",
+  "text": "半分ちょいか小あたりの跡が一番ドキドキする台やった"
  }
 }
