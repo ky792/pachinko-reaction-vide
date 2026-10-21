@@ -1,0 +1,54 @@
+[
+ {
+  "kind": "余分な音",
+  "where": "マー",
+  "expect": "",
+  "reason": "台本にない「マー」が聞こえる",
+  "level": "低",
+  "id": "t-001",
+  "who": "baku",
+  "text": "初代よりだいぶ軽なったな。",
+  "asr": "初代よりだいぶ軽なったなまあ",
+  "ratio": 0.938,
+  "audio": "episodes/_takes_baku/voices/t-001.wav"
+ },
+ {
+  "kind": "誤読（辞書語）",
+  "where": "カ",
+  "expect": "カクヘン",
+  "reason": "台本は「カ」、聞こえたのは「ガ」（辞書語「確変」のところ）",
+  "level": "低",
+  "id": "t-006",
+  "who": "baku",
+  "text": "福音より軽なったけど、確変は下がったんか。",
+  "asr": "福音より軽なったけど、学編は下がったんか!エンタ!",
+  "ratio": 0.902,
+  "audio": "episodes/_takes_baku/voices/t-006.wav"
+ },
+ {
+  "kind": "余分な音",
+  "where": "エンタ",
+  "expect": "",
+  "reason": "台本にない「エンタ」が聞こえる",
+  "level": "低",
+  "id": "t-006",
+  "who": "baku",
+  "text": "福音より軽なったけど、確変は下がったんか。",
+  "asr": "福音より軽なったけど、学編は下がったんか!エンタ!",
+  "ratio": 0.902,
+  "audio": "episodes/_takes_baku/voices/t-006.wav"
+ },
+ {
+  "kind": "余分な音",
+  "where": "ーモー",
+  "expect": "",
+  "reason": "台本にない「ーモー」が聞こえる",
+  "level": "低",
+  "id": "t-007",
+  "who": "baku",
+  "text": "初代よりだいぶ軽なったな。",
+  "asr": "初代よりだいぶ軽なったなぁもう!",
+  "ratio": 0.909,
+  "audio": "episodes/_takes_baku/voices/t-007.wav"
+ }
+]

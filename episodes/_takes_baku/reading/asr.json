@@ -1,0 +1,62 @@
+{
+ "t-001": {
+  "sha1": "b24f70142b477d1d65a05d380057f44cf3c836bb",
+  "model": "large-v3-turbo",
+  "text": "初代よりだいぶ軽なったなまあ"
+ },
+ "t-002": {
+  "sha1": "ed15d6292eb2e27a12107b0a80dc80cc98876ed7",
+  "model": "large-v3-turbo",
+  "text": "アスカがどーんや、アスカ好きにはたまらんだんやで"
+ },
+ "t-003": {
+  "sha1": "99060946975ac42e739e7ab88cf655dd17f9e402",
+  "model": "large-v3-turbo",
+  "text": "福音より軽なったけど、各辺は下がったんか!"
+ },
+ "t-004": {
+  "sha1": "ddc66490ee956f8ff0f17fa1dc73b11a5a0656bb",
+  "model": "large-v3-turbo",
+  "text": "初代よりだいぶ軽なったな"
+ },
+ "t-005": {
+  "sha1": "e4601a869f45289af86a5dd8f8414fc297b00df1",
+  "model": "large-v3-turbo",
+  "text": "アスカがどーんや!アスカ好きにはたまらないやで!"
+ },
+ "t-006": {
+  "sha1": "af3019ada377c3d08cb3f64014980bc7424fe1f0",
+  "model": "large-v3-turbo",
+  "text": "福音より軽なったけど、学編は下がったんか!エンタ!"
+ },
+ "t-007": {
+  "sha1": "da49cfc7cc718bfafb58836fc353a6035140bdbf",
+  "model": "large-v3-turbo",
+  "text": "初代よりだいぶ軽なったなぁもう!"
+ },
+ "t-008": {
+  "sha1": "527409746ff77f710e75870c3354352de74db9b6",
+  "model": "large-v3-turbo",
+  "text": "アスカがどんやアスカ好きにはたまらんだんやで"
+ },
+ "t-009": {
+  "sha1": "807452c0485b0dd6d5356792e59834edb7a20a47",
+  "model": "large-v3-turbo",
+  "text": "福音より軽なったけど、各辺は下がったんか!"
+ },
+ "t-010": {
+  "sha1": "f12acc4ecab0eecbb756a6bb906d6969f13aefa0",
+  "model": "large-v3-turbo",
+  "text": "初代よりだいぶかっかるなったな"
+ },
+ "t-011": {
+  "sha1": "2e87cb846b5799a3c1138a8e294fa99f68d15919",
+  "model": "large-v3-turbo",
+  "text": "アスカがどーんや!アスカ好きにはたまらんないやで!"
+ },
+ "t-012": {
+  "sha1": "aa0c4517f3355faa94ce5488a9648e5e433ab27b",
+  "model": "large-v3-turbo",
+  "text": "福音より軽なったけど、確変は下がったんか!"
+ }
+}
