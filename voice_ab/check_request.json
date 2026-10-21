@@ -1,7 +1,7 @@
 {
  "episode": "episodes/garo_history",
  "model": "large-v3-turbo",
- "_run": "garo-fix-s23",
+ "_run": "garo-fix-s37",
  "only": [
   "02_kaisen-034"
  ]
