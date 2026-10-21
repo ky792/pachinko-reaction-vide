@@ -245,6 +245,7 @@ def chapter_card(canvas, tl, dur, data):
 # ---------------------------------------------------------------- A 機種紹介カード
 MACHINE_ZOOM = 0.06            # 表示中にゆっくり寄る量（1.00 → 1.06）
 MACHINE_PAN = (0.5, 0.40)      # 寄っていく先（画像内の比率。既定は盤面〜液晶のあたり）
+MACHINE_MOVE = (0.3, 8.0)      # 寄り始め・寄り終わるまでの秒数。そのあとは止める（静止中は描画を使い回せる）
 
 
 _FIT_CACHE = {}
@@ -291,7 +292,7 @@ def _machine_photo(image, iw, ih, tl, dur, pan=None):
     """枠（iw×ih）の中央に実機を置き、枠の中だけでゆっくりズーム＆パン（はみ出さない）"""
     base = _machine_fit(image, iw, ih)
     fw, fh = base.size
-    p = ease_in_out(prog(tl, 0, max(dur or 0, 0.01)))
+    p = ease_in_out(prog(tl, MACHINE_MOVE[0], min(MACHINE_MOVE[1], max((dur or 0) - 1.0, 0.5))))
     z = 1 + MACHINE_ZOOM * p
     px, py = pan or MACHINE_PAN
     cx = fw / 2 + (px * fw - fw / 2) * p
@@ -726,7 +727,7 @@ def intro_card(canvas, tl, dur, data):
 
 SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中は描画を使い回して高速化）
     "chapter": lambda d: 0.8, "title": lambda d: 1.0, "intro": lambda d: 0.9, "logo": lambda d: 1e9, "keyword": lambda d: 0.5,
-    "machine": lambda d: 0.45 + 0.28 * len(d["rows"]) + 0.95,
+    "machine": lambda d: max(0.45 + 0.28 * len(d["rows"]) + 0.95, sum(MACHINE_MOVE) + 0.05),
     "analysis": lambda d: 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
     "flow": lambda d: 0.35 + 0.45 * len(d["steps"]) + 0.4,
     "lineup": lambda d: 0.3 + (0.32 if d.get("fast") else 0.55) * len(d["items"]) + 0.35,

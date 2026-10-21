@@ -69,7 +69,7 @@ def parse_script(path):
 
 # @dir の値の範囲（直後の1セリフだけに効く演出）
 DIR_RANGE = {"pre": (0, 2), "post": (0, 2), "speed": (0.7, 1.4), "int": (0.5, 1.6), "vol": (0.5, 1.2)}
-DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail", "act")
+DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail", "act", "hiki")
 
 
 def parse_dir(arg, name="台本"):
@@ -183,7 +183,8 @@ def build_chapter(ep_dir, script_path, data):
     items = parse_script(script_path)
     scene = {"duration": 0, "cues": [], "layout": [], "subs": [], "emphasis": [], "se": [],
              "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []},
-             "focus": [], "bgm_track": [], "acts": [], "songs": [], "faces": []}
+             "focus": [], "bgm_track": [], "acts": [], "songs": [], "faces": [], "hiki": []}
+    hiki = None         # ヒキの演出中（@dir hiki=<行数>）：{"start", "left", "duck"}
     directed = any(it.get("dir") for it in items if it["cmd"] == "line")   # @dir がある章だけ新しい間の付け方
     t = 0.25
     cur = None          # 今出ている資料
@@ -312,6 +313,12 @@ def build_chapter(ep_dir, script_path, data):
             scene["bgm_track"].append({"t": round(t, 3), "level": 0.0 if bits[0] == "cut" else 1.0, "dur": float(bits[1])})
         elif c == "line":
             dr = it.get("dir", {})
+            if dr.get("hiki") and hiki is None:
+                # @dir hiki=2 … このセリフから2行ぶん「ヒキ」：背景を暗く・上下に帯・ゆっくり寄る（間の取り方は変えない）
+                level = scene["bgm_track"][-1]["level"] if scene["bgm_track"] else 1.0
+                hiki = {"start": round(t, 3), "left": max(1, int(dr["hiki"])), "duck": level > 0.5, "first": True}
+                if hiki["duck"]:   # BGM が鳴っていれば少し絞る（もう切ってあればそのまま）
+                    scene["bgm_track"].append({"t": round(t, 3), "level": 0.35, "dur": 0.5})
             if directed:
                 t += dr.get("pre", 0.15)
             line_no += 1
@@ -351,7 +358,18 @@ def build_chapter(ep_dir, script_path, data):
                 scene["emphasis"].append({"who": "baku", "start": t, "end": t + dur, "scale": 1.08})
                 if not dr.get("se"):
                     scene["se"].append({"t": t, "kind": "piko", "gain": 0.18})
+            if hiki is not None and hiki.pop("first", False):
+                scene["se"].append({"t": t, "kind": "don", "gain": 0.16})   # ヒキのセリフの頭に低い一打
             t += dur + (dr.get("post", 0) + 0.05 if directed else GAP)
+            if hiki is not None:
+                hiki["left"] -= 1
+                if hiki["left"] <= 0:
+                    scene["hiki"].append({"start": hiki["start"], "end": round(t, 3)})
+                    if hiki["duck"]:
+                        scene["bgm_track"].append({"t": round(t, 3), "level": 1.0, "dur": 0.8})
+                    hiki = None
+    if hiki is not None:      # 章の終わりまで続いたヒキ（章の最後の一言など）
+        scene["hiki"].append({"start": hiki["start"], "end": round(t + 0.6, 3)})
     close_cur(t)
     t += 0.6
     for cue in scene["cues"]:

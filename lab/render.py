@@ -96,6 +96,36 @@ def focus_state(scene, t):
     return None, 0.0
 
 
+HIKI_IN, HIKI_OUT = 0.6, 0.5
+HIKI_ZOOM, HIKI_ZOOM_SEC = 0.07, 5.0     # ヒキの間に、背景と資料へゆっくり寄る量と秒数
+HIKI_BAR = 70                           # 上下の黒帯の高さ（px）
+
+
+def hiki_state(scene, t):
+    """ヒキの濃さ（0〜1）と始まってからの秒数。0.6秒で暗くなり、終わってから0.5秒で戻る"""
+    for h in scene.get("hiki", []):
+        if h["start"] <= t < h["end"] + HIKI_OUT:
+            k = min(ui.ease_in_out(ui.prog(t, h["start"], HIKI_IN)), 1 - ui.ease_in_out(ui.prog(t, h["end"], HIKI_OUT)))
+            return max(0.0, k), t - h["start"]
+    return 0.0, 0.0
+
+
+_VIG = {}
+
+
+def _vignette():
+    """中央は少し、周りほど深く暗くする幕（1回だけ作る）"""
+    if "v" not in _VIG:
+        import numpy as np
+        yy, xx = np.mgrid[0:ui.H, 0:ui.W].astype(np.float32)
+        r = np.sqrt(((xx - ui.W / 2) / (ui.W / 2)) ** 2 + ((yy - ui.H * 0.45) / (ui.H / 2)) ** 2) / 1.25
+        a = 0.42 + 0.40 * np.clip(r, 0, 1) ** 1.6
+        g = np.zeros((ui.H, ui.W, 4), np.uint8)
+        g[..., 3] = (a * 255).astype(np.uint8)
+        _VIG["v"] = ui.Image.fromarray(g, "RGBA")
+    return _VIG["v"]
+
+
 BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup")
 
 
@@ -236,13 +266,25 @@ def render_frame(scene, t, images):
             _CACHE.clear()
             _CACHE[k] = (under, over)
     # 資料・背景だけを仮想カメラで動かし、案内役と字幕は固定する。
-    cv = motion.camera_image(under.copy(), motion.camera_state(scene, t))
+    cam = motion.camera_state(scene, t)
+    hk, hsince = hiki_state(scene, t)
+    if hk > 0:                                   # ヒキ：資料と背景にゆっくり寄る
+        cam = dict(cam, zoom=cam["zoom"] * (1 + HIKI_ZOOM * hk * ui.ease_in_out(ui.prog(hsince, 0, HIKI_ZOOM_SEC))))
+    cv = motion.camera_image(under.copy(), cam)
     h, a = layout_state(scene, t)
     who = speaker_at(scene, t)
     fw, fk = focus_state(scene, t)
     if fk > 0:                                   # 背景を最大35%暗く
         shade = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, int(255 * 0.35 * fk)))
         cv.alpha_composite(shade)
+    if hk > 0:                                   # ヒキ：周りから暗く＋上下に黒帯
+        vig = _vignette()
+        cv.alpha_composite(vig if hk >= 0.999 else ui.fade(vig, hk))
+        bar = int(round(HIKI_BAR * ui.ease_out(hk)))
+        if bar > 0:
+            d = ui.ImageDraw.Draw(cv)
+            d.rectangle((0, 0, ui.W, bar), fill=(0, 0, 0, 255))
+            d.rectangle((0, ui.H - bar, ui.W, ui.H), fill=(0, 0, 0, 255))
     sk, since = skit_state(scene, t)
     if sk > 0.01:
         skit.draw(cv, scene, t, who, ui.prog(since, 0, 0.7), sk, lambda w, tt: face_at(scene, w, tt))
@@ -252,7 +294,8 @@ def render_frame(scene, t, images):
             lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
             ex = emphasis_at(scene, c, t) * (1 + 0.2 * fk if c == fw else 1.0)
             ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t))
-            ui.paste(cv, lay, (0, 0), a * (1 - 0.5 * fk if fw and c != fw else 1.0))
+            dim = (1 - 0.5 * fk if fw and c != fw else 1.0) * (1 - 0.45 * hk if who and c != who else 1.0)
+            ui.paste(cv, lay, (0, 0), a * dim)
     cv.alpha_composite(over)
     return cv.convert("RGB")
 
