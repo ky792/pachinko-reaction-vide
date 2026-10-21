@@ -312,6 +312,13 @@
  ],
  "rules": [
   {
+   "re": "役物",
+   "to": "やくもの",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
    "re": "集結の運命",
    "to": "しゅうけつのさだめ",
    "why": "曲名。読みはユーザー確認済み（さだめ）",
@@ -739,7 +746,7 @@
   },
   {
    "surface": "役物",
-   "yomi": "ヤクモノ",
+   "yomi": "やくもの",
    "cat": "用語",
    "status": "ok"
   },
@@ -1485,6 +1492,16 @@
    "heard": "オール イチゴオゼロゼロ（エンジンの読み）",
    "line": "eva_history:07_lt-028",
    "engine": "aivis"
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "役物",
+   "yomi": "やくもの",
+   "heard": "ヤクブツ",
+   "line": "eva_history:01_basic-005",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 役物 → ヤクモノ（アクセント 0） / バク：送る前に 役物 → やくもの",
+   "note": ""
   }
  ],
  "aivis_words": [
@@ -1559,6 +1576,15 @@
    "priority": 8,
    "status": "ok",
    "accent_status": "推定"
+  },
+  {
+   "surface": "役物",
+   "pronunciation": "ヤクモノ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
   }
  ]
 }

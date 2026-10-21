@@ -11,9 +11,15 @@
  "intonation": 0.65,
  "_try": 9,
  "only": [
-  "06_vst-022",
-  "07_lt-028",
-  "08_matome-006",
-  "99_ed-002"
+  "01_basic-005",
+  "02_bousou-026",
+  "02_bousou-073",
+  "03_shingeki-006",
+  "03_shingeki-012",
+  "03_shingeki-035",
+  "04_togari-013",
+  "04_togari-039",
+  "05_fuyu-010",
+  "08_matome-008"
  ]
 }
