@@ -111,7 +111,7 @@ def highlight(text):
 
 def split_parts(text, limit=34):
     """長いセリフは「。」で字幕を分ける。1つの字幕は最大2行"""
-    sents = [s for s in re.split(r"(?<=[。？！])", text) if s]
+    sents = [s for s in re.split(r"(?<=[。？！])(?![」』）。？！])", text) if s]   # 「！？」や「…！」」の途中では切らない
     parts, buf = [], ""
     for s in sents:
         if buf and len(buf) + len(s) > limit:

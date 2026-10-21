@@ -595,8 +595,30 @@ DRAW = {"bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kou
         "beat": _beat}
 
 
+NOTE = "※演出はイメージです。実機の演出ではありません"
+
+
+def _note(cv, a):
+    """注釈：演出が出ている間だけ、右上に小さく"""
+    if "note" not in _C:
+        f = ui.font("medium", 24)
+        w = int(ui.text_w(NOTE, f)) + 36
+        im = Image.new("RGBA", (w, 42), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle((0, 0, w - 1, 41), 8, fill=(0, 0, 0, 150))
+        d.text((w / 2, 21), NOTE, font=f, fill=(255, 255, 255, 235), anchor="mm")
+        _C["note"] = im
+    im = _C["note"]
+    paste(cv, im, (W - im.width - 36, 84), a)
+
+
 def draw(cv, scene, t):
-    """今出ている再現演出をすべて描く（キャラの上・字幕の下）"""
+    """今出ている再現演出をすべて描く（キャラの上・字幕の下）。出ている間は注釈も出す"""
+    na = 0.0
     for fx in scene.get("fx", []):
         if fx["start"] - 0.2 <= t < fx["end"] + 1.0:
             DRAW[fx["kind"]](cv, t, fx)
+            first = min([v for ms in fx["marks"].values() for v in ms] or [fx["start"]])
+            na = max(na, _env(t, first - 0.3, fx["end"] + 0.3, 0.3, 0.4))
+    if na > 0:
+        _note(cv, na)
