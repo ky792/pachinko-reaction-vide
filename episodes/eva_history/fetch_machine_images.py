@@ -78,7 +78,17 @@ def fetch(url: str) -> bytes:
             time.sleep(1 + retry)
     raise RuntimeError(str(err))
 
+OVERRIDE_CHASSIS = {
+    # Old collection pages also contain links to other EVA machines.
+    # These three main photos use "chassis.jpg" (without "_1").
+    792: "https://www.sankyo-fever.jp/assets/images/collection/pachinko/7130/pachinko.7130.chassis.jpg",
+    798: "https://www.sankyo-fever.jp/assets/images/collection/pachinko/7154/pachinko.7154.chassis.jpg",
+    804: "https://www.sankyo-fever.jp/assets/images/collection/pachinko/7173/pachinko.7173.chassis.jpg",
+}
+
 def museum_url(page_id: int) -> str:
+    if page_id in OVERRIDE_CHASSIS:
+        return OVERRIDE_CHASSIS[page_id]
     page = f"https://www.sankyo-fever.jp/collection/{page_id}/"
     raw = SESSION.get(page, timeout=TIMEOUT)
     raw.raise_for_status()
