@@ -13,7 +13,7 @@
 | shiokinin.jpg | ぱちんこ 新・必殺仕置人 | 仮パネル |
 | gensan_idaten.jpg | P大工の源さん 超韋駄天 | 仮パネル |
 | unicorn.jpg | Pフィーバー機動戦士ガンダムユニコーン | 仮パネル |
-| eva15.jpg | P新世紀エヴァンゲリオン15 未来への咆哮 | 仮パネル |
+| eva15.jpg | P新世紀エヴァンゲリオン15 未来への咆哮 | 実機写真追加済（権利未確認） |
 | rezero_onigakari.jpg | P Re:ゼロ 鬼がかりver. | 仮パネル |
 | enen.jpg | Pフィーバー炎炎ノ消防隊 | 仮パネル |
 | rezero_s2.jpg | e Re:ゼロ season2 | 仮パネル |
@@ -21,26 +21,26 @@
 | karakuri2_maou.jpg | eからくりサーカス2 魔王ver. | 仮パネル |
 | tokyoghoul_chodeka.jpg | e東京喰種 超デカ超一撃ver. | 仮パネル |
 | rezero_onigakari2.jpg | e Re:ゼロ 鬼がかり2 | 仮パネル |
-| eva_cr1.jpg | CR新世紀エヴァンゲリオン | 仮パネル |
-| eva_shito.jpg | CR新世紀エヴァンゲリオン 使徒、再び | 仮パネル |
-| eva_shisha.jpg | CR新世紀エヴァンゲリオン 最後のシ者 | 仮パネル |
-| eva_fukuin.jpg | CRヱヴァンゲリヲン 始まりの福音 | 仮パネル |
-| eva7.jpg | CRヱヴァンゲリヲン7 | 仮パネル |
-| eva8.jpg | CRヱヴァンゲリヲン8 | 仮パネル |
-| eva9.jpg | CRヱヴァンゲリヲン9 | 仮パネル |
-| eva10.jpg | CRヱヴァンゲリヲン10 | 仮パネル |
-| eva_mezame.jpg | CRヱヴァンゲリヲン いま、目覚めの時 | 仮パネル |
-| eva12.jpg | CRヱヴァンゲリヲン 2018年モデル | 仮パネル |
-| eva_shinsei.jpg | 新世紀エヴァンゲリオン シト、新生 | 仮パネル |
-| eva_sinku.jpg | P新世紀エヴァンゲリオン 決戦〜真紅〜 | 仮パネル |
-| eva_rei.jpg | シン・エヴァンゲリオン Type レイ | 仮パネル |
-| eva_kioku.jpg | e 新世紀エヴァンゲリオン はじまりの記憶 | 仮パネル |
-| evared.jpg | P 新世紀エヴァンゲリオン -319 RED- | 仮パネル |
-| eva_second.jpg | CR新世紀エヴァンゲリオン セカンドインパクト | 仮パネル |
-| eva_kiseki.jpg | CR新世紀エヴァンゲリオン 奇跡の価値は | 仮パネル |
-| eva_choubousou.jpg | Pヱヴァンゲリヲン 超暴走 | 仮パネル |
-| eva_choukakusei.jpg | Pヱヴァンゲリヲン 超覚醒 | 仮パネル |
-| eva_kaworu.jpg | スマパチ シン・エヴァンゲリオン Type カヲル | 仮パネル |
+| eva_cr1.jpg | CR新世紀エヴァンゲリオン | 実機写真追加済（権利未確認） |
+| eva_shito.jpg | CR新世紀エヴァンゲリオン 使徒、再び | 実機写真追加済（権利未確認） |
+| eva_shisha.jpg | CR新世紀エヴァンゲリオン 最後のシ者 | 実機写真追加済（権利未確認） |
+| eva_fukuin.jpg | CRヱヴァンゲリヲン 始まりの福音 | 実機写真追加済（権利未確認） |
+| eva7.jpg | CRヱヴァンゲリヲン7 | 実機写真追加済（権利未確認） |
+| eva8.jpg | CRヱヴァンゲリヲン8 | 実機写真追加済（権利未確認） |
+| eva9.jpg | CRヱヴァンゲリヲン9 | 実機写真追加済（権利未確認） |
+| eva10.jpg | CRヱヴァンゲリヲン10 | 実機写真追加済（権利未確認） |
+| eva_mezame.jpg | CRヱヴァンゲリヲン いま、目覚めの時 | 実機写真追加済（権利未確認） |
+| eva12.jpg | CRヱヴァンゲリヲン 2018年モデル | 実機写真追加済（権利未確認） |
+| eva_shinsei.jpg | 新世紀エヴァンゲリオン シト、新生 | 実機写真追加済（権利未確認） |
+| eva_sinku.jpg | P新世紀エヴァンゲリオン 決戦〜真紅〜 | 実機写真追加済（権利未確認） |
+| eva_rei.jpg | シン・エヴァンゲリオン Type レイ | 実機写真追加済（権利未確認） |
+| eva_kioku.jpg | e 新世紀エヴァンゲリオン はじまりの記憶 | 実機写真追加済（権利未確認） |
+| evared.jpg | P 新世紀エヴァンゲリオン -319 RED- | 実機写真追加済（権利未確認） |
+| eva_second.jpg | CR新世紀エヴァンゲリオン セカンドインパクト | 実機写真追加済（権利未確認） |
+| eva_kiseki.jpg | CR新世紀エヴァンゲリオン 奇跡の価値は | 実機写真追加済（権利未確認） |
+| eva_choubousou.jpg | Pヱヴァンゲリヲン 超暴走 | 実機写真追加済（権利未確認） |
+| eva_choukakusei.jpg | Pヱヴァンゲリヲン 超覚醒 | 実機写真追加済（権利未確認） |
+| eva_kaworu.jpg | スマパチ シン・エヴァンゲリオン Type カヲル | 実機写真追加済（権利未確認） |
 
 ## セリフと音声（voices/<ID>.wav を置くとその長さでタイミングが決まる）
 
