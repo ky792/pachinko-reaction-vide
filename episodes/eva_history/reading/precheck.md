@@ -1,6 +1,6 @@
 # 読み検査（声を作る前）：eva_history
 
-候補 16 件（自動検出。直すかどうかは人が決める）
+候補 15 件（自動検出。直すかどうかは人が決める）
 
 | 行ID | 話者 | 種類 | 問題箇所 | 期待する読み | 検出理由 | 確度 | 音声 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -10,7 +10,6 @@
 | 02_bousou-098 | バク | 辞書と違う | 台 | ダイ | 辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/02_bousou-098.wav |
 | 03_shingeki-005 | バク | 辞書と違う | 台 | ダイ | 辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/03_shingeki-005.wav |
 | 03_shingeki-025 | バク | 辞書と違う | 別って | ベツッテ | 辞書の読み「ベツッテ」と違う（この行での OpenJTalk の読み：ワカッテ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/03_shingeki-025.wav |
-| 03_shingeki-027 | バク | 辞書と違う | 軽な | カルナ | 辞書の読み「カルナ」と違う（この行での OpenJTalk の読み：ケーナッ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/03_shingeki-027.wav |
 | 03_shingeki-053 | バク | 辞書と違う | 金かか | カネカカ | 辞書の読み「カネカカ」と違う（この行での OpenJTalk の読み：キンカカットン）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/03_shingeki-053.wav |
 | 04_togari-008 | バク | 辞書と違う | 一択 | イッタク | 辞書の読み「イッタク」と違う（この行での OpenJTalk の読み：イチヨ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/04_togari-008.wav |
 | 04_togari-028 | バク | 辞書と違う | 完成形 | カンセイケイ | 辞書の読み「カンセイケイ」と違う（この行での OpenJTalk の読み：カンセーガタ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/04_togari-028.wav |

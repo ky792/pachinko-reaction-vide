@@ -243,5 +243,20 @@
   "sha1": "d759d5076c97385fc217ea5b4fe51d0e97389293",
   "model": "large-v3-turbo",
   "text": "半分ちょいか小あたりの跡が一番ドキドキする台やった"
+ },
+ "02_bousou-032": {
+  "sha1": "b7f9135feacc1b50f605e12df4284ee7c20e2933",
+  "model": "large-v3-turbo",
+  "text": "初代よりだいぶ軽になったな"
+ },
+ "02_bousou-057": {
+  "sha1": "9c3ca3bdb0a94f3479c8b4099fa41741ad68fa73",
+  "model": "large-v3-turbo",
+  "text": "アスカがドーンや!アスカ好きにはたまらんだんやで!"
+ },
+ "03_shingeki-027": {
+  "sha1": "eb71d1dbb36d798101ff3f17316bf68aef5c8e89",
+  "model": "large-v3-turbo",
+  "text": "福音より軽になったけど、学園は下がったんか!"
  }
 }

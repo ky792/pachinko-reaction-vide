@@ -78,19 +78,6 @@
   "audio": "episodes/eva_history/voices/03_shingeki-025.wav"
  },
  {
-  "id": "03_shingeki-027",
-  "who": "baku",
-  "kind": "辞書と違う",
-  "where": "軽な",
-  "expect": "カルナ",
-  "reason": "辞書の読み「カルナ」と違う（この行での OpenJTalk の読み：ケーナッ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）",
-  "level": "低",
-  "text": "福音より軽なったけど、確変は下がったんか。",
-  "speech": "福音より軽なったけど、確変は下がったんか。",
-  "kana": "フクインヨリケーナッタケド、カクヘンワサガッタンカ。",
-  "audio": "episodes/eva_history/voices/03_shingeki-027.wav"
- },
- {
   "id": "03_shingeki-053",
   "who": "baku",
   "kind": "辞書と違う",

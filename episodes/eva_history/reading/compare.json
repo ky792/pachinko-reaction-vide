@@ -1238,5 +1238,85 @@
   "asr_after": "半分ちょいか、初当たりの後が一番ドキドキする台やった。",
   "ratio_after": 1.0,
   "issues_after": []
+ },
+ {
+  "id": "02_bousou-032",
+  "who": "baku",
+  "text": "初代よりだいぶ軽なったな。",
+  "speech_before": "初代よりだいぶかるなったな。",
+  "speech_after": "初代よりだいぶかるなったな。",
+  "kana_before": "ショダイヨリダイブカルナッタナ。",
+  "kana_after": "ショダイヨリダイブカルナッタナ。",
+  "remade": true,
+  "dur_before": 2.48,
+  "dur_after": 3.24,
+  "audio_before": "episodes/eva_history/reading/before/02_bousou-032.wav",
+  "audio_after": "episodes/eva_history/voices/02_bousou-032.wav",
+  "ab": "episodes/eva_history/reading/ab/02_bousou-032.wav",
+  "asr_before": "初代よりだいぶ軽になったな",
+  "ratio_before": 0.839,
+  "issues_before": [
+   "誤読（辞書語）：台本は「カル」、聞こえたのは「ケーニ」（辞書語「軽な」のところ）"
+  ],
+  "asr_after": "初代人よりだいぶ 悪く異なったな",
+  "ratio_after": 0.686,
+  "issues_after": [
+   "誤読：台本は「ショ」、聞こえたのは「ハツ」",
+   "余分な音：台本にない「ニン」が聞こえる",
+   "誤読（辞書語）：台本は「カ」、聞こえたのは「ワ」（辞書語「軽な」のところ）",
+   "余分な音（辞書語）：台本にない「クコト」が聞こえる（辞書語「軽な」のところ）"
+  ]
+ },
+ {
+  "id": "02_bousou-057",
+  "who": "baku",
+  "text": "アスカがドーンや。アスカ好きには、たまらん台やで。",
+  "speech_before": "アスカがドーンや。アスカ好きには、たまらんだいやで。",
+  "speech_after": "アスカがドーンや。アスカ好きには、たまらんだいやで。",
+  "kana_before": "アスカガドーンヤ。アスカズキニワ、タマランダイヤデ。",
+  "kana_after": "アスカガドーンヤ。アスカズキニワ、タマランダイヤデ。",
+  "remade": true,
+  "dur_before": 4.14,
+  "dur_after": 3.91,
+  "audio_before": "episodes/eva_history/reading/before/02_bousou-057.wav",
+  "audio_after": "episodes/eva_history/voices/02_bousou-057.wav",
+  "ab": "episodes/eva_history/reading/ab/02_bousou-057.wav",
+  "asr_before": "アスカがドーンや!アスカ好きにはたまらんだんやで!",
+  "ratio_before": 0.957,
+  "issues_before": [
+   "誤読（辞書語）：台本は「イ」、聞こえたのは「ン」（辞書語「台」のところ）"
+  ],
+  "asr_after": "アスカがドーンや!アスカ好きにはたまらんないやで!",
+  "ratio_after": 0.957,
+  "issues_after": [
+   "誤読（辞書語）：台本は「ダ」、聞こえたのは「ナ」（辞書語「台」のところ）"
+  ]
+ },
+ {
+  "id": "03_shingeki-027",
+  "who": "baku",
+  "text": "福音より軽なったけど、確変は下がったんか。",
+  "speech_before": "福音よりかるなったけど、確変は下がったんか。",
+  "speech_after": "福音よりかるなったけど、確変は下がったんか。",
+  "kana_before": "フクインヨリカルナッタケド、カクヘンワサガッタンカ。",
+  "kana_after": "フクインヨリカルナッタケド、カクヘンワサガッタンカ。",
+  "remade": true,
+  "dur_before": 3.83,
+  "dur_after": 3.89,
+  "audio_before": "episodes/eva_history/reading/before/03_shingeki-027.wav",
+  "audio_after": "episodes/eva_history/voices/03_shingeki-027.wav",
+  "ab": "episodes/eva_history/reading/ab/03_shingeki-027.wav",
+  "asr_before": "福音より軽になったけど、学園は下がったんか!",
+  "ratio_before": 0.816,
+  "issues_before": [
+   "誤読（辞書語）：台本は「カル」、聞こえたのは「ケーニ」（辞書語「軽な」のところ）",
+   "誤読（辞書語）：台本は「カ」、聞こえたのは「ガ」（辞書語「確変」のところ）",
+   "誤読（辞書語）：台本は「ヘ」、聞こえたのは「エ」（辞書語「確変」のところ）"
+  ],
+  "asr_after": "福音より軽になったけど各変は下がったんか",
+  "ratio_after": 0.898,
+  "issues_after": [
+   "誤読（辞書語）：台本は「カル」、聞こえたのは「ケーニ」（辞書語「軽な」のところ）"
+  ]
  }
 ]
