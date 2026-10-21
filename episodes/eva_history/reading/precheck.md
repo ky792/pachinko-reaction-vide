@@ -1,10 +1,9 @@
 # 読み検査（声を作る前）：eva_history
 
-候補 17 件（自動検出。直すかどうかは人が決める）
+候補 16 件（自動検出。直すかどうかは人が決める）
 
 | 行ID | 話者 | 種類 | 問題箇所 | 期待する読み | 検出理由 | 確度 | 音声 |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 03_shingeki-014 | ナギ | 要確認の語 | 集結の運命 | シュウケツノサダメ | 辞書で status=要確認。読み「シュウケツノサダメ」は人の確認待ち | 高 | episodes/eva_history/voices/03_shingeki-014.wav |
 | 01_basic-006 | バク | 辞書と違う | 打ち手 | うちて | 辞書の読み「うちて」と違う（この行での OpenJTalk の読み：ウチシュ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/01_basic-006.wav |
 | 02_bousou-027 | バク | 辞書と違う | 初号機 | ショゴウキ | 辞書の読み「ショゴウキ」と違う（この行での OpenJTalk の読み：ショゴーハタヤ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/02_bousou-027.wav |
 | 02_bousou-040 | バク | 辞書と違う | 思たら | オモタラ | 辞書の読み「オモタラ」と違う（この行での OpenJTalk の読み：オモエタラ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる） | 低 | episodes/eva_history/voices/02_bousou-040.wav |

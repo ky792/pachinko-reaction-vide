@@ -299,7 +299,18 @@
   "dur_after": 2.71,
   "audio_before": "episodes/eva_history/reading/before/02_bousou-012.wav",
   "audio_after": "episodes/eva_history/voices/02_bousou-012.wav",
-  "ab": "episodes/eva_history/reading/ab/02_bousou-012.wav"
+  "ab": "episodes/eva_history/reading/ab/02_bousou-012.wav",
+  "asr_before": "で、で、とくん、とくんや!",
+  "ratio_before": 0.706,
+  "issues_before": [
+   "誤読：台本は「ド」、聞こえたのは「デト」"
+  ],
+  "asr_after": "で、特訓、特訓、特訓や!",
+  "ratio_after": 0.545,
+  "issues_after": [
+   "誤読：台本は「ド」、聞こえたのは「トッ」",
+   "誤読：台本は「ド」、聞こえたのは「トックントッ」"
+  ]
  },
  {
   "id": "03_shingeki-050",
@@ -314,7 +325,15 @@
   "dur_after": 3.79,
   "audio_before": "episodes/eva_history/reading/before/03_shingeki-050.wav",
   "audio_after": "episodes/eva_history/voices/03_shingeki-050.wav",
-  "ab": "episodes/eva_history/reading/ab/03_shingeki-050.wav"
+  "ab": "episodes/eva_history/reading/ab/03_shingeki-050.wav",
+  "asr_before": "保留が倍あると先読みが忙し忙しいんよ",
+  "ratio_before": 0.917,
+  "issues_before": [
+   "重複：「ソガシー」がくり返し聞こえる"
+  ],
+  "asr_after": "保留が倍あると先読みが忙しいんよえ?",
+  "ratio_after": 0.978,
+  "issues_after": []
  },
  {
   "id": "04_togari-050",
@@ -329,7 +348,17 @@
   "dur_after": 2.52,
   "audio_before": "episodes/eva_history/reading/before/04_togari-050.wav",
   "audio_after": "episodes/eva_history/voices/04_togari-050.wav",
-  "ab": "episodes/eva_history/reading/ab/04_togari-050.wav"
+  "ab": "episodes/eva_history/reading/ab/04_togari-050.wav",
+  "asr_before": "冬の時代か、そっちを何で食え?",
+  "ratio_before": 0.609,
+  "issues_before": [
+   "余分な音：台本にない「ソッチオナンデクエ」が聞こえる"
+  ],
+  "asr_after": "冬の時代か!もっといいじゃん!",
+  "ratio_after": 0.636,
+  "issues_after": [
+   "余分な音：台本にない「モットイージャン」が聞こえる"
+  ]
  },
  {
   "id": "05_fuyu-081",
@@ -344,7 +373,16 @@
   "dur_after": 1.84,
   "audio_before": "episodes/eva_history/reading/before/05_fuyu-081.wav",
   "audio_after": "episodes/eva_history/voices/05_fuyu-081.wav",
-  "ab": "episodes/eva_history/reading/ab/05_fuyu-081.wav"
+  "ab": "episodes/eva_history/reading/ab/05_fuyu-081.wav",
+  "asr_before": "くるるで?うくるで?",
+  "ratio_before": 0.429,
+  "issues_before": [
+   "余分な音：台本にない「クルルデウ」が聞こえる",
+   "脱落：台本の「クルデ」が聞こえない"
+  ],
+  "asr_after": "来るで?来るで?",
+  "ratio_after": 1.0,
+  "issues_after": []
  },
  {
   "id": "06_vst-023",
@@ -359,7 +397,17 @@
   "dur_after": 4.02,
   "audio_before": "episodes/eva_history/reading/before/06_vst-023.wav",
   "audio_after": "episodes/eva_history/voices/06_vst-023.wav",
-  "ab": "episodes/eva_history/reading/ab/06_vst-023.wav"
+  "ab": "episodes/eva_history/reading/ab/06_vst-023.wav",
+  "asr_before": "方向や!これはもう歴史に残る信頼やで!",
+  "ratio_before": 0.87,
+  "issues_before": [
+   "誤読（辞書語）：台本は「カミダ」、聞こえたのは「シンラ」（辞書語「台」のところ）"
+  ],
+  "asr_after": "ほうこうや!これはもう、歴史に残る神代やで!",
+  "ratio_after": 0.933,
+  "issues_after": [
+   "誤読（辞書語）：台本は「ダイ」、聞こえたのは「ヨ」（辞書語「台」のところ）"
+  ]
  },
  {
   "id": "06_vst-034",
@@ -374,7 +422,16 @@
   "dur_after": 4.35,
   "audio_before": "episodes/eva_history/reading/before/06_vst-034.wav",
   "audio_after": "episodes/eva_history/voices/06_vst-034.wav",
-  "ab": "episodes/eva_history/reading/ab/06_vst-034.wav"
+  "ab": "episodes/eva_history/reading/ab/06_vst-034.wav",
+  "asr_before": "原作は私ら一体がパチンコで動いとるんや",
+  "ratio_before": 0.778,
+  "issues_before": [
+   "誤読：台本は「ファンデモ」、聞こえたのは「ワワタ」",
+   "誤読：台本は「ンキ」、聞こえたのは「イッ」"
+  ],
+  "asr_after": "原作ファンでも知らん機体がパチンコで動いとるんや",
+  "ratio_after": 1.0,
+  "issues_after": []
  },
  {
   "id": "03_shingeki-014",
@@ -390,6 +447,191 @@
   "audio_before": "episodes/eva_history/reading/before/03_shingeki-014.wav",
   "audio_after": "episodes/eva_history/voices/03_shingeki-014.wav",
   "ab": "episodes/eva_history/reading/ab/03_shingeki-014.wav",
-  "engine_kana_after": "オオアタリノキョクモフエタ.シュウケツノサダメニ,ツバサオクダサイ."
+  "engine_kana_after": "オオアタリノキョクモフエタ.シュウケツノサダメニ,ツバサオクダサイ.",
+  "asr_before": "お渡りの曲も増えた。終結の定めに翼をください。",
+  "ratio_before": 0.951,
+  "issues_before": [
+   "誤読（辞書語）：台本は「ーア」、聞こえたのは「ワ」（辞書語「大当たり」のところ）"
+  ],
+  "asr_after": "お当たりの曲も増えた。集結のサバメに翼をください。",
+  "ratio_after": 0.951,
+  "issues_after": [
+   "脱落（辞書語）：台本の「ー」が聞こえない（辞書語「大当たり」のところ）",
+   "誤読（辞書語）：台本は「ダ」、聞こえたのは「バ」（辞書語「集結の運命」のところ）"
+  ]
+ },
+ {
+  "id": "00_op-001",
+  "who": "baku",
+  "text": "ナギ！エヴァのRED、打ってきたで！",
+  "speech_before": "ナギ！エヴァのレッド、打ってきたで！",
+  "speech_after": "ナギ！エヴァのレッド、打ってきたで！",
+  "kana_before": "ナギ！エバノレッド、ウッテキタデ！",
+  "kana_after": "ナギ！エバノレッド、ウッテキタデ！",
+  "remade": true,
+  "dur_before": 3.52,
+  "dur_after": 2.72,
+  "audio_before": "episodes/eva_history/reading/before/00_op-001.wav",
+  "audio_after": "episodes/eva_history/voices/00_op-001.wav",
+  "ab": "episodes/eva_history/reading/ab/00_op-001.wav",
+  "asr_before": "ナギ、エヴァの寝台が入るで!レッドやって!",
+  "ratio_before": 0.606,
+  "issues_before": [
+   "余分な音：台本にない「ネダイガハイルデ」が聞こえる",
+   "脱落：台本の「キタデ」が聞こえない"
+  ],
+  "asr_after": "ナギ、エヴァのレッド、売ってきたで!",
+  "ratio_after": 1.0,
+  "issues_after": []
+ },
+ {
+  "id": "00_op-002",
+  "who": "nagi",
+  "text": "また初日に並んだの。",
+  "speech_before": "また初日に並んだの。",
+  "speech_after": "また初日に並んだの。",
+  "kana_before": "マタショニチニナランダノ。",
+  "kana_after": "マタショニチニナランダノ。",
+  "remade": true,
+  "dur_before": 1.77,
+  "dur_after": 1.78,
+  "audio_before": "episodes/eva_history/reading/before/00_op-002.wav",
+  "audio_after": "episodes/eva_history/voices/00_op-002.wav",
+  "ab": "episodes/eva_history/reading/ab/00_op-002.wav",
+  "engine_kana_after": "マタショニチニナランダノ.",
+  "asr_before": "また初日に並ぶの",
+  "ratio_before": 0.87,
+  "issues_before": [
+   "誤読：台本は「ンダ」、聞こえたのは「ブ」"
+  ],
+  "asr_after": "また初日に並んだの",
+  "ratio_after": 1.0,
+  "issues_after": []
+ },
+ {
+  "id": "00_op-009",
+  "who": "baku",
+  "text": "次打つ前に、エヴァの歴史おさらいや！",
+  "speech_before": "次打つ前に、エヴァの歴史おさらいや！",
+  "speech_after": "次打つ前に、エヴァの歴史おさらいや！",
+  "kana_before": "ツギウツマエニ、エバノレキシオサライヤ！",
+  "kana_after": "ツギウツマエニ、エバノレキシオサライヤ！",
+  "remade": true,
+  "dur_before": 3.04,
+  "dur_after": 2.99,
+  "audio_before": "episodes/eva_history/reading/before/00_op-009.wav",
+  "audio_after": "episodes/eva_history/voices/00_op-009.wav",
+  "ab": "episodes/eva_history/reading/ab/00_op-009.wav",
+  "asr_before": "レッド撃つ前にエヴァの歴史をさらいや!",
+  "ratio_before": 0.811,
+  "issues_before": [
+   "誤読：台本は「ツギウ」、聞こえたのは「レッドー」"
+  ],
+  "asr_after": "次撃つ前にエヴァの歴史をさらいや!",
+  "ratio_after": 1.0,
+  "issues_after": []
+ },
+ {
+  "id": "07_lt-020",
+  "who": "nagi",
+  "text": "台は2026年2月、エヴァ30周年の展示で、歴代の実機と並んだ。",
+  "speech_before": "台は2026年2月、エヴァ30周年の展示で、歴代の実機と並んだ。",
+  "speech_after": "台は2026年2月、エヴァ30周年の展示で、歴代の実機と並んだ。",
+  "kana_before": "ダイワニセンニジューロクネンニガツ、エバサンジュッシューネンノテンジデ、レキダイノジッキトナランダ。",
+  "kana_after": "ダイワニセンニジューロクネンニガツ、エバサンジュッシューネンノテンジデ、レキダイノジッキトナランダ。",
+  "remade": true,
+  "dur_before": 6.38,
+  "dur_after": 6.84,
+  "audio_before": "episodes/eva_history/reading/before/07_lt-020.wav",
+  "audio_after": "episodes/eva_history/voices/07_lt-020.wav",
+  "ab": "episodes/eva_history/reading/ab/07_lt-020.wav",
+  "engine_kana_after": "ダイワニセンニジュウロクネンニガツ,エバサンジュッシュウネンノテンジデ,レキダイノジッキトナランダ.",
+  "asr_before": "題は今年の2月、レバ30周年の展示で歴代の実機と並んだ。",
+  "ratio_before": 0.805,
+  "issues_before": [
+   "誤読：台本は「ニセンニジューロクネン」、聞こえたのは「コトシノ」"
+  ],
+  "asr_after": "台は2026年2月、レバ30周年の展示で歴代の実機と並んだ。",
+  "ratio_after": 0.979,
+  "issues_after": []
+ },
+ {
+  "id": "07_lt-028",
+  "who": "nagi",
+  "text": "そして2026年10月、RED。ALL1500で、PVではSPECIAL IMPACT MODEと覚醒モードが出てる。",
+  "speech_before": "そして2026年10月、レッド。オール1500で、ピーブイではスペシャル インパクト モードと覚醒モードが出てる。",
+  "speech_after": "そして2026年10月、レッド。オール1500で、ピーブイではスペシャル インパクト モードと覚醒モードが出てる。",
+  "kana_before": "ソシテニセンニジューロクネンジューガツ、レッド。オールセンゴヒャクデ、ピーブイデワスペシャルインパクトモードトカクセーモードガデテル。",
+  "kana_after": "ソシテニセンニジューロクネンジューガツ、レッド。オールセンゴヒャクデ、ピーブイデワスペシャルインパクトモードトカクセーモードガデテル。",
+  "remade": true,
+  "dur_before": 9.09,
+  "dur_after": 10.26,
+  "audio_before": "episodes/eva_history/reading/before/07_lt-028.wav",
+  "audio_after": "episodes/eva_history/voices/07_lt-028.wav",
+  "ab": "episodes/eva_history/reading/ab/07_lt-028.wav",
+  "engine_kana_after": "ソシテニセンニジュウロクネンジュウガツ,レッド.オオル'イチゴオゼロゼロデ,ピイブイデワスペシャルインパクトモオドトカクセエモオドガデテル.",
+  "asr_before": "そして、今の寝台がレッド。オール1500で、TVではスペシャルインパクトモードと覚醒モードが出てる。",
+  "ratio_before": 0.776,
+  "issues_before": [
+   "誤読：台本は「ニセンニジューロク」、聞こえたのは「イマノ」",
+   "誤読：台本は「ンジュー」、聞こえたのは「ダイ」",
+   "誤読：台本は「ピーブイ」、聞こえたのは「テレビ」"
+  ],
+  "asr_after": "そして2026年中月、ネット、オール1500で、ギブイではスケシャルインパクトモードと覚醒モードが出てる。",
+  "ratio_after": 0.896,
+  "issues_after": [
+   "誤読：台本は「レ」、聞こえたのは「キネ」",
+   "誤読：台本は「ピー」、聞こえたのは「ギ」",
+   "誤読（辞書語）：台本は「ペ」、聞こえたのは「ケ」（辞書語「SPECIAL」のところ）"
+  ]
+ },
+ {
+  "id": "07_lt-035",
+  "who": "nagi",
+  "text": "導入は約1万5000台。",
+  "speech_before": "導入は約1万5000台。",
+  "speech_after": "導入は約1万5000台。",
+  "kana_before": "ドーニューワヤクイチマンゴセンダイ。",
+  "kana_after": "ドーニューワヤクイチマンゴセンダイ。",
+  "remade": true,
+  "dur_before": 2.65,
+  "dur_after": 2.17,
+  "audio_before": "episodes/eva_history/reading/before/07_lt-035.wav",
+  "audio_after": "episodes/eva_history/voices/07_lt-035.wav",
+  "ab": "episodes/eva_history/reading/ab/07_lt-035.wav",
+  "engine_kana_after": "ドオニュウワヤクイチマンゴセンダイ.",
+  "asr_before": "導入は約1万5000台の予定",
+  "ratio_before": 0.895,
+  "issues_before": [
+   "余分な音：台本にない「ノヨテー」が聞こえる"
+  ],
+  "asr_after": "導入は約1万5千台",
+  "ratio_after": 1.0,
+  "issues_after": []
+ },
+ {
+  "id": "99_ed-003",
+  "who": "baku",
+  "text": "REDも、もちろん打ちに行くで！",
+  "speech_before": "レッドも、もちろん打ちに行くで！",
+  "speech_after": "レッドも、もちろん打ちに行くで！",
+  "kana_before": "レッドモ、モチロンウチニイクデ！",
+  "kana_after": "レッドモ、モチロンウチニイクデ！",
+  "remade": true,
+  "dur_before": 3.79,
+  "dur_after": 2.4,
+  "audio_before": "episodes/eva_history/reading/before/99_ed-003.wav",
+  "audio_after": "episodes/eva_history/voices/99_ed-003.wav",
+  "ab": "episodes/eva_history/reading/ab/99_ed-003.wav",
+  "asr_before": "今の寝台のレッドももちろん初日に打ってくるで",
+  "ratio_before": 0.6,
+  "issues_before": [
+   "余分な音：台本にない「イマノネダイノ」が聞こえる",
+   "誤読：台本は「ウ」、聞こえたのは「ショニ」",
+   "誤読：台本は「ー」、聞こえたのは「ウッテ」"
+  ],
+  "asr_after": "レッドももちろん打ちに行くで",
+  "ratio_after": 1.0,
+  "issues_after": []
  }
 ]
