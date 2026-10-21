@@ -1,0 +1,27 @@
+# OP：寸劇 → OP曲（op_rock）→ キャラ紹介 → タイトル（エヴァ回と同じ型）
+@skit on
+@dir act=jump
+バク: ナギ！牙狼剣が飛び出したで！
+@dir act=sweat
+ナギ: 当たったの。
+@dir act=shock
+バク: それがハズれてん。剣まで出たのに！
+ナギ: 牙狼剣は、出てもハズれることがある演出。
+@dir act=lean
+バク: 知っとるわ！知っとるけど悔しいんや！
+@dir act=lean
+ナギ: じゃあ聞くけど。初代の牙狼って、どんな仕組みだったか覚えてる？
+@dir act=tilt
+バク: 魔戒チャンスやろ？入ったら止まらんやつ。
+ナギ: そう。突入50%、継続82%。その形が18年で何回も変わって、また戻ってくる。
+@dir act=shock
+バク: 戻ってくるん！？
+ナギ: 今日は、牙狼の18年を全部見る。
+@dir act=jump
+バク: よっしゃ、金色になるまで付き合うで！
+@skit off
+@song op_rock.wav gain=0.6 len=12
+@intro nagi
+@intro baku
+@logo history.png 3.6
+@title 4.0
