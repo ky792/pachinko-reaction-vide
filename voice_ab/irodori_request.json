@@ -5,7 +5,7 @@
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "garo_fix_s11",
+   "name": "garo2_baku_s11",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -16,18 +16,7 @@
    ]
   },
   {
-   "name": "garo_fix_s23",
-   "ref": "voice_ab/vc_out/ref__からかい.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
-   "extra": [
-    "--duration-scale",
-    "0.88",
-    "--seed",
-    "23"
-   ]
-  },
-  {
-   "name": "garo_fix_s37",
+   "name": "garo2_baku_s37",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -39,11 +28,36 @@
   }
  ],
  "only": [
-  "00_op-005",
-  "02_kaisen-034",
-  "04_after-003",
-  "04_after-005",
-  "04_after-016",
-  "05_kaiki-010"
+  "00_op-008",
+  "00_op-010",
+  "00_op-011",
+  "00_op-013",
+  "00_op-015",
+  "01_basic-008",
+  "01_basic-010",
+  "02_kaisen-009",
+  "02_kaisen-024",
+  "02_kaisen-027",
+  "02_kaisen-037",
+  "02_kaisen-039",
+  "03_konjiki-005",
+  "03_konjiki-014",
+  "03_konjiki-016",
+  "03_konjiki-018",
+  "03_konjiki-021",
+  "03_konjiki-029",
+  "03_konjiki-040",
+  "04_after-002",
+  "04_after-024",
+  "04_after-026",
+  "05_kaiki-002",
+  "05_kaiki-013",
+  "05_kaiki-022",
+  "06_lt-003",
+  "06_lt-009",
+  "06_lt-014",
+  "07_matome-011",
+  "07_matome-013",
+  "07_matome-015"
  ]
 }
