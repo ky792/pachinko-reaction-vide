@@ -844,3 +844,82 @@ def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal"):
     y = fy - (img.height - 30) + bob
     canvas.alpha_composite(img, (int(x), int(y)))
     return lambda px, py: (x + 20 + px * s, y + py * s)
+
+
+# ---------------------------------------------------------------- 再現演出：暴走の入り（オマージュ）
+_SERIF = ("NotoSerifCJK-Black.ttc", "NotoSerifCJK-Bold.ttc")
+_FX = {}
+FX_RED = (214, 28, 36)
+
+
+def serif(size):
+    for d in _FONT_DIRS:
+        for name in _SERIF:
+            if (d / name).exists():
+                return ImageFont.truetype(str(d / name), size, index=0)
+    return font("black", size)
+
+
+def _bousou_text():
+    """「まさか、暴走？」の白い明朝（縦に長く見えるよう横を詰める）と、赤いにじみ"""
+    if "t" not in _FX:
+        txt, f = "まさか、暴走？", serif(168)
+        w = int(text_w(txt, f)) + 80
+        im = Image.new("RGBA", (w, 260), (0, 0, 0, 0))
+        ImageDraw.Draw(im).text((w / 2, 130), txt, font=f, fill=(255, 255, 255, 255), anchor="mm")
+        im = im.resize((int(w * 0.74), 260), Image.LANCZOS)
+        glow = Image.new("RGBA", im.size, FX_RED + (0,))
+        glow.putalpha(im.getchannel("A").filter(ImageFilter.GaussianBlur(16)))
+        pad = Image.new("RGBA", (im.width + 120, im.height + 120), (0, 0, 0, 0))
+        g = pad.copy(); g.alpha_composite(glow, (60, 60)); g = g.filter(ImageFilter.GaussianBlur(10))
+        t = pad.copy(); t.alpha_composite(im, (60, 60))
+        _FX["t"], _FX["g"] = t, g
+    return _FX["t"], _FX["g"]
+
+
+def _edge_red():
+    if "e" not in _FX:
+        yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+        r = np.sqrt(((xx - W / 2) / (W / 2)) ** 2 + ((yy - H / 2) / (H / 2)) ** 2) / 1.35
+        a = np.clip((r - 0.45) / 0.55, 0, 1) ** 1.8
+        g = np.zeros((H, W, 4), np.uint8)
+        g[..., :3] = FX_RED
+        g[..., 3] = (a * 200).astype(np.uint8)
+        _FX["e"] = Image.fromarray(g, "RGBA")
+    return _FX["e"]
+
+
+def bousou_fx(canvas, t, fx):
+    """ボタン → 暗転 → 「まさか、暴走？」が瞬いて出る → 鼓動に合わせて脈打つ → 戻る。字幕は上に重ねる"""
+    out = 1 - ease_in_out(prog(t, fx["end"], 0.6))
+    black = ease_out(prog(t, fx["dark"], 0.18)) * out
+    if black <= 0:
+        return
+    canvas.alpha_composite(Image.new("RGBA", (W, H), (0, 0, 0, int(255 * black))))
+    tl = t - fx["text"]
+    if tl < 0:
+        return
+    on = tl >= 0.22 or (0.0 <= tl < 0.05) or (0.10 <= tl < 0.16)   # 2回瞬いてから点く
+    beats = [fx["text"] + 0.15 + 0.85 * k for k in range(3)]
+    pulse = max((math.exp(-(t - b) / 0.22) for b in beats if t >= b), default=0.0)
+    # 周りの赤い脈
+    if pulse > 0.02:
+        canvas.alpha_composite(fade(_edge_red(), 0.55 * pulse * out))
+    if not on:
+        return
+    txt, glow = _bousou_text()
+    s = (1.0 + 0.035 * ease_out(prog(tl, 0.22, 2.4))) * (1 + 0.03 * pulse)
+    def put(im, a):
+        if a <= 0:
+            return
+        im2 = im.resize((int(im.width * s), int(im.height * s)), Image.BICUBIC) if abs(s - 1) > 1e-3 else im
+        paste(canvas, im2, (W / 2 - im2.width / 2, 430 - im2.height / 2), a)
+    put(glow, (0.55 + 0.45 * pulse) * out)
+    put(txt, out)
+    # 上下の細い赤線が左右に伸びる
+    k = ease_out(prog(tl, 0.25, 0.5)) * out
+    if k > 0:
+        d = ImageDraw.Draw(canvas)
+        half = 560 * k
+        for y in (300, 560):
+            d.rectangle((W / 2 - half, y, W / 2 + half, y + 2), fill=FX_RED + (int(255 * k),))

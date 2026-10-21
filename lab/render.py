@@ -296,6 +296,9 @@ def render_frame(scene, t, images):
             ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t))
             dim = (1 - 0.5 * fk if fw and c != fw else 1.0) * (1 - 0.45 * hk if who and c != who else 1.0)
             ui.paste(cv, lay, (0, 0), a * dim)
+    for fx in scene.get("fx", []):            # 再現演出（キャラの上・字幕の下）
+        if fx["btn"] <= t < fx["end"] + 0.6 and fx["kind"] == "bousou":
+            ui.bousou_fx(cv, t, fx)
     cv.alpha_composite(over)
     return cv.convert("RGB")
 

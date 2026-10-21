@@ -69,7 +69,7 @@ def parse_script(path):
 
 # @dir の値の範囲（直後の1セリフだけに効く演出）
 DIR_RANGE = {"pre": (0, 2), "post": (0, 2), "speed": (0.7, 1.4), "int": (0.5, 1.6), "vol": (0.5, 1.2)}
-DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail", "act", "hiki")
+DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail", "act", "hiki", "fx")
 
 
 def parse_dir(arg, name="台本"):
@@ -183,7 +183,8 @@ def build_chapter(ep_dir, script_path, data):
     items = parse_script(script_path)
     scene = {"duration": 0, "cues": [], "layout": [], "subs": [], "emphasis": [], "se": [],
              "year_track": [], "voices": [], "lines": [], "motion": {"camera": [], "elements": []},
-             "focus": [], "bgm_track": [], "acts": [], "songs": [], "faces": [], "hiki": []}
+             "focus": [], "bgm_track": [], "acts": [], "songs": [], "faces": [], "hiki": [], "fx": []}
+    fx = None           # 再現演出の途中（@dir fx=bousou）：次のセリフの終わりまで続ける
     hiki = None         # ヒキの演出中（@dir hiki=<行数>）：{"start", "left", "duck"}
     directed = any(it.get("dir") for it in items if it["cmd"] == "line")   # @dir がある章だけ新しい間の付け方
     t = 0.25
@@ -358,9 +359,29 @@ def build_chapter(ep_dir, script_path, data):
                 scene["emphasis"].append({"who": "baku", "start": t, "end": t + dur, "scale": 1.08})
                 if not dr.get("se"):
                     scene["se"].append({"t": t, "kind": "piko", "gain": 0.18})
+            if dr.get("fx") == "bousou" and fx is None:
+                # @dir fx=bousou … 「ボタンを押すと暗転して、『まさか、暴走？』」を画面で再現（オマージュ）。
+                # セリフの中の言葉の位置（文字数の割合）に合わせて、押す→暗転→文字が出る。次のセリフの終わりまで続ける
+                txt = it["text"]
+                def at(word, default):
+                    i = txt.find(word)
+                    return round(t + dur * (i / max(len(txt), 1) if i >= 0 else default), 3)
+                fx = {"kind": "bousou", "btn": at("ボタン", 0.4), "dark": at("暗転", 0.6), "text": at("まさか", 0.75), "left": 2}
+                scene["se"].append({"t": fx["btn"], "kind": "pon", "gain": 0.22})
+                scene["se"].append({"t": fx["dark"], "kind": "shu", "gain": 0.12})
+                for k in range(3):   # ドクン、ドクン…（2拍＋余韻）
+                    scene["se"].append({"t": round(fx["text"] + 0.15 + 0.85 * k, 3), "kind": "heartbeat", "gain": 0.55 - 0.12 * k})
+                scene["bgm_track"].append({"t": fx["dark"], "level": 0.0, "dur": 0.15})
             if hiki is not None and hiki.pop("first", False):
                 scene["se"].append({"t": t, "kind": "don", "gain": 0.16})   # ヒキのセリフの頭に低い一打
             t += dur + (dr.get("post", 0) + 0.05 if directed else GAP)
+            if fx is not None:
+                fx["left"] -= 1
+                if fx["left"] <= 0:
+                    fx["end"] = round(t, 3); fx.pop("left")
+                    scene["fx"].append(fx)
+                    scene["bgm_track"].append({"t": round(t + 0.2, 3), "level": 1.0, "dur": 0.9})
+                    fx = None
             if hiki is not None:
                 hiki["left"] -= 1
                 if hiki["left"] <= 0:
@@ -368,6 +389,8 @@ def build_chapter(ep_dir, script_path, data):
                     if hiki["duck"]:
                         scene["bgm_track"].append({"t": round(t, 3), "level": 1.0, "dur": 0.8})
                     hiki = None
+    if fx is not None:
+        fx["end"] = round(t + 0.6, 3); fx.pop("left"); scene["fx"].append(fx)
     if hiki is not None:      # 章の終わりまで続いたヒキ（章の最後の一言など）
         scene["hiki"].append({"start": hiki["start"], "end": round(t + 0.6, 3)})
     close_cur(t)
@@ -411,6 +434,24 @@ def load_data(ep):
 
 
 # ---------------------------------------------------------------- 書き出し
+LAB_SE = ("heartbeat",)
+
+
+def lab_se(kind):
+    """研究所シリーズだけで使う効果音（その場で合成。著作権フリー）"""
+    if kind == "heartbeat":   # ドクン：低い2打（ドッ・クン）
+        n = int(0.7 * SR); t = np.arange(n) / SR
+        def thump(t0, f0, amp):
+            tt = np.clip(t - t0, 0, None)
+            f = f0 * np.exp(-tt * 9) + 38
+            ph = 2 * np.pi * np.cumsum(f) / SR
+            e = np.where(t >= t0, np.clip(tt / 0.006, 0, 1) * np.exp(-tt / 0.11), 0)
+            return np.sin(ph) * e * amp
+        x = thump(0.0, 95, 1.0) + thump(0.21, 80, 0.75)
+        return (np.tanh(x * 1.6) / np.tanh(1.6)).astype(np.float32)
+    return None
+
+
 def mix_chapter_audio(scene, out_wav):
     """効果音＋（あれば）声。BGMは結合後に通しでかける"""
     sys.path.insert(0, str(ui.ROOT / "reaction"))
@@ -418,7 +459,7 @@ def mix_chapter_audio(scene, out_wav):
     n = int(scene["duration"] * SR) + SR
     mix = np.zeros(n, np.float32)
     for s in scene["se"]:
-        x = synth_se(s["kind"])
+        x = lab_se(s["kind"]) if s["kind"] in LAB_SE else synth_se(s["kind"])
         if x is None:
             continue
         a = int(s["t"] * SR)
