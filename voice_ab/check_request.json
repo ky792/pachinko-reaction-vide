@@ -1,10 +1,5 @@
 {
- "episode": "episodes/eva_history",
+ "episode": "episodes/_takes_baku",
  "model": "large-v3-turbo",
- "_run": "karu",
- "only": [
-  "02_bousou-032",
-  "02_bousou-057",
-  "03_shingeki-027"
- ]
+ "_run": "takes"
 }
