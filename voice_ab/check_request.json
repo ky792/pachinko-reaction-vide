@@ -1,1 +1,13 @@
-{"episode": "episodes/eva_history", "model": "large-v3-turbo"}
+{
+ "episode": "episodes/eva_history",
+ "model": "large-v3-turbo",
+ "only": [
+  "00_op-001",
+  "00_op-002",
+  "00_op-009",
+  "07_lt-020",
+  "07_lt-028",
+  "07_lt-035",
+  "99_ed-003"
+ ]
+}
