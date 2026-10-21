@@ -339,7 +339,7 @@
  },
  "machine": {
   "garo_xx": {
-   "image": "garo_xx.jpg",
+   "image": "garo_xx.png",
    "name": "CR牙狼XX",
    "sub": "サンセイR&D ｜ 2008年11月導入",
    "rows": [
@@ -363,7 +363,7 @@
    ]
   },
   "garo_red": {
-   "image": "garo_red.jpg",
+   "image": "garo_red.png",
    "name": "CR牙狼〜RED REQUIEM〜",
    "sub": "サンセイR&D ｜ 2010年12月導入",
    "rows": [
@@ -387,7 +387,7 @@
    ]
   },
   "garo_senki": {
-   "image": "garo_senki.jpg",
+   "image": "garo_senki.png",
    "name": "CR牙狼魔戒閃騎鋼",
    "sub": "サンセイR&D ｜ 2012年3月導入",
    "rows": [
@@ -411,7 +411,7 @@
    ]
   },
   "garo_final": {
-   "image": "garo_final.jpg",
+   "image": "garo_final.png",
    "name": "CR牙狼FINAL",
    "sub": "サンセイR&D ｜ 2013年5月導入",
    "rows": [
@@ -435,7 +435,7 @@
    ]
   },
   "garo_konjiki": {
-   "image": "garo_konjiki.jpg",
+   "image": "garo_konjiki.png",
    "name": "CR牙狼金色になれ",
    "sub": "サンセイR&D ｜ 2014年7月導入",
    "rows": [
@@ -459,7 +459,7 @@
    ]
   },
   "garo_hana": {
-   "image": "garo_hana.jpg",
+   "image": "garo_hana.png",
    "name": "CR牙狼魔戒ノ花",
    "sub": "サンセイR&D ｜ 2015年10月導入",
    "rows": [
@@ -507,7 +507,7 @@
    ]
   },
   "garo_sho": {
-   "image": "garo_sho.jpg",
+   "image": "garo_sho.png",
    "name": "CR牙狼GOLDSTORM翔",
    "sub": "サンセイR&D ｜ 2017年7月導入",
    "rows": [
@@ -531,7 +531,7 @@
    ]
   },
   "garo_koga": {
-   "image": "garo_koga.jpg",
+   "image": "garo_koga.png",
    "name": "P牙狼 冴島鋼牙XX",
    "sub": "サンセイR&D ｜ 2019年7月導入",
    "rows": [
@@ -555,7 +555,7 @@
    ]
   },
   "garo_shin": {
-   "image": "garo_shin.jpg",
+   "image": "garo_shin.png",
    "name": "P真・牙狼",
    "sub": "サンセイR&D ｜ 2020年10月導入",
    "rows": [
@@ -579,7 +579,7 @@
    ]
   },
   "garo_gekko": {
-   "image": "garo_gekko.jpg",
+   "image": "garo_gekko.png",
    "name": "P牙狼月虹ノ旅人",
    "sub": "サンセイR&D ｜ 2021年6月導入",
    "rows": [
@@ -603,7 +603,7 @@
    ]
   },
   "garo_gi": {
-   "image": "garo_gi.jpg",
+   "image": "garo_gi.png",
    "name": "P牙狼GOLD IMPACT",
    "sub": "サンセイR&D ｜ 2023年1月導入",
    "rows": [
@@ -627,7 +627,7 @@
    ]
   },
   "garo11": {
-   "image": "garo11.jpg",
+   "image": "garo11.png",
    "name": "P牙狼11〜冴島大河〜XX",
    "sub": "サンセイR&D ｜ 2024年4月導入",
    "rows": [
@@ -651,7 +651,7 @@
    ]
   },
   "garo_3000": {
-   "image": "garo_3000.jpg",
+   "image": "garo_3000.png",
    "name": "e牙狼 神速神撃3000LT",
    "sub": "サンセイR&D ｜ 2025年4月導入",
    "rows": [
@@ -675,7 +675,7 @@
    ]
   },
   "garo12": {
-   "image": "garo12.jpg",
+   "image": "garo12.png",
    "name": "e牙狼12 黄金騎士極限",
    "sub": "サンセイR&D ｜ 2025年8月導入",
    "rows": [
@@ -699,7 +699,7 @@
    ]
   },
   "garo11_burst": {
-   "image": "garo11_burst.jpg",
+   "image": "garo11_burst.png",
    "name": "e牙狼11〜冴島大河〜魔戒BURST Ver.",
    "sub": "サンセイR&D ｜ 2026年3月導入",
    "rows": [

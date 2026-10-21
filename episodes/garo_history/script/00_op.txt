@@ -1,6 +1,6 @@
 # OP：寸劇 → OP曲（op_rock）→ キャラ紹介 → タイトル（エヴァ回と同じ型）
 @skit on
-@dir act=jump
+@dir act=jump fx=garo_ken
 バク: ナギ！牙狼剣が飛び出したで！
 @dir act=sweat
 ナギ: 当たったの。
