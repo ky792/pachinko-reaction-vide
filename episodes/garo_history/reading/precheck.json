@@ -1,6 +1,6 @@
 [
  {
-  "id": "02_kaisen-010",
+  "id": "02_kaisen-012",
   "who": "nagi",
   "kind": "小数",
   "where": "3.8",
@@ -10,10 +10,10 @@
   "text": "平均の連チャンは3.8回、って資料もある。",
   "speech": "平均の連チャンは3.8回、って資料もある。",
   "kana": "ヘーキンノレンチャンワサンテンハチカイ、ッテシリョーモアル。",
-  "audio": "episodes/garo_history/voices/02_kaisen-010.wav"
+  "audio": "episodes/garo_history/voices/02_kaisen-012.wav"
  },
  {
-  "id": "04_after-007",
+  "id": "04_after-009",
   "who": "nagi",
   "kind": "小数",
   "where": "13.3",
@@ -23,19 +23,6 @@
   "text": "17インチと13.3インチ、2枚の液晶を縦に使う大画面。",
   "speech": "17インチと13.3インチ、2枚の液晶を縦に使う大画面。",
   "kana": "ジューナナインチトジューサンテンサンインチ、ニマイノエキショーヲタテニツカウダイガメン。",
-  "audio": "episodes/garo_history/voices/04_after-007.wav"
- },
- {
-  "id": "03_konjiki-016",
-  "who": "baku",
-  "kind": "辞書と違う",
-  "where": "台",
-  "expect": "ダイ",
-  "reason": "辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）",
-  "level": "低",
-  "text": "台ごと揺れるやつや。隣の人までビクッとしとったで。",
-  "speech": "台ごと揺れるやつや。隣の人までビクッとしとったで。",
-  "kana": "タイゴトユレルヤツヤ。トナリノヒトマデビクットシトッタデ。",
-  "audio": "episodes/garo_history/voices/03_konjiki-016.wav"
+  "audio": "episodes/garo_history/voices/04_after-009.wav"
  }
 ]
