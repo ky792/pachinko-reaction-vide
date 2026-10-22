@@ -1,14 +1,8 @@
 {
  "episode": "episodes/garo_history",
  "model": "large-v3-turbo",
- "_run": "garo-v2-s37",
+ "_run": "garo-v2-s53",
  "only": [
-  "01_basic-010",
-  "03_konjiki-005",
-  "03_konjiki-029",
-  "03_konjiki-040",
-  "07_matome-013",
-  "04_after-024",
-  "00_op-008"
+  "03_konjiki-005"
  ]
 }
