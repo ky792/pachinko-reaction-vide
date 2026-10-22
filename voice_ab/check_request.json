@@ -1,8 +1,5 @@
 {
  "episode": "episodes/garo_history",
  "model": "large-v3-turbo",
- "_run": "garo-v2-s53cut",
- "only": [
-  "03_konjiki-005"
- ]
+ "_run": "garo-v2-final"
 }
