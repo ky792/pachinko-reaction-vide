@@ -1346,6 +1346,35 @@ def _fog_parts():
     gem = Image.new("L", (S, S), 0); ImageDraw.Draw(gem).polygon([(c, c - 58), (c + 38, c), (c, c + 58), (c - 38, c)], fill=255)
     core.alpha_composite(_metal(gem, (255, 70, 50), 5))
     P["core"] = core
+    # 狼の顔（オリジナルの紋章）：左右に割った2枚と、目
+    def mir(pts):
+        return pts + [(-x, y) for x, y in reversed(pts)]
+    head = [(0, -125), (-58, -112), (-128, -205), (-152, -66), (-170, 6), (-200, 58), (-156, 66), (-176, 112), (-104, 134),
+            (-120, 168), (-58, 160), (-30, 196), (0, 205)]
+    m = Image.new("L", (S, S), 0); d = ImageDraw.Draw(m)
+    d.polygon([(c + x, c + y) for x, y in mir(head)], fill=255)
+    for sx in (-1, 1):                                                   # 彫り（暗い溝）
+        d.polygon([(c + sx * x, c + y) for x, y in ((-112, -168), (-134, -78), (-74, -104))], fill=70)          # 耳の内側
+        d.polygon([(c + sx * x, c + y) for x, y in ((-16, -70), (-120, -48), (-150, -20), (-108, -38))], fill=90)  # 眉
+        d.polygon([(c + sx * x, c + y) for x, y in ((-118, -40), (-36, -4), (-44, 14), (-110, -16))], fill=40)    # 目の穴（吊り目）
+        d.line([(c + sx * -30, c + 20), (c + sx * -22, c + 110)], fill=110, width=8)                             # 鼻すじ
+        d.line([(c + sx * -150, c + 40), (c + sx * -70, c + 70), (c + sx * -40, c + 130)], fill=120, width=6)     # 頬の毛並み
+    d.polygon([(c - 6, c - 110), (c + 6, c - 110), (c + 14, c - 60), (c, c - 40), (c - 14, c - 60)], fill=150)    # 額の印
+    d.polygon([(c - 30, c + 116), (c + 30, c + 116), (c, c + 150)], fill=30)                                     # 鼻
+    wolf = _metal(m, (255, 206, 80), 7)
+    shade = np.asarray(m, np.float32) / 255                              # 溝の濃さを暗さに反映
+    arr = np.asarray(wolf).astype(np.float32)
+    arr[..., :3] *= np.clip(0.35 + 0.65 * shade, 0, 1)[..., None] ** 0.8
+    arr[..., 3] = np.where(np.asarray(m) > 0, 255, 0)
+    wolf = Image.fromarray(arr.astype(np.uint8), "RGBA")
+    ImageDraw.Draw(wolf).line([(c + x, c + y) for x, y in mir(head)] + [(c + head[0][0], c + head[0][1])], fill=(60, 34, 4, 255), width=7, joint="curve")
+    L = wolf.copy(); L.paste((0, 0, 0, 0), (int(c), 0, S, S))
+    R = wolf.copy(); R.paste((0, 0, 0, 0), (0, 0, int(c), S))
+    P["wolfL"], P["wolfR"] = L, R
+    eye = Image.new("L", (S, S), 0); d = ImageDraw.Draw(eye)
+    for sx in (-1, 1):
+        d.polygon([(c + sx * x, c + y) for x, y in ((-112, -36), (-40, -2), (-48, 10), (-106, -16))], fill=255)
+    P["eyes"] = eye
     # 光の帯（斜め）
     band = Image.new("L", (S, S), 0); ImageDraw.Draw(band).polygon([(0, 0), (90, 0), (90 + S, S), (S, S)], fill=255)
     P["band"] = band.filter(ImageFilter.GaussianBlur(22))
@@ -1395,6 +1424,12 @@ def _fog_draw(cv, t, g, cy, out, speed=1.0, tint=None, pulses=()):
             tmp = Image.new("RGBA", (S, S), (0, 0, 0, 0)); tmp.alpha_composite(bl, (int(c - bl.width / 2), int(c - bl.height / 2))); bl = tmp
         rb = bl.rotate(-(base + fold), Image.BICUBIC)
         lay.alpha_composite(ui.fade(rb, min(1, k * 1.6)), (0, 0))
+    # 4.5) 狼の顔：左右から合わさって、噛み合う瞬間に完成
+    k = ease_in_out(prog(tl, lock - 0.4, 0.4))
+    if k > 0:
+        dx = int((1 - k) * 420)
+        lay.alpha_composite(ui.fade(P["wolfL"], min(1, k * 2)), (-dx, 0))
+        lay.alpha_composite(ui.fade(P["wolfR"], min(1, k * 2)), (dx, 0))
     # 5) 色を重ねる（7色）
     if tint is not None:
         col = Image.new("RGBA", (S, S), tint + (0,)); col.putalpha(lay.getchannel("A").point(lambda v: int(v * 0.5)))
@@ -1414,6 +1449,20 @@ def _fog_draw(cv, t, g, cy, out, speed=1.0, tint=None, pulses=()):
     x0, y0 = W / 2 - S / 2, cy - S / 2
     paste(cv, glow, (x0, y0), (0.45 + 0.55 * p) * out)
     paste(cv, lay, (x0, y0), out)
+    if tl >= lock:                                                       # 目が光る（噛み合った瞬間に強く、そのあと脈打つ）
+        ek = min(1, (tl - lock) / 0.12) * (0.75 + 0.25 * math.sin(t * 5) ** 2) + 0.6 * p
+        ecol = (255, 60, 40)
+        e = Image.new("RGBA", (S, S), ecol + (0,)); e.putalpha(P["eyes"].filter(ImageFilter.GaussianBlur(10)))
+        core = Image.new("RGBA", (S, S), (255, 150, 110, 0)); core.putalpha(P["eyes"])
+        paste(cv, e, (x0, y0), min(1, ek) * out); paste(cv, e, (x0, y0), min(1, ek) * out)
+        paste(cv, core, (x0, y0), min(1, ek) * out)
+        if tl - lock < 0.5:                                              # 目からの光の筋
+            fl = Image.new("RGBA", (W, H), (0, 0, 0, 0)); fd = ImageDraw.Draw(fl)
+            fa = int(220 * (1 - (tl - lock) / 0.5) * out)
+            for sx in (-1, 1):
+                ex, ey = W / 2 + sx * 72, cy - 6
+                fd.line((ex - 260, ey, ex + 260, ey), fill=(255, 120, 90, fa), width=5)
+            cv.alpha_composite(fl.filter(ImageFilter.GaussianBlur(2)))
     # 7) 噛み合った瞬間：白い光・衝撃の輪・火花
     tk = t - (g + lock / speed)
     if tk >= 0:
