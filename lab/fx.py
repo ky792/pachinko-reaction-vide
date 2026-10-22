@@ -144,7 +144,12 @@ def finish(fx, end, scene):
         add(st - 0.18, "shu", 0.2); add(st, "impact", 0.32)
         add(_m(fx, "push"), "don", 0.25)
     elif k == "fog":
-        add(_m(fx, "go"), "don", 0.25); add(_m(fx, "pulse"), "pon", 0.2)
+        g = _m(fx, "go", default=s0)
+        add(g - 0.6, "shu", 0.12); add(g, "rumble", 0.22)
+        for i in range(6):
+            add(g + 0.15 + 0.07 * i, "tick", 0.14)                      # 装甲がはまる音
+        add(g + FOG_LOCK, "impact", 0.30)
+        add(_m(fx, "pulse"), "don", 0.22)
     elif k == "konjiki":
         g = _m(fx, "go", default=s0); add(g, "shu", 0.15); add(g + 0.35, "piko", 0.14)
     elif k == "inazuma":
@@ -163,7 +168,7 @@ def finish(fx, end, scene):
         for h in (fx["marks"].get("go", []) + fx["marks"].get("don", []))[:3]:
             add(h, "don", 0.34); add(h, "rumble", 0.3)
     elif k == "nanairo":
-        g = _m(fx, "go", default=s0); add(g, "shu", 0.18); add(g + 0.25, "impact", 0.2); add(_m(fx, "color"), "piko", 0.18)
+        g = _m(fx, "go", default=s0); add(g, "shu", 0.18); add(g + FOG_LOCK / 3.5, "impact", 0.26); add(_m(fx, "color"), "piko", 0.18)
     elif k == "yami":
         add(_m(fx, "light"), "shu", 0.16); add(_m(fx, "back"), "pon", 0.16)
     elif k == "tokei":
@@ -481,10 +486,12 @@ def shake(scene, t):
     dx = dy = 0.0
     for fx in scene.get("fx", []):
         names = {"garo_ken": (("stab", 0.3),), "door": (("go", 0.25),), "shingeki": (("go", 0.6), ("don", 0.6)),
-                 "battle": (("strong", 0.35),), "burst": (("go", 0.4),), "kyokugen": (("win", 0.3),)}.get(fx["kind"], ())
+                 "battle": (("strong", 0.35),), "fog": (("go", 0.35),), "nanairo": (("go", 0.3),), "burst": (("go", 0.4),), "kyokugen": (("win", 0.3),)}.get(fx["kind"], ())
         for name, d0 in names:
             s = _m(fx, name)
             s = (s + 0.35) if (s is not None and fx["kind"] == "door") else s
+            s = (s + FOG_LOCK) if (s is not None and fx["kind"] == "fog") else s
+            s = (s + FOG_LOCK / 3.5) if (s is not None and fx["kind"] == "nanairo") else s
             if s is not None and s <= t < s + d0:
                 k = 1 - (t - s) / d0
                 dx += 12 * k * math.sin(t * 2 * math.pi * 27); dy += 8 * k * math.sin(t * 2 * math.pi * 33 + 1)
@@ -1269,10 +1276,206 @@ def _burst(cv, t, fx):
     cv.alpha_composite(fade(_edge((255, 60, 40)), 0.6 * a * math.exp(-tl / 0.7)))
 
 
-DRAW = {"garo_ken": _garo_ken, "fog": _fog, "konjiki": _konjiki, "inazuma": _inazuma, "door": _door,
+# ---------------------------------------------------------------- 顔の役物（F.O.G.）の組み上がり：作り込み版
+# 顔そのものは描かない（キャラクターのデザインのため）。金属の部品が集まり、刃が開き、ギアが噛み合って光る「仕掛け」を見せる
+FOG_S = 860                     # 部品を描く正方形の大きさ
+FOG_LOCK = 1.25                 # go から何秒で噛み合うか（等速のとき）
+
+
+def _metal(mask, base=(255, 200, 70), seed=0):
+    """形（L）に金属の色をのせる：縦の帯のグラデ＋縁の明るい線と暗い影"""
+    w, h = mask.size
+    yy = np.linspace(0, 1, h)[:, None] * np.ones((1, w))
+    xx = np.ones((h, 1)) * np.linspace(0, 1, w)[None, :]
+    band = 0.55 + 0.45 * np.sin((yy * 5.0 + xx * 1.7 + seed * 0.37) * math.pi) ** 2
+    rgb = np.dstack([np.clip(c * band * 1.08, 0, 255) for c in base])
+    m = np.asarray(mask, np.float32) / 255
+    hi = np.clip(m - np.roll(np.roll(m, 3, 0), 3, 1), 0, 1)          # 左上の縁＝光
+    lo = np.clip(m - np.roll(np.roll(m, -3, 0), -3, 1), 0, 1)        # 右下の縁＝影
+    rgb = rgb + hi[..., None] * 120 - lo[..., None] * 110
+    out = np.dstack([np.clip(rgb, 0, 255), m * 255]).astype(np.uint8)
+    return Image.fromarray(out, "RGBA")
+
+
+def _fog_parts():
+    if "fog2" in _C:
+        return _C["fog2"]
+    S = FOG_S; c = S / 2
+    P = {}
+    # 刃（12枚）：外向きの細長い刃。付け根を (c, c) からの距離 r0 に置いた「上向き」1枚を作り、回して使う
+    m = Image.new("L", (S, S), 0); d = ImageDraw.Draw(m)
+    r0, r1 = 250, 410
+    d.polygon([(c - 26, c - r0), (c + 26, c - r0), (c + 10, c - r1 + 40), (c, c - r1), (c - 10, c - r1 + 40)], fill=255)
+    d.polygon([(c - 26, c - r0), (c - 46, c - r0 - 60), (c - 18, c - r0 - 30)], fill=255)        # 返し
+    d.polygon([(c + 26, c - r0), (c + 46, c - r0 - 60), (c + 18, c - r0 - 30)], fill=255)
+    P["blade"] = _metal(m, (255, 214, 110), 1)
+    # 装甲（6枚）：太い六角の帯を6つに割ったもの
+    P["plates"] = []
+    for k in range(6):
+        m = Image.new("L", (S, S), 0); d = ImageDraw.Draw(m)
+        a0, a1 = math.pi / 3 * k - math.pi / 2, math.pi / 3 * (k + 1) - math.pi / 2
+        R, Ri = 255, 180
+        pts = [(c + R * math.cos(a0), c + R * math.sin(a0)), (c + R * math.cos(a1), c + R * math.sin(a1)),
+               (c + Ri * math.cos(a1), c + Ri * math.sin(a1)), (c + Ri * math.cos(a0), c + Ri * math.sin(a0))]
+        d.polygon(pts, fill=255)
+        am = (a0 + a1) / 2
+        for q in (-0.3, 0.3):                                            # 鋲
+            x, y = c + 212 * math.cos(am + q), c + 212 * math.sin(am + q)
+            d.ellipse((x - 9, y - 9, x + 9, y + 9), fill=0)
+        im = _metal(m, (255, 196, 60), k)
+        dd = ImageDraw.Draw(im)
+        for q in (-0.3, 0.3):
+            x, y = c + 212 * math.cos(am + q), c + 212 * math.sin(am + q)
+            dd.ellipse((x - 7, y - 7, x + 7, y + 7), fill=(255, 245, 200, 255), outline=(110, 70, 10, 255), width=2)
+        P["plates"].append((im, am))
+    # ギア（歯つきの輪）
+    m = Image.new("L", (S, S), 0); d = ImageDraw.Draw(m)
+    d.ellipse((c - 150, c - 150, c + 150, c + 150), fill=255); d.ellipse((c - 106, c - 106, c + 106, c + 106), fill=0)
+    for i in range(20):
+        a = i / 20 * 2 * math.pi; w = 0.08
+        d.polygon([(c + 146 * math.cos(a - w), c + 146 * math.sin(a - w)), (c + 170 * math.cos(a - w * 0.6), c + 170 * math.sin(a - w * 0.6)),
+                   (c + 170 * math.cos(a + w * 0.6), c + 170 * math.sin(a + w * 0.6)), (c + 146 * math.cos(a + w), c + 146 * math.sin(a + w))], fill=255)
+    for i in range(6):                                                   # 輪の中の窓（回っているのが分かる目印）
+        a = i / 6 * 2 * math.pi
+        d.ellipse((c + 128 * math.cos(a) - 10, c + 128 * math.sin(a) - 10, c + 128 * math.cos(a) + 10, c + 128 * math.sin(a) + 10), fill=0)
+    P["gear"] = _metal(m, (230, 180, 70), 3)
+    # 芯：暗い六角の台座＋赤い宝石
+    core = Image.new("RGBA", (S, S), (0, 0, 0, 0)); d = ImageDraw.Draw(core)
+    d.regular_polygon((c, c, 100), 6, rotation=30, fill=(28, 18, 6, 255), outline=(150, 100, 20, 255))
+    d.regular_polygon((c, c, 82), 6, rotation=30, outline=(90, 60, 15, 255))
+    gem = Image.new("L", (S, S), 0); ImageDraw.Draw(gem).polygon([(c, c - 58), (c + 38, c), (c, c + 58), (c - 38, c)], fill=255)
+    core.alpha_composite(_metal(gem, (255, 70, 50), 5))
+    P["core"] = core
+    # 光の帯（斜め）
+    band = Image.new("L", (S, S), 0); ImageDraw.Draw(band).polygon([(0, 0), (90, 0), (90 + S, S), (S, S)], fill=255)
+    P["band"] = band.filter(ImageFilter.GaussianBlur(22))
+    _C["fog2"] = P
+    return P
+
+
+def _fog_draw(cv, t, g, cy, out, speed=1.0, tint=None, pulses=()):
+    """g＝組み上がりの開始。speed＞1で速く組み上がる。tint(時刻)→RGB で色を重ねる（7色用）"""
+    P = _fog_parts(); S = FOG_S; c = S / 2
+    tl = (t - g) * speed
+    lock = FOG_LOCK
+    lay = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+    # 1) 芯：小さい光の点から開く
+    k = ease_out(prog(tl, 0.0, 0.3))
+    if k > 0:
+        im = P["core"] if k >= 1 else P["core"].resize((max(1, int(S * k)), max(1, int(S * k))), Image.BICUBIC)
+        lay.alpha_composite(im, (int(c - im.width / 2), int(c - im.height / 2)))
+    # 3) 装甲：外から順に飛んできてはまる
+    for i, (im, am) in enumerate(P["plates"]):
+        k = ease_out(prog(tl, 0.15 + 0.07 * i, 0.4))
+        if k <= 0:
+            continue
+        dist = (1 - k) * 520
+        tmp = Image.new("RGBA", (S, S), (0, 0, 0, 0))
+        tmp.paste(im, (int(dist * math.cos(am)), int(dist * math.sin(am))), im)
+        lay.alpha_composite(ui.fade(tmp, min(1, k * 1.5)))
+    # 2) ギア：速く回って、噛み合う瞬間にピタッと止まる
+    if tl >= 0.05:
+        if tl < lock:
+            ang = 720 * (1 - (1 - tl / lock) ** 2)                      # だんだん遅く
+        else:
+            ang = 720 + 4 * math.exp(-(tl - lock) / 0.08) * math.sin((tl - lock) * 60)   # 止まった反動
+        gk = ease_out(prog(tl, 0.05, 0.25))
+        lay.alpha_composite(ui.fade(P["gear"].rotate(-ang, Image.BICUBIC), gk))
+    # 4) 刃：12枚が、畳まれた向きから外へ開く
+    for i in range(12):
+        k = ease_out(prog(tl, 0.55 + 0.035 * i, 0.4))
+        if k <= 0:
+            continue
+        base = i * 30
+        fold = (1 - k) * 80 * (1 if i % 2 else -1)
+        bl = P["blade"]
+        if k < 1:
+            sc = 0.6 + 0.4 * k
+            bl = bl.resize((int(S * sc), int(S * sc)), Image.BICUBIC)
+            tmp = Image.new("RGBA", (S, S), (0, 0, 0, 0)); tmp.alpha_composite(bl, (int(c - bl.width / 2), int(c - bl.height / 2))); bl = tmp
+        rb = bl.rotate(-(base + fold), Image.BICUBIC)
+        lay.alpha_composite(ui.fade(rb, min(1, k * 1.6)), (0, 0))
+    # 5) 色を重ねる（7色）
+    if tint is not None:
+        col = Image.new("RGBA", (S, S), tint + (0,)); col.putalpha(lay.getchannel("A").point(lambda v: int(v * 0.5)))
+        lay.alpha_composite(col)
+    # 6) 光の帯：噛み合ってから、1.6秒ごとに斜めに走る
+    if tl >= lock:
+        ph = ((tl - lock) % 1.6) / 1.6
+        sh = int(-S + ph * 2.2 * S)
+        band = Image.new("L", (S, S), 0); band.paste(P["band"], (sh, 0))
+        a = np.minimum(np.asarray(band, np.float32), np.asarray(lay.getchannel("A"), np.float32)) * 0.75
+        hl = Image.new("RGBA", (S, S), (255, 252, 235, 0)); hl.putalpha(Image.fromarray(a.astype(np.uint8)))
+        lay.alpha_composite(hl)
+    # にじみ
+    gcol = tint if tint is not None else GOLDC
+    p = _pulse(t, [g + lock / speed] + list(pulses), 0.35)
+    glow = Image.new("RGBA", (S, S), gcol + (0,)); glow.putalpha(lay.getchannel("A").filter(ImageFilter.GaussianBlur(26)))
+    x0, y0 = W / 2 - S / 2, cy - S / 2
+    paste(cv, glow, (x0, y0), (0.45 + 0.55 * p) * out)
+    paste(cv, lay, (x0, y0), out)
+    # 7) 噛み合った瞬間：白い光・衝撃の輪・火花
+    tk = t - (g + lock / speed)
+    if tk >= 0:
+        if tk < 0.14:
+            cv.alpha_composite(Image.new("RGBA", (W, H), (255, 250, 225, int(170 * (1 - tk / 0.14) * out))))
+        if tk < 0.9:
+            ring = Image.new("RGBA", (W, H), (0, 0, 0, 0)); rd = ImageDraw.Draw(ring)
+            r = 260 + 900 * ease_out(prog(tk, 0, 0.9))
+            rd.ellipse((W / 2 - r, cy - r, W / 2 + r, cy + r), outline=gcol + (int(230 * (1 - tk / 0.9) * out),), width=14)
+            cv.alpha_composite(ring.filter(ImageFilter.GaussianBlur(3)))
+        if tk < 1.2:
+            sp = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sd = ImageDraw.Draw(sp)
+            rng = np.random.default_rng(17)
+            for i in range(60):
+                an = rng.uniform(0, 2 * math.pi); v = rng.uniform(500, 1300); ln = rng.uniform(16, 40)
+                r = 200 + v * tk; fall = 260 * tk * tk
+                x, y = W / 2 + r * math.cos(an), cy + r * math.sin(an) + fall
+                al = int(255 * (1 - tk / 1.2) * out)
+                sd.line((x, y, x - ln * math.cos(an), y - ln * math.sin(an)), fill=(255, 235, 160, al), width=4)
+            cv.alpha_composite(sp)
+        _rays(cv, W / 2, cy, p * out, gcol, 28, 300, 1000)
+        cv.alpha_composite(fade(_edge(gcol), 0.55 * p * out))
+
+
+def _fog2(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"] + 0.3)
+    pre = g - 0.6
+    if t < pre:
+        return
+    out = 1 - ease_in_out(prog(t, fx["end"], 0.5))
+    _black(cv, 0.62 * min(1, prog(t, pre, 0.35)) * out)
+    if t < g + 0.2:                                                      # 組み上がる前：金の粒が中心へ集まる
+        sp = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sd = ImageDraw.Draw(sp)
+        rng = np.random.default_rng(9)
+        k = prog(t, pre, 0.8)
+        for i in range(70):
+            an = rng.uniform(0, 2 * math.pi); r = rng.uniform(300, 900) * (1 - ease_in_out(k))
+            x, y = W / 2 + r * math.cos(an), 400 + r * math.sin(an)
+            s = rng.uniform(2, 5)
+            sd.ellipse((x - s, y - s, x + s, y + s), fill=(255, 225, 140, int(230 * min(1, k * 3))))
+        cv.alpha_composite(sp)
+    _fog_draw(cv, t, g, 400, out, 1.0, None, fx["marks"].get("pulse", []))
+
+
+def _nanairo2(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"] + 0.3)
+    if t < g - 0.05:
+        return
+    out = 1 - ease_in_out(prog(t, fx["end"], 0.5))
+    _black(cv, 0.6 * min(1, prog(t, g - 0.05, 0.15)) * out)
+    c0 = _m(fx, "color")
+    tint = None
+    if c0 is not None and t >= c0:
+        q = int(((t - c0) * 0.9 % 1.0) * 12) / 12
+        tint = tuple(int(255 * v) for v in colorsys.hsv_to_rgb(q, 0.8, 1.0))
+    _fog_draw(cv, t, g, 400, out, 3.5, tint)                             # シリーズ最速：3.5倍の速さで組み上がる
+
+
+DRAW = {"garo_ken": _garo_ken, "fog": _fog2, "konjiki": _konjiki, "inazuma": _inazuma, "door": _door,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
-        "beat": _beat, "hane": _hane, "battle": _battle, "shingeki": _shingeki, "nanairo": _nanairo, "yami": _yami,
+        "beat": _beat, "hane": _hane, "battle": _battle, "shingeki": _shingeki, "nanairo": _nanairo2, "yami": _yami,
         "tokei": _tokei, "byousoku": _byousoku, "kasane": _kasane, "vlight": _vlight, "count3000": _count3000,
         "kyokugen": _kyokugen, "burst": _burst}
 
