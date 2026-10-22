@@ -141,8 +141,11 @@ def finish(fx, end, scene):
 
     elif k == "garo_ken":
         st = _m(fx, "stab", default=s0 + 0.5)
-        add(st - 0.18, "shu", 0.2); add(st, "impact", 0.32)
-        add(_m(fx, "push"), "don", 0.25)
+        add(st - 0.65, "piko", 0.10); add(st - 0.22, "shu", 0.24); add(st, "impact", 0.34); add(st, "rumble", 0.22)
+        st2 = fx["marks"].get("stab", [])[1:2]
+        for x in st2:
+            add(x, "flame", 0.22)
+        add(_m(fx, "push"), "don", 0.3); add(_m(fx, "push"), "impact", 0.2)
     elif k == "fog":
         g = _m(fx, "go", default=s0)
         add(g - 0.6, "shu", 0.12); add(g, "rumble", 0.22)
@@ -485,7 +488,7 @@ def shake(scene, t):
     """レバー振動：画面ごと震わせる量（px）"""
     dx = dy = 0.0
     for fx in scene.get("fx", []):
-        names = {"garo_ken": (("stab", 0.3),), "door": (("go", 0.25),), "shingeki": (("go", 0.6), ("don", 0.6)),
+        names = {"garo_ken": (("stab", 0.4), ("push", 0.3)), "door": (("go", 0.25),), "shingeki": (("go", 0.6), ("don", 0.6)),
                  "battle": (("strong", 0.35),), "fog": (("go", 0.35),), "nanairo": (("go", 0.3),), "burst": (("go", 0.4),), "kyokugen": (("win", 0.3),)}.get(fx["kind"], ())
         for name, d0 in names:
             s = _m(fx, name)
@@ -1521,7 +1524,183 @@ def _nanairo2(cv, t, fx):
     _fog_draw(cv, t, g, 400, out, 3.5, tint)                             # シリーズ最速：3.5倍の速さで組み上がる
 
 
-DRAW = {"garo_ken": _garo_ken, "fog": _fog2, "konjiki": _konjiki, "inazuma": _inazuma, "door": _door,
+# ---------------------------------------------------------------- 牙狼剣：作り込み版（オリジナルの剣。落下→刺さる→ひび→光→押し込み）
+KEN_TIP = 720                    # 切っ先が刺さる高さ
+
+
+def _sword2():
+    if "sword2" in _C:
+        return _C["sword2"]
+    w, h = 300, 690; cx = w / 2
+    out = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    # 刀身（銀）
+    m = Image.new("L", (w, h), 0); d = ImageDraw.Draw(m)
+    d.polygon([(cx - 30, 230), (cx + 30, 230), (cx + 26, h - 110), (cx, h - 6), (cx - 26, h - 110)], fill=255)
+    blade = _metal(m, (205, 214, 228), 2)
+    bd = ImageDraw.Draw(blade)
+    bd.polygon([(cx - 5, 250), (cx + 5, 250), (cx + 4, h - 130), (cx, h - 70), (cx - 4, h - 130)], fill=(120, 130, 148, 255))   # 樋
+    for i, y in enumerate(range(286, h - 160, 44)):                     # 彫り（オリジナルの紋様）
+        a = 10 if i % 2 else 7
+        bd.line((cx - a, y, cx, y + 14, cx + a, y), fill=(255, 210, 120, 255), width=3)
+    bd.line((cx - 30, 230, cx - 26, h - 110), fill=(255, 255, 255, 230), width=2)   # 刃の光る縁
+    out.alpha_composite(blade)
+    # 鍔（金）：翼のように左右に張り出し、先がとがる
+    m = Image.new("L", (w, h), 0); d = ImageDraw.Draw(m)
+    d.polygon([(cx - 140, 196), (cx - 60, 176), (cx - 34, 206), (cx + 34, 206), (cx + 60, 176), (cx + 140, 196),
+               (cx + 100, 214), (cx + 46, 238), (cx, 252), (cx - 46, 238), (cx - 100, 214)], fill=255)
+    for sx in (-1, 1):
+        d.polygon([(cx + sx * 140, 196), (cx + sx * 150, 160), (cx + sx * 116, 190)], fill=255)
+    guard = _metal(m, (255, 204, 80), 4)
+    gd = ImageDraw.Draw(guard)
+    gd.regular_polygon((cx, 218, 26), 6, rotation=30, fill=(40, 24, 6, 255), outline=(120, 80, 10, 255))
+    gm = Image.new("L", (w, h), 0); ImageDraw.Draw(gm).polygon([(cx, 200), (cx + 14, 218), (cx, 236), (cx - 14, 218)], fill=255)
+    guard.alpha_composite(_metal(gm, (255, 60, 45), 6))                  # 赤い石
+    out.alpha_composite(guard)
+    # 柄：巻きの模様
+    m = Image.new("L", (w, h), 0); ImageDraw.Draw(m).rounded_rectangle((cx - 17, 64, cx + 17, 180), 8, fill=255)
+    grip = _metal(m, (90, 50, 20), 1)
+    gd = ImageDraw.Draw(grip)
+    for y in range(70, 180, 13):
+        gd.line((cx - 17, y, cx + 17, y + 9), fill=(190, 140, 60, 255), width=4)
+    out.alpha_composite(grip)
+    # 柄頭
+    m = Image.new("L", (w, h), 0); d = ImageDraw.Draw(m)
+    d.polygon([(cx, 6), (cx + 30, 40), (cx, 74), (cx - 30, 40)], fill=255)
+    pm = _metal(m, (255, 210, 90), 5)
+    ImageDraw.Draw(pm).ellipse((cx - 9, 31, cx + 9, 49), fill=(255, 70, 50, 255), outline=(110, 30, 10, 255), width=2)
+    out.alpha_composite(pm)
+    glow = Image.new("RGBA", (w, h), (255, 225, 140, 0)); glow.putalpha(out.getchannel("A").filter(ImageFilter.GaussianBlur(16)))
+    full = Image.new("RGBA", (w, h), (0, 0, 0, 0)); full.alpha_composite(glow); full.alpha_composite(out)
+    band = Image.new("L", (w, h), 0); ImageDraw.Draw(band).polygon([(0, 0), (w, 0), (w, 70), (0, 130)], fill=255)
+    _C["sword2"] = (full, out.getchannel("A"), band.filter(ImageFilter.GaussianBlur(14)))
+    return _C["sword2"]
+
+
+def _cracks(seed):
+    """刺さった所から広がるひび（折れ線）。床の遠近感で横長に"""
+    key = ("crk", seed)
+    if key not in _C:
+        rng = np.random.default_rng(seed); lines = []
+        for i in range(11):
+            an = math.pi * (i / 10) + rng.uniform(-0.12, 0.12)
+            pts = [(0.0, 0.0)]; x = y = 0.0; L = rng.uniform(240, 520)
+            for s in range(7):
+                st = L / 7
+                a2 = an + rng.uniform(-0.45, 0.45)
+                x += st * math.cos(a2) * (1 if i < 5 else 1); y += st * math.sin(a2) * 0.28
+                pts.append((x * (-1 if an > math.pi / 2 else 1) if False else x, y))
+            lines.append(pts)
+        _C[key] = lines
+    return _C[key]
+
+
+def _garo_ken2(cv, t, fx):
+    st = _m(fx, "stab", default=fx["start"] + 0.5)
+    st2 = (fx["marks"].get("stab") or [None, None])[1] if len(fx["marks"].get("stab") or []) > 1 else None
+    push = _m(fx, "push")
+    if t < st - 0.7:
+        return
+    out = 1 - ease_in_out(prog(t, fx["end"], 0.45))
+    _black(cv, 0.55 * min(1, prog(t, st - 0.7, 0.35)) * out)
+    sw, sw_a, band = _sword2()
+    cx = W / 2
+    y_hit = KEN_TIP - sw.height + 6
+    # 落ちる前：上で光る星
+    if t < st - 0.22:
+        k = prog(t, st - 0.7, 0.4)
+        r = 18 + 30 * math.sin(k * math.pi)
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.polygon([(cx, 60 - r * 2), (cx + r * 0.35, 60), (cx, 60 + r * 2), (cx - r * 0.35, 60)], fill=(255, 245, 210, int(240 * k)))
+        d.polygon([(cx - r * 2, 60), (cx, 60 - r * 0.35), (cx + r * 2, 60), (cx, 60 + r * 0.35)], fill=(255, 245, 210, int(240 * k)))
+        cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(1.5)))
+        return
+    fall = ease_in_out(prog(t, st - 0.22, 0.22)) ** 2
+    y0 = -sw.height - 40
+    y = y0 + (y_hit - y0) * fall
+    if push is not None and t >= push:
+        y += 46 * ease_out(prog(t, push, 0.15))
+    # 落ちている間：残像
+    if t < st:
+        for i in (3, 2, 1):
+            yy = y - i * 70
+            paste(cv, sw, (cx - sw.width / 2, yy), 0.18 * (4 - i) / 3 * out)
+    # 刺さった：ひび・衝撃波・破片・光
+    if t >= st:
+        tk = t - st
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        grow = ease_out(prog(tk, 0, 0.35))
+        for pts in _cracks(31):
+            n = max(2, int(len(pts) * grow))
+            p2 = [(cx + px, KEN_TIP + py) for px, py in pts[:n]]
+            p2 += [(cx - px, KEN_TIP + py) for px, py in []]
+            d.line(p2, fill=(255, 200, 90, int(255 * out)), width=5, joint="curve")
+            d.line([(2 * cx - x, y2) for x, y2 in p2], fill=(255, 200, 90, int(255 * out)), width=5, joint="curve")
+        gl = lay.filter(ImageFilter.GaussianBlur(8))
+        pulse = 0.6 + 0.4 * math.sin(t * 5) ** 2
+        paste(cv, gl, (0, 0), out * pulse); paste(cv, gl, (0, 0), out * 0.6)
+        core = Image.new("RGBA", (W, H), (255, 250, 220, 0)); core.putalpha(lay.getchannel("A").point(lambda v: v // 2))
+        cv.alpha_composite(core)
+        if tk < 0.7:                                                     # 床を走る衝撃波（横長の輪）
+            sh = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sd = ImageDraw.Draw(sh)
+            r = 80 + 900 * ease_out(prog(tk, 0, 0.7))
+            sd.ellipse((cx - r, KEN_TIP - r * 0.18, cx + r, KEN_TIP + r * 0.18), outline=(255, 230, 160, int(230 * (1 - tk / 0.7) * out)), width=10)
+            cv.alpha_composite(sh.filter(ImageFilter.GaussianBlur(2)))
+        if tk < 1.0:                                                     # 破片
+            de = Image.new("RGBA", (W, H), (0, 0, 0, 0)); dd = ImageDraw.Draw(de)
+            rng = np.random.default_rng(13)
+            for i in range(40):
+                an = rng.uniform(math.pi * 1.05, math.pi * 1.95); v = rng.uniform(300, 900); s = rng.uniform(5, 14)
+                x = cx + v * tk * math.cos(an); y2 = KEN_TIP + v * tk * math.sin(an) + 900 * tk * tk
+                dd.rectangle((x - s / 2, y2 - s / 2, x + s / 2, y2 + s / 2), fill=(200, 170, 110, int(255 * (1 - tk) * out)))
+            cv.alpha_composite(de)
+        _rays(cv, cx, KEN_TIP - 20, math.exp(-tk / 0.35) * out)
+        if tk < 0.16:
+            cv.alpha_composite(Image.new("RGBA", (W, H), (255, 250, 230, int(170 * (1 - tk / 0.16)))))
+        # 立ちのぼる火の粉
+        sp = Image.new("RGBA", (W, H), (0, 0, 0, 0)); spd = ImageDraw.Draw(sp)
+        rng = np.random.default_rng(29)
+        for i in range(36):
+            x0 = cx + rng.uniform(-160, 160); sp_ = rng.uniform(80, 220); ph = rng.uniform(0, 2.5)
+            tt = (tk + ph) % 2.5
+            yy = KEN_TIP - sp_ * tt
+            r = rng.uniform(2, 4)
+            spd.ellipse((x0 - r, yy - r, x0 + r, yy + r), fill=(255, 210, 120, int(220 * (1 - tt / 2.5) * out * min(1, tk * 2))))
+        cv.alpha_composite(sp)
+    # 剣
+    paste(cv, sw, (cx - sw.width / 2, y), out)
+    if t >= st:                                                          # 刀身を走る光
+        ph = ((t - st) % 1.4) / 1.4
+        b = Image.new("L", sw.size, 0); b.paste(band, (0, int(-150 + ph * (sw.height + 300))))
+        a = np.minimum(np.asarray(b, np.float32), np.asarray(sw_a, np.float32)) * 0.8
+        hl = Image.new("RGBA", sw.size, (255, 255, 245, 0)); hl.putalpha(Image.fromarray(a.astype(np.uint8)))
+        paste(cv, hl, (cx - sw.width / 2, y), out)
+    if st2 is not None and t >= st2:                                     # 2回目（斬馬剣）：赤く燃える
+        k = math.exp(-(t - st2) / 0.9)
+        red = Image.new("RGBA", sw.size, (255, 60, 30, 0)); red.putalpha(sw_a.filter(ImageFilter.GaussianBlur(20)))
+        paste(cv, red, (cx - sw.width / 2, y), k * out)
+        if t - st2 < 0.12:
+            cv.alpha_composite(Image.new("RGBA", (W, H), (255, 80, 50, int(110 * (1 - (t - st2) / 0.12)))))
+    # PUSH の表示（押し込むまで）
+    if push is not None and st + 0.8 <= t < push + 0.1:
+        a = ease_out(prog(t, st + 0.8, 0.3)) * out
+        p = 0.5 + 0.5 * math.sin((t - st) * 7)
+        ring = Image.new("RGBA", (W, H), (0, 0, 0, 0)); rd = ImageDraw.Draw(ring)
+        hy = y + 110
+        r = 70 + 14 * p
+        rd.ellipse((cx - r, hy - r, cx + r, hy + r), outline=(255, 220, 120, int(230 * a)), width=6)
+        cv.alpha_composite(ring.filter(ImageFilter.GaussianBlur(1)))
+        _put(cv, "PUSH", 64, cx + 210, hy, a * (0.7 + 0.3 * p), 1 + 0.06 * p, glow=(255, 120, 40))
+    if push is not None and t >= push:                                   # 押し込んだ：光の柱
+        k = math.exp(-(t - push) / 0.5)
+        col = Image.new("RGBA", (W, H), (0, 0, 0, 0)); cd = ImageDraw.Draw(col)
+        wd = 60 + 260 * ease_out(prog(t, push, 0.3))
+        cd.rectangle((cx - wd / 2, 0, cx + wd / 2, KEN_TIP), fill=(255, 235, 160, int(200 * k * out)))
+        cv.alpha_composite(col.filter(ImageFilter.GaussianBlur(30)))
+        cv.alpha_composite(fade(_edge(GOLDC), 0.8 * k * out))
+        _rays(cv, cx, 360, k * out, (255, 240, 180), 32, 40, 1000)
+
+
+DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki, "inazuma": _inazuma, "door": _door,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
         "beat": _beat, "hane": _hane, "battle": _battle, "shingeki": _shingeki, "nanairo": _nanairo2, "yami": _yami,
