@@ -35,9 +35,9 @@
   "text": "初代は強すぎて同じ仕組みが作れなくなったたい"
  },
  "00_op-008": {
-  "sha1": "c8db95bacf9e33d240e7c956717e2b8e020602ea",
+  "sha1": "42005eb54f7308eacc86692dc8fe4b9169c2c042",
   "model": "large-v3-turbo",
-  "text": "作れなくなった?タイが強すぎて?"
+  "text": "作れなくなった?台が強すぎて?"
  },
  "00_op-009": {
   "sha1": "af017b274ead8c64db451e80b3d123395de95d55",
@@ -100,9 +100,9 @@
   "text": "思い出しやすい順に並べただけ"
  },
  "01_basic-010": {
-  "sha1": "f94a6ff9fe100aae2c30f19864abb32cb0b31b52",
+  "sha1": "159d75848d68475038b756aa7dced974d70dff47",
   "model": "large-v3-turbo",
-  "text": "素直に認めんやここの筆"
+  "text": "素直に認めや"
  },
  "01_basic-011": {
   "sha1": "1588938e453765b011b142eed0871343dd6fee3a",
@@ -310,9 +310,9 @@
   "text": "形が戻ってきた"
  },
  "03_konjiki-005": {
-  "sha1": "68a164edc54e629a0acf8cff5a7f4640a1fde9b9",
+  "sha1": "633e073b487648aafca4de8b67f9d1e0d4e92156",
   "model": "large-v3-turbo",
-  "text": "まだ寄せただけや!コホナ!"
+  "text": "まだ寄せて寄せただけや"
  },
  "03_konjiki-006": {
   "sha1": "09c81de86ed69363f9510cc93434cf8ae814ac04",
@@ -430,9 +430,9 @@
   "text": "速さでも形でもなくて手で覚えてるのね"
  },
  "03_konjiki-029": {
-  "sha1": "b6a2d8c7ff9aa625bad460c588822be16a90b3c4",
+  "sha1": "98ef04baba0217efc21af7b031d6a307c2f882b7",
   "model": "large-v3-turbo",
-  "text": "ガロは手で撃つもんやほら!"
+  "text": "ガロは手で撃つもんや"
  },
  "03_konjiki-030": {
   "sha1": "464138045c8942195cff06bc75db452ec6d278ab",
@@ -870,9 +870,9 @@
   "text": "遅くなったら文句が出て形が崩れたら戻された"
  },
  "07_matome-013": {
-  "sha1": "6dcba0d1863b6887bd4214c4f4f385a57c9e5443",
+  "sha1": "46a117e7e3a57af7d0645e0fbb97f075ece08986",
   "model": "large-v3-turbo",
-  "text": "ほな、どっちも正解やんか。なんか。"
+  "text": "ほな、どっちも正解やんか"
  },
  "07_matome-014": {
   "sha1": "24d9b0456ccf17ab1a413bc6d0cee2b97966498e",
@@ -980,9 +980,9 @@
   "text": "そこは速さの価値でいい"
  },
  "03_konjiki-040": {
-  "sha1": "c87018a16d800bb7046c18531fc44dd01b2be3f6",
+  "sha1": "ebafaf6654b51bb5232defa4d9178a331b18a833",
   "model": "large-v3-turbo",
-  "text": "やっと認めたななんだ?"
+  "text": "やっと認めたな"
  },
  "03_konjiki-041": {
   "sha1": "fc6f8395d5ecbae9faa70b61262ab11c33811063",
@@ -1025,9 +1025,9 @@
   "text": "160回がなかなか終わらんのよ待つのがしんどかった"
  },
  "04_after-024": {
-  "sha1": "75e53964aa9e840c4a9e53d89495daaf3523d07c",
+  "sha1": "f2b240685d32125631347f2ade644223f34df697",
   "model": "large-v3-turbo",
-  "text": "ほらな土10%あってもおすそいと文句が出るんや"
+  "text": "ほらな80%あっても遅いと文句が出るんや"
  },
  "04_after-025": {
   "sha1": "285377e209b2a076f6d4a8c0305e3f80c4cdaa68",
