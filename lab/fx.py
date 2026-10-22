@@ -1700,12 +1700,844 @@ def _garo_ken2(cv, t, fx):
         _rays(cv, cx, 360, k * out, (255, 240, 180), 32, 40, 1000)
 
 
-DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki, "inazuma": _inazuma, "door": _door,
+# ================================================================ 作り込み版（牙狼回 v2 の残り14種）
+# 絵はすべてオリジナル。実機の画面・キャラ・ロゴは描かない。F.O.G.・牙狼剣と同じ部品（金属・火花・衝撃波）で質感をそろえる
+STEEL = (150, 156, 170)
+
+
+def _mtext(text, size, base=GOLDC, weight="black"):
+    """金属の文字（縁取り＋にじみ）。キャッシュする"""
+    key = ("mt", text, size, base, weight)
+    if key not in _C:
+        f = ui.font(weight, size)
+        w = int(ui.text_w(text, f)) + 90; h = int(size * 1.55)
+        m = Image.new("L", (w, h), 0); ImageDraw.Draw(m).text((w / 2, h / 2), text, font=f, fill=255, anchor="mm")
+        body = _metal(m, base, len(text))
+        o = Image.new("RGBA", (w, h), (45, 26, 4, 0)); o.putalpha(m.filter(ImageFilter.MaxFilter(9)))
+        full = Image.new("RGBA", (w, h), (0, 0, 0, 0)); full.alpha_composite(o); full.alpha_composite(body)
+        g = Image.new("RGBA", (w, h), base + (0,)); g.putalpha(m.filter(ImageFilter.GaussianBlur(max(6, size // 7))))
+        _C[key] = (full, g)
+    return _C[key]
+
+
+def _mput(cv, text, size, cx, cy, a, scale=1.0, base=GOLDC, glow_a=0.7, weight="black"):
+    if a <= 0:
+        return
+    im, g = _mtext(text, size, base, weight)
+    for x, al in ((g, glow_a * a), (im, a)):
+        if abs(scale - 1) > 1e-3:
+            x = x.resize((max(1, int(x.width * scale)), max(1, int(x.height * scale))), Image.BICUBIC)
+        paste(cv, x, (cx - x.width / 2, cy - x.height / 2), al)
+
+
+def _mnum(cv, s, size, cx, cy, a, scale=1.0, base=GOLDC):
+    """数字を1文字ずつの金属文字で並べる（カウントアップ用。文字ごとにキャッシュ）"""
+    ims = [_mtext(ch, size, base)[0] for ch in s]
+    adv = [int(size * (0.62 if ch.isdigit() else 0.34)) for ch in s]
+    tw = sum(adv); x = cx - tw * scale / 2
+    for ch, im, ad in zip(s, ims, adv):
+        if abs(scale - 1) > 1e-3:
+            im = im.resize((max(1, int(im.width * scale)), max(1, int(im.height * scale))), Image.BICUBIC)
+        paste(cv, im, (x + ad * scale / 2 - im.width / 2, cy - im.height / 2), a)
+        x += ad * scale
+
+
+def _sparks(cv, cx, cy, tk, a, n=50, seed=3, color=(255, 230, 150), speed=(400, 1200), grav=600, dur=1.1, spread=(0, 2 * math.pi)):
+    if tk < 0 or tk > dur or a <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay); rng = np.random.default_rng(seed)
+    for i in range(n):
+        an = rng.uniform(*spread); v = rng.uniform(*speed); ln = rng.uniform(12, 34)
+        x = cx + v * tk * math.cos(an); y = cy + v * tk * math.sin(an) + grav * tk * tk
+        vx = v * math.cos(an); vy = v * math.sin(an) + 2 * grav * tk; sp = math.hypot(vx, vy) + 1e-6
+        d.line((x, y, x - vx / sp * ln, y - vy / sp * ln), fill=color + (int(255 * a * (1 - tk / dur)),), width=3)
+    cv.alpha_composite(lay)
+
+
+def _ring(cv, cx, cy, r, width, color, al, squash=1.0, blur=2):
+    if al <= 0 or r <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ImageDraw.Draw(lay).ellipse((cx - r, cy - r * squash, cx + r, cy + r * squash), outline=color + (int(255 * min(1, al)),), width=max(1, int(width)))
+    cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(blur)) if blur else lay)
+
+
+def _ball(r=22, tint=None):
+    """パチンコ玉（銀の球。tint で色玉）"""
+    key = ("ball", r, tint)
+    if key not in _C:
+        s = r * 2 + 4; yy, xx = np.mgrid[0:s, 0:s].astype(np.float32)
+        dx = (xx - s / 2) / r; dy = (yy - s / 2) / r; dd = dx * dx + dy * dy
+        shade = np.clip(0.5 + 0.5 * (-dx * 0.45 - dy * 0.7), 0, 1)
+        spec = np.exp(-(((dx + 0.35) ** 2 + (dy + 0.42) ** 2) / 0.025))
+        rim = np.clip((dd - 0.75) / 0.25, 0, 1) * 0.35
+        v = np.clip(shade * 190 + spec * 255 + rim * 120 + 30, 0, 255)
+        arr = np.zeros((s, s, 4), np.float32)
+        col = np.array(tint if tint else (235, 238, 248), np.float32) / 255
+        for i in range(3):
+            arr[..., i] = np.clip(v * (col[i] if tint else col[i]) + spec * 255 * (1 - col[i]), 0, 255)
+        arr[..., 3] = np.clip((1 - dd) * 40, 0, 1) * 255
+        _C[key] = Image.fromarray(arr.astype(np.uint8), "RGBA")
+    return _C[key]
+
+
+def _plate(w, h, border=GOLDC, seed=0, r=24, inner=(12, 10, 8, 230)):
+    """金属の枠のパネル（中は暗い板・四隅に鋲）"""
+    key = ("plate", w, h, border, seed, r, inner)
+    if key not in _C:
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+        m = Image.new("L", (w, h), 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, w - 1, h - 1), r, fill=255)
+        im.alpha_composite(_metal(m, border, seed))
+        mi = Image.new("L", (w, h), 0); ImageDraw.Draw(mi).rounded_rectangle((11, 11, w - 12, h - 12), max(4, r - 8), fill=255)
+        yy = np.linspace(0, 1, h)[:, None] * np.ones((1, w))
+        arr = np.zeros((h, w, 4), np.uint8)
+        for i in range(3):
+            arr[..., i] = np.clip(inner[i] + 26 * (1 - yy), 0, 255)
+        arr[..., 3] = inner[3]
+        im.paste(Image.fromarray(arr, "RGBA"), (0, 0), mi)
+        d = ImageDraw.Draw(im)
+        d.rounded_rectangle((15, 15, w - 16, h - 16), max(4, r - 10), outline=(255, 220, 140, 80), width=2)
+        for x, y in ((24, 24), (w - 24, 24), (24, h - 24), (w - 24, h - 24)):
+            d.ellipse((x - 6, y - 6, x + 6, y + 6), fill=(255, 236, 180, 255), outline=(100, 64, 10, 255), width=2)
+        _C[key] = im
+    return _C[key]
+
+
+def _pput(cv, im, cx, cy, a, scale=1.0):
+    if abs(scale - 1) > 1e-3:
+        im = im.resize((max(1, int(im.width * scale)), max(1, int(im.height * scale))), Image.BICUBIC)
+    paste(cv, im, (cx - im.width / 2, cy - im.height / 2), a)
+
+
+def _smoke(seed=1):
+    """暗い煙のもと（低解像度のノイズをぼかしたもの・左右につながる）"""
+    key = ("smoke", seed)
+    if key not in _C:
+        rng = np.random.default_rng(seed)
+        a = rng.random((68, 240)).astype(np.float32)
+        im = Image.fromarray((a * 255).astype(np.uint8), "L").resize((960, 270), Image.BICUBIC).filter(ImageFilter.GaussianBlur(10))
+        im2 = Image.fromarray((rng.random((34, 120)) * 255).astype(np.uint8), "L").resize((960, 270), Image.BICUBIC).filter(ImageFilter.GaussianBlur(18))
+        _C[key] = Image.blend(im, im2, 0.5)
+    return _C[key]
+
+
+# ---------------------------------------------------------------- 1) 初代：羽根役物（玉を拾ってVへ）＋メーター
+def _wing():
+    if "wing" not in _C:
+        L = 190; s = L * 2 + 20
+        m = Image.new("L", (s, s), 0); d = ImageDraw.Draw(m); c = s / 2
+        d.polygon([(c, c - 16), (c + L * 0.55, c - 26), (c + L, c - 8), (c + L, c + 6), (c + L * 0.55, c + 14), (c, c + 16)], fill=255)
+        d.ellipse((c - 22, c - 22, c + 22, c + 22), fill=255)
+        im = _metal(m, (255, 210, 90), 2)
+        ImageDraw.Draw(im).ellipse((c - 9, c - 9, c + 9, c + 9), fill=(110, 70, 15, 255))
+        _C["wing"] = im
+    return _C["wing"]
+
+
+def _hane3(cv, t, fx):
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.5 * a)
+    cx, cy = W / 2, 330
+    _pput(cv, _plate(600, 430, GOLDC, 3), cx, cy, a)
+    opens = fx["marks"].get("open", [])
+    ang = 0.0
+    for o in opens:
+        if o <= t < o + 1.4:
+            ang = max(ang, abs(math.sin((t - o) / 1.4 * 2 * math.pi)))
+    wg = _wing(); c = wg.width / 2
+    for side in (-1, 1):
+        px, py = cx + side * 70, cy + 80
+        deg = 90 - 62 * ang if side > 0 else 90 + 62 * ang
+        im = wg.rotate(deg, Image.BICUBIC)
+        paste(cv, im, (px - c, py - c), a)
+    # V入賞口（光る）
+    v = _m(fx, "v")
+    vg = math.exp(-(t - v - 0.75) / 0.4) if (v is not None and t >= v + 0.75) else 0
+    vm = Image.new("L", (160, 90), 0); ImageDraw.Draw(vm).polygon([(10, 4), (150, 4), (80, 86)], fill=255)
+    vp = _metal(vm, (255, 230, 140) if vg < 0.2 else (255, 255, 220), 4)
+    paste(cv, vp, (cx - 80, cy + 120), a)
+    _mput(cv, "V", 54, cx, cy + 148, a, 1 + 0.25 * vg, base=(255, 90, 60), glow_a=0.4 + 0.6 * vg)
+    if vg > 0:
+        _rays(cv, cx, cy + 150, vg * a, (255, 240, 170), 22, 40, 500)
+    # 玉：羽根が開くたびに上から落ちて拾われる
+    for i, o in enumerate(opens[:2] + ([v] if v is not None else [])):
+        if o is None:
+            continue
+        tl = t - (o + 0.2)
+        if 0 <= tl < 0.75:
+            k = ease_in_out(prog(tl, 0, 0.75))
+            bx = cx + (1 - k) * (90 if i % 2 else -90) * math.sin(tl * 9)
+            by = cy - 180 + 340 * k
+            paste(cv, _ball(20), (bx - 22, by - 22), a)
+    # メーター（半円のゲージ）
+    p50, p82 = _m(fx, "p50"), _m(fx, "p82")
+    if p50 is not None and t >= p50 - 0.1:
+        ga = a * ease_out(prog(t, p50 - 0.1, 0.3))
+        f = 0.5 * ease_out(prog(t, p50, 0.6))
+        if p82 is not None and t >= p82:
+            f = 0.5 + 0.32 * ease_out(prog(t, p82, 0.8))
+        gx, gy, R = cx, 770, 230
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.pieslice((gx - R - 18, gy - R - 18, gx + R + 18, gy + R + 18), 180, 360, fill=(12, 10, 8, int(220 * ga)))
+        d.arc((gx - R, gy - R, gx + R, gy + R), 180, 360, fill=(70, 55, 30, int(255 * ga)), width=34)
+        d.arc((gx - R, gy - R, gx + R, gy + R), 180, 180 + 180 * f, fill=(255, 196, 60, int(255 * ga)), width=34)
+        for q in range(11):
+            an = math.pi + math.pi * q / 10
+            d.line((gx + (R + 22) * math.cos(an), gy + (R + 22) * math.sin(an), gx + (R + 34) * math.cos(an), gy + (R + 34) * math.sin(an)), fill=(255, 225, 150, int(255 * ga)), width=3)
+        an = math.pi + math.pi * f
+        d.line((gx, gy, gx + (R - 30) * math.cos(an), gy + (R - 30) * math.sin(an)), fill=(255, 70, 50, int(255 * ga)), width=8)
+        d.ellipse((gx - 14, gy - 14, gx + 14, gy + 14), fill=GOLDC + (int(255 * ga),))
+        cv.alpha_composite(lay)
+        lab = "継続" if (p82 is not None and t >= p82) else "突入"
+        _mput(cv, lab, 40, gx, gy - 120, ga, weight="bold", glow_a=0.3)
+        _mput(cv, f"{round(f * 100)}%", 74, gx, gy - 60, ga, base=(255, 236, 170))
+        if p82 is not None and t >= p82 + 0.8:
+            _sparks(cv, gx + (R - 30) * math.cos(an), gy + (R - 30) * math.sin(an), t - p82 - 0.8, ga, 30, 5, dur=0.8)
+
+
+# ---------------------------------------------------------------- 2) 閃騎鋼：1stバトル（斬撃とゲージ）
+def _slash(cv, t, s, color, x0, y0, x1, y1, width=26, dur=0.45):
+    tl = t - s
+    if not 0 <= tl < dur:
+        return
+    k = ease_out(prog(tl, 0, 0.12)); fadeo = 1 - prog(tl, 0.12, dur - 0.12)
+    xe, ye = x0 + (x1 - x0) * k, y0 + (y1 - y0) * k
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.line((x0, y0, xe, ye), fill=color + (int(255 * fadeo),), width=width)
+    d.line((x0, y0, xe, ye), fill=(255, 255, 255, int(255 * fadeo)), width=max(3, width // 4))
+    cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(6))); cv.alpha_composite(lay)
+
+
+def _seg_gauge(cv, x, y, w, frac, color, a, blink=1.0):
+    _pput(cv, _plate(w + 40, 84, (220, 225, 235), 2, 16), x + w / 2, y, a)
+    n = 20; sw = (w - 20) / n
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    for i in range(n):
+        on = (i + 0.5) / n <= frac
+        col = color if on else (40, 40, 46)
+        al = int(255 * a * (blink if on else 0.8))
+        d.rectangle((x + 10 + i * sw + 2, y - 22, x + 10 + (i + 1) * sw - 2, y + 22), fill=col + (al,))
+    cv.alpha_composite(lay)
+
+
+def _battle3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    a = _env(t, g - 0.1, fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.55 * a)
+    _mput(cv, "1st BATTLE", 110, W / 2, 200, a * ease_out(prog(t, g, 0.2)), 1 + 0.4 * (1 - ease_out(prog(t, g, 0.18))), base=(255, 200, 90))
+    _flash(cv, t, g, 0.12)
+    _sparks(cv, W / 2, 200, t - g, a, 40, 8, dur=0.8)
+    wk, st = _m(fx, "weak"), _m(fx, "strong")
+    if wk is not None and t >= wk - 0.05:
+        _slash(cv, t, wk, (80, 190, 255), 300, 620, 1620, 300)
+        _mput(cv, "弱攻撃", 44, 440, 400, a, weight="bold", base=(150, 210, 255), glow_a=0.3)
+        _seg_gauge(cv, 560, 400, 760, 0.82 * ease_out(prog(t, wk + 0.1, 0.7)), (90, 200, 255), a)
+        _mput(cv, "82%", 60, 1440, 400, a * ease_out(prog(t, wk + 0.6, 0.3)), base=(170, 225, 255))
+    if st is not None and t >= st - 0.05:
+        _slash(cv, t, st, (255, 40, 30), 320, 260, 1600, 700, 40)
+        _slash(cv, t, st + 0.08, (255, 40, 30), 320, 700, 1600, 260, 40)
+        blink = 0.55 + 0.45 * (math.sin((t - st) * 14) > 0)
+        _mput(cv, "強攻撃", 44, 440, 540, a, weight="bold", base=(255, 140, 120), glow_a=0.3)
+        _seg_gauge(cv, 560, 540, 760, 0.13 * ease_out(prog(t, st + 0.1, 0.3)), (255, 50, 40), a, blink)
+        _mput(cv, "13%", 60, 1440, 540, a * ease_out(prog(t, st + 0.3, 0.3)), base=(255, 120, 100))
+        _flash(cv, t, st, 0.2, (255, 60, 40), 140)
+        _sparks(cv, W / 2, 480, t - st, a, 60, 9, (255, 140, 90), dur=1.0)
+        if t < st + 0.8:
+            cv.alpha_composite(fade(_edge((255, 30, 30)), 0.8 * (1 - prog(t, st, 0.8)) * a))
+
+
+# ---------------------------------------------------------------- 3) FINAL：震撃（左下からの衝撃）
+def _shingeki3(cv, t, fx):
+    hits = (fx["marks"].get("go", []) + fx["marks"].get("don", []))[:3]
+    a = _env(t, fx["start"], fx["end"], 0.2, 0.4)
+    if a <= 0 or not hits:
+        return
+    _black(cv, 0.35 * a)
+    ox, oy = 40, H - 40
+    for j, s in enumerate(hits):
+        tl = t - s
+        if not 0 <= tl < 1.4:
+            continue
+        for i in range(3):
+            r = 100 + 2000 * ease_out(prog(tl, 0.07 * i, 1.0))
+            _ring(cv, ox, oy, r, 26 - 7 * i, (255, 200, 90), 0.9 * (1 - prog(tl, 0.07 * i, 1.1)) * a, 1.0, 4)
+        if tl < 0.12:
+            cv.alpha_composite(Image.new("RGBA", (W, H), (255, 240, 200, int(150 * (1 - tl / 0.12)))))
+        _sparks(cv, ox + 60, oy - 60, tl, a, 70, 20 + j, (255, 210, 140), (600, 1700), 500, 1.3, (-math.pi / 2 - 0.1, 0.1))
+        de = Image.new("RGBA", (W, H), (0, 0, 0, 0)); dd = ImageDraw.Draw(de); rng = np.random.default_rng(40 + j)
+        for q in range(40):                                              # 吹き飛ぶ破片
+            an = rng.uniform(-math.pi / 2, 0); v = rng.uniform(500, 1400); s2 = rng.uniform(8, 22)
+            x = ox + v * tl * math.cos(an); y = oy + v * tl * math.sin(an) + 700 * tl * tl
+            rot = tl * rng.uniform(4, 10)
+            dd.polygon([(x + s2 * math.cos(rot + q2), y + s2 * math.sin(rot + q2)) for q2 in (0, 2.1, 4.0)], fill=(170, 140, 90, int(255 * (1 - tl / 1.4) * a)))
+        cv.alpha_composite(de)
+        cv.alpha_composite(fade(_edge(GOLDC), 0.7 * (1 - prog(tl, 0, 1.2)) * a))
+    g = hits[0]
+    if t >= g:
+        k = 1 - ease_out(prog(t, g, 0.16))
+        _mput(cv, "震撃", 190, W / 2 + 40 * k, 330 + 30 * k, a * (1 - prog(t, g + 2.2, 0.5)), 1 + 0.5 * k, base=(255, 196, 70))
+
+
+# ---------------------------------------------------------------- 4) 金色になれ：画面が金色に満ちる
+def _konjiki3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    if t < g:
+        return
+    a = 1 - ease_in_out(prog(t, fx["end"] + 0.4, 0.6))
+    k = ease_in_out(prog(t, g, 0.9))
+    if "gold3" not in _C:
+        yy = np.linspace(0, 1, H // 2)[:, None] * np.ones((1, W // 2))
+        arr = np.zeros((H // 2, W // 2, 4), np.uint8)
+        arr[..., 0] = 255; arr[..., 1] = (180 + 60 * (1 - yy)).astype(np.uint8); arr[..., 2] = (30 + 90 * (1 - yy)).astype(np.uint8)
+        arr[..., 3] = (120 + 70 * yy).astype(np.uint8)
+        _C["gold3"] = Image.fromarray(arr, "RGBA").resize((W, H), Image.BICUBIC)
+    # 波打つ水面のように下から満ちる
+    lw, lh = W // 4, H // 4
+    m = Image.new("L", (lw, lh), 0); d = ImageDraw.Draw(m)
+    level = lh - lh * 1.15 * k
+    pts = [(x, level + 6 * math.sin(x * 0.06 + t * 5) + 4 * math.sin(x * 0.13 - t * 7)) for x in range(0, lw + 4, 4)]
+    d.polygon([(0, lh)] + pts + [(lw, lh)], fill=int(255 * a))
+    m = m.resize((W, H), Image.BICUBIC).filter(ImageFilter.GaussianBlur(4))
+    cv.paste(Image.alpha_composite(cv, _C["gold3"]), (0, 0), m)
+    surf = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sd = ImageDraw.Draw(surf)       # 水面の光る線
+    sd.line([(x * 4, y * 4) for x, y in pts], fill=(255, 250, 220, int(220 * a * (1 - k * 0.6))), width=6)
+    cv.alpha_composite(surf.filter(ImageFilter.GaussianBlur(3)))
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    rng = np.random.default_rng(23)
+    for i in range(7):                                                   # 立ちのぼる光の柱
+        x = rng.uniform(100, W - 100); ph = rng.uniform(0, 2); wd = rng.uniform(30, 90)
+        al = (0.5 + 0.5 * math.sin((t - g) * 2.5 + ph * 3)) * a * k
+        d.rectangle((x - wd / 2, 0, x + wd / 2, H), fill=(255, 240, 180, int(70 * al)))
+    cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(20)))
+    sp = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(sp)
+    for i in range(90):                                                  # 金の粒
+        x0 = rng.uniform(0, W); v = rng.uniform(120, 340); ph = rng.uniform(0, 3)
+        tt = (t - g + ph) % 3.0
+        y = H + 20 - v * tt
+        r = rng.uniform(2, 5)
+        d.ellipse((x0 - r, y - r, x0 + r, y + r), fill=(255, 248, 200, int(230 * a * k)))
+    for i in range(10):                                                  # きらめく星
+        x = rng.uniform(150, W - 150); y = rng.uniform(120, 760); ph = rng.uniform(0, 1)
+        tw = max(0, math.sin((t - g) * 3 + ph * 6)) ** 4 * a * k
+        r = 30 * tw
+        if r > 1:
+            d.polygon([(x, y - r), (x + r * 0.18, y), (x, y + r), (x - r * 0.18, y)], fill=(255, 255, 240, int(255 * tw)))
+            d.polygon([(x - r, y), (x, y - r * 0.18), (x + r, y), (x, y + r * 0.18)], fill=(255, 255, 240, int(255 * tw)))
+    cv.alpha_composite(sp)
+    cv.alpha_composite(fade(_edge(GOLDC), 0.55 * a * k))
+
+
+# ---------------------------------------------------------------- 5) 闇を照らす者：闇の煙→光の筋が台を照らす
+def _yami3(cv, t, fx):
+    s = fx["start"]
+    li, bk = _m(fx, "light", default=s + 1.5), _m(fx, "back")
+    end = bk + 0.8 if bk is not None else fx["end"]
+    if t > end + 0.9 or t < s - 0.2:
+        return
+    dark = min(1, prog(t, s - 0.15, 0.3)) * (1 - ease_in_out(prog(t, end, 0.9)))
+    tx, ty = 520, 500                                                    # 台の写真のあたり
+    r = 0 if t < li else 40 + 1000 * ease_out(prog(t, li, 1.6))
+    key = ("yami3", int(r // 25))
+    if key not in _C:
+        lw, lh = 480, 270; sc = W / lw
+        yy, xx = np.mgrid[0:lh, 0:lw].astype(np.float32)
+        dist = np.sqrt((xx - tx / sc) ** 2 + (yy - ty / sc) ** 2) * sc
+        rr = (r // 25) * 25
+        al = np.clip((dist - rr) / 300, 0, 1) if rr > 0 else np.ones_like(dist)
+        _C[key] = Image.fromarray((al * 255).astype(np.uint8), "L").resize((W, H), Image.BICUBIC)
+    sm = _smoke(4)
+    off = int((t * 40) % 960)
+    smk = Image.new("L", (W, H)); strip = Image.new("L", (1920, 270)); strip.paste(sm, (-off, 0)); strip.paste(sm, (960 - off, 0))
+    smk = strip.resize((W, H), Image.BICUBIC)
+    alpha = np.asarray(_C[key], np.float32) / 255 * (0.82 + 0.18 * np.asarray(smk, np.float32) / 255) * dark
+    blk = np.zeros((H, W, 4), np.uint8); blk[..., 0] = 6; blk[..., 1] = 4; blk[..., 2] = 12
+    blk[..., 3] = np.clip(alpha * 250, 0, 255).astype(np.uint8)
+    cv.alpha_composite(Image.fromarray(blk, "RGBA"))
+    if t >= li:                                                          # 上から差しこむ光の筋と、舞うほこり
+        k = min(1, prog(t, li, 0.4)) * dark
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.polygon([(tx - 60, -20), (tx + 60, -20), (tx + 260, ty + 260), (tx - 260, ty + 260)], fill=(255, 240, 190, int(110 * k)))
+        cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(30)))
+        dust = Image.new("RGBA", (W, H), (0, 0, 0, 0)); dd = ImageDraw.Draw(dust); rng = np.random.default_rng(61)
+        for i in range(50):
+            fy = rng.uniform(0, 1); x = tx + (rng.uniform(-1, 1) * (60 + 200 * fy)) + 20 * math.sin(t * 0.8 + i)
+            y = (fy * (ty + 240) + (t - li) * rng.uniform(10, 30)) % (ty + 240)
+            rr2 = rng.uniform(1.5, 3.5)
+            dd.ellipse((x - rr2, y - rr2, x + rr2, y + rr2), fill=(255, 245, 210, int(200 * k)))
+        cv.alpha_composite(dust)
+        _rays(cv, tx, ty, 0.5 * math.exp(-(t - li) / 0.9) * dark, (255, 240, 190), 20, 60, 700)
+    if bk is not None and bk <= t < bk + 0.15:
+        _flash(cv, t, bk, 0.15, (255, 240, 200), 110)
+
+
+# ---------------------------------------------------------------- 6) GOLDSTORM翔：赤い稲妻が保留に落ちる
+def _bolt3(seed, x0, y0, x1, y1, n=10, jit=70):
+    rng = np.random.default_rng(seed); pts = [(x0, y0)]
+    for i in range(1, n):
+        f = i / n
+        pts.append((x0 + (x1 - x0) * f + rng.uniform(-jit, jit), y0 + (y1 - y0) * f + rng.uniform(-12, 12)))
+    pts.append((x1, y1))
+    return pts
+
+
+def _inazuma3(cv, t, fx):
+    strikes = fx["marks"].get("strike", [])[:2]
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    # 嵐の空（上から暗く、雲が流れる）
+    if "storm" not in _C:
+        yy = np.linspace(0, 1, H)[:, None] * np.ones((1, W))
+        arr = np.zeros((H, W, 4), np.uint8); arr[..., 0] = 20; arr[..., 1] = 10; arr[..., 2] = 24
+        arr[..., 3] = (np.clip(1 - yy * 1.1, 0, 1) * 200).astype(np.uint8)
+        _C["storm"] = Image.fromarray(arr, "RGBA")
+    paste(cv, _C["storm"], (0, 0), a)
+    sm = _smoke(9); off = int((t * 60) % 960)
+    strip = Image.new("L", (1920, 270)); strip.paste(sm, (-off, 0)); strip.paste(sm, (960 - off, 0))
+    cl = strip.resize((W, H), Image.BICUBIC).crop((0, 0, W, 320)).point(lambda v: max(0, v - 110) * 2)
+    cloud = Image.new("RGBA", (W, 320), (60, 40, 70, 0)); cloud.putalpha(cl)
+    paste(cv, cloud, (0, 0), a)
+    hx = [520, 610, 700, 790]; hy = 818
+    _pput(cv, _plate(390, 96, (220, 225, 235), 6, 30), 655, hy, a)
+    hit = any(t >= s for s in strikes)
+    for i, x in enumerate(hx):
+        red = hit and i == 3
+        b = _ball(26, (255, 70, 60) if red else (120, 170, 255))
+        paste(cv, b, (x - b.width / 2, hy - b.height / 2), a)
+    if hit:                                                              # 赤い保留のまわりを電気が走る
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        for q in range(3):
+            an = (t * 7 + q * 2.1) % (2 * math.pi)
+            p = _bolt3(int(t * 30) + q, hx[3] + 30 * math.cos(an), hy + 30 * math.sin(an), hx[3] + 60 * math.cos(an + 0.8), hy + 60 * math.sin(an + 0.8), 4, 12)
+            d.line(p, fill=(255, 120, 110, int(230 * a)), width=3)
+        cv.alpha_composite(lay)
+        gl = Image.new("RGBA", (200, 200), (255, 40, 30, 0)); ImageDraw.Draw(gl).ellipse((40, 40, 160, 160), fill=(255, 40, 30, 150))
+        paste(cv, gl.filter(ImageFilter.GaussianBlur(20)), (hx[3] - 100, hy - 100), a * (0.7 + 0.3 * math.sin(t * 9)))
+    for k, s in enumerate(strikes):
+        tl = t - s
+        if not -0.05 <= tl < 0.55:
+            continue
+        v = 1 - prog(tl, 0.12, 0.43)
+        main = _bolt3(5 + k, 700 + (k * 160 - 80), -30, hx[3], hy - 26)
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(lay)
+        ld.line(main, fill=(255, 40, 40, 255), width=20, joint="curve"); ld.line(main, fill=(255, 240, 240, 255), width=6, joint="curve")
+        for b in range(4):                                               # 枝分かれ
+            j = 2 + b * 2
+            if j < len(main) - 1:
+                br = _bolt3(30 + b + k, main[j][0], main[j][1], main[j][0] + (160 if b % 2 else -160), main[j][1] + 180, 5, 30)
+                ld.line(br, fill=(255, 80, 70, 220), width=7, joint="curve")
+        paste(cv, lay.filter(ImageFilter.GaussianBlur(12)), (0, 0), v); paste(cv, lay, (0, 0), v)
+        if 0 <= tl < 0.14:
+            cv.alpha_composite(Image.new("RGBA", (W, H), (255, 70, 60, int(120 * (1 - tl / 0.14)))))
+        _sparks(cv, hx[3], hy - 26, tl, a, 40, 70 + k, (255, 150, 120), (300, 900), 700, 0.8)
+        cv.alpha_composite(fade(_edge((255, 30, 30)), 0.75 * v * a))
+
+
+# ---------------------------------------------------------------- 7) 冴島鋼牙XX：長い変動（金の時計と歯車）
+def _clock_face():
+    if "clock" not in _C:
+        S = 460; c = S / 2
+        m = Image.new("L", (S, S), 0); d = ImageDraw.Draw(m)
+        d.ellipse((4, 4, S - 4, S - 4), fill=255); d.ellipse((40, 40, S - 40, S - 40), fill=0)
+        for i in range(12):                                              # 外周の飾りの突起
+            an = i / 12 * 2 * math.pi
+            d.polygon([(c + 200 * math.cos(an - 0.08), c + 200 * math.sin(an - 0.08)), (c + 228 * math.cos(an), c + 228 * math.sin(an)),
+                       (c + 200 * math.cos(an + 0.08), c + 200 * math.sin(an + 0.08))], fill=255)
+        im = _metal(m, (255, 205, 80), 3)
+        face = Image.new("RGBA", (S, S), (0, 0, 0, 0)); fd = ImageDraw.Draw(face)
+        fd.ellipse((40, 40, S - 40, S - 40), fill=(22, 18, 14, 245))
+        fd.ellipse((60, 60, S - 60, S - 60), outline=(120, 90, 40, 255), width=2)
+        for i in range(60):
+            an = i / 60 * 2 * math.pi - math.pi / 2; r0 = 170 if i % 5 else 156
+            fd.line((c + r0 * math.cos(an), c + r0 * math.sin(an), c + 182 * math.cos(an), c + 182 * math.sin(an)), fill=(230, 190, 110, 255), width=4 if i % 5 == 0 else 2)
+        face.alpha_composite(im)
+        f = ui.font("bold", 34)
+        for i, num in enumerate(("XII", "III", "VI", "IX")):
+            an = i * math.pi / 2 - math.pi / 2
+            fd = ImageDraw.Draw(face); fd.text((c + 128 * math.cos(an), c + 128 * math.sin(an)), num, font=f, fill=(255, 220, 140, 255), anchor="mm")
+        _C["clock"] = face
+    return _C["clock"]
+
+
+def _hand(length, width, color):
+    key = ("hand", length, width, color)
+    if key not in _C:
+        s = length * 2 + 20; c = s / 2
+        m = Image.new("L", (s, s), 0); ImageDraw.Draw(m).polygon([(c - width, c + 20), (c + width, c + 20), (c + width * 0.4, c - length), (c, c - length - 14), (c - width * 0.4, c - length)], fill=255)
+        _C[key] = _metal(m, color, 1)
+    return _C[key]
+
+
+def _tokei3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    a = _env(t, g - 0.1, fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.45 * a)
+    cx, cy = W / 2, 360
+    gear = _fog_parts()["gear"]
+    for (dx, dy, sc, sp) in ((-230, -120, 0.55, 8), (240, 90, 0.45, -11)):  # 後ろでゆっくり回る歯車
+        gi = gear.resize((int(gear.width * sc), int(gear.height * sc)), Image.BICUBIC).rotate((t - g) * sp, Image.BICUBIC)
+        paste(cv, gi, (cx + dx - gi.width / 2, cy + dy - gi.height / 2), 0.8 * a)
+    face = _clock_face()
+    paste(cv, face, (cx - face.width / 2, cy - face.height / 2), a)
+    el = max(0.0, t - g)
+    step = math.floor(el / 1.0); frac = ease_out(min(1, (el - step) / 0.1))
+    sec = (step + frac) / 60 * 360
+    for ln, wd, col, deg in ((110, 9, (60, 40, 20), 300 + sec / 60), (160, 6, (255, 210, 120), 40 + sec / 12), (178, 3, (255, 70, 50), sec)):
+        h = _hand(ln, wd, col).rotate(-deg, Image.BICUBIC)
+        paste(cv, h, (cx - h.width / 2, cy - h.height / 2), a)
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(lay).ellipse((cx - 14, cy - 14, cx + 14, cy + 14), fill=GOLDC + (int(255 * a),)); cv.alpha_composite(lay)
+    dots = "・" * (1 + int(el * 1.5) % 3)
+    _mput(cv, "変動中" + dots, 56, cx, cy + 290, a, weight="bold", glow_a=0.35)
+
+
+# ---------------------------------------------------------------- 8) 真・牙狼：秒速（高速の図柄と集中線）
+def _reel_strip():
+    if "reel" not in _C:
+        f = ui.font("black", 130); h = 170
+        im = Image.new("RGBA", (150, h * 10), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        for i in range(10):
+            d.text((75, h * i + h / 2), str(i), font=f, fill=(255, 236, 170, 255), anchor="mm", stroke_width=5, stroke_fill=(60, 30, 0, 255))
+        blur = im.resize((150, h * 10 // 6), Image.BICUBIC).resize((150, h * 10), Image.BICUBIC).filter(ImageFilter.GaussianBlur(4))
+        _C["reel"] = (im, blur, h)
+    return _C["reel"]
+
+
+def _byousoku3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    a = _env(t, g - 0.1, fx["end"], 0.15, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.35 * a)
+    rng = np.random.default_rng(int(t * 30))
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(lay)
+    for i in range(90):                                                  # 集中線（白と金）
+        an = rng.uniform(0, 2 * math.pi); r0 = rng.uniform(360, 560); w = rng.uniform(0.004, 0.014)
+        col = (255, 255, 255) if i % 3 else (255, 210, 110)
+        ld.polygon([(W / 2 + r0 * math.cos(an - w), 380 + r0 * math.sin(an - w)), (W / 2 + 1500 * math.cos(an), 380 + 1500 * math.sin(an)),
+                    (W / 2 + r0 * math.cos(an + w), 380 + r0 * math.sin(an + w))], fill=col + (200,))
+    paste(cv, lay, (0, 0), a)
+    k = _m(fx, "kore")
+    stop = k if k is not None else fx["end"] - 0.6
+    strip, blur, h = _reel_strip()
+    for i in range(3):
+        x = W / 2 + (i - 1) * 210
+        _pput(cv, _plate(190, 240, GOLDC, i, 18), x, 360, a)
+        st = stop + 0.15 * i
+        win = Image.new("RGBA", (150, 190), (0, 0, 0, 0))
+        if t < st:
+            pos = ((t - g) * 4200 + i * 900) % (h * 10)
+            src = blur
+            yoff = int(-pos)
+            win.paste(src.crop((0, max(0, -yoff), 150, min(h * 10, -yoff + 190))), (0, max(0, yoff)))
+            if -yoff + 190 > h * 10:
+                rest = -yoff + 190 - h * 10
+                win.paste(src.crop((0, 0, 150, rest)), (0, 190 - rest))
+            paste(cv, win, (x - 75, 265), a)
+        else:
+            bounce = 18 * math.exp(-(t - st) / 0.08) * math.cos((t - st) * 40)
+            _mput(cv, "7", 150, x, 360 + bounce, a, base=(255, 90, 60))
+            _sparks(cv, x, 360, t - st, a, 16, 80 + i, dur=0.5, speed=(200, 600))
+    _flash(cv, t, stop + 0.3, 0.15)
+    if t >= g:
+        kk = ease_out(prog(t, g, 0.25))
+        for j in range(4, 0, -1):                                        # 文字の残像
+            _mput(cv, "秒速", 110, W / 2 - 60 * j * (1 - kk) - 20 * j, 600, a * 0.12 * (5 - j) * kk, base=(255, 196, 70), glow_a=0)
+        _mput(cv, "秒速", 110, W / 2 - 200 * (1 - kk), 600, a * kk, base=(255, 196, 70))
+
+
+# ---------------------------------------------------------------- 9) 月虹ノ旅人：初代の数字と重なる
+def _kasane3(cv, t, fx):
+    nw, old = _m(fx, "now", default=fx["start"]), _m(fx, "old")
+    a = _env(t, nw - 0.1, fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.5 * a)
+    meet = (old + 1.2) if old is not None else None
+    m = ease_in_out(prog(t, meet, 0.55)) if meet is not None else 0
+
+    def plaque(x, year, spec, al, border, seed):
+        _pput(cv, _plate(540, 300, border, seed, 26), x, 380, al)
+        _mput(cv, year, 48, x, 300, al, weight="bold", base=(235, 225, 210), glow_a=0.2)
+        _mput(cv, spec, 92, x, 410, al, base=border)
+    xr = W / 2 + 300 * (1 - m); xl = W / 2 - 300 * (1 - m)
+    plaque(xr, "2021 月虹ノ旅人", "50%・81%", a * ease_out(prog(t, nw, 0.3)) * (1 - m), (150, 200, 255), 1)
+    if old is not None and t >= old - 0.05:
+        plaque(xl, "2008 初代", "50%・82%", a * ease_out(prog(t, old, 0.3)), GOLDC, 2)
+    if meet is not None and t >= meet + 0.55:
+        tk = t - meet - 0.55
+        _flash(cv, t, meet + 0.55, 0.16)
+        _ring(cv, W / 2, 380, 280 + 800 * ease_out(prog(tk, 0, 0.8)), 14, GOLDC, (1 - prog(tk, 0, 0.8)) * a)
+        _sparks(cv, W / 2, 380, tk, a, 60, 33, dur=1.0)
+        p = math.exp(-tk / 0.6)
+        _rays(cv, W / 2, 380, p * a, GOLDC, 26, 280, 900)
+        # 「ほぼ同じ」のはんこ（回りながら押される）
+        sk = ease_out(prog(tk, 0.15, 0.25))
+        if sk > 0:
+            if "stamp" not in _C:
+                st = Image.new("RGBA", (260, 260), (0, 0, 0, 0)); sd = ImageDraw.Draw(st)
+                sd.ellipse((8, 8, 252, 252), outline=(220, 40, 30, 255), width=12); sd.ellipse((26, 26, 234, 234), outline=(220, 40, 30, 255), width=4)
+                sd.text((130, 130), "ほぼ\n同じ", font=ui.font("black", 64), fill=(220, 40, 30, 255), anchor="mm", align="center", spacing=4)
+                _C["stamp"] = st
+            im = _C["stamp"].rotate(-14 - 40 * (1 - sk), Image.BICUBIC)
+            _pput(cv, im, W / 2 + 330, 590, a * sk, 1 + 0.8 * (1 - sk))
+
+
+# ---------------------------------------------------------------- 10) GOLD IMPACT：扉が閉まって1回転で決着
+def _door_half():
+    if "door3" not in _C:
+        dw = W // 2
+        m = Image.new("L", (dw, H), 255)
+        steel = _metal(m, (70, 72, 84), 5)
+        d = ImageDraw.Draw(steel)
+        for y in range(70, H - 40, 160):                                 # 凹んだ板
+            d.rectangle((50, y, dw - 70, y + 120), outline=(30, 30, 38, 255), width=4)
+            d.rectangle((54, y + 4, dw - 74, y + 116), outline=(120, 124, 140, 255), width=2)
+            for x in (66, dw - 86):
+                for yy in (y + 14, y + 106):
+                    d.ellipse((x - 6, yy - 6, x + 6, yy + 6), fill=(190, 194, 205, 255), outline=(40, 40, 48, 255))
+        gm = Image.new("L", (dw, H), 0); ImageDraw.Draw(gm).rectangle((dw - 34, 0, dw, H), fill=255)
+        steel.alpha_composite(_metal(gm, GOLDC, 2))                       # 合わせ目の金の縁
+        lm = Image.new("L", (dw, H), 0); ImageDraw.Draw(lm).pieslice((dw - 150, H / 2 - 150, dw + 150, H / 2 + 150), 90, 270, fill=255)
+        ImageDraw.Draw(lm).pieslice((dw - 96, H / 2 - 96, dw + 96, H / 2 + 96), 90, 270, fill=0)
+        steel.alpha_composite(_metal(lm, GOLDC, 4))                       # 錠の半円
+        _C["door3"] = (steel, steel.transpose(Image.FLIP_LEFT_RIGHT))
+    return _C["door3"]
+
+
+def _door3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    if t < g:
+        return
+    close = ease_in_out(prog(t, g, 0.35)) ** 1.5
+    opn = ease_in_out(prog(t, fx["end"] - 0.7, 0.6))
+    k = close * (1 - opn)
+    if k <= 0:
+        return
+    L, R = _door_half()
+    cv.alpha_composite(L, (int(-L.width + L.width * k), 0))
+    cv.alpha_composite(R, (int(W - R.width * k), 0))
+    shut = g + 0.35
+    if t >= shut and opn <= 0:
+        tk = t - shut
+        p = math.exp(-tk / 0.3)
+        _sparks(cv, W / 2, H - 60, tk, 1, 50, 44, (220, 200, 160), (200, 700), 500, 0.9, (math.pi * 1.05, math.pi * 1.95))   # 下で舞う火花
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.rectangle((W / 2 - 3, 0, W / 2 + 3, H), fill=(255, 245, 200, int(255 * min(1, 0.4 + p))))
+        cv.alpha_composite(lay)
+        cv.alpha_composite(fade(_edge(GOLDC), 0.6 * p))
+        lk = ease_out(prog(tk, 0.15, 0.3))                               # 錠の中心に光る玉がはまる
+        if lk > 0:
+            gm = Image.new("RGBA", (220, 220), (0, 0, 0, 0)); ImageDraw.Draw(gm).ellipse((40, 40, 180, 180), fill=(255, 220, 120, 255))
+            paste(cv, gm.filter(ImageFilter.GaussianBlur(18)), (W / 2 - 110, H / 2 - 110), lk)
+            _mput(cv, "1", 120, W / 2, H / 2, lk, 1 + 0.5 * (1 - lk), base=(255, 236, 170))
+        glow = ease_out(prog(tk, 0.6, 0.5))
+        if glow > 0:                                                     # 合わせ目から光が漏れる
+            lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(lay)
+            ld.rectangle((W / 2 - 50 * glow, 0, W / 2 + 50 * glow, H), fill=(255, 235, 160, int(210 * glow)))
+            cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(26)))
+            _rays(cv, W / 2, H / 2, 0.4 * glow, GOLDC, 24, 150, 900)
+
+
+# ---------------------------------------------------------------- 11) 牙狼11：光の枠（V-LIGHT）
+def _vlight3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    a = _env(t, g, fx["end"] + 0.6, 0.05, 0.6)
+    if a <= 0:
+        return
+    k = ease_in_out(prog(t, g, 1.0))
+    per = 2 * (W + H)
+
+    def pt(s):
+        s = (s + W / 2) % per
+        if s < W: return (s, 26)
+        s -= W
+        if s < H: return (W - 26, s)
+        s -= H
+        if s < W: return (W - s, H - 26)
+        return (26, H - (s - W))
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ld = ImageDraw.Draw(lay)
+    heads = []
+    for side in (1, -1):
+        pts = [pt(side * per / 2 * k * i / 60) for i in range(61)]
+        ld.line(pts, fill=(255, 245, 210, 255), width=24, joint="curve")
+        heads.append(pts[-1])
+    g2 = lay.filter(ImageFilter.GaussianBlur(18))
+    tint = Image.new("RGBA", (W, H), GOLDC + (0,)); tint.putalpha(g2.getchannel("A"))
+    paste(cv, tint, (0, 0), a); paste(cv, tint, (0, 0), a * 0.6); paste(cv, lay, (0, 0), a)
+    for j, (hx, hy) in enumerate(heads):                                 # 先頭の光の玉と、こぼれる粒
+        if k < 1:
+            gl = Image.new("RGBA", (160, 160), (0, 0, 0, 0)); ImageDraw.Draw(gl).ellipse((40, 40, 120, 120), fill=(255, 255, 240, 255))
+            paste(cv, gl.filter(ImageFilter.GaussianBlur(14)), (hx - 80, hy - 80), a)
+            _sparks(cv, hx, hy, (t - g) % 0.3, a, 10, int(t * 20) + j, dur=0.3, speed=(100, 400), grav=300)
+    if k >= 1:                                                           # 一周したら：枠のLEDが順に走り、中央に V の紋章
+        tk = t - g - 1.0
+        cv.alpha_composite(fade(_edge(GOLDC), 0.6 * a * math.exp(-tk / 0.9)))
+        led = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(led)
+        n = 48
+        for i in range(n):
+            x, y = pt(per * i / n)
+            on = ((i - tk * 30) % 8) < 2
+            d.ellipse((x - 9, y - 9, x + 9, y + 9), fill=(255, 250, 220, int((255 if on else 90) * a)))
+        cv.alpha_composite(led)
+        sk = ease_out(prog(tk, 0, 0.25))
+        _mput(cv, "V", 230, W / 2, 380, a * sk * (1 - prog(tk, 2.0, 0.5)), 1 + 0.6 * (1 - sk), base=(255, 210, 100))
+        _ring(cv, W / 2, 380, 150 + 600 * ease_out(prog(tk, 0, 0.7)), 12, GOLDC, (1 - prog(tk, 0, 0.7)) * a)
+        _flash(cv, t, g + 1.0, 0.12)
+
+
+# ---------------------------------------------------------------- 12) 3000LT：カウントアップと玉の雨
+def _count3000_3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    a = _env(t, g - 0.1, fx["end"], 0.2, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.5 * a)
+    dur = 1.6
+    k = ease_out(prog(t, g, dur))
+    rng = np.random.default_rng(12)
+    for i in range(70):                                                  # 玉の雨
+        x = rng.uniform(80, W - 80); v = rng.uniform(700, 1300); ph = rng.uniform(0, 1.2); r = int(rng.uniform(12, 20))
+        tt = (t - g + ph) % 1.2
+        y = -40 + v * tt
+        if y < H:
+            b = _ball(r)
+            paste(cv, b, (x - b.width / 2, y - b.height / 2), a * min(1, (t - g + 0.3) * 3) * (0.85 if t < g + dur else 0.5))
+    n = int(round(3000 * k / 10) * 10)
+    done = g + dur
+    s = 1.0 + (0.22 * math.exp(-(t - done) / 0.2) if t >= done else 0)
+    _pput(cv, _plate(900, 280, GOLDC, 7, 30), W / 2, 370, a)
+    _mnum(cv, f"{n:,}", 190, W / 2 - 40, 370, a, s, base=(255, 230, 150))
+    _mput(cv, "個", 90, W / 2 + 330, 400, a * k, base=(255, 230, 150))
+    if t >= done:
+        tk = t - done
+        _flash(cv, t, done, 0.15)
+        _ring(cv, W / 2, 370, 300 + 900 * ease_out(prog(tk, 0, 0.8)), 16, GOLDC, (1 - prog(tk, 0, 0.8)) * a)
+        _sparks(cv, W / 2, 370, tk, a, 80, 14, dur=1.2)
+        _rays(cv, W / 2, 370, math.exp(-tk / 0.6) * a, GOLDC, 30, 300, 1000)
+        cv.alpha_composite(fade(_edge(GOLDC), 0.6 * math.exp(-tk / 0.8) * a))
+
+
+# ---------------------------------------------------------------- 13) 牙狼12：極限バトル 1500 vs 7500
+def _kyokugen3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    a = _env(t, g - 0.1, fx["end"], 0.25, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.6 * a)
+    win, lose = _m(fx, "win"), _m(fx, "lose")
+    stop = win if win is not None else g + 2.0
+    _mput(cv, "極限バトル", 96, W / 2, 170, a * ease_out(prog(t, g, 0.25)), 1 + 0.3 * (1 - ease_out(prog(t, g, 0.2))), base=(255, 120, 70))
+    if t < stop:
+        sel = int((t - g) * (11 - 7 * prog(t, g, max(0.1, stop - g)))) % 2
+    else:
+        sel = 1
+    xs = (W / 2 - 330, W / 2 + 330)
+    for i, (txt, x) in enumerate((("1500", xs[0]), ("7500", xs[1]))):
+        on = sel == i
+        if t >= stop and i == 0:                                         # 負けた側は割れて落ちる
+            tk = t - stop
+            if tk > 1.2:
+                continue
+            for q, (dx, dy, rot) in enumerate(((-1, -1, -20), (1, -1, 15), (-1, 1, 25), (1, 1, -10))):
+                part = _plate(440, 260, (150, 150, 160), 2, 24).crop((0 if dx < 0 else 220, 0 if dy < 0 else 130, 220 if dx < 0 else 440, 130 if dy < 0 else 260)).rotate(rot * tk * 3, Image.BICUBIC, expand=True)
+                paste(cv, part, (x + dx * (110 + 200 * tk) - part.width / 2, 400 + dy * 65 + 900 * tk * tk - part.height / 2), a * (1 - tk / 1.2))
+            continue
+        sc = 1.0
+        if t >= stop and i == 1:
+            sc = 1.18 + 0.2 * math.exp(-(t - stop) / 0.2)
+        border = (255, 210, 90) if on else (130, 130, 140)
+        _pput(cv, _plate(440, 260, border, 1 + i, 24), x, 400, a * (1 if on or t < stop else 0.5), sc)
+        _mput(cv, txt, 140, x, 400, a * (1 if on else 0.45), sc, base=(255, 230, 150) if on else (170, 170, 180), glow_a=0.8 if on else 0.1)
+    if t < stop:                                                         # 2枚の間を走る電撃
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        for q in range(2):
+            p = _bolt3(int(t * 24) + q * 7, xs[0] + 220, 400 + q * 20 - 10, xs[1] - 220, 400 - q * 20 + 10, 8, 26)
+            d.line(p, fill=(255, 120, 80, int(230 * a)), width=5)
+        cv.alpha_composite(lay.filter(ImageFilter.GaussianBlur(2))); cv.alpha_composite(lay)
+        _mput(cv, "VS", 90, W / 2, 400, a, base=(255, 90, 60))
+    else:
+        tk = t - stop
+        _flash(cv, t, stop, 0.15)
+        _sparks(cv, xs[1], 400, tk, a, 70, 52, dur=1.1)
+        _rays(cv, xs[1], 400, math.exp(-tk / 0.6) * a, GOLDC, 28, 240, 1000)
+        _ring(cv, xs[1], 400, 260 + 700 * ease_out(prog(tk, 0, 0.7)), 14, GOLDC, (1 - prog(tk, 0, 0.7)) * a)
+    if lose is not None and t >= lose:
+        _mput(cv, "勝てば7500 ／ 負けても1500　約50%", 52, W / 2, 640, a * ease_out(prog(t, lose, 0.3)), weight="bold", base=(240, 230, 210), glow_a=0.2)
+
+
+# ---------------------------------------------------------------- 14) 魔戒BURST：力が集まって弾ける
+def _shards():
+    if "shards" not in _C:
+        out = []; rng = np.random.default_rng(77)
+        for i in range(8):
+            s = 70; m = Image.new("L", (s, s), 0)
+            pts = [(rng.uniform(0, s), rng.uniform(0, s * 0.3)), (rng.uniform(s * 0.6, s), rng.uniform(s * 0.4, s)), (rng.uniform(0, s * 0.4), rng.uniform(s * 0.6, s))]
+            ImageDraw.Draw(m).polygon(pts, fill=255)
+            out.append(_metal(m, (255, 80, 50) if i % 3 == 0 else GOLDC, i))
+        _C["shards"] = out
+    return _C["shards"]
+
+
+def _burst3(cv, t, fx):
+    g = _m(fx, "go", default=fx["start"])
+    if t < g - 0.8:
+        return
+    a = _env(t, g - 0.8, fx["end"], 0.3, 0.5)
+    cy = 380
+    tl = t - g
+    _black(cv, 0.45 * a)
+    if tl < 0:                                                           # 弾ける前：粒が集まり、輪が縮む
+        k = ease_in_out(prog(tl, -0.8, 0.8))
+        sp = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(sp); rng = np.random.default_rng(5)
+        for i in range(80):
+            an = rng.uniform(0, 2 * math.pi); r = rng.uniform(250, 900) * (1 - k)
+            x, y = W / 2 + r * math.cos(an), cy + r * math.sin(an); s = rng.uniform(2, 5)
+            d.ellipse((x - s, y - s, x + s, y + s), fill=(255, 150, 90, int(240 * k)))
+        cv.alpha_composite(sp)
+        _ring(cv, W / 2, cy, 380 * (1 - k) + 20, 8, (255, 200, 150), k * a)
+        gl = Image.new("RGBA", (300, 300), (0, 0, 0, 0)); ImageDraw.Draw(gl).ellipse((90, 90, 210, 210), fill=(255, 210, 160, 255))
+        paste(cv, gl.filter(ImageFilter.GaussianBlur(30)), (W / 2 - 150, cy - 150), k * a)
+        return
+    _flash(cv, t, g, 0.2, (255, 255, 255), 220)
+    if "burstlay" not in _C:                                             # 放射状の爆発の模様
+        lw, lh = 480, 270; yy, xx = np.mgrid[0:lh, 0:lw].astype(np.float32)
+        ang = np.arctan2(yy - lh * cy / H, xx - lw / 2); dist = np.sqrt((xx - lw / 2) ** 2 + (yy - lh * cy / H) ** 2) / 200
+        rays = 0.5 + 0.5 * np.sin(ang * 23) * np.sin(ang * 7 + 1)
+        al = np.clip((1 - dist) * (0.6 + 0.6 * rays), 0, 1)
+        arr = np.zeros((lh, lw, 4), np.uint8); arr[..., 0] = 255; arr[..., 1] = (120 + 120 * (1 - dist)).clip(60, 240).astype(np.uint8); arr[..., 2] = 60
+        arr[..., 3] = (al * 255).astype(np.uint8)
+        _C["burstlay"] = Image.fromarray(arr, "RGBA").resize((W, H), Image.BICUBIC)
+    sc = 0.3 + 1.4 * ease_out(prog(tl, 0, 0.5))
+    bl = _C["burstlay"]
+    im = bl.resize((int(W * sc), int(H * sc)), Image.BICUBIC)
+    paste(cv, im, (W / 2 - im.width / 2, cy - im.height * cy / H), a * (1 - prog(tl, 0.3, 0.9)))
+    for i in range(3):
+        _ring(cv, W / 2, cy, 80 + 1500 * ease_out(prog(tl, 0.08 * i, 0.9)), 22 - 6 * i, (255, 120, 60) if i % 2 else (255, 220, 150), (1 - prog(tl, 0.08 * i, 0.9)) * a, 1.0, 3)
+    rng = np.random.default_rng(11)
+    for i, sh in enumerate(_shards() * 4):                               # 金属の破片
+        an = rng.uniform(0, 2 * math.pi); v = rng.uniform(500, 1500)
+        r = v * ease_out(min(1, tl / 1.3))
+        x, y = W / 2 + r * math.cos(an), cy + r * math.sin(an) + 200 * tl * tl
+        im2 = sh.rotate(tl * rng.uniform(200, 700), Image.BICUBIC, expand=True)
+        paste(cv, im2, (x - im2.width / 2, y - im2.height / 2), a * (1 - prog(tl, 0.7, 0.8)))
+    _sparks(cv, W / 2, cy, tl, a, 90, 19, (255, 190, 120), (700, 1800), 300, 1.2)
+    k = 1 - ease_out(prog(tl, 0, 0.18))
+    _mput(cv, "BURST", 200, W / 2, cy, a * (1 - prog(tl, 1.8, 0.5)), 1 + 0.5 * k, base=(255, 110, 70))
+    cv.alpha_composite(fade(_edge((255, 60, 40)), 0.7 * a * math.exp(-tl / 0.7)))
+
+
+DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _inazuma3, "door": _door3,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
-        "beat": _beat, "hane": _hane, "battle": _battle, "shingeki": _shingeki, "nanairo": _nanairo2, "yami": _yami,
-        "tokei": _tokei, "byousoku": _byousoku, "kasane": _kasane, "vlight": _vlight, "count3000": _count3000,
-        "kyokugen": _kyokugen, "burst": _burst}
+        "beat": _beat, "hane": _hane3, "battle": _battle3, "shingeki": _shingeki3, "nanairo": _nanairo2, "yami": _yami3,
+        "tokei": _tokei3, "byousoku": _byousoku3, "kasane": _kasane3, "vlight": _vlight3, "count3000": _count3000_3,
+        "kyokugen": _kyokugen3, "burst": _burst3}
 
 
 NOTE = "※演出はイメージです。実機の演出ではありません"
