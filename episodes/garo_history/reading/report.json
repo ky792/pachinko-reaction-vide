@@ -1,28 +1,15 @@
 [
  {
   "kind": "余分な音",
-  "where": "ヨセテ",
+  "where": "ソゼタナ",
   "expect": "",
-  "reason": "台本にない「ヨセテ」が聞こえる",
-  "level": "低",
+  "reason": "台本にない「ソゼタナ」が聞こえる",
+  "level": "中",
   "id": "03_konjiki-005",
   "who": "baku",
   "text": "まだ寄せただけや。",
-  "asr": "まだ寄せて寄せただけや",
-  "ratio": 0.842,
+  "asr": "まだ寄せただけやそぜたな",
+  "ratio": 0.8,
   "audio": "episodes/garo_history/voices/03_konjiki-005.wav"
- },
- {
-  "kind": "速さ",
-  "where": "",
-  "expect": "",
-  "level": "低",
-  "reason": "1秒あたり 6.6 音（この話者のふつうは 4.2）。脱落・早口の疑い",
-  "id": "04_after-024",
-  "who": "baku",
-  "text": "ほらな。80%あっても、遅いと文句が出るんや。",
-  "asr": "ほらな80%あっても遅いと文句が出るんや",
-  "ratio": 0.966,
-  "audio": "episodes/garo_history/voices/04_after-024.wav"
  }
 ]
