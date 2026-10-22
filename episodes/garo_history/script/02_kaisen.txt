@@ -2,7 +2,7 @@
 # 未確認: RED REQUIEM の「スピード感が落ちた」は wikipedia のみ →「って言われてる」
 @chapter garo1
 @bgm resume 0.8
-@bgm track dark_gold.wav
+@bgm track mood_retro.wav
 @year 2008
 @show machine:garo_xx
 ナギ: 2008年11月、初代のCR牙狼XX。

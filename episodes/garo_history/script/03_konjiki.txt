@@ -2,7 +2,7 @@
 # 未確認: 金色になれ「中古が1台100万円超」、魔戒ノ花「約14万台」は wikipedia のみ →「って言われてる」
 @chapter garo2
 @bgm resume 0.8
-@bgm track dark_gold.wav
+@bgm track bright_light.wav
 @year 2012
 @show machine:garo_senki
 ナギ: 2012年3月、魔戒閃騎鋼。答えは、V確変だった。

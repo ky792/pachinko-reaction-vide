@@ -1,5 +1,5 @@
 @chapter matome
-@bgm track dark_gold.wav
+@bgm track bright_light.wav
 @show lineup:garo_legend
 ナギ: まとめ。牙狼の18年で、流れを変えた台を並べるとこう。
 ナギ: 2008年の初代で、魔戒チャンスの50%と82%。
