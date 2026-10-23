@@ -1663,5 +1663,10 @@
   "sha1": "31db7f4104776b24ca91de2c4c761e59aeceab1e",
   "model": "large-v3-turbo",
   "text": "ほな、財布の紐はしっかり握っとかなあかんな"
+ },
+ "01_eikou-010": {
+  "sha1": "77e497fd6537b12dbac3b0114f17e2704cca71fd",
+  "model": "large-v3-turbo",
+  "text": "素直にもうお前ならええのに"
  }
 }

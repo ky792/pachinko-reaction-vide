@@ -1,1 +1,15 @@
-[]
+[
+ {
+  "kind": "誤読",
+  "where": "ミトメタ",
+  "expect": "ミトメタ",
+  "reason": "台本は「ミトメタ」、聞こえたのは「モーオマエナ」",
+  "level": "中",
+  "id": "01_eikou-010",
+  "who": "baku",
+  "text": "素直に認めたらええのに。",
+  "asr": "素直にもうお前ならええのに",
+  "ratio": 0.643,
+  "audio": "episodes/garo_history/voices/01_eikou-010.wav"
+ }
+]
