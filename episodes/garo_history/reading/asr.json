@@ -50,9 +50,9 @@
   "text": "その後何年か新しいガロがすぐ開く時代が来る"
  },
  "00_op-011": {
-  "sha1": "f7ea385b3880ccb7aed0706119bfbf9825013fb5",
+  "sha1": "cc3588e9e17be3b709da063cb0c7c8014811e520",
   "model": "large-v3-turbo",
-  "text": "ガロガ?あのガロガか?"
+  "text": "ガロがすぐ開く?想像つかんわ"
  },
  "01_basic-001": {
   "sha1": "e68c4787d7cdf223418db9e429c7ebed0ba9cdab",
@@ -1490,9 +1490,9 @@
   "text": "牙バトルで負けた時のあの虚無よ!"
  },
  "01_eikou-023": {
-  "sha1": "b8bf8ac5c3fb443ede8507730349e94c23f7baae",
+  "sha1": "a77794e0344adfe384f061ea6b5efb45ec4cc6f9",
   "model": "large-v3-turbo",
-  "text": "平均4回?俺の初代だいたい単発やったけどな"
+  "text": "平均4回?うちの初代、だいたい単発やったけどな"
  },
  "01_eikou-024": {
   "sha1": "bf5801388e0ac7685690220696e4754a68d4cf9f",
@@ -1645,9 +1645,9 @@
   "text": "3割か、だいたいここで終わるやつやん"
  },
  "05_fukkatsu-011": {
-  "sha1": "ad7a550741372d5a72cc8cf65be205b2e55ccbf7",
+  "sha1": "8388212a2e5ece87b46d2fe0a7813f92a5fa1a38",
   "model": "large-v3-turbo",
-  "text": "俺も3回折れたわはら"
+  "text": "うちも3回折れたわあらっ"
  },
  "05_fukkatsu-014": {
   "sha1": "9286b021f79146a28b9d1731492a1db787c476c1",
