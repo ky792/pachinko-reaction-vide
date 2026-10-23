@@ -192,6 +192,8 @@ def state_key(scene, t):
     if chap_end and chap_end - 0.4 <= t < chap_end + 0.15:
         return None
     key.append(round(y, 3))
+    if scene.get("grade"):
+        key.append(("g", grade_level(scene, t)))
     for i, c in enumerate(cues):
         if not (c["start"] <= t < c["end"]):
             continue
@@ -216,10 +218,58 @@ def state_key(scene, t):
     return tuple(key)
 
 
+_GRADE = {}
+GRADE_CARD_SEC = 0.5   # 章カードの間は色味を強く、終わってからこの秒数で普段の強さに戻す
+
+
+def _grade_bg(name, grade, k):
+    """章ごとの色味を背景だけにかける（キャラ・資料・字幕は元の色のまま）。
+    gold＝栄光（金）／blue＝転落（色を抜いて暗い青）／goldred＝復活（金と赤）。k は強さ（普段0.45、章カードで1.0）"""
+    import numpy as np
+    k = round(k, 2)
+    key = (name, grade, k)
+    if key not in _GRADE:
+        if len(_GRADE) > 24:
+            _GRADE.clear()
+        base = np.asarray(ui.background(name).convert("RGB")).astype(np.float32)
+        lum = (base @ np.array([0.299, 0.587, 0.114], np.float32))[..., None]
+        yy, xx = np.mgrid[0:ui.H, 0:ui.W].astype(np.float32)
+        if grade == "gold":
+            tone = lum * np.array([1.55, 1.15, 0.45], np.float32) + np.array([18, 10, 0], np.float32)
+        elif grade == "blue":
+            tone = lum * np.array([0.62, 0.78, 1.18], np.float32)
+        elif grade == "goldred":
+            side = np.clip(np.abs(xx - ui.W / 2) / (ui.W / 2), 0, 1)[..., None] ** 1.5   # 端ほど赤く
+            gold = lum * np.array([1.55, 1.15, 0.45], np.float32) + np.array([18, 10, 0], np.float32)
+            red = lum * np.array([1.7, 0.55, 0.45], np.float32) + np.array([24, 0, 0], np.float32)
+            tone = gold * (1 - side) + red * side
+        else:
+            tone = base
+        out = base * (1 - k) + tone * k
+        _GRADE[key] = ui.Image.fromarray(np.clip(out, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+    return _GRADE[key]
+
+
+def grade_level(scene, t):
+    """普段は0.45。章カードの間は1.0（重要な切り替えの瞬間だけ強く）"""
+    lv = 0.45
+    for c in scene["cues"]:
+        if c["type"] == "chapter" and c.get("data", {}).get("grade"):
+            if c["start"] <= t < c["end"]:
+                lv = 1.0
+            elif c["end"] <= t < c["end"] + GRADE_CARD_SEC:
+                lv = max(lv, 1.0 - 0.55 * ui.ease_in_out(ui.prog(t, c["end"], GRADE_CARD_SEC)))
+    return round(lv * 20) / 20     # 段階を粗くして、作った背景を使い回す
+
+
 def render_layers(scene, t, images):
     ch = scene["chapter"]
     cues = scene["cues"]
-    under = ui.background(scene.get("background") or "lab_room.png").copy()
+    name = scene.get("background") or "lab_room.png"
+    if scene.get("grade"):
+        under = _grade_bg(name, scene["grade"], grade_level(scene, t)).copy()
+    else:
+        under = ui.background(name).copy()
     chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=0)
     first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=1e9)
     in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo"))

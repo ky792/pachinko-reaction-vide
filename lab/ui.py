@@ -229,7 +229,8 @@ def chapter_card(canvas, tl, dur, data):
     cy = H / 2 - 30
     st = {k: ease_out(prog(tl, s, 0.45)) for k, s in (("year", 0.0), ("title", 0.15), ("no", 0.3), ("rule", 0.3))}
     tmp = Image.new("RGBA", (W, 180), (0, 0, 0, 0))
-    ImageDraw.Draw(tmp).text((W / 2, 90), data["year"], font=font("black", 140), fill=KEY, anchor="mm")
+    accent = {"blue": (130, 170, 235, 255), "goldred": (255, 96, 64, 255)}.get(data.get("grade"), KEY)   # 章の色味に合わせる
+    ImageDraw.Draw(tmp).text((W / 2, 90), data["year"], font=font("black", 140), fill=accent, anchor="mm")
     paste(lay, tmp, (0, cy - 250 + 20 * (1 - st["year"])), st["year"])
     tmp = Image.new("RGBA", (W, 190), (0, 0, 0, 0))
     ImageDraw.Draw(tmp).text((W / 2, 95), data["title"], font=font("black", 140), fill=TEXT, anchor="mm")

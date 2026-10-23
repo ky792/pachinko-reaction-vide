@@ -207,13 +207,19 @@ def build_chapter(ep_dir, script_path, data):
     for it in items:
         c = it["cmd"]
         if c == "chapter":
-            ch = data["chapters"][it["arg"]]
+            # @chapter <キー> [cont] … cont を付けると、章カードを出さずに同じ章の続きとして扱う（上部バー・色味だけ引き継ぐ）
+            key, *flags = it["arg"].split()
+            ch = data["chapters"][key]
             chap = ch
+            if "cont" in flags:
+                continue
             close_cur(t)
             set_layout("hidden", t)
-            d = {"no": ch["no"], "year": ch["year"], "title": ch["title"]}
-            if it["arg"] in ("op", "ed"):
-                d["label"] = {"op": "OPENING", "ed": "ENDING"}[it["arg"]]
+            d = {"no": ch["no"], "year": ch["year"], "title": ch["title"], "grade": ch.get("grade")}
+            if ch.get("label"):
+                d["label"] = ch["label"]
+            if key in ("op", "ed"):
+                d["label"] = {"op": "OPENING", "ed": "ENDING"}[key]
             scene["cues"].append({"type": "chapter", "start": t, "end": t + CHAPTER_DUR, "data": d})
             scene["se"].append({"t": t + 0.05, "kind": "taiko", "gain": 0.4})
             t += CHAPTER_DUR - 0.25
@@ -394,8 +400,9 @@ def build_chapter(ep_dir, script_path, data):
             cue["end"] = t
     scene["duration"] = round(t, 2)
     ch = chap or (data["chapters"]["op"] if stem.startswith("00") else {"no": 0, "title": "", "y": 2008})
-    scene["chapter"] = {"no": ch["no"], "title": ch["title"], "year": ch.get("y", 2008), "era": ch.get("era"),
+    scene["chapter"] = {"no": ch["no"], "title": ch.get("bar", ch["title"]), "year": ch.get("y", 2008), "era": ch.get("era"),
                         "label": {"op": "OPENING", "ed": "ENDING"}.get(stem.split("_")[-1], None) if ch["no"] in (0, 8) else None}
+    scene["grade"] = ch.get("grade")      # 章の色味（gold／blue／goldred）。背景にだけかける（lab/render.py）
     if ch["no"] == 0:
         scene["chapter"]["label"] = "OPENING"
     if ch["no"] == 8:

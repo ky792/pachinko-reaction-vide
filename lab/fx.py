@@ -67,7 +67,11 @@ FX = {
     "count3000": {"span": 2, "marks": {"go": ["3000"]}},
     "kyokugen": {"span": 3, "marks": {"go": ["極限"], "win": ["勝てば"], "lose": ["負けても"]}},
     "burst": {"span": 1, "marks": {"go": ["BURST"]}},
+    # 牙狼回 v3（栄光・転落・復活）：章の切り替えの演出。実機の再現ではないので注釈は出さない（NO_NOTE）
+    "tenraku": {"span": 2, "marks": {"go": ["転落"]}},
+    "fukkatsu": {"span": 2, "marks": {"go": ["100万"]}},
 }
+NO_NOTE = {"tenraku", "fukkatsu"}
 
 
 # ---------------------------------------------------------------- 台本 → 時刻
@@ -197,6 +201,10 @@ def finish(fx, end, scene):
         add(_m(fx, "go"), "taiko", 0.25); add(_m(fx, "win"), "impact", 0.28)
     elif k == "burst":
         g = _m(fx, "go", default=s0); add(g - 0.3, "shu", 0.18); add(g, "impact", 0.32)
+    elif k == "tenraku":
+        g = _m(fx, "go", default=s0); add(g, "impact", 0.22); add(g + 0.1, "rumble", 0.2)
+    elif k == "fukkatsu":
+        g = _m(fx, "go", default=s0); add(g - 0.25, "shu", 0.18); add(g, "don", 0.32); add(g + 0.05, "impact", 0.24)
 
     bgm = FX[k].get("bgm")
     if bgm:
@@ -2532,12 +2540,59 @@ def _burst3(cv, t, fx):
     cv.alpha_composite(fade(_edge((255, 60, 40)), 0.7 * a * math.exp(-tl / 0.7)))
 
 
+# ---------------------------------------------------------------- 牙狼回 v3：章の切り替え
+COLD = (120, 160, 220)
+
+
+def _tenraku(cv, t, fx):
+    """転落：金の縁が消え、金の破片が下へ落ちる。冷たい青の幕と「転落」の鋼の文字が沈む"""
+    g = _m(fx, "go", default=fx["start"])
+    if t < g - 0.1:
+        return
+    tl = t - g
+    a = 1 - ease_in_out(prog(t, fx["end"] + 0.2, 0.7))
+    cv.alpha_composite(fade(_edge(GOLDC), 0.6 * a * math.exp(-tl / 0.25)))          # 一瞬だけ金→すぐ消える
+    cv.alpha_composite(fade(_edge((20, 40, 80)), 0.85 * a * ease_out(prog(tl, 0.1, 0.8))))
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay); rng = np.random.default_rng(41)
+    for i in range(46):                                                   # 金の破片が落ちて、色が抜けていく
+        x = rng.uniform(80, W - 80); y0 = rng.uniform(-200, 380); v = rng.uniform(260, 620); sz = rng.uniform(8, 24)
+        y = y0 + v * tl + 420 * tl * tl
+        if y > H + 40:
+            continue
+        cool = min(1, tl / 1.4)
+        col = tuple(int(GOLDC[j] * (1 - cool) + (150, 160, 175)[j] * cool) for j in range(3))
+        an = rng.uniform(0, math.pi) + tl * rng.uniform(2, 6)
+        pts = [(x + sz * math.cos(an + q), y + sz * 0.6 * math.sin(an + q)) for q in (0, 2.1, 4.0)]
+        d.polygon(pts, fill=col + (int(230 * a * (1 - prog(tl, 1.6, 0.8))),))
+    cv.alpha_composite(lay)
+    sink = 40 * ease_in_out(prog(tl, 0.2, 1.6))
+    _mput(cv, "転落", 210, W / 2, 360 + sink, a * ease_out(prog(tl, 0, 0.3)) * (1 - prog(tl, 2.2, 0.6)), 1.12 - 0.12 * ease_out(prog(tl, 0, 0.3)), base=COLD, glow_a=0.5)
+
+
+def _fukkatsu(cv, t, fx):
+    """復活：下から金と赤の光が立ちのぼり、「復活」の金の文字が赤くにじんで現れる"""
+    g = _m(fx, "go", default=fx["start"])
+    if t < g - 0.3:
+        return
+    tl = t - g
+    a = 1 - ease_in_out(prog(t, fx["end"] + 0.3, 0.7))
+    k = ease_out(prog(tl, -0.3, 0.5))
+    _rays(cv, W / 2, H + 60, k * a * (0.6 + 0.4 * math.exp(-max(tl, 0) / 1.2)), GOLDC, 28, 120, 1300)
+    _rays(cv, W / 2, H + 60, 0.5 * k * a, (230, 50, 40), 14, 160, 1100)
+    _sparks(cv, W / 2, 380, tl, a, 80, 29, (255, 210, 120), (500, 1500), 380, 1.3)
+    _sparks(cv, W / 2, 380, tl, a, 40, 31, (255, 90, 60), (400, 1200), 380, 1.2)
+    sc = 1 + 0.35 * (1 - ease_out(prog(tl, 0, 0.22)))
+    _mput(cv, "復活", 220, W / 2, 360, a * ease_out(prog(tl, 0, 0.18)) * (1 - prog(tl, 2.4, 0.6)), sc, glow_a=0.8)
+    cv.alpha_composite(fade(_edge((230, 60, 40)), 0.55 * a * k))
+    cv.alpha_composite(fade(_edge(GOLDC), 0.35 * a * math.exp(-max(tl, 0) / 0.8)))
+
+
 DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _inazuma3, "door": _door3,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
         "beat": _beat, "hane": _hane3, "battle": _battle3, "shingeki": _shingeki3, "nanairo": _nanairo2, "yami": _yami3,
         "tokei": _tokei3, "byousoku": _byousoku3, "kasane": _kasane3, "vlight": _vlight3, "count3000": _count3000_3,
-        "kyokugen": _kyokugen3, "burst": _burst3}
+        "kyokugen": _kyokugen3, "burst": _burst3, "tenraku": _tenraku, "fukkatsu": _fukkatsu}
 
 
 NOTE = "※演出はイメージです。実機の演出ではありません"
@@ -2563,6 +2618,8 @@ def draw(cv, scene, t):
     for fx in scene.get("fx", []):
         if fx["start"] - 0.2 <= t < fx["end"] + 1.0:
             DRAW[fx["kind"]](cv, t, fx)
+            if fx["kind"] in NO_NOTE:
+                continue
             first = min([v for ms in fx["marks"].values() for v in ms] or [fx["start"]])
             na = max(na, _env(t, first - 0.3, fx["end"] + 0.3, 0.3, 0.4))
     if na > 0:
