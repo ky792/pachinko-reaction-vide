@@ -1195,9 +1195,9 @@
   "text": "マックスが消えて殻の転落が始まる"
  },
  "03_tenraku-002": {
-  "sha1": "f5d4d5cd0f7fe30c87faa6bb31e52634792ef65f",
+  "sha1": "d9ec0657f469f5ca677f0cfe1f64de69f539ec68",
   "model": "large-v3-turbo",
-  "text": "いきなり言うやん無礼よ"
+  "text": "いきなり言うやん"
  },
  "03_tenraku-010": {
   "sha1": "3a42c3c1636c07c54da3de47ba80ccb4e4717a3d",
@@ -1450,9 +1450,9 @@
   "text": "どっちでもなかった"
  },
  "06_matome-010": {
-  "sha1": "bf8434164b85ea6961fc9d657f1f5ff6d6267734",
+  "sha1": "3fc75d7bc7eda1f3a376c03e58c39b76796984fc",
   "model": "large-v3-turbo",
-  "text": "ん?"
+  "text": "なんや、それ"
  },
  "06_matome-011": {
   "sha1": "ebf28ea13096590bc5711882aec5cb2d438db93a",
