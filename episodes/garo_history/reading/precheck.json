@@ -1,6 +1,19 @@
 [
  {
-  "id": "02_kaisen-012",
+  "id": "00_op-006",
+  "who": "nagi",
+  "kind": "辞書と違う",
+  "where": "台",
+  "expect": "ダイ",
+  "reason": "辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。ナギはこの読みになる見込みが高い",
+  "level": "高",
+  "text": "牙狼は、台の歴史もそんな感じ。",
+  "speech": "ガロは、台の歴史もそんな感じ。",
+  "kana": "ガロワ、タイノレキシモソンナカンジ。",
+  "audio": "episodes/garo_history/voices/00_op-006.wav"
+ },
+ {
+  "id": "01_eikou-022",
   "who": "nagi",
   "kind": "小数",
   "where": "3.8",
@@ -10,10 +23,10 @@
   "text": "平均の連チャンは3.8回、って資料もある。",
   "speech": "平均の連チャンは3.8回、って資料もある。",
   "kana": "ヘーキンノレンチャンワサンテンハチカイ、ッテシリョーモアル。",
-  "audio": "episodes/garo_history/voices/02_kaisen-012.wav"
+  "audio": "episodes/garo_history/voices/01_eikou-022.wav"
  },
  {
-  "id": "04_after-009",
+  "id": "03_tenraku-012",
   "who": "nagi",
   "kind": "小数",
   "where": "13.3",
@@ -23,6 +36,6 @@
   "text": "17インチと13.3インチ、2枚の液晶を縦に使う大画面。",
   "speech": "17インチと13.3インチ、2枚の液晶を縦に使う大画面。",
   "kana": "ジューナナインチトジューサンテンサンインチ、ニマイノエキショーヲタテニツカウダイガメン。",
-  "audio": "episodes/garo_history/voices/04_after-009.wav"
+  "audio": "episodes/garo_history/voices/03_tenraku-012.wav"
  }
 ]
