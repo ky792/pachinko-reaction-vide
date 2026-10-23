@@ -2,7 +2,7 @@
  "episode": "episodes/garo_history",
  "model": "large-v3-turbo",
  "only": [
-  "05_fukkatsu-011"
+  "01_eikou-010"
  ],
- "_run": "garo-v4-fix2"
+ "_run": "garo-v4-mitome"
 }
