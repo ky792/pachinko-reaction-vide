@@ -224,7 +224,7 @@ GRADE_CARD_SEC = 0.5   # 章カードの間は色味を強く、終わってか�
 
 def _grade_bg(name, grade, k):
     """章ごとの色味を背景だけにかける（キャラ・資料・字幕は元の色のまま）。
-    gold＝栄光（金）／blue＝転落（色を抜いて暗い青）／goldred＝復活（金と赤）。k は強さ（普段0.45、章カードで1.0）"""
+    gold＝栄光（金）／blue＝転落（色を抜いて暗い青）／goldred＝復活（金と赤）。k は強さ（普段0.6、章カードで1.0）"""
     import numpy as np
     k = round(k, 2)
     key = (name, grade, k)
@@ -251,14 +251,14 @@ def _grade_bg(name, grade, k):
 
 
 def grade_level(scene, t):
-    """普段は0.45。章カードの間は1.0（重要な切り替えの瞬間だけ強く）"""
-    lv = 0.45
+    """普段は0.6。章カードの間は1.0（重要な切り替えの瞬間だけ強く）"""
+    lv = 0.6
     for c in scene["cues"]:
         if c["type"] == "chapter" and c.get("data", {}).get("grade"):
             if c["start"] <= t < c["end"]:
                 lv = 1.0
             elif c["end"] <= t < c["end"] + GRADE_CARD_SEC:
-                lv = max(lv, 1.0 - 0.55 * ui.ease_in_out(ui.prog(t, c["end"], GRADE_CARD_SEC)))
+                lv = max(lv, 1.0 - 0.4 * ui.ease_in_out(ui.prog(t, c["end"], GRADE_CARD_SEC)))
     return round(lv * 20) / 20     # 段階を粗くして、作った背景を使い回す
 
 
