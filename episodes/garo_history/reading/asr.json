@@ -25,9 +25,9 @@
   "text": "知っとるわ!知っとるけど悔しいんや!"
  },
  "00_op-006": {
-  "sha1": "0b035e0b5f8630026c9d879e1cd769ed0baa4dde",
+  "sha1": "ab035970bd29ac27f1a6ae7ea60308fa56cdef3a",
   "model": "large-v3-turbo",
-  "text": "カロは大な歴史もそんな感じ"
+  "text": "カロってタイの歴史もそんな感じだよ"
  },
  "00_op-007": {
   "sha1": "d584e98429dacb8592413238cf27240658ca3ca5",
@@ -35,9 +35,9 @@
   "text": "どういうことや?"
  },
  "00_op-008": {
-  "sha1": "c45faca7b8dab4878d22a26f3747e970d29e3668",
+  "sha1": "888b4505059235c7d01b0003260f6b3b35a44b0a",
   "model": "large-v3-turbo",
-  "text": "2014年、金色になれの中古が一台100万円を超えたって言われてる"
+  "text": "今時期になれの頃は中古が1台100万超えたらしい"
  },
  "00_op-009": {
   "sha1": "af017b274ead8c64db451e80b3d123395de95d55",
@@ -45,9 +45,9 @@
   "text": "その後中古が1台100万円を超えたからもあるって話もある"
  },
  "00_op-010": {
-  "sha1": "b4eefc32a6ac0d31c85e71d1b6b6ed18eef2c61f",
+  "sha1": "c0075bea2d8dfa7be2d2fb6687c44c1d6595d56a",
   "model": "large-v3-turbo",
-  "text": "でもその後、長く打たれるカロがなかなか出なくなる。"
+  "text": "その後何年か新しいガロがすぐ開く時代が来る"
  },
  "00_op-011": {
   "sha1": "f7ea385b3880ccb7aed0706119bfbf9825013fb5",
@@ -920,14 +920,14 @@
   "text": "また次回おやすみ"
  },
  "00_op-012": {
-  "sha1": "ae48c111d83f4c6194f510fa7f01362fa2b94de5",
+  "sha1": "10965e3d7f37fe9066bedc8005d13fd0568f1f44",
   "model": "large-v3-turbo",
-  "text": "で、2025年、カル12の中古がまた100万円を超えた。"
+  "text": "ね、カロ12で中古がまた100万超え"
  },
  "00_op-013": {
-  "sha1": "7df6db2f3a851dc4285685bcfc01ee3592d0b206",
+  "sha1": "e61ce2c7d828fa8998041f7020dffe3bf2450160",
   "model": "large-v3-turbo",
-  "text": "また100万?落ちて戻ってきたんか"
+  "text": "一回落ちてまた戻ってきたんか"
  },
  "00_op-014": {
   "sha1": "cdde0d135ab8f7efe1eec5dfc5cca6e03e860184",
@@ -1130,9 +1130,9 @@
   "text": "確率は約400分の1で、お渡りは全部15ラウンド。"
  },
  "01_eikou-013": {
-  "sha1": "1815dc99c6220200ea096783ee0530508bae5ce2",
+  "sha1": "aeae769ea0c85fd5397781ed0624338dcbe068c7",
   "model": "large-v3-turbo",
-  "text": "400か。今の399分の1とほとんど変わらんな。"
+  "text": "400で全部15ラウンドてそりゃみんな座るわ"
  },
  "01_eikou-030": {
   "sha1": "1a04e2ca45622c2e1171dfc2ddd212fdeb19040e",
@@ -1140,19 +1140,19 @@
   "text": "なんでそこまでウケたんやろなぁ"
  },
  "01_eikou-031": {
-  "sha1": "6d8d3968b19a036f7fabcb2ee33b15671253cefa",
+  "sha1": "bd9dc32f3142a983db0645bcc426423f650fe601",
   "model": "large-v3-turbo",
-  "text": "当たれば全部15ラウンド半分はそこから82%"
+  "text": "なんであんなに座られとったんやろな"
  },
  "01_eikou-032": {
-  "sha1": "db253f49cdae1c104e50e43d2af10e4d2dd576bb",
+  "sha1": "34f9ec648619cb5871a1efe206c1c27270aebe30",
   "model": "large-v3-turbo",
-  "text": "ほんで、隣の台が止まらんのを横でずっと見せられるんや"
+  "text": "全部15ラウンドで、観音は82%に入る。それは隣で毎日起きてる。"
  },
  "01_eikou-033": {
-  "sha1": "23eef4b3c0a009ce0a6b466bc8e538b32bf4b72f",
+  "sha1": "394e5eb7eefcc241bcf6cec0f14f630d22ab266b",
   "model": "large-v3-turbo",
-  "text": "宣伝は泊りの人がしてくれる"
+  "text": "隣が箱積んどったらこっちも変えられへんのよ"
  },
  "01_eikou-042": {
   "sha1": "9e3e444604bd58b69facaaabc76512dfe6629e06",
@@ -1165,9 +1165,9 @@
   "text": "ルールの中で同じ数字を出してきたんか執念やな"
  },
  "01_eikou-056": {
-  "sha1": "9a56746b092c457e6f1aed00e1d5beeb673fdc47",
+  "sha1": "dd96d984ca89f130464f0c273da3cc31625a35e4",
   "model": "large-v3-turbo",
-  "text": "ここからガロは一番高いところまで登っていく"
+  "text": "86%あってももっさりやと閉店まで消化終わらんのよ"
  },
  "01_eikou-057": {
   "sha1": "7c6641c3ad184070d04b42bac888bd59c3230e2d",
@@ -1180,14 +1180,14 @@
   "text": "2012年3月、魔界線帰港。今度はV角変で初代に寄せてきた。"
  },
  "02_eikou2-043": {
-  "sha1": "8de8ad940397fc5969dd79d16f3d8cbe97ef5dc9",
+  "sha1": "6617957137a9d49bf180a9250343f7bc245441f7",
   "model": "large-v3-turbo",
-  "text": "この頃はガロの島がホールの看板やったな"
+  "text": "2年連続でアワードもMVP売り上げは約14万台だし"
  },
  "02_eikou2-044": {
-  "sha1": "514c615fab6d741ac09a7d13c4a70e109832f6fe",
+  "sha1": "a17f2450d8c095c155aa42938bcbafea0de548fc",
   "model": "large-v3-turbo",
-  "text": "パワードのMVPは初代と合わせて3回。"
+  "text": "金色の次で14万台かどこの店行ってもガロやったもんな"
  },
  "03_tenraku-001": {
   "sha1": "495b19cd21945177c71c53c619079fd9ff245b5c",
@@ -1200,9 +1200,9 @@
   "text": "いきなり言うやん"
  },
  "03_tenraku-010": {
-  "sha1": "3a42c3c1636c07c54da3de47ba80ccb4e4717a3d",
+  "sha1": "edf3bd5d33347220612c53aea6711a50f73e03a2",
   "model": "large-v3-turbo",
-  "text": "見た目は金色やのに中身は別もんや"
+  "text": "初当たりカルナってもうSTスルーしたら意味ないねん"
  },
  "03_tenraku-020": {
   "sha1": "1e1e571b9d7e6a2cab18d5f4b88a54abe5f81a06",
@@ -1235,14 +1235,14 @@
   "text": "新しい規則の上限いっぱい"
  },
  "03_tenraku-036": {
-  "sha1": "360037788cbee05c63c9a7b99a56d7a12416c488",
+  "sha1": "f746af97d98902ad67d07dad8b9bf03cc2598552",
   "model": "large-v3-turbo",
-  "text": "教会の調査会社の集計で、この台の稼働貢献は6週で終わったって紹介されてる。"
+  "text": "稼働貢献って、要件打たれとった機関みたいなもんか!"
  },
  "03_tenraku-037": {
-  "sha1": "cbbea682bfbcc8ce4d4611b86a322cec51ce3a9b",
+  "sha1": "4996263b5cdb8e06380d67de7d1a1c5dd2aa0f11",
   "model": "large-v3-turbo",
-  "text": "可動貢献って、よっけ歌えとる期間みたいなもんか!"
+  "text": "ざっくりそんな感じ"
  },
  "03_tenraku-038": {
   "sha1": "e7c3d35bf878e2fdfafb92da8a95e45a321790df",
@@ -1250,9 +1250,9 @@
   "text": "ざっくり言うと、そう"
  },
  "03_tenraku-039": {
-  "sha1": "0da3f348d79ff4422765aefd57061b59391f31e9",
+  "sha1": "ef32a88ed3a787e3f76c74a3093f457fae770370",
   "model": "large-v3-turbo",
-  "text": "6週?夏休みより短いやん"
+  "text": "ちなみにレバのアセの方向は216周らしい"
  },
  "03_tenraku-040": {
   "sha1": "2a093e8928730c2ae11b77a068ce091545e91b3d",
@@ -1270,9 +1270,9 @@
   "text": "ここからガロはいろんな手で戻ろうとする"
  },
  "04_tenraku2-002": {
-  "sha1": "9756d659bcaada8af74327304efaab3f9d578b70",
+  "sha1": "481c74a1bb90c937a117b23acd87372ee6d9175e",
   "model": "large-v3-turbo",
-  "text": "うつ側としてはどれか当たってくれって感じやったで"
+  "text": "こっちは毎回今度こそ表売っとったで"
  },
  "04_tenraku2-011": {
   "sha1": "b3c14cfa20b1d3830e6afb7683f15c42f1ae96cf",
@@ -1285,9 +1285,9 @@
   "text": "二つ目の手は初代の形。"
  },
  "04_tenraku2-029": {
-  "sha1": "6860f3860cc48bf0d0a9ef708982d942bc23d813",
+  "sha1": "9d073d26389400db4eb64e873bf055ee96c2f55b",
   "model": "large-v3-turbo",
-  "text": "これは勝ったやろ全部入りやで"
+  "text": "全部ヒリやんこれで語れへんかったら嘘やろ"
  },
  "04_tenraku2-030": {
   "sha1": "6d6c2dc81ca3e95a70f3c42e76031a522d037445",
@@ -1295,9 +1295,9 @@
   "text": "可動貢献は8周で終わった"
  },
  "04_tenraku2-031": {
-  "sha1": "0bbc4369a2e6647aadbf0e961c3911b9ce2d51c1",
+  "sha1": "c6ffb2e8feea4c4ea6d6c62fdf1b9007793908e9",
   "model": "large-v3-turbo",
-  "text": "全部入りでも8週回!"
+  "text": "全部入りで8周程!何があかんねん!"
  },
  "04_tenraku2-032": {
   "sha1": "3a40516eeaa471d7eec51d2fccc65816422ff7ce",
@@ -1305,24 +1305,24 @@
   "text": "速さも形もそれだけでは戻らなかった"
  },
  "04_tenraku2-038": {
-  "sha1": "8f4271e89123edad84e58901f9f7e9ee83d3fdd5",
+  "sha1": "d5ac1e700d763f40330453c3ed3a51fb843aca20",
   "model": "large-v3-turbo",
-  "text": "スマパチのガロか!どうなるんや!"
+  "text": "大事変えるんか賛成本気やな"
  },
  "05_fukkatsu-008": {
-  "sha1": "c2f2859664516af7aa06da1a32d97875e5ab214f",
+  "sha1": "a2262f61826d0022abe0ae369292256b5c5e0708",
   "model": "large-v3-turbo",
-  "text": "可動貢献は九州"
+  "text": "でも稼働貢献は通種"
  },
  "05_fukkatsu-009": {
-  "sha1": "1cd8bc44c82af901af9d36358f23018536128ebe",
+  "sha1": "6c383714c11393c63df4256d0f0bd07f9661b885",
   "model": "large-v3-turbo",
-  "text": "3000個でもあかんのか厳しい世界やな"
+  "text": "3000個でもあかんのか客厳しいな"
  },
  "05_fukkatsu-010": {
-  "sha1": "5a8e414057e68421a5ee6590bc8e7058f78c368a",
+  "sha1": "d3d62bf838f5cf91d95f6e41c0bc98591b9706a9",
   "model": "large-v3-turbo",
-  "text": "31%も壁が高すぎたんだろうね"
+  "text": "突破31%の壁で心が折れたんだと思う"
  },
  "05_fukkatsu-019": {
   "sha1": "58e0aa95238e02f702c4b4cbf496809d17871c61",
@@ -1330,29 +1330,29 @@
   "text": "ただ、LTに入るのは実質17777分の1。導入前は重すぎるって心配されてた。"
  },
  "05_fukkatsu-020": {
-  "sha1": "7b1d564bf2ce6f017d59e4ed95667f35c7ecd176",
+  "sha1": "cb8eca4814fbeb2756a6ce26d168efa9ef9072b5",
   "model": "large-v3-turbo",
-  "text": "17777分の1ってもう宝くじやん"
+  "text": "ただ、LKに入るのは実質17777分の1。最初は重すぎるって心配されてた。"
  },
  "05_fukkatsu-021": {
-  "sha1": "baa441187e5ba5f5e0faec1697fc877dc525d5a0",
+  "sha1": "90f18e1f7ac0c6e00ba0c42255749e1d06b5fb0b",
   "model": "large-v3-turbo",
-  "text": "その宝くじがパタッと"
+  "text": "1777とかハマったらユキチ何枚解けんねん"
  },
  "05_fukkatsu-022": {
-  "sha1": "bc6128b15b1daffe48dba11dcfa85a9c40368177",
+  "sha1": "bcccd268648803e9a47ab7be0e750912b07a2ad0",
   "model": "large-v3-turbo",
-  "text": "導入から2ヶ月で、全国平均は平日約2万アウト、休日約2万5千アウトって紹介されてる。"
+  "text": "でもみんな溶かしに来た"
  },
  "05_fukkatsu-023": {
-  "sha1": "915ae29c80581e185f4516ddca4a20546fa82457",
+  "sha1": "08601d285ce0230862bb745aed04a8e8045e26af",
   "model": "large-v3-turbo",
-  "text": "平日で2万なら店はにっこりやな"
+  "text": "導入から2ヶ月で、全国平均は平日約2万アウト、休日約2万5千アウトって境界紙に載ってた。"
  },
  "05_fukkatsu-024": {
-  "sha1": "438aacdef0c30f94a7105449a4c43b6f5ea0fe3a",
+  "sha1": "19ef1f8cbfbb85c8f6fabe5641a34f0ad0247d8a",
   "model": "large-v3-turbo",
-  "text": "2025年9月中古の中心価格は100万5000円"
+  "text": "そら店も釘締めへんわいや、締めるか"
  },
  "05_fukkatsu-025": {
   "sha1": "a7d729ed20d20c63cced722ead1852b14da9a02c",
@@ -1360,9 +1360,9 @@
   "text": "今時期になれ以来の100万や復活やんか"
  },
  "05_fukkatsu-026": {
-  "sha1": "187c5089ac4d8c3407ac990aa92220ad0061533a",
+  "sha1": "276df31687c8d5ae277e36c976bdcb57c5fb5424",
   "model": "large-v3-turbo",
-  "text": "2026年4月でも約90万円中古の高い順でサニー"
+  "text": "こんじきになれ以来の100万や完全に戻ってきとるやん"
  },
  "05_fukkatsu-027": {
   "sha1": "5d6691264c3a9718ff9ce9269add68db4c933053",
@@ -1370,19 +1370,19 @@
   "text": "半年経っても下がらへんのか本物やな"
  },
  "05_fukkatsu-028": {
-  "sha1": "aba2c4efcea4e76db597631eb69646c9e9c97292",
+  "sha1": "0a0508a243eb5fe4a503614de3d4fed48d9b0be6",
   "model": "large-v3-turbo",
-  "text": "公平に言うと投入直後は開いてる店もあったってコラムもある"
+  "text": "半年経っても値段落ちへんのか店がまだ欲しがっとるんやな"
  },
  "05_fukkatsu-029": {
-  "sha1": "a25db9672d9c189d6f3c2260f211b9f54ce0b0cd",
+  "sha1": "9069504b8854feee361d4dff2c4a38bc95f6d6dc",
   "model": "large-v3-turbo",
-  "text": "置きすぎた店やろわかるわ"
+  "text": "ただ寝てすぐの頃はガラガラの店もあったってコラムもある"
  },
  "05_fukkatsu-030": {
-  "sha1": "6119feb2e093bf9b21e3aae6720980912c955beb",
+  "sha1": "e1ba321cdd3fca2f7c5a8ee0996d96ff3bfca448",
   "model": "large-v3-turbo",
-  "text": "けど、なんでここまで戻ったんや?"
+  "text": "20台入れて全部閉めたらそらガラガラやろ!"
  },
  "05_fukkatsu-031": {
   "sha1": "882d89e5a7fcb786383572523a1b50cc82c6a769",
@@ -1390,19 +1390,19 @@
   "text": "入れば9000個、外れても1500個、結果がはっきりしてるのがウケてるって店長の声がある。"
  },
  "05_fukkatsu-032": {
-  "sha1": "28738bdc081b823e8706dd43e92420fc11e13476",
+  "sha1": "95ce46201bfe45a41b6d33e523d272b5061c6ac4",
   "model": "large-v3-turbo",
-  "text": "当たるまで粘るより決めた額で勝負するんやな"
+  "text": "入れば9000個、外れても1500個、勝ち負けばすぐ分かるのがウケてるって店長の話が載ってた。"
  },
  "05_fukkatsu-033": {
-  "sha1": "23796ef0f7f907c81f7d8ca359a38b20c6b47bc0",
+  "sha1": "2b1fa0b2b03c3a9d577ce812a68396cbc8fd3381",
   "model": "large-v3-turbo",
-  "text": "2時間でコンプリートも狙えるから仕事帰りでも打たれるって話もある"
+  "text": "だらだら粘るより今日いくらまでって決めて突っ込むんやな"
  },
  "05_fukkatsu-034": {
-  "sha1": "8bfb757ca0c68e7a696e60bc94e1f160257766a0",
+  "sha1": "3f90bb1b6fb8328a535459aae86a471a32da7815",
   "model": "large-v3-turbo",
-  "text": "コンプリートっていくつや?"
+  "text": "2時間でコンクリートも狙えるから仕事帰りの人も座るらしい"
  },
  "05_fukkatsu-035": {
   "sha1": "ce377f174b1552fab81ffe817edc364b57797f99",
@@ -1420,9 +1420,9 @@
   "text": "これからの頃は当たったら大きいの路線が続くんだろうね"
  },
  "05_fukkatsu-044": {
-  "sha1": "48ab77d0c3ec07828e53a1ec098a5d30866ebe2a",
+  "sha1": "830e665af30be35e7c5dbbf2e22e65b370943419",
   "model": "large-v3-turbo",
-  "text": "ほな次も財布しっかり握っとかなあかんな"
+  "text": "これからのガロは当たったらデカいっていくと思う"
  },
  "06_matome-001": {
   "sha1": "46997b6d9d5b9dc5a3d3b7e29d23ddc7ed230252",
@@ -1435,9 +1435,9 @@
   "text": "栄光は初代から魔界の花まで、マックスの時代。"
  },
  "06_matome-003": {
-  "sha1": "9df05313669e731b9799bf4c41eaaaef0059ae66",
+  "sha1": "f172e64a881d31e3ef322cc523b92f05f3f80b86",
   "model": "large-v3-turbo",
-  "text": "転落はマックスが消えてから、異代はあったのに長く撃たれる代が出なかった。"
+  "text": "転落はマックスは消えてから言いたいはあったのにすぐ空いた"
  },
  "06_matome-004": {
   "sha1": "8c43583f7df63418c6aff5a81484631472978519",
@@ -1468,5 +1468,200 @@
   "sha1": "a848d7b14cb2336f6aaa7831110dd29f82f682e7",
   "model": "large-v3-turbo",
   "text": "次の手は大佐のものを変えることツマパチ"
+ },
+ "01_eikou-004": {
+  "sha1": "3fa87b763bb2d8a7fe2d5b295a56f98aba35b64a",
+  "model": "large-v3-turbo",
+  "text": "ドラム見たことないのに魔界竜だけは知っとるわ"
+ },
+ "01_eikou-005": {
+  "sha1": "c2717abc084190c93cf2bb9904e1efeeb08a13f4",
+  "model": "large-v3-turbo",
+  "text": "初代のおかげで賛成は大きいメーカーになったって言われてる"
+ },
+ "01_eikou-017": {
+  "sha1": "b4b8a49f869457238d82809acd52ccb009d79b0b",
+  "model": "large-v3-turbo",
+  "text": "82%で全部15ラウンドやドル箱足元まで積んどったで"
+ },
+ "01_eikou-021": {
+  "sha1": "d425b1efc3825fad2fbc96cb8e6e3aa29d630fb5",
+  "model": "large-v3-turbo",
+  "text": "牙バトルで負けた時のあの虚無よ!"
+ },
+ "01_eikou-023": {
+  "sha1": "b8bf8ac5c3fb443ede8507730349e94c23f7baae",
+  "model": "large-v3-turbo",
+  "text": "平均4回?俺の初代だいたい単発やったけどな"
+ },
+ "01_eikou-024": {
+  "sha1": "bf5801388e0ac7685690220696e4754a68d4cf9f",
+  "model": "large-v3-turbo",
+  "text": "それは、あなたの引き。"
+ },
+ "01_eikou-034": {
+  "sha1": "93c71453fc727a01d77578bb69b99422a1bde3f0",
+  "model": "large-v3-turbo",
+  "text": "店からしたら隣の人がただで専念してくれるだい"
+ },
+ "01_eikou-036": {
+  "sha1": "e27a8cd3a0c6019d025fa8d668bcf09ace9bcae6",
+  "model": "large-v3-turbo",
+  "text": "ガロが強すぎてルールの方が変わったんか!"
+ },
+ "01_eikou-044": {
+  "sha1": "0f068aafcef52a6bf03a34a482f77ebcba3031cc",
+  "model": "large-v3-turbo",
+  "text": "規制されても同じ数字出してくるんか賛成しつこいな"
+ },
+ "01_eikou-049": {
+  "sha1": "972f859b3cc0c692e30ad95ea8d32096e429452a",
+  "model": "large-v3-turbo",
+  "text": "レンちゃんは魔界らしい。トータルの継続率は約86%らしい。"
+ },
+ "01_eikou-053": {
+  "sha1": "f4b9dbebbbd587c36b01eb179779c902ee377a77",
+  "model": "large-v3-turbo",
+  "text": "その代わりねんちゃん中がもっさりしたって言われてた"
+ },
+ "01_eikou-054": {
+  "sha1": "b2102042019ac79d1f6aafcfa22010b0978adfa0",
+  "model": "large-v3-turbo",
+  "text": "ほら見てみ、遅かったらこうなるんや"
+ },
+ "02_eikou2-003": {
+  "sha1": "983914a34077082e8f3294a1e1692513aa8d6673",
+  "model": "large-v3-turbo",
+  "text": "82%には届いてへんけどな"
+ },
+ "02_eikou2-012": {
+  "sha1": "7fa2fe4a4970f98047fc827eb836d5672d85f2b0",
+  "model": "large-v3-turbo",
+  "text": "メガネいらんやつな目はしばしばしたけど"
+ },
+ "02_eikou2-024": {
+  "sha1": "6817b41a5c43235e9a15f6adae780d7c4ba41db0",
+  "model": "large-v3-turbo",
+  "text": "来たで金色!給料日はこれ一択やった!"
+ },
+ "02_eikou2-033": {
+  "sha1": "b5bd6c240a1a845c716c43a346a48c38af77614f",
+  "model": "large-v3-turbo",
+  "text": "最初に言った中古の話、これ一時期一台100万円を超えたらしい。"
+ },
+ "02_eikou2-034": {
+  "sha1": "cb768996e1f863c2e60ea00d248c24fc3979fc2d",
+  "model": "large-v3-turbo",
+  "text": "中古で100万って店どんだけ欲しかってん"
+ },
+ "02_eikou2-035": {
+  "sha1": "e6160547a4e8302c6ed78fd8e7d32cdf3774ae87",
+  "model": "large-v3-turbo",
+  "text": "その分回収も頑張ってたと思うよ"
+ },
+ "02_eikou2-036": {
+  "sha1": "232bbb4e0ecd6952b323feb239a058e0237cfe9b",
+  "model": "large-v3-turbo",
+  "text": "やめ!思い出したら腹立ってきたわ!"
+ },
+ "02_eikou2-048": {
+  "sha1": "3aa4e68a9d2893c3f09eb4091eb450169aadb3d8",
+  "model": "large-v3-turbo",
+  "text": "ほな、399のガロはこれで打ち納めか!"
+ },
+ "02_eikou2-050": {
+  "sha1": "96cbdc9f909c7aeab649ecfe9dc79c9dd5130f40",
+  "model": "large-v3-turbo",
+  "text": "ガロのミドルかなんか嫌な予感すんな"
+ },
+ "03_tenraku-004": {
+  "sha1": "e0a5162fbfd62be19199222cac35e3908676fc64",
+  "model": "large-v3-turbo",
+  "text": "金色の顔して中身ミドルかい!"
+ },
+ "03_tenraku-006": {
+  "sha1": "c046b7d5aecd5d4d114f78e02d5cf14ab727d14b",
+  "model": "large-v3-turbo",
+  "text": "回数一緒ならまあまあ続くんじゃん?"
+ },
+ "03_tenraku-008": {
+  "sha1": "d104bf41ea0e9bf3b8cb8567fe461e40a7eb1723",
+  "model": "large-v3-turbo",
+  "text": "154で161回転結構スルーするやん"
+ },
+ "03_tenraku-009": {
+  "sha1": "1b8fcfb91fcc9c86bd3c84210eae98389bbe0cd3",
+  "model": "large-v3-turbo",
+  "text": "計算すると続くのは約65%、今時期の77%から落ちてる。"
+ },
+ "03_tenraku-013": {
+  "sha1": "3b849f2776eba124d4da22586d1fa4c24e778e8d",
+  "model": "large-v3-turbo",
+  "text": "上と下の画面が繋がるやつな台でかすぎて隣が狭かったわ"
+ },
+ "03_tenraku-015": {
+  "sha1": "701f5b2c1fffbd84b7c96064c0b5abf0ae9fab89",
+  "model": "large-v3-turbo",
+  "text": "ん?82%あるやん!これはいけるやろ!"
+ },
+ "03_tenraku-019": {
+  "sha1": "110a9bc08cd81a9ef65fe317a249126d472eb360",
+  "model": "large-v3-turbo",
+  "text": "稲妻落ちた瞬間もう立ち上がっとるわ"
+ },
+ "03_tenraku-027": {
+  "sha1": "4af651dc9dea2763eb64ebdaf756cb6142807109",
+  "model": "large-v3-turbo",
+  "text": "全部1500かぁ上限いっぱいやな"
+ },
+ "03_tenraku-030": {
+  "sha1": "7cd42e66587fb98e4a3e64d6aa5174a7311a510d",
+  "model": "large-v3-turbo",
+  "text": "ただ、ST中の変動が長いのが欠点って言われてた。"
+ },
+ "03_tenraku-031": {
+  "sha1": "6631906f4fd8eeed1647403242c9a684b8f62b42",
+  "model": "large-v3-turbo",
+  "text": "160階がなかなか終わらんのよトイレ2階行けたで"
+ },
+ "03_tenraku-032": {
+  "sha1": "64899b983bc4bc21f49610a62043bbc5c8b1bd32",
+  "model": "large-v3-turbo",
+  "text": "80%あってもな遅いと文句しか出へんのや"
+ },
+ "03_tenraku-035": {
+  "sha1": "b9d1bcbbe43e9c59aa2491c862b3d3b0881ec6c9",
+  "model": "large-v3-turbo",
+  "text": "調査会社の集計だと、この台の稼働後継は6週で終わったらしい。"
+ },
+ "04_tenraku2-036": {
+  "sha1": "9fd3bb73df01ecd0b2ed99580ff96b1c6ade391a",
+  "model": "large-v3-turbo",
+  "text": "甲賀のおとんが主役か渋いとこ来たな"
+ },
+ "05_fukkatsu-003": {
+  "sha1": "7c866b2b5502acbeb2e7eeaf7e0581ac215c2a1c",
+  "model": "large-v3-turbo",
+  "text": "3割か、だいたいここで終わるやつやん"
+ },
+ "05_fukkatsu-011": {
+  "sha1": "ad7a550741372d5a72cc8cf65be205b2e55ccbf7",
+  "model": "large-v3-turbo",
+  "text": "俺も3回折れたわはら"
+ },
+ "05_fukkatsu-014": {
+  "sha1": "9286b021f79146a28b9d1731492a1db787c476c1",
+  "model": "large-v3-turbo",
+  "text": "7500ってそれ引けたら今日もう帰れるやん"
+ },
+ "05_fukkatsu-016": {
+  "sha1": "50158ceb68181d7eaa38e331d8e09fce17a811a6",
+  "model": "large-v3-turbo",
+  "text": "負けて1500でもまあ許せる額やな"
+ },
+ "05_fukkatsu-045": {
+  "sha1": "31db7f4104776b24ca91de2c4c761e59aeceab1e",
+  "model": "large-v3-turbo",
+  "text": "ほな、財布の紐はしっかり握っとかなあかんな"
  }
 }
