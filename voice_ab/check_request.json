@@ -2,10 +2,8 @@
  "episode": "episodes/garo_history",
  "model": "large-v3-turbo",
  "only": [
-  "03_tenraku-002",
   "06_matome-010",
-  "01_eikou-030",
-  "04_tenraku2-037"
+  "03_tenraku-002"
  ],
- "_run": "garo-v3-fix1"
+ "_run": "garo-v3-fix2"
 }
