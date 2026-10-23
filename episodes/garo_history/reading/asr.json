@@ -1135,9 +1135,9 @@
   "text": "400か。今の399分の1とほとんど変わらんな。"
  },
  "01_eikou-030": {
-  "sha1": "23fd2d54c9598d71b6ea49135f26ebb2553229ed",
+  "sha1": "1a04e2ca45622c2e1171dfc2ddd212fdeb19040e",
   "model": "large-v3-turbo",
-  "text": "なんでそこまでウケたんやろななっ"
+  "text": "なんでそこまでウケたんやろなぁ"
  },
  "01_eikou-031": {
   "sha1": "6d8d3968b19a036f7fabcb2ee33b15671253cefa",
@@ -1195,9 +1195,9 @@
   "text": "マックスが消えて殻の転落が始まる"
  },
  "03_tenraku-002": {
-  "sha1": "5891c05cdb41d9fce3ab5fd855a0273a9c837a8b",
+  "sha1": "f5d4d5cd0f7fe30c87faa6bb31e52634792ef65f",
   "model": "large-v3-turbo",
-  "text": "いきなりユーイ!ああ!"
+  "text": "いきなり言うやん無礼よ"
  },
  "03_tenraku-010": {
   "sha1": "3a42c3c1636c07c54da3de47ba80ccb4e4717a3d",
@@ -1450,7 +1450,7 @@
   "text": "どっちでもなかった"
  },
  "06_matome-010": {
-  "sha1": "542b0a8ef781efb4a80b41c51fd6eb2cd16c369d",
+  "sha1": "bf8434164b85ea6961fc9d657f1f5ff6d6267734",
   "model": "large-v3-turbo",
   "text": "ん?"
  },
@@ -1463,5 +1463,10 @@
   "sha1": "614da245dad8049d7e3316679face4661830db7f",
   "model": "large-v3-turbo",
   "text": "18年見て答えが出玉かい身も蓋もないな"
+ },
+ "04_tenraku2-037": {
+  "sha1": "a848d7b14cb2336f6aaa7831110dd29f82f682e7",
+  "model": "large-v3-turbo",
+  "text": "次の手は大佐のものを変えることツマパチ"
  }
 }
