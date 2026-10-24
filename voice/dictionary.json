@@ -1995,6 +1995,14 @@
    "for": "baku",
    "action": "バク：送る前に 軽な → かるな",
    "note": ""
+  },
+  {
+   "date": "2026-10-24",
+   "word": "覇道",
+   "heard": "ワドウ（『は』を助詞として読んだ）",
+   "line": "yokai_watch:01_kihon-014",
+   "engine": "aivis",
+   "fix": "読みをカタカナ『ハドウ』で書く"
   }
  ],
  "aivis_words": [
