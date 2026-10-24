@@ -681,7 +681,7 @@ def pie(canvas, tl, dur, data):
     d.text((48, 100), data["heading"], font=font("black", 54), fill=TEXT, anchor="lm")
     d.line((48, 144, pw - 48, 144), fill=PANEL_LINE, width=2)
     # 左：ドーナツ（2倍で描いて縮めて滑らかに）
-    R, cx, cy = 210, 290, 160 + (ph - 160) / 2 - 6
+    R, cx, cy = 236, 300, 160 + (ph - 160) / 2 - 4
     sweep = ease_in_out(prog(tl, 0.35, 0.9))
     S = 2
     g = Image.new("RGBA", (2 * R * S + 4, 2 * R * S + 4), (0, 0, 0, 0))
@@ -702,19 +702,42 @@ def pie(canvas, tl, dur, data):
         c0 = 2 + R * S
         gd.line((c0, c0, c0 + math.cos(rad) * R * S, c0 + math.sin(rad) * R * S), fill=PANEL, width=4 * S // 2)
         ang += 360.0 * s["v"] / total
-    hole = int(R * 0.58 * S)
+    hole = int(R * 0.42 * S)
     c0 = 2 + R * S
     gd.ellipse((c0 - hole, c0 - hole, c0 + hole, c0 + hole), fill=PANEL)
     g = g.resize((g.width // S, g.height // S), Image.LANCZOS)
     panel.alpha_composite(fade(g, ease_out(prog(tl, 0.2, 0.4))), (int(cx - R - 1), int(cy - R - 1)))
+    # グラフの中の文字：広い区画は「名前＋割合」、中くらいは割合だけ、細い区画は表に任せる
+    kt = ease_out(prog(tl, 1.15, 0.4))
+    if kt > 0:
+        tx = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
+        td = ImageDraw.Draw(tx)
+        rm = R * 0.71
+        ang = -90.0
+        dark = (16, 24, 39, 255)
+        for i, s in enumerate(sl):
+            span = 360.0 * s["v"] / total
+            arc = math.radians(span) * rm
+            mid = math.radians(ang + span / 2)
+            px, py = cx + math.cos(mid) * rm, cy + math.sin(mid) * rm
+            lab = s.get("label", f"{s['v']}%")
+            if arc >= 150:
+                td.text((px, py - 15), s.get("in", s["k"]), font=font("black", 24), fill=TEXT, anchor="mm",
+                        stroke_width=4, stroke_fill=dark)
+                td.text((px, py + 16), lab, font=font("black", 26), fill=TEXT, anchor="mm", stroke_width=4, stroke_fill=dark)
+            elif arc >= 52:
+                td.text((px, py), lab.replace("約", ""), font=font("black", 24 if arc < 80 else 28), fill=TEXT, anchor="mm",
+                        stroke_width=4, stroke_fill=dark)
+            ang += span
+        panel.alpha_composite(fade(tx, kt))
     kc = ease_out(prog(tl, 0.9, 0.4))
     if kc > 0 and data.get("center"):
         cl = Image.new("RGBA", (2 * hole, 2 * hole), (0, 0, 0, 0))
         cdd = ImageDraw.Draw(cl)
         h2 = hole / S * 2
-        cdd.text((hole, hole - (18 if data.get("center_sub") else 0)), data["center"], font=font("black", 40), fill=TEXT, anchor="mm")
+        cdd.text((hole, hole - (16 if data.get("center_sub") else 0)), data["center"], font=font("black", 34), fill=TEXT, anchor="mm")
         if data.get("center_sub"):
-            cdd.text((hole, hole + 30), data["center_sub"], font=font("medium", 26), fill=SUB, anchor="mm")
+            cdd.text((hole, hole + 24), data["center_sub"], font=font("medium", 22), fill=SUB, anchor="mm")
         panel.alpha_composite(fade(cl, kc), (int(cx - hole), int(cy - hole)))
     # 右：表（色・名前・中身・割合）。行は順に出て、key の行は金色
     tx0, tx1 = 600, pw - 56
