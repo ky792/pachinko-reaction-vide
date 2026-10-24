@@ -35,9 +35,9 @@
   "text": "先にそれ言えや!"
  },
  "01_kihon-001": {
-  "sha1": "5682b987cdfde3b9f7ebb03c95fd5febfbbf5d1d",
+  "sha1": "9847950886216b4bfd6a4b5d12cbdf8dbe9e7e8b",
   "model": "large-v3-turbo",
-  "text": "今回はこれE-Fever 横イコルや"
+  "text": "今回はこれ!E-Fever 妖怪ウォッチや!"
  },
  "01_kihon-002": {
   "sha1": "5f47e4ead9a414ec04d15cac7143438bfc9e865c",
@@ -185,9 +185,9 @@
   "text": "取り付いてるのは399番の1だよ"
  },
  "02_hatsuatari-011": {
-  "sha1": "947ecd8d9cf9b80c7dc80e2f8f6e2428e6f8dbf5",
+  "sha1": "7e506944f1fb71862561ee888b5e65b67f470a15",
   "model": "large-v3-turbo",
-  "text": "妖怪の名前みたいに言うな!えっ?"
+  "text": "妖怪の名前みたいに言うな!"
  },
  "02_hatsuatari-012": {
   "sha1": "9913de69a03159787c680dbd20ca35bce7c87e14",
@@ -290,9 +290,9 @@
   "text": "4回に1回は負ける計算だから妖怪がいなくても負けるよ"
  },
  "03_rush-009": {
-  "sha1": "45b1035bbc39a67cca5f9d309ccc17385d6a5ba5",
+  "sha1": "aac36dceaaec629d46503ba5d5fe0c1ea7dc1c65",
   "model": "large-v3-turbo",
-  "text": "夢ないこと言うなや、トンチャ"
+  "text": "夢ないこと言うなよ!"
  },
  "03_rush-010": {
   "sha1": "ba375349fb7d36f724b39b717894337203935a68",
@@ -495,9 +495,9 @@
   "text": "それは多分店長だね"
  },
  "06_uchite-007": {
-  "sha1": "299cb4c698be58a12450d808c04fca6d353ea30f",
+  "sha1": "4439221b6f183232e4a37bc33f04134a6a191e2e",
   "model": "large-v3-turbo",
-  "text": "妖怪より怖いやん、レイバー"
+  "text": "妖怪より怖いやん"
  },
  "06_uchite-008": {
   "sha1": "11595476a78a25810825183b6b40123430d11627",
@@ -630,9 +630,9 @@
   "text": "それは妖怪のせいでもレベル5のせいでもないね"
  },
  "07_matome-019": {
-  "sha1": "537f62fd5fe06529167a57810ce54c487c761425",
+  "sha1": "f6008fc37c79fea5d59185d34bba6ac1a1e3c5e7",
   "model": "large-v3-turbo",
-  "text": "うちのせいや、うちの濡れせいや"
+  "text": "うちのせいや"
  },
  "99_ed-001": {
   "sha1": "143f54abbeddcd0e353a8d52f608a4f3da9d8177",
