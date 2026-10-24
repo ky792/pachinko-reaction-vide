@@ -16,8 +16,33 @@
    ]
   }
  ],
- "_try": 5,
+ "_try": 6,
  "only": [
-  "01_kihon-001"
+  "00_op-001",
+  "00_op-003",
+  "00_op-004",
+  "00_op-006",
+  "01_kihon-002",
+  "01_kihon-004",
+  "01_kihon-006",
+  "01_kihon-008",
+  "01_kihon-010",
+  "01_kihon-012",
+  "01_kihon-014",
+  "01_kihon-017",
+  "02_hatsuatari-003",
+  "02_hatsuatari-005",
+  "02_hatsuatari-007",
+  "02_hatsuatari-009",
+  "02_hatsuatari-011",
+  "03_rush-007",
+  "03_rush-009",
+  "03_rush-011",
+  "05_ubaune-011",
+  "06_uchite-002",
+  "06_uchite-008",
+  "06_uchite-009",
+  "06_uchite-011",
+  "07_matome-008"
  ]
 }
