@@ -1,0 +1,93 @@
+[
+ {
+  "id": "02_hatsuatari-018",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "0.5",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "たまに、いきなり3000個でRUSHに行く当たりもある。約0.5%。",
+  "speech": "たまに、いきなり3000個でラッシュに行く当たりもある。約0.5%。",
+  "kana": "タマニ、イキナリサンゼンコデラッシュニイクアタリモアル。ヤクレーテンゴパーセント。",
+  "audio": "episodes/yokai_watch/voices/02_hatsuatari-018.wav"
+ },
+ {
+  "id": "02_hatsuatari-020",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "4.6",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "ちなみに妖怪メダルは、累計約4.6億枚出荷されてる。",
+  "speech": "ちなみに妖怪メダルは、累計約4.6億枚出荷されてる。",
+  "kana": "チナミニヨーカイメダルワ、ルイケーヤクヨンテンロクオクマイシュッカサレテル。",
+  "audio": "episodes/yokai_watch/voices/02_hatsuatari-020.wav"
+ },
+ {
+  "id": "02_hatsuatari-021",
+  "who": "baku",
+  "kind": "小数",
+  "where": "4.6",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "あんだけ店に無かったのに、4.6億て。どこに消えとったんや。",
+  "speech": "あんだけ店に無かったのに、4.6億て。どこに消えとったんや。",
+  "kana": "アンダケミセニナカッタノニ、ヨンテンロクオクテ。ドコニキエトッタンヤ。",
+  "audio": "episodes/yokai_watch/voices/02_hatsuatari-021.wav"
+ },
+ {
+  "id": "04_dedama-008",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "3.5",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "あと、約3.5%がエンマインパクトで3000個。",
+  "speech": "あと、約3.5%がエンマインパクトで3000個。",
+  "kana": "アト、ヤクサンテンゴパーセントガエンマインパクトデサンゼンコ。",
+  "audio": "episodes/yokai_watch/voices/04_dedama-008.wav"
+ },
+ {
+  "id": "04_dedama-009",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "5.7",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "残り約5.7%が、ウバウネ決戦。",
+  "speech": "残り約5.7%が、ウバウネ決戦。",
+  "kana": "ノコリヤクゴーテンナナパーセントガ、ウバウネケッセン。",
+  "audio": "episodes/yokai_watch/voices/04_dedama-009.wav"
+ },
+ {
+  "id": "05_ubaune-005",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "12.5",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "3000個で終わるのが50%、4500個が25%、6000個が12.5%。",
+  "speech": "3000個で終わるのが50%、4500個が25%、6000個が12.5%。",
+  "kana": "サンゼンコデオワルノガゴジュッパーセント、ヨンセンゴヒャッコガニジューゴパーセント、ロクセンコガジューニーテンゴパーセント。",
+  "audio": "episodes/yokai_watch/voices/05_ubaune-005.wav"
+ },
+ {
+  "id": "06_uchite-003",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "13.6",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "1円パチンコの等価なら、200個あたり約13.6回。",
+  "speech": "1円パチンコの等価なら、200個あたり約13.6回。",
+  "kana": "イチエンパチンコノトーカナラ、ニヒャッコアタリヤクジューサンテンロクカイ。",
+  "audio": "episodes/yokai_watch/voices/06_uchite-003.wav"
+ }
+]
