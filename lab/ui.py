@@ -653,6 +653,142 @@ def lineup(canvas, tl, dur, data):
     paste(canvas, lay, (0, 0), a)
 
 
+# ---------------------------------------------------------------- K 円グラフ＋表（振り分け）
+PIE_COLORS = [hexc("#64BFFF"), hexc("#F28C38"), hexc("#8E7CFF"), hexc("#4FD1A5"), hexc("#E8607A"), hexc("#7FA3C8")]
+
+
+def _pie_color(i, s):
+    if s.get("c"):
+        return hexc(s["c"])
+    return KEY if s.get("key") else PIE_COLORS[i % len(PIE_COLORS)]
+
+
+def pie(canvas, tl, dur, data):
+    """振り分けを、左のドーナツグラフと右の表で見せる。
+    data: heading, tag, center（グラフ中央の文字）, center_sub, slices[{k, s, v, label, key, c}], note"""
+    a = life(tl, dur, 0.4, 0.35)
+    if a <= 0:
+        return
+    sl = data["slices"]
+    n = len(sl)
+    total = sum(s["v"] for s in sl) or 1
+    pw, ph = 1560, 640
+    panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
+    d = ImageDraw.Draw(panel)
+    d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 242), outline=PANEL_LINE, width=2)
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
+    lab_label(d, (48, 50), data.get("tag", "DATA LOG"), NAGI, 20)
+    d.text((48, 100), data["heading"], font=font("black", 54), fill=TEXT, anchor="lm")
+    d.line((48, 144, pw - 48, 144), fill=PANEL_LINE, width=2)
+    # 左：ドーナツ（2倍で描いて縮めて滑らかに）
+    R, cx, cy = 210, 290, 160 + (ph - 160) / 2 - 6
+    sweep = ease_in_out(prog(tl, 0.35, 0.9))
+    S = 2
+    g = Image.new("RGBA", (2 * R * S + 4, 2 * R * S + 4), (0, 0, 0, 0))
+    gd = ImageDraw.Draw(g)
+    box = (2, 2, 2 + 2 * R * S, 2 + 2 * R * S)
+    gd.ellipse(box, fill=PANEL_LINE)
+    ang = -90.0
+    for i, s in enumerate(sl):
+        span = 360.0 * s["v"] / total
+        end = min(ang + span, -90.0 + 360.0 * sweep)
+        if end > ang:
+            gd.pieslice(box, ang, end, fill=_pie_color(i, s))
+        ang += span
+    # 切れ目の細い線と中央の穴
+    ang = -90.0
+    for s in sl:
+        rad = math.radians(ang)
+        c0 = 2 + R * S
+        gd.line((c0, c0, c0 + math.cos(rad) * R * S, c0 + math.sin(rad) * R * S), fill=PANEL, width=4 * S // 2)
+        ang += 360.0 * s["v"] / total
+    hole = int(R * 0.58 * S)
+    c0 = 2 + R * S
+    gd.ellipse((c0 - hole, c0 - hole, c0 + hole, c0 + hole), fill=PANEL)
+    g = g.resize((g.width // S, g.height // S), Image.LANCZOS)
+    panel.alpha_composite(fade(g, ease_out(prog(tl, 0.2, 0.4))), (int(cx - R - 1), int(cy - R - 1)))
+    kc = ease_out(prog(tl, 0.9, 0.4))
+    if kc > 0 and data.get("center"):
+        cl = Image.new("RGBA", (2 * hole, 2 * hole), (0, 0, 0, 0))
+        cdd = ImageDraw.Draw(cl)
+        h2 = hole / S * 2
+        cdd.text((hole, hole - (18 if data.get("center_sub") else 0)), data["center"], font=font("black", 40), fill=TEXT, anchor="mm")
+        if data.get("center_sub"):
+            cdd.text((hole, hole + 30), data["center_sub"], font=font("medium", 26), fill=SUB, anchor="mm")
+        panel.alpha_composite(fade(cl, kc), (int(cx - hole), int(cy - hole)))
+    # 右：表（色・名前・中身・割合）。行は順に出て、key の行は金色
+    tx0, tx1 = 600, pw - 56
+    rh = min(84, (ph - 200 - (60 if data.get("note") else 0)) / n)
+    ty = 176 + ((ph - 200 - (60 if data.get("note") else 0)) - rh * n) / 2
+    fname = font("black", 40 if rh >= 70 else 34)
+    fsub = font("medium", 28)
+    fval = font("black", 50 if rh >= 70 else 42)
+    for i, s in enumerate(sl):
+        k = ease_out(prog(tl, 0.45 + 0.22 * i, 0.35))
+        if k <= 0:
+            continue
+        row = Image.new("RGBA", (tx1 - tx0, int(rh)), (0, 0, 0, 0))
+        rd = ImageDraw.Draw(row)
+        col = _pie_color(i, s)
+        hot = s.get("key")
+        if hot:
+            rd.rounded_rectangle((0, 4, tx1 - tx0 - 1, rh - 5), 10, fill=(KEY[0], KEY[1], KEY[2], 34), outline=KEY, width=2)
+        rd.rounded_rectangle((18, rh / 2 - 14, 46, rh / 2 + 14), 6, fill=col)
+        rd.text((72, rh / 2), s["k"], font=fname, fill=KEY if hot else TEXT, anchor="lm")
+        if s.get("s"):
+            rd.text((72 + text_w(s["k"], fname) + 22, rh / 2 + 4), s["s"], font=fsub, fill=SUB, anchor="lm")
+        rd.text((tx1 - tx0 - 24, rh / 2), s.get("label", f"{s['v']}%"), font=fval, fill=KEY if hot else TEXT, anchor="rm")
+        if i < n - 1 and not hot and not sl[i + 1].get("key"):
+            rd.line((18, rh - 1, tx1 - tx0 - 18, rh - 1), fill=PANEL_LINE, width=1)
+        panel.alpha_composite(fade(row, k), (tx0 + int(16 * (1 - k)), int(ty + rh * i)))
+    if data.get("note"):
+        kn = ease_out(prog(tl, 0.6 + 0.22 * n, 0.4))
+        if kn > 0:
+            nl = Image.new("RGBA", (tx1 - tx0, 50), (0, 0, 0, 0))
+            ImageDraw.Draw(nl).text((18, 25), data["note"], font=font("medium", 28), fill=SUB, anchor="lm")
+            panel.alpha_composite(fade(nl, kn), (tx0, ph - 74))
+    paste(canvas, panel, ((W - pw) / 2, 168 + 14 * (1 - a)), a)
+
+
+# ---------------------------------------------------------------- L スペック表（読みやすい一覧）
+def spec_table(canvas, tl, dur, data):
+    """項目・値・補足の3列の表。key の行は金色で強調。data: heading, tag, rows[{k, v, s, key}]"""
+    a = life(tl, dur, 0.4, 0.35)
+    if a <= 0:
+        return
+    rows = data["rows"]
+    n = len(rows)
+    pw = 1400
+    rh = 86
+    ph = 170 + rh * n + 30
+    panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
+    d = ImageDraw.Draw(panel)
+    d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 242), outline=PANEL_LINE, width=2)
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
+    lab_label(d, (48, 50), data.get("tag", "DATA LOG"), NAGI, 20)
+    d.text((48, 100), data["heading"], font=font("black", 54), fill=TEXT, anchor="lm")
+    d.line((48, 144, pw - 48, 144), fill=PANEL_LINE, width=2)
+    c1, c2 = 60, 430
+    for i, r in enumerate(rows):
+        k = ease_out(prog(tl, 0.35 + 0.2 * i, 0.35))
+        if k <= 0:
+            continue
+        hot = r.get("key")
+        row = Image.new("RGBA", (pw - 64, rh), (0, 0, 0, 0))
+        rd = ImageDraw.Draw(row)
+        if hot:
+            rd.rounded_rectangle((0, 6, pw - 65, rh - 7), 10, fill=(KEY[0], KEY[1], KEY[2], 34), outline=KEY, width=2)
+        elif i % 2 == 0:
+            rd.rounded_rectangle((0, 6, pw - 65, rh - 7), 10, fill=(255, 255, 255, 10))
+        rd.text((c1 - 32, rh / 2), r["k"], font=font("bold", 34), fill=KEY if hot else SUB, anchor="lm")
+        fv = font("black", 48)
+        rd.text((c2 - 32, rh / 2), r["v"], font=fv, fill=KEY if hot else TEXT, anchor="lm")
+        if r.get("s"):
+            rd.text((pw - 64 - 28, rh / 2 + 2), r["s"], font=font("medium", 30), fill=SUB, anchor="rm")
+        panel.alpha_composite(fade(row, k), (32 + int(16 * (1 - k)), int(164 + rh * i)))
+    paste(canvas, panel, ((W - pw) / 2, 170 + (600 - ph) / 2 + 14 * (1 - a)), a)
+
+
 # ---------------------------------------------------------------- J タイトル
 def title_card(canvas, tl, dur, data):
     out = 1 - ease_in_out(prog(tl, dur - 0.45, 0.45))
@@ -735,6 +871,8 @@ SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中�
     "analysis": lambda d: 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
     "flow": lambda d: 0.35 + 0.45 * len(d["steps"]) + 0.4,
     "lineup": lambda d: 0.3 + (0.32 if d.get("fast") else 0.55) * len(d["items"]) + 0.35,
+    "pie": lambda d: max(1.3, 0.6 + 0.22 * len(d["slices"]) + 0.45),
+    "spec_table": lambda d: 0.35 + 0.2 * len(d["rows"]) + 0.4,
 }
 OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45, "intro": 0.35, "logo": 0.35}
 

@@ -1,6 +1,6 @@
 # まとめ → 「妖怪のせい」の天丼回収 → レベルファイブの延期で落とす
 @chapter matome
-@show lineup:yokai_summary
+@show spec_table:yokai_summary
 ナギ: まとめ。確率は1/319、フル時短で遊タイムは無し。
 ナギ: トータル突入は約61%、継続は約80%。RUSH中は平均約2000個。
 バク: あとウバウネ決戦な。あれが本体や。

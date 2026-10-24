@@ -127,7 +127,7 @@ def _vignette():
     return _VIG["v"]
 
 
-BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup")
+BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup", "pie", "spec_table")
 
 
 def year_at(scene, t):
@@ -172,6 +172,10 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
         ui.flow(cv, tl, dur, d)
     elif tp == "lineup":
         ui.lineup(cv, tl, dur, d)
+    elif tp == "pie":
+        ui.pie(cv, tl, dur, d)
+    elif tp == "spec_table":
+        ui.spec_table(cv, tl, dur, d)
     elif tp == "analysis" and data_tank is not None:
         ui.analysis(cv, tl, dur, d, data_tank)
 
