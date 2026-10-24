@@ -9,12 +9,11 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 21,
+ "_try": 22,
  "kana_only": false,
  "only": [
-  "01_kihon-008",
-  "01_kihon-010",
-  "01_kihon-014",
-  "01_kihon-016"
+  "07_matome-009",
+  "07_matome-011",
+  "07_matome-013"
  ]
 }

@@ -1,7 +1,7 @@
 {
  "data": "../ken_full/data.json",
  "data_patch": "data_patch.json",
- "bgm": "bright_pop.wav",
+ "bgm": "newmachine_matsuri.wav",
  "bgm_gain": 0.14,
  "gap": 0.22,
  "_note": "新台解説：eフィーバー妖怪ウォッチ（SANKYO・2026年11月2日導入）。A型（news01）＋短い寸劇。数字はパチ7・なな徹のスペック表と、そこからの計算。声は garo_history と同じ設定（ナギ＝AivisSpeech コハク『ねむたい』、バク＝Irodori garo2_fix_s53）。実機画像は未取得（images/yokai.jpg を置けば差し替わる）。新台解説テーマ（newmachine）：背景はSANKYO公式のキービジュアルをぼかしたもの",
