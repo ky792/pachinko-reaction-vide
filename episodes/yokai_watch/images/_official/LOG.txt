@@ -21,3 +21,5 @@ skip small (200, 100) https://www.sankyo-fever.jp/products/assets/img/home_notic
 skip small (50, 50) https://www.sankyo-fever.jp/products/assets/img/common/btn_to_page_top.webp
 skip small (103, 44) https://www.sankyo-fever.jp/products/assets/img/pc/map/btn_close.png
 skip small (50, 50) https://www.sankyo-fever.jp/products/assets/img/pc/map/btn_close_2.webp
+OK 04_spec_graph_1_pc.png (1592, 1277) https://www.sankyo-fever.jp/products/assets/img/machineList/ppj/spec/spec_graph_1_pc.jpg
+OK 05_machine_1.png (342, 559) https://www.sankyo-fever.jp/products/assets/img/machineList/ppj/spec/machine_1.png
