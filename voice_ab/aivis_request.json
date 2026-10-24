@@ -9,27 +9,12 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 20,
+ "_try": 21,
  "kana_only": false,
  "only": [
-  "00_op-002",
-  "00_op-005",
-  "01_kihon-001",
-  "01_kihon-003",
-  "01_kihon-005",
-  "01_kihon-007",
-  "01_kihon-009",
-  "01_kihon-011",
-  "01_kihon-015",
-  "02_hatsuatari-004",
-  "02_hatsuatari-006",
-  "02_hatsuatari-010",
-  "03_rush-005",
-  "03_rush-006",
-  "03_rush-008",
-  "03_rush-010",
-  "06_uchite-010",
-  "06_uchite-012",
-  "07_matome-014"
+  "01_kihon-008",
+  "01_kihon-010",
+  "01_kihon-014",
+  "01_kihon-016"
  ]
 }
