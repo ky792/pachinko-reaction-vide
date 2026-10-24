@@ -12,7 +12,7 @@ from urllib.parse import urljoin
 import requests
 from PIL import Image
 
-PAGES = ["https://www.sankyo-fever.jp/products/machine_list/ppj/"]
+PAGES = ["https://www.sankyo-fever.jp/products/machine_list/ppj/", "https://www.sankyo-fever.jp/products/machine_list/ppj/spec/"]
 OUT = Path("episodes/yokai_watch/images/_official"); OUT.mkdir(parents=True, exist_ok=True)
 s = requests.Session(); s.headers["User-Agent"] = "Mozilla/5.0 (compatible; NagibakuMaterialResearch/1.0)"
 
