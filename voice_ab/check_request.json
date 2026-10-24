@@ -1,12 +1,5 @@
 {
  "episode": "episodes/yokai_watch",
  "model": "large-v3-turbo",
- "only": [
-  "01_kihon-001",
-  "03_rush-009",
-  "06_uchite-007",
-  "07_matome-019",
-  "02_hatsuatari-011"
- ],
- "_run": "yokai-v3"
+ "_run": "yokai-v3-all"
 }
