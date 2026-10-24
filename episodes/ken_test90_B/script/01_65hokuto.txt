@@ -1,0 +1,54 @@
+# 90秒検証 B：改善版（伏線＝T07「同じ条件で並ぶ」→ 回収＝T18 → 大オチ＝T19）
+# @dir は直後の1セリフだけに効く：pre/post＝前後の無音(秒)、speed/int/vol＝話速・抑揚・音量の倍率、
+#   emph＝強調語（その語だけ少し高く長く）、mark＝字幕に橙の下線、mood＝声の種類、focus＝オチの寄り、lv＝画面レベル(記録用)
+@chapter ch2
+@year 2015.7
+@show keyword:q65
+@dir pre=0 lv=3
+ナギ: 2016年、新台の継続率は65%までになった。
+@dir pre=0.12 speed=1.05
+バク: 知っとる。あれで、どの台も牙を抜かれたんよ。
+@dir pre=0.35 speed=0.95 int=0.9 emph=全部
+ナギ: 全部の台、ではないんだよ。
+@dir pre=0.25 post=0.3 mood=ask
+バク: ……はぁ？
+@show keyword:rule65
+@dir pre=0.30
+ナギ: 決めたのは日工組。2015年9月の申し合わせだ。
+@dir pre=0.10 int=0.95
+ナギ: 対象は、2016年5月以降に納品される新台。
+@clear
+@dir pre=0.15 post=0.15 speed=1.05 emph=同じ条件 mark=同じ条件
+バク: ルールはルールや。みんな同じ条件で並ぶんやったら、文句は言わへん。
+@year 2016.18
+@show machine:hokuto
+@dir pre=0.20 emph=2か月前
+ナギ: ただ、その2か月前。2016年3月に、一台がホールに入っている。
+@dir pre=0.08 mood=excited speed=0.95
+バク: 真・北斗無双やな。
+@dir pre=0.12 post=0.15 speed=0.95 int=0.9 emph=約80%
+ナギ: ST130回転で、継続率は約80%。
+@dir pre=0.10 speed=1.05
+バク: 130回転、毎回ヒリつきっぱなしやったわ。ええ台やで、あれは。
+@show timeline:hokuto
+@dir pre=0.15 post=0.2 emph=これから
+ナギ: そして、ルールが縛るのは、これから納品される台だけ。
+@dir pre=0.30 speed=0.95 int=0.95 mood=serious
+バク: ……ほな、もう店に入っとる北斗無双は。
+@dir pre=0.15 post=0.2 speed=0.95 int=0.85 emph=そのまま
+ナギ: そのまま、約80%で打てる。
+@clear
+@dir pre=0.12 post=0.15 speed=1.05
+バク: 店からしたら、稼げる台をわざわざ外す理由もないしな。
+@dir pre=0.25 post=0.2 speed=0.95 int=0.9
+ナギ: ……その見方は、たぶん正しい。
+@dir pre=0.15 speed=1.0 int=1.1 emph=手かせ mark=手かせ lv=3
+バク!: ほな5月からの新台は、65%の手かせ付けて、80%と同じ店で勝負かい！
+@bgm cut 0.3
+@dir pre=0.40 speed=0.97 int=0.85 emph=同じ条件 mark=同じ条件
+ナギ: 同じ条件で並ぶなら、文句は言わない。だったよね。
+@dir pre=0.55 post=0.8 speed=0.92 int=0.8 vol=0.85 mood=serious focus=baku lv=3
+バク: ……あいつ、一番乗りで並んどっただけか。
+@bgm resume 0.6
+@dir pre=0 speed=1.05
+バク: ……でも、65%の時代でも、流行った台はあったやん。

@@ -1,0 +1,2067 @@
+{
+ "_note": "読みの辞書。surface=台本の表記、yomi=読み（カタカナ）、accent=アクセント核の位置（0=平板、n=n拍目の後で下がる）、ok=人が確認済みなら true。台本はこの辞書で読み上げ前に自動で直す。 terms＝読みの確認用の語（cat 分類、status ok＝確定／要確認＝人が確かめるまで確定しない。読み上げは変えない）。rules＝読み上げ前に当てる置き換え（直した読みはここへ）。history＝誤読を直した記録（scripts/reading/fix.py が足す）。台本の《表記|よみ》は字幕に表記、読み上げによみを使う。",
+ "words": [
+  {
+   "surface": "シーアールガロ",
+   "yomi": "シーアールガロ",
+   "accent": 6,
+   "ok": true
+  },
+  {
+   "surface": "シーアールシンホクトムソウ",
+   "yomi": "シーアールシンホクトムソウ",
+   "accent": 11,
+   "ok": true
+  },
+  {
+   "surface": "シーアールウミモノガタリ",
+   "yomi": "シーアールウミモノガタリ",
+   "accent": 9,
+   "ok": true
+  },
+  {
+   "surface": "シーアールオオウミモノガタリ",
+   "yomi": "シーアールオオウミモノガタリ",
+   "accent": 10,
+   "ok": true
+  },
+  {
+   "surface": "シーアールダイクノゲンサン",
+   "yomi": "シーアールダイクノゲンサン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "初代",
+   "yomi": "ショダイ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "牙狼",
+   "yomi": "ガロ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "魔戒ノ花",
+   "yomi": "マカイノハナ",
+   "accent": 0,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "魔戒チャンス",
+   "yomi": "マカイチャンス",
+   "accent": 4,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "金色になれ",
+   "yomi": "コンジキニナレ",
+   "accent": 0,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "大工の源さん",
+   "yomi": "ダイクノゲンサン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "源さん",
+   "yomi": "ゲンサン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "超韋駄天",
+   "yomi": "チョウイダテン",
+   "accent": 3,
+   "ok": true
+  },
+  {
+   "surface": "超源",
+   "yomi": "チョウゲン",
+   "accent": 0,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "北斗無双",
+   "yomi": "ホクトムソウ",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "鬼がかり",
+   "yomi": "オニガカリ",
+   "accent": 0,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "海物語",
+   "yomi": "ウミモノガタリ",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "大海物語",
+   "yomi": "オオウミモノガタリ",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "幻闘",
+   "yomi": "ゲントウ",
+   "accent": 0,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "東京喰種",
+   "yomi": "トウキョウグール",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "からくりサーカス",
+   "yomi": "カラクリサーカス",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "リゼロ",
+   "yomi": "リゼロ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "エヴァ",
+   "yomi": "エヴァ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "内規",
+   "yomi": "ナイキ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "回転",
+   "yomi": "カイテン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "継続率",
+   "yomi": "ケイゾクリツ",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "図柄",
+   "yomi": "ズガラ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "時短",
+   "yomi": "ジタン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "確変",
+   "yomi": "カクヘン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "保留",
+   "yomi": "ホリュウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "稼働",
+   "yomi": "カドウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "稼動",
+   "yomi": "カドウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "連チャン",
+   "yomi": "レンチャン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "スマパチ",
+   "yomi": "スマパチ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "日工組",
+   "yomi": "ニッコウクミ",
+   "accent": 0,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "PiDEA",
+   "yomi": "ピデア",
+   "accent": 1,
+   "ok": true,
+   "checked": "2026-10-10 一般的な読みとして確認（Claude）"
+  },
+  {
+   "surface": "P-WORLD",
+   "yomi": "ピーワールド",
+   "accent": 3,
+   "ok": true
+  },
+  {
+   "surface": "覇権台",
+   "yomi": "ハケンダイ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "戦姫絶唱",
+   "yomi": "センキゼッショウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "シンフォギア",
+   "yomi": "シンフォギア",
+   "accent": 3,
+   "ok": true
+  },
+  {
+   "surface": "残保留",
+   "yomi": "ザンホリュウ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "電チュー",
+   "yomi": "デンチュー",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "魚群",
+   "yomi": "ギョグン",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "大都技研",
+   "yomi": "ダイトギケン",
+   "accent": 4,
+   "ok": true
+  },
+  {
+   "surface": "ビスティ",
+   "yomi": "ビスティ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "パピモ",
+   "yomi": "パピモ",
+   "accent": 1,
+   "ok": true
+  },
+  {
+   "surface": "ラッキートリガー",
+   "yomi": "ラッキートリガー",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "最終決戦",
+   "yomi": "サイシュウケッセン",
+   "accent": 5,
+   "ok": true
+  },
+  {
+   "surface": "右打ち",
+   "yomi": "ミギウチ",
+   "accent": 0,
+   "ok": true
+  },
+  {
+   "surface": "打ち手",
+   "yomi": "ウチテ",
+   "accent": 0,
+   "ok": true
+  }
+ ],
+ "rules": [
+  {
+   "re": "V確ST150回",
+   "to": "ブイかくエスティーひゃくごじゅっかい",
+   "why": "ST＋数字を1文字ずつ読む問題（2026-10-21 牙狼回）",
+   "status": "ok"
+  },
+  {
+   "re": "ST160回",
+   "to": "エスティーひゃくろくじゅっかい",
+   "why": "ST＋数字を1文字ずつ読む問題（2026-10-21 牙狼回）",
+   "status": "ok"
+  },
+  {
+   "re": "ST161回",
+   "to": "エスティーひゃくろくじゅういっかい",
+   "why": "ST＋数字を1文字ずつ読む問題（2026-10-21 牙狼回）",
+   "status": "ok"
+  },
+  {
+   "re": "ST130回",
+   "to": "エスティーひゃくさんじゅっかい",
+   "why": "ST＋数字を1文字ずつ読む問題（2026-10-21 牙狼回）",
+   "status": "ok"
+  },
+  {
+   "re": "真魔戒",
+   "to": "しんまかい",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "真ガロパト",
+   "to": "しんガロパト",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "冴島家",
+   "to": "さえじまけ",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "初当り",
+   "to": "はつあたり",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "P真・牙狼",
+   "to": "ピーしんガロ",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "V(?=に入)",
+   "to": "ブイ",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "(?<![A-Za-z])CG(?![A-Za-z])",
+   "to": "シージー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "(?<![A-Za-z\\.])3D(?![\\.A-Za-z])",
+   "to": "スリーディー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "金翔枠",
+   "to": "きんしょうわく",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "RED REQUIEM",
+   "to": "レッドレクイエム",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "GOLDSTORM翔",
+   "to": "ゴールドストームしょう",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "GOLD IMPACT",
+   "to": "ゴールドインパクト",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "V-LIGHT",
+   "to": "ブイライト",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "3D\\.F\\.O\\.G\\.",
+   "to": "スリーディーエフオージー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "I\\.F\\.O\\.G\\.",
+   "to": "アイエフオージー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "L\\.F\\.O\\.G\\.",
+   "to": "エルエフオージー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "P\\.F\\.O\\.G\\.",
+   "to": "ピーエフオージー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "F\\.F\\.O\\.G\\.",
+   "to": "エフエフオージー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "F\\.O\\.G\\.",
+   "to": "エフオージー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "サンセイR&D",
+   "to": "サンセイアールアンドディー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "雨宮SP",
+   "to": "あめみやスペシャル",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "1stバトル",
+   "to": "ファーストバトル",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "BURST",
+   "to": "バースト",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "CHANCE",
+   "to": "チャンス",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "FINAL",
+   "to": "ファイナル",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "V確ST",
+   "to": "ブイかくエスティー",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "(\\d+)R(?![A-Za-z&])",
+   "to": "\\1ラウンド",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "軽な",
+   "to": "かるな",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "初当たり",
+   "to": "はつあたり",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "通常時",
+   "to": "つうじょうじ",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "役物",
+   "to": "やくもの",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "集結の運命",
+   "to": "しゅうけつのさだめ",
+   "why": "曲名。読みはユーザー確認済み（さだめ）",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "神台",
+   "to": "かみだい",
+   "why": "誤読の修正",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "突確",
+   "to": "とつかく"
+  },
+  {
+   "re": "1・3・5",
+   "to": "いち、さん、ご"
+  },
+  {
+   "re": "最後のシ者",
+   "to": "さいごのししゃ"
+  },
+  {
+   "re": "VS",
+   "to": "ブイエス",
+   "why": "英字の読み"
+  },
+  {
+   "re": "V確変",
+   "to": "ブイかくへん",
+   "why": "V確変"
+  },
+  {
+   "re": "(?<![A-Za-z])Q(?![A-Za-z])",
+   "to": "キュー",
+   "why": "新劇場版Q"
+  },
+  {
+   "re": "Mark\\.06",
+   "to": "マークシックス",
+   "why": "機体名"
+  },
+  {
+   "re": "Limit8",
+   "to": "リミットエイト",
+   "why": "保留の名前"
+  },
+  {
+   "re": "EMERGENCY",
+   "to": "エマージェンシー",
+   "why": "英字の読み"
+  },
+  {
+   "re": "BONUS",
+   "to": "ボーナス",
+   "why": "英字の読み"
+  },
+  {
+   "re": "SPECIAL",
+   "to": "スペシャル",
+   "why": "英字の読み"
+  },
+  {
+   "re": "IMPACT",
+   "to": "インパクト",
+   "why": "英字の読み"
+  },
+  {
+   "re": "MODE",
+   "to": "モード",
+   "why": "英字の読み"
+  },
+  {
+   "re": "Final Call",
+   "to": "ファイナルコール",
+   "why": "曲名"
+  },
+  {
+   "re": "(?<![A-Za-z])PV(?![A-Za-z])",
+   "to": "ピーブイ",
+   "why": "英字の読み"
+  },
+  {
+   "re": "赤き月",
+   "to": "アカキツキ",
+   "why": "曲名"
+  },
+  {
+   "re": "改8号機",
+   "to": "カイハチゴウキ",
+   "why": "機体名"
+  },
+  {
+   "re": "J\\.A\\.",
+   "to": "ジェイエー",
+   "why": "ジェットアローンの略"
+  },
+  {
+   "re": "残テ",
+   "to": "ザンテ",
+   "why": "残酷な天使のテーゼの略"
+  },
+  {
+   "re": "加持",
+   "to": "カジ",
+   "why": "人名"
+  },
+  {
+   "re": "四号機",
+   "to": "ヨンゴウキ",
+   "why": "エヴァの機体"
+  },
+  {
+   "re": "第3新東京市",
+   "to": "ダイサンシントウキョウシ",
+   "why": "地名"
+  },
+  {
+   "re": "集結の園へ",
+   "to": "シュウケツノソノエ",
+   "why": "曲名"
+  },
+  {
+   "re": "擬似連",
+   "to": "ギジレン",
+   "why": "擬似連続予告"
+  },
+  {
+   "re": "渚カヲル",
+   "to": "ナギサカヲル",
+   "why": "人名"
+  },
+  {
+   "re": "顎",
+   "to": "アゴ",
+   "why": "役物"
+  },
+  {
+   "re": "脳汁",
+   "to": "ノウじる",
+   "why": "打ち手の言葉"
+  },
+  {
+   "re": "Type ?レイ",
+   "to": "タイプレイ"
+  },
+  {
+   "re": "Type ?カヲル",
+   "to": "タイプカヲル"
+  },
+  {
+   "re": "ALL1500",
+   "to": "オール1500"
+  },
+  {
+   "re": "オール1500",
+   "to": "オールせんごひゃく",
+   "engine": "aivis",
+   "_note": "AivisSpeech が「オール1500」をイチゴオゼロゼロと1文字ずつ読む（2026-10-21 07_lt-028）"
+  },
+  {
+   "re": "(?<![A-Za-z])RED(?![A-Za-z])",
+   "to": "レッド"
+  },
+  {
+   "re": "MAX(?!機)",
+   "to": "マックス"
+  },
+  {
+   "re": "未来への咆哮",
+   "to": "あすへのほうこう",
+   "why": "エヴァ15のサブタイトル『未来への咆哮』は『あすへのほうこう』と読む（ユーザー指摘）"
+  },
+  {
+   "re": "者勝ち",
+   "to": "ものがち",
+   "why": "『早い者勝ち』などは連濁して『ものがち』（そのままだと『ものかち』と読まれる）"
+  },
+  {
+   "re": "CR真・北斗無双",
+   "to": "シーアールシンホクトムソウ",
+   "why": "CR機の名前はひとかたまりで。真は『しん』"
+  },
+  {
+   "re": "真・北斗無双",
+   "to": "シンホクトムソウ",
+   "why": "真は『しん』（中黒で区切ると『ま』と読まれる）"
+  },
+  {
+   "re": "CR牙狼",
+   "to": "シーアールガロ",
+   "why": "CR機の名前はひとかたまりで"
+  },
+  {
+   "re": "CR大海物語",
+   "to": "シーアールオオウミモノガタリ",
+   "why": "CR機の名前はひとかたまりで"
+  },
+  {
+   "re": "CR海物語",
+   "to": "シーアールウミモノガタリ",
+   "why": "CR機の名前はひとかたまりで"
+  },
+  {
+   "re": "CR大工の源さん",
+   "to": "シーアールダイクノゲンサン",
+   "why": "CR機の名前はひとかたまりで"
+  },
+  {
+   "re": "P-WORLD",
+   "to": "ピーワールド",
+   "why": "英字の読み"
+  },
+  {
+   "re": "1/([0-9]+(?:\\.[0-9]+)?)",
+   "to": "\\1ぶんのいち",
+   "why": "分数は『〜ぶんのいち』（『分』と書くと 18分＝じゅうはっぷん と読まれる）"
+  },
+  {
+   "re": "([0-9]+(?:\\.[0-9]+)?)分の1",
+   "to": "\\1ぶんのいち",
+   "why": "台本に『397分の1』と書いた場合も『ぶんのいち』（『分』は『ふん』と読まれる）"
+  },
+  {
+   "re": "(?<![A-Za-z])ver\\.",
+   "to": "バージョン",
+   "why": "ver. はバージョン"
+  },
+  {
+   "re": "XX",
+   "to": "ダブルエックス",
+   "why": "CR牙狼XX の XX（要確認）"
+  },
+  {
+   "re": "RUSH",
+   "to": "ラッシュ",
+   "why": "英字の読み"
+  },
+  {
+   "re": "AWARD",
+   "to": "アワード",
+   "why": "英字の読み"
+  },
+  {
+   "re": "MVP",
+   "to": "エムブイピー",
+   "why": "英字の読み"
+  },
+  {
+   "re": "SANKYO",
+   "to": "サンキョウ",
+   "why": "英字の読み（『サンキョー』と書くとサンキヨオと読まれる）"
+  },
+  {
+   "re": "PiDEA X",
+   "to": "ピデアエックス",
+   "why": "英字の読み"
+  },
+  {
+   "re": "V-ST",
+   "to": "ブイエスティー",
+   "why": "V-STタイプ"
+  },
+  {
+   "re": "ST",
+   "to": "エスティー",
+   "why": "英字の読み"
+  },
+  {
+   "re": "LT",
+   "to": "エルティー",
+   "why": "英字の読み"
+  },
+  {
+   "re": "(?<![A-Za-z])CR(?![A-Za-z])",
+   "to": "シーアール",
+   "why": "英字の読み"
+  },
+  {
+   "re": "(?<![A-Za-z])e(?=機|東京|フィーバー)",
+   "to": "イー",
+   "why": "e機・e東京喰種"
+  },
+  {
+   "re": "(?<![A-Za-z])P(?=大工|新世紀| Re|機)",
+   "to": "ピー",
+   "why": "P機の P"
+  },
+  {
+   "re": "Re:ゼロ",
+   "to": "リゼロ",
+   "why": "作品名の読み"
+  },
+  {
+   "re": "GOLD",
+   "to": "ゴールド",
+   "why": "英字の読み"
+  },
+  {
+   "re": "MAX機",
+   "to": "マックスき",
+   "why": "MAX機"
+  },
+  {
+   "re": "[『』「」]",
+   "to": "",
+   "why": "かぎ括弧は読まない"
+  },
+  {
+   "re": "・",
+   "to": "",
+   "why": "真・北斗無双 などの中黒は区切らずに読む"
+  },
+  {
+   "re": "次の",
+   "to": "つぎの",
+   "engine": "aivis",
+   "why": "AivisSpeech が「次の台」「次の大当たり」をジノと読む"
+  },
+  {
+   "re": "e牙狼",
+   "to": "イーガロ",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "P牙狼",
+   "to": "ピーガロ",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "牙狼剣",
+   "to": "ガロけん",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "牙狼",
+   "to": "ガロ",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "金色",
+   "to": "こんじき",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "魔戒",
+   "to": "まかい",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "閃騎鋼",
+   "to": "せんきこう",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "冴島",
+   "to": "さえじま",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "鋼牙",
+   "to": "こうが",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "雷牙",
+   "to": "らいが",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "大河",
+   "to": "たいが",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "道外流牙",
+   "to": "どうがいりゅうが",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "月虹ノ旅人",
+   "to": "げっこうのたびびと",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "斬馬剣",
+   "to": "ざんばけん",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "真滅獣身",
+   "to": "しんめつじゅうしん",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "撃アツ",
+   "to": "げきあつ",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "震撃",
+   "to": "しんげき",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "魔界竜",
+   "to": "まかいりゅう",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "黄金騎士",
+   "to": "おうごんきし",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "神速神撃",
+   "to": "しんそくしんげき",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "一種二種混合",
+   "to": "いっしゅにしゅこんごう",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "羽根モノ",
+   "to": "はねもの",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "闇を照らす者",
+   "to": "やみをてらすもの",
+   "why": "牙狼回の読み（2026-10-21）",
+   "status": "ok"
+  },
+  {
+   "re": "3割",
+   "to": "さんわり",
+   "why": "牙狼回v2の読み（2026-10-22）",
+   "status": "ok"
+  },
+  {
+   "re": "(?<=て)形",
+   "to": "かたち",
+   "engine": "aivis",
+   "why": "AivisSpeech が「〜なくて形」をガタと読む（牙狼回v2 2026-10-22）",
+   "status": "ok"
+  }
+ ],
+ "kana_fix": [
+  {
+   "re": "ショダイ(?=シイアアル)",
+   "to": "ショダイ'/",
+   "why": "初代＋CR機の名前は、初代↑で区切る（初代↑／シーアール牙狼）。『初代は』などはそのまま"
+  },
+  {
+   "re": "シイアアルガロ([^/、']*)'",
+   "to": "シイアアルガ'ロ\\1",
+   "why": "CR機の名前：シーアールは上がり調子のまま、機種名のアクセントで下がる"
+  },
+  {
+   "re": "シイアアルシンホ_?クトムソウ([^/、']*)'",
+   "to": "シイアアルシンホクトム'ソウ\\1",
+   "why": "CR機の名前：シーアールは上がり調子のまま、機種名のアクセントで下がる"
+  },
+  {
+   "re": "シイアアルウミモノガタリ([^/、']*)'",
+   "to": "シイアアルウミモノ'ガタリ\\1",
+   "why": "CR機の名前：シーアールは上がり調子のまま、機種名のアクセントで下がる"
+  },
+  {
+   "re": "シイアアルオオウミモノガタリ([^/、']*)'",
+   "to": "シイアアルオオウミモノ'ガタリ\\1",
+   "why": "CR機の名前：シーアールは上がり調子のまま、機種名のアクセントで下がる"
+  },
+  {
+   "re": "ロクジュウ'/ゴパアセ'ント",
+   "to": "ロクジュウゴパ'アセント",
+   "why": "65%が「ろくじゅう／ごパーセント」に割れるのを1語に"
+  },
+  {
+   "re": "(?<![アイ])シ'ン/ホ_?クトムソウ([^/、']*)'",
+   "to": "シンホクトム'ソウ\\1",
+   "why": "真・北斗無双が「しん／ほくとむそう」に割れるのを1語に"
+  },
+  {
+   "re": "(?<![アイ])シ'ン/ホ_?クトムソウ",
+   "to": "シンホクトム'ソウ/",
+   "why": "同上（後ろに助詞などが続く場合）"
+  },
+  {
+   "re": "(?<![アイ])シ'ン/ホ'_?クトム/ソ'オ",
+   "to": "シンホクトム'ソウ",
+   "why": "真・北斗無双が文末で「しん／ほくとむ／そお」に割れるのを1語に"
+  }
+ ],
+ "terms": [
+  {
+   "surface": "確変",
+   "yomi": "カクヘン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "時短",
+   "yomi": "ジタン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "保留",
+   "yomi": "ホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "潜伏",
+   "yomi": "センプク",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "甘デジ",
+   "yomi": "アマデジ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "小当たり",
+   "yomi": "コアタリ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "大当たり",
+   "yomi": "オオアタリ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "初当たり",
+   "yomi": "はつあたり",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "単発",
+   "yomi": "タンパツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "連チャン",
+   "yomi": "レンチャン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "役物",
+   "yomi": "やくもの",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "先読み",
+   "yomi": "サキヨミ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "遊タイム",
+   "yomi": "ユウタイム",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "電サポ",
+   "yomi": "デンサポ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "出玉",
+   "yomi": "でだま",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "天井",
+   "yomi": "テンジョウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "筐体",
+   "yomi": "キョウタイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "盤面",
+   "yomi": "バンメン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "激アツ",
+   "yomi": "ゲキアツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "信頼度",
+   "yomi": "シンライド",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "期待度",
+   "yomi": "キタイド",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "継続率",
+   "yomi": "ケイゾクリツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "突入率",
+   "yomi": "トツニュウリツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "引き戻し",
+   "yomi": "ヒキモドシ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "赤保留",
+   "yomi": "アカホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "金保留",
+   "yomi": "キンホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "虹保留",
+   "yomi": "ニジホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "一撃",
+   "yomi": "イチゲキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "右打ち",
+   "yomi": "ミギウチ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "左打ち",
+   "yomi": "ヒダリウチ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "液晶",
+   "yomi": "エキショウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "通常時",
+   "yomi": "つうじょうじ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "全回転",
+   "yomi": "ゼンカイテン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "擬似連",
+   "yomi": "ギジレン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "突確",
+   "yomi": "トツカク",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "残保留",
+   "yomi": "ザンホリュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "新台",
+   "yomi": "シンダイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "実機",
+   "yomi": "ジッキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "等価",
+   "yomi": "トウカ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "回転数",
+   "yomi": "カイテンスウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "打ち手",
+   "yomi": "うちて",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "台数",
+   "yomi": "ダイスウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "規制",
+   "yomi": "キセイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "内規",
+   "yomi": "ナイキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "初号機",
+   "yomi": "ショゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "弐号機",
+   "yomi": "ニゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "零号機",
+   "yomi": "ゼロゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "四号機",
+   "yomi": "ヨンゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "使徒",
+   "yomi": "シト",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "覚醒",
+   "yomi": "カクセイ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "暴走",
+   "yomi": "ボウソウ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "新劇場版",
+   "yomi": "シンゲキジョウバン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "碇",
+   "yomi": "イカリ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "綾波",
+   "yomi": "アヤナミ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "渚カヲル",
+   "yomi": "ナギサカヲル",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "加持",
+   "yomi": "カジ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "葛城",
+   "yomi": "カツラギ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "赤木",
+   "yomi": "アカギ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "第3新東京市",
+   "yomi": "ダイサンシントウキョウシ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "最後のシ者",
+   "yomi": "サイゴノシシャ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "未来への咆哮",
+   "yomi": "あすへのほうこう",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "咆哮",
+   "yomi": "ホウコウ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "始まりの福音",
+   "yomi": "ハジマリノフクイン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "奇跡の価値は",
+   "yomi": "きせきのかちわ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "使徒、再び",
+   "yomi": "シトフタタビ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "シト、新生",
+   "yomi": "シトシンセイ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "目覚めの時",
+   "yomi": "メザメノトキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "決戦",
+   "yomi": "ケッセン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "真紅",
+   "yomi": "シンク",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "集結の園へ",
+   "yomi": "シュウケツノソノエ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "魂のルフラン",
+   "yomi": "タマシイノルフラン",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "残酷な天使のテーゼ",
+   "yomi": "ザンコクナテンシノテーゼ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "ロンギヌスの槍",
+   "yomi": "ロンギヌスノヤリ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "赤き月",
+   "yomi": "アカキツキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "最終号機",
+   "yomi": "サイシュウゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "無号機",
+   "yomi": "ムゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "改8号機",
+   "yomi": "カイハチゴウキ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "裏コード",
+   "yomi": "ウラコード",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "格納庫",
+   "yomi": "カクノウコ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "搭乗",
+   "yomi": "トウジョウ",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "ビスティ",
+   "yomi": "ビスティ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "フィールズ",
+   "yomi": "フィールズ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "京楽",
+   "yomi": "キョウラク",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "三洋",
+   "yomi": "サンヨウ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "大一",
+   "yomi": "ダイイチ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "藤商事",
+   "yomi": "フジショウジ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "豊丸",
+   "yomi": "トヨマル",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "西陣",
+   "yomi": "ニシジン",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "高尾",
+   "yomi": "タカオ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "大都技研",
+   "yomi": "ダイトギケン",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "平和",
+   "yomi": "ヘイワ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "ニューギン",
+   "yomi": "ニューギン",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "サミー",
+   "yomi": "サミー",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "奥村",
+   "yomi": "オクムラ",
+   "cat": "メーカー",
+   "status": "ok"
+  },
+  {
+   "surface": "牙狼",
+   "yomi": "ガロ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "海物語",
+   "yomi": "ウミモノガタリ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "北斗無双",
+   "yomi": "ホクトムソウ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "慶次",
+   "yomi": "ケイジ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "源さん",
+   "yomi": "ゲンサン",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "リゼロ",
+   "yomi": "リゼロ",
+   "cat": "機種",
+   "status": "ok"
+  },
+  {
+   "surface": "竹屋",
+   "yomi": "タケヤ",
+   "cat": "要確認",
+   "status": "要確認"
+  },
+  {
+   "surface": "試作品",
+   "yomi": "しさくひん",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "改2号機",
+   "yomi": "かいにごうき",
+   "cat": "エヴァ",
+   "status": "ok"
+  },
+  {
+   "surface": "上下",
+   "yomi": "じょうげ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "回転",
+   "yomi": "かいてん",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "止めろ",
+   "yomi": "トメロ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "完成形",
+   "yomi": "カンセイケイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "名前",
+   "yomi": "ナマエ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "目立つ",
+   "yomi": "メダツ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "帰され",
+   "yomi": "カエサレ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "一択",
+   "yomi": "イッタク",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "台",
+   "yomi": "ダイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "別って",
+   "yomi": "ベツッテ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "金かか",
+   "yomi": "カネカカ",
+   "cat": "一般",
+   "status": "ok"
+  },
+  {
+   "surface": "思たら",
+   "yomi": "オモタラ",
+   "cat": "関西弁",
+   "status": "ok"
+  },
+  {
+   "surface": "軽な",
+   "yomi": "かるな",
+   "cat": "関西弁",
+   "status": "ok"
+  },
+  {
+   "surface": "集結の運命",
+   "yomi": "しゅうけつのさだめ",
+   "cat": "エヴァ",
+   "status": "ok",
+   "note": "曲名。さだめ／うんめい どちらか未確認"
+  },
+  {
+   "surface": "神台",
+   "yomi": "かみだい",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "金色になれ",
+   "yomi": "こんじきになれ",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "魔戒",
+   "yomi": "まかい",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "閃騎鋼",
+   "yomi": "せんきこう",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "冴島鋼牙",
+   "yomi": "さえじまこうが",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "冴島雷牙",
+   "yomi": "さえじまらいが",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "冴島大河",
+   "yomi": "さえじまたいが",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "道外流牙",
+   "yomi": "どうがいりゅうが",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "月虹ノ旅人",
+   "yomi": "げっこうのたびびと",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "斬馬剣",
+   "yomi": "ざんばけん",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "牙狼剣",
+   "yomi": "ガロけん",
+   "cat": "牙狼",
+   "status": "ok"
+  },
+  {
+   "surface": "真滅獣身",
+   "yomi": "しんめつじゅうしん",
+   "cat": "牙狼",
+   "status": "ok"
+  }
+ ],
+ "history": [
+  {
+   "date": "2026-10-19",
+   "surface": "出玉",
+   "yomi": "でだま",
+   "heard": "ダシダマ/デタマ",
+   "line": "eva_history:05_fuyu-039",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 出玉 → デダマ（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "打ち手",
+   "yomi": "うちて",
+   "heard": "ウチシュ",
+   "line": "eva_history:02_bousou-069",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 打ち手 → ウチテ（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "試作品",
+   "yomi": "しさくひん",
+   "heard": "タメシサクヒン",
+   "line": "eva_history:02_bousou-024",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 試作品 → シサクヒン（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "上下",
+   "yomi": "じょうげ",
+   "heard": "アゲサゲ",
+   "line": "eva_history:05_fuyu-010",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 上下 → ジョウゲ（アクセント 1・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "回転",
+   "yomi": "かいてん",
+   "heard": "コロゲ",
+   "line": "eva_history:06_vst-010",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 回転 → カイテン（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "改2号機",
+   "yomi": "かいにごうき",
+   "heard": "アラタメニゴーキ",
+   "line": "eva_history:04_togari-007",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 改2号機 → カイニゴウキ（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "奇跡の価値は",
+   "yomi": "きせきのかちわ",
+   "heard": "キセキノカチハ",
+   "line": "eva_history:02_bousou-063",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 奇跡の価値は → キセキノカチワ（アクセント 0・推定）",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "神台",
+   "yomi": "かみだい",
+   "heard": "シンダイ（文字起こし「信頼」）",
+   "line": "eva_history:06_vst-023",
+   "for": "baku",
+   "action": "バク：送る前に 神台 → かみだい",
+   "note": ""
+  },
+  {
+   "date": "2026-10-19",
+   "surface": "集結の運命",
+   "yomi": "しゅうけつのさだめ",
+   "heard": "シュウケツノウンメー",
+   "line": "eva_history:03_shingeki-014",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 集結の運命 → シュウケツノサダメ（アクセント 0・推定） / バク：送る前に 集結の運命 → しゅうけつのさだめ",
+   "note": "曲名。読みはユーザー確認済み（さだめ）"
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "ALL1500",
+   "yomi": "オールせんごひゃく",
+   "heard": "オール イチゴオゼロゼロ（エンジンの読み）",
+   "line": "eva_history:07_lt-028",
+   "engine": "aivis"
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "役物",
+   "yomi": "やくもの",
+   "heard": "ヤクブツ",
+   "line": "eva_history:01_basic-005",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 役物 → ヤクモノ（アクセント 0） / バク：送る前に 役物 → やくもの",
+   "note": ""
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "通常時",
+   "yomi": "つうじょうじ",
+   "heard": "ツウジョウトキ",
+   "line": "eva_history:04_togari-013",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 通常時 → ツウジョウジ（アクセント 3） / バク：送る前に 通常時 → つうじょうじ",
+   "note": ""
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "初当たり",
+   "yomi": "はつあたり",
+   "heard": "コアタリ",
+   "line": "eva_history:06_vst-007",
+   "for": "baku",
+   "action": "バク：送る前に 初当たり → はつあたり",
+   "note": ""
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "次の",
+   "yomi": "つぎの",
+   "heard": "ジノ（エンジンの読み）",
+   "line": "eva_history:02_bousou-123,03_shingeki-028",
+   "engine": "aivis"
+  },
+  {
+   "date": "2026-10-21",
+   "surface": "軽な",
+   "yomi": "かるな",
+   "heard": "ケイナ",
+   "line": "eva_history:02_bousou-032,03_shingeki-027",
+   "for": "baku",
+   "action": "バク：送る前に 軽な → かるな",
+   "note": ""
+  }
+ ],
+ "aivis_words": [
+  {
+   "surface": "出玉",
+   "pronunciation": "デダマ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "打ち手",
+   "pronunciation": "ウチテ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "試作品",
+   "pronunciation": "シサクヒン",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "上下",
+   "pronunciation": "ジョウゲ",
+   "accent_type": 1,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "回転",
+   "pronunciation": "カイテン",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "改2号機",
+   "pronunciation": "カイニゴウキ",
+   "accent_type": 0,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "奇跡の価値は",
+   "pronunciation": "キセキノカチワ",
+   "accent_type": 0,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "集結の運命",
+   "pronunciation": "シュウケツノサダメ",
+   "accent_type": 0,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "役物",
+   "pronunciation": "ヤクモノ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "通常時",
+   "pronunciation": "ツウジョウジ",
+   "accent_type": 3,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  }
+ ]
+}
