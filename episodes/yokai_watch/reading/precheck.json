@@ -1,42 +1,29 @@
 [
  {
-  "id": "02_hatsuatari-018",
+  "id": "01_kihon-001",
   "who": "nagi",
-  "kind": "小数",
-  "where": "0.5",
+  "kind": "英字残り",
+  "where": "DS",
   "expect": "",
-  "reason": "台本ルールでは確率などの小数を読ませない",
+  "reason": "読み上げ用テキストに英字「DS」が残っている。OpenJTalk の読み：ディーエス",
   "level": "中",
-  "text": "たまに、いきなり3000個でRUSHに行く当たりもある。約0.5%。",
-  "speech": "たまに、いきなり3000個でラッシュに行く当たりもある。約0.5%。",
-  "kana": "タマニ、イキナリサンゼンコデラッシュニイクアタリモアル。ヤクレーテンゴパーセント。",
-  "audio": "episodes/yokai_watch/voices/02_hatsuatari-018.wav"
+  "text": "妖怪ウォッチは、2013年にニンテンドー3DSで出たゲームが始まり。",
+  "speech": "妖怪ウォッチは、2013年にニンテンドー3DSで出たゲームが始まり。",
+  "kana": "ヨーカイウォッチワ、ニセンジューサンネンニニンテンドースリーディーＳデデタゲームガハジマリ。",
+  "audio": "episodes/yokai_watch/voices/01_kihon-001.wav"
  },
  {
-  "id": "02_hatsuatari-020",
+  "id": "01_kihon-005",
   "who": "nagi",
   "kind": "小数",
   "where": "4.6",
   "expect": "",
   "reason": "台本ルールでは確率などの小数を読ませない",
   "level": "中",
-  "text": "ちなみに妖怪メダルは、累計約4.6億枚出荷されてる。",
-  "speech": "ちなみに妖怪メダルは、累計約4.6億枚出荷されてる。",
-  "kana": "チナミニヨーカイメダルワ、ルイケーヤクヨンテンロクオクマイシュッカサレテル。",
-  "audio": "episodes/yokai_watch/voices/02_hatsuatari-020.wav"
- },
- {
-  "id": "02_hatsuatari-021",
-  "who": "baku",
-  "kind": "小数",
-  "where": "4.6",
-  "expect": "",
-  "reason": "台本ルールでは確率などの小数を読ませない",
-  "level": "中",
-  "text": "あんだけ店に無かったのに、4.6億て。どこに消えとったんや。",
-  "speech": "あんだけ店に無かったのに、4.6億て。どこに消えとったんや。",
-  "kana": "アンダケミセニナカッタノニ、ヨンテンロクオクテ。ドコニキエトッタンヤ。",
-  "audio": "episodes/yokai_watch/voices/02_hatsuatari-021.wav"
+  "text": "累計の出荷は、約4.6億枚。",
+  "speech": "累計の出荷は、約4.6億枚。",
+  "kana": "ルイケーノシュッカワ、ヤクヨンテンロクオクマイ。",
+  "audio": "episodes/yokai_watch/voices/01_kihon-005.wav"
  },
  {
   "id": "04_dedama-008",
