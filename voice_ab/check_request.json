@@ -1,8 +1,5 @@
 {
- "episode": "episodes/garo_history",
+ "episode": "episodes/yokai_watch",
  "model": "large-v3-turbo",
- "only": [
-  "01_eikou-010"
- ],
- "_run": "garo-v4-tere2"
+ "_run": "yokai-v1"
 }
