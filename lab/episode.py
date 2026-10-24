@@ -611,6 +611,10 @@ def main():
     for p in scripts:
         sc = build_chapter(ep, p, data)
         sc["background"] = conf.get("background")     # episode.json の "background"（generator/assets/backgrounds/）
+        if sc["background"] and (ep / sc["background"]).exists():   # 回のフォルダに置いた背景（例 images/bg_kv.png）
+            sc["background"] = str((ep / sc["background"]).resolve())
+        sc["theme"] = conf.get("theme")               # lab（既定）／newmachine（新台解説）
+        sc["chips"] = conf.get("chips")               # 新台解説の上部の札
         scenes[p.stem] = sc
         (out_dir / f"{p.stem}.scene.json").write_text(json.dumps(sc, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{p.stem}: {sc['duration'] / 60:5.2f}分  セリフ{len(sc['lines'])}  資料{len(sc['cues'])}")

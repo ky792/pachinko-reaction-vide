@@ -31,6 +31,29 @@ KEY = hexc("#F4C95D")
 MARGIN = 60
 RADIUS = 12
 SPEAKER = {"nagi": NAGI, "baku": BAKU}
+ACCENT = NAGI          # パネルのラベル・四隅・矢印などの差し色（テーマで変わる。字幕の話者色は変えない）
+
+# ---------------------------------------------------------------- テーマ（シリーズごとの見た目）
+# lab＝研究所（歴史回の既定）／newmachine＝新台解説（ホール風：黒×ワインレッド×金、上部はスペックの札）
+THEMES = {
+    "lab": {"BG": "#101827", "PANEL": "#19273B", "PANEL_LINE": "#2A3B55", "ACCENT": "#64BFFF", "KEY": "#F4C95D",
+            "SUB": "#9AA8BC", "bar": "timeline", "chapter": "lab", "blur": 9, "bg_mix": (0.34, 0.42)},
+    "newmachine": {"BG": "#140A10", "PANEL": "#26121B", "PANEL_LINE": "#4D2634", "ACCENT": "#FF5D6C", "KEY": "#FFD34E",
+                   "SUB": "#CDB0B9", "bar": "chips", "chapter": "band", "blur": 16, "bg_mix": (0.30, 0.50)},
+}
+THEME = dict(THEMES["lab"], name="lab")
+
+
+def apply_theme(name):
+    """テーマの色を部品全体に反映する（各プロセスで描く前に1回呼ぶ）"""
+    global BG, PANEL, PANEL_LINE, ACCENT, KEY, SUB, THEME
+    name = name if name in THEMES else "lab"
+    if THEME.get("name") == name:
+        return
+    t = THEMES[name]
+    BG, PANEL, PANEL_LINE, ACCENT, KEY, SUB = (hexc(t[k]) for k in ("BG", "PANEL", "PANEL_LINE", "ACCENT", "KEY", "SUB"))
+    THEME = dict(t, name=name)
+    background.cache_clear()
 NAME = {"nagi": "ナギ", "baku": "バク"}
 
 _FONT_FILES = {
@@ -160,14 +183,15 @@ def background(name="lab_room.png"):
     """背景画像（generator/assets/backgrounds/<name>。既定は研究室）を暗く・ぼかして敷く。
     無ければ #101827 の無地＋方眼。文字が主役になる明るさに抑える。回ごとに episode.json の "background" で変えられる"""
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
-    p = ASSETS / "backgrounds" / (name or "lab_room.png")
+    p = Path(name) if name and Path(name).is_absolute() else ASSETS / "backgrounds" / (name or "lab_room.png")
     if p.exists():
         src = Image.open(p).convert("RGB")
         s = max(W / src.width, H / src.height)
         src = src.resize((int(src.width * s + 0.5), int(src.height * s + 0.5)), Image.LANCZOS)
         src = src.crop(((src.width - W) // 2, (src.height - H) // 2, (src.width - W) // 2 + W, (src.height - H) // 2 + H))
-        src = src.filter(ImageFilter.GaussianBlur(9))
-        img = np.asarray(src).astype(np.float32) * 0.34 + np.array(BG[:3], np.float32) * 0.42
+        src = src.filter(ImageFilter.GaussianBlur(THEME.get("blur", 9)))
+        mix = THEME.get("bg_mix", (0.34, 0.42))
+        img = np.asarray(src).astype(np.float32) * mix[0] + np.array(BG[:3], np.float32) * mix[1]
     else:
         img = np.zeros((H, W, 3), np.float32) + np.array(BG[:3], np.float32)
         grid = ((xx % 80) < 1) | ((yy % 80) < 1)
@@ -188,14 +212,19 @@ def year_x(y):
     return TL_X0 + (TL_X1 - TL_X0) * (y - YEARS[0]) / (YEARS[1] - YEARS[0])
 
 
-def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=(), label=None):
-    """左：章タイトル（CHAPTER番号は小さく補助）／右：年表。今の年だけ強調、過去は薄く、未来は暗く"""
+def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=(), label=None, chips=None):
+    """左：章タイトル（CHAPTER番号は小さく補助）／右：年表。今の年だけ強調、過去は薄く、未来は暗く。
+    新台解説テーマ（bar=chips）では、右側を年表の代わりに機種のスペックの札にする"""
     if a <= 0:
         return
     lay = Image.new("RGBA", (W, 150), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    lab_label(d, (MARGIN, 40), label or f"CHAPTER {chapter_no:02d}", NAGI, 20)
+    lab_label(d, (MARGIN, 40), label or (f"POINT {chapter_no:02d}" if THEME.get("bar") == "chips" else f"CHAPTER {chapter_no:02d}"), ACCENT, 20)
     d.text((MARGIN, 82), chapter_title, font=font("black", 44), fill=TEXT, anchor="lm")
+    if THEME.get("bar") == "chips":
+        _spec_chips(d, chips or [])
+        paste(canvas, lay, (0, 0), a)
+        return
     # 年表
     cx = year_x(year)
     d.line((TL_X0, TL_Y, cx, TL_Y), fill=PAST, width=3)
@@ -212,10 +241,24 @@ def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=(),
             x = year_x(my)
             d.ellipse((x - 4, TL_Y - 4, x + 4, TL_Y + 4), fill=PAST)
     if era:   # 章が扱う期間
-        d.line((year_x(era[0]), TL_Y, year_x(era[1]), TL_Y), fill=NAGI, width=5)
+        d.line((year_x(era[0]), TL_Y, year_x(era[1]), TL_Y), fill=ACCENT, width=5)
     d.ellipse((cx - 11, TL_Y - 11, cx + 11, TL_Y + 11), fill=KEY, outline=BG, width=3)
     d.text((cx, TL_Y - 34), f"{int(year + 1e-6)}", font=font("black", 34), fill=KEY, anchor="mm")
     paste(canvas, lay, (0, 0), a)
+
+
+def _spec_chips(d, chips):
+    """上部右：機種名と、確率・突入・継続などの札（右寄せ）。key の札は金"""
+    x = W - MARGIN
+    y0, h = 46, 54
+    for c in reversed(chips):
+        f1, f2 = font("medium", 20), font("black", 30)
+        w = int(max(text_w(c.get("k", ""), f1), text_w(c["v"], f2)) + 40)
+        col = KEY if c.get("key") else ACCENT
+        d.rounded_rectangle((x - w, y0, x, y0 + h + 14), 10, fill=(PANEL[0], PANEL[1], PANEL[2], 230), outline=col, width=2)
+        d.text((x - w / 2, y0 + 18), c.get("k", ""), font=f1, fill=SUB, anchor="mm")
+        d.text((x - w / 2, y0 + 48), c["v"], font=f2, fill=KEY if c.get("key") else TEXT, anchor="mm")
+        x -= w + 14
 
 
 # ---------------------------------------------------------------- F チャプター
@@ -224,6 +267,8 @@ def chapter_card(canvas, tl, dur, data):
     out = 1 - ease_in_out(prog(tl, dur - 0.4, 0.4))
     if out <= 0:
         return
+    if THEME.get("chapter") == "band":
+        return _chapter_band(canvas, tl, dur, data, out)
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
     cy = H / 2 - 30
@@ -240,6 +285,41 @@ def chapter_card(canvas, tl, dur, data):
     tmp = Image.new("RGBA", (W, 50), (0, 0, 0, 0))
     lab_label(ImageDraw.Draw(tmp), (W / 2, 25), data.get("label") or f"CHAPTER {data['no']:02d}", SUB, 24, anchor="mm")
     paste(lay, tmp, (0, cy + 195), st["no"])
+    paste(canvas, lay, (0, 0), out)
+
+
+def _chapter_band(canvas, tl, dur, data, out):
+    """新台解説の章カード：斜めの赤い帯が横切り、その上にタイトル。左に大きなPOINT番号、上に要の数字（金）"""
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    d.rectangle((0, 0, W, H), fill=(BG[0], BG[1], BG[2], int(150 * ease_out(prog(tl, 0, 0.3)))))
+    kb = ease_out(prog(tl, 0.0, 0.45))
+    cy = H / 2 + 10
+    band = Image.new("RGBA", (W + 400, 230), (0, 0, 0, 0))
+    bd = ImageDraw.Draw(band)
+    bd.rectangle((0, 0, W + 400, 230), fill=(ACCENT[0], ACCENT[1], ACCENT[2], 235))
+    bd.rectangle((0, 0, W + 400, 8), fill=KEY)
+    bd.rectangle((0, 222, W + 400, 230), fill=KEY)
+    band = band.rotate(-4, resample=Image.BICUBIC, expand=True)
+    bx = -200 - (W + 400) * (1 - kb)
+    paste(lay, band, (bx, cy - band.height / 2), 1.0)
+    kt = ease_out(prog(tl, 0.2, 0.4))
+    no = Image.new("RGBA", (420, 300), (0, 0, 0, 0))
+    nd = ImageDraw.Draw(no)
+    nd.text((210, 70), "POINT", font=font("black", 44), fill=TEXT, anchor="mm")
+    nd.text((210, 185), f"{data['no']:02d}", font=font("black", 190), fill=TEXT, anchor="mm", stroke_width=6, stroke_fill=BG)
+    paste(lay, no, (120, cy - 165 + 20 * (1 - kt)), kt)
+    tt = Image.new("RGBA", (1300, 200), (0, 0, 0, 0))
+    td = ImageDraw.Draw(tt)
+    ft = font("black", 120 if text_w(data["title"], font("black", 120)) < 1260 else 92)
+    td.text((20, 100), data["title"], font=ft, fill=TEXT, anchor="lm", stroke_width=5, stroke_fill=(BG[0], BG[1], BG[2], 255))
+    paste(lay, tt, (560 + 40 * (1 - kt), cy - 100), kt)
+    ky = ease_out(prog(tl, 0.35, 0.4))
+    if data.get("year"):
+        yt = Image.new("RGBA", (1300, 120), (0, 0, 0, 0))
+        ImageDraw.Draw(yt).text((20, 60), data["year"], font=font("black", 84), fill=KEY, anchor="lm",
+                                stroke_width=5, stroke_fill=(BG[0], BG[1], BG[2], 255))
+        paste(lay, yt, (580, cy - 250 + 16 * (1 - ky)), ky)
     paste(canvas, lay, (0, 0), out)
 
 
@@ -341,9 +421,9 @@ def machine_card(canvas, tl, dur, data, image=None):
     card = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
     cd = ImageDraw.Draw(card)
     cd.rounded_rectangle((0, 0, cw - 1, ch - 1), RADIUS, fill=PANEL)
-    cd.rectangle((0, 24, 6, ch - 24), fill=NAGI)
-    corner_ticks(cd, (10, 10, cw - 11, ch - 11), NAGI)
-    lab_label(cd, (44, 34), data.get("tag", "DATA LOG"), NAGI, 18)
+    cd.rectangle((0, 24, 6, ch - 24), fill=ACCENT)
+    corner_ticks(cd, (10, 10, cw - 11, ch - 11), ACCENT)
+    lab_label(cd, (44, 34), data.get("tag", "DATA LOG"), ACCENT, 18)
     fsz = 56
     while fsz > 34 and text_w(data["name"], font("black", fsz)) > cw - 100:
         fsz -= 4
@@ -426,13 +506,13 @@ def analysis(canvas, tl, dur, data, tank):
     panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
     d = ImageDraw.Draw(panel)
     d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 246), outline=PANEL_LINE, width=2)
-    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), ACCENT)
     k_c = ease_out(prog(tl, 1.2, 0.4)) * (1 - ease_in_out(prog(tl, t_close - 0.3, 0.3)))
     if k_c > 0:
         c = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
         cd = ImageDraw.Draw(c)
         # 見出し：何を比べているか
-        lab_label(cd, (48, 52), data.get("tag", "NAGI ANALYSIS"), NAGI, 20)
+        lab_label(cd, (48, 52), data.get("tag", "NAGI ANALYSIS"), ACCENT, 20)
         cd.text((48, 104), data["heading"], font=font("black", 58), fill=TEXT, anchor="lm")
         cd.line((48, 150, pw - 48, 150), fill=PANEL_LINE, width=2)
         # 数字が主役の2列
@@ -504,7 +584,7 @@ def timeline(canvas, tl, dur, data):
         if ke <= 0:
             continue
         x = X(ev["v"])
-        col = KEY if ev.get("key") else NAGI
+        col = KEY if ev.get("key") else ACCENT
         latest = all(prog(tl, 0.6 + 0.6 * j, 0.01) < 1 for j in range(i + 1, len(data["events"])))
         # 今説明している出来事だけ強く。過去は箱を残したまま色だけ落とす
         tcol = TEXT if latest else SUB
@@ -527,7 +607,7 @@ def timeline(canvas, tl, dur, data):
         kc = ease_out(prog(tl, 0.6 + 0.6 * len(data["events"]), 0.5))
         c = Image.new("RGBA", (W, 120), (0, 0, 0, 0))
         cdr = ImageDraw.Draw(c)
-        lab_label(cdr, (W / 2, 22), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+        lab_label(cdr, (W / 2, 22), data.get("tag", "LAB RECORD"), ACCENT, 20, anchor="mm")
         cdr.text((W / 2, 76), data["caption"], font=font("black", 50), fill=TEXT, anchor="mm")
         lay.alpha_composite(fade(c, kc), (0, data.get("caption_y", 140)))
     paste(canvas, lay, (0, 0), a)
@@ -556,8 +636,8 @@ def keyword(canvas, tl, dur, data):
     panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
     d = ImageDraw.Draw(panel)
     d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 240), outline=PANEL_LINE, width=2)
-    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
-    lab_label(d, (pw / 2, 52), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), ACCENT)
+    lab_label(d, (pw / 2, 52), data.get("tag", "LAB RECORD"), ACCENT, 20, anchor="mm")
     for i, l in enumerate(lines):
         rich(d, (pw / 2, 100 + lh * i + lh / 2), l, fw, TEXT, KEY)
     if data.get("sub"):
@@ -576,7 +656,7 @@ def flow(canvas, tl, dur, data):
         return
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    lab_label(d, (W / 2, 210), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+    lab_label(d, (W / 2, 210), data.get("tag", "LAB RECORD"), ACCENT, 20, anchor="mm")
     d.text((W / 2, 268), data["heading"], font=font("black", 58), fill=TEXT, anchor="mm")
     steps = data["steps"]
     n = len(steps)
@@ -592,7 +672,7 @@ def flow(canvas, tl, dur, data):
         if k <= 0:
             continue
         x = x0 + (bw + gap) * i
-        col = KEY if st.get("key") else NAGI
+        col = KEY if st.get("key") else ACCENT
         cur = i == last
         box = Image.new("RGBA", (int(bw), bh), (0, 0, 0, 0))
         bd = ImageDraw.Draw(box)
@@ -607,8 +687,8 @@ def flow(canvas, tl, dur, data):
         if i < n - 1 and shown[i + 1] > 0:
             ka = ease_out(shown[i + 1])
             ax0, ax1, ay = x + bw + 12, x + bw + 12 + (gap - 24) * ka, y0 + bh / 2
-            d.line((ax0, ay, ax1, ay), fill=NAGI, width=3)
-            d.line((ax1 - 10, ay - 9, ax1, ay, ax1 - 10, ay + 9), fill=NAGI, width=3)
+            d.line((ax0, ay, ax1, ay), fill=ACCENT, width=3)
+            d.line((ax1 - 10, ay - 9, ax1, ay, ax1 - 10, ay + 9), fill=ACCENT, width=3)
     paste(canvas, lay, (0, 0), a)
 
 
@@ -627,7 +707,7 @@ def lineup(canvas, tl, dur, data):
     y_top = 190 + (600 - total_h) / 2
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    lab_label(d, (W / 2, y_top - 36), data.get("tag", "LAB RECORD"), NAGI, 20, anchor="mm")
+    lab_label(d, (W / 2, y_top - 36), data.get("tag", "LAB RECORD"), ACCENT, 20, anchor="mm")
     idx = 0
     appeared = [prog(tl, 0.3 + step * i, 0.3) for i in range(n)]
     newest = max([i for i in range(n) if appeared[i] > 0], default=-1)
@@ -638,7 +718,7 @@ def lineup(canvas, tl, dur, data):
             if k > 0:
                 cur = idx == newest
                 hot = cur or (it.get("key") and not data.get("fast"))
-                col = KEY if it.get("key") else NAGI
+                col = KEY if it.get("key") else ACCENT
                 c = Image.new("RGBA", (cw, ch), (0, 0, 0, 0))
                 cd = ImageDraw.Draw(c)
                 cd.rounded_rectangle((0, 0, cw - 1, ch - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 245),
@@ -657,10 +737,14 @@ def lineup(canvas, tl, dur, data):
 PIE_COLORS = [hexc("#64BFFF"), hexc("#F28C38"), hexc("#8E7CFF"), hexc("#4FD1A5"), hexc("#E8607A"), hexc("#7FA3C8")]
 
 
+PIE_COLORS_NEW = [hexc("#FF5D6C"), hexc("#4FC3F7"), hexc("#B57CFF"), hexc("#FF9F43"), hexc("#7ED6A0"), hexc("#C9A9B2")]
+
+
 def _pie_color(i, s):
     if s.get("c"):
         return hexc(s["c"])
-    return KEY if s.get("key") else PIE_COLORS[i % len(PIE_COLORS)]
+    pal = PIE_COLORS_NEW if THEME.get("name") == "newmachine" else PIE_COLORS
+    return KEY if s.get("key") else pal[i % len(pal)]
 
 
 def pie(canvas, tl, dur, data):
@@ -676,8 +760,8 @@ def pie(canvas, tl, dur, data):
     panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
     d = ImageDraw.Draw(panel)
     d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 242), outline=PANEL_LINE, width=2)
-    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
-    lab_label(d, (48, 50), data.get("tag", "DATA LOG"), NAGI, 20)
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), ACCENT)
+    lab_label(d, (48, 50), data.get("tag", "DATA LOG"), ACCENT, 20)
     d.text((48, 100), data["heading"], font=font("black", 54), fill=TEXT, anchor="lm")
     d.line((48, 144, pw - 48, 144), fill=PANEL_LINE, width=2)
     # 左：ドーナツ（2倍で描いて縮めて滑らかに）
@@ -787,8 +871,8 @@ def spec_table(canvas, tl, dur, data):
     panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
     d = ImageDraw.Draw(panel)
     d.rounded_rectangle((0, 0, pw - 1, ph - 1), RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 242), outline=PANEL_LINE, width=2)
-    corner_ticks(d, (10, 10, pw - 11, ph - 11), NAGI)
-    lab_label(d, (48, 50), data.get("tag", "DATA LOG"), NAGI, 20)
+    corner_ticks(d, (10, 10, pw - 11, ph - 11), ACCENT)
+    lab_label(d, (48, 50), data.get("tag", "DATA LOG"), ACCENT, 20)
     d.text((48, 100), data["heading"], font=font("black", 54), fill=TEXT, anchor="lm")
     d.line((48, 144, pw - 48, 144), fill=PANEL_LINE, width=2)
     c1, c2 = 60, 430
@@ -822,7 +906,7 @@ def title_card(canvas, tl, dur, data):
     k1, k2, k3 = (ease_out(prog(tl, s, 0.5)) for s in (0.0, 0.2, 0.45))
     lines = data["main"].split("\n")
     tmp = Image.new("RGBA", (W, 60), (0, 0, 0, 0))
-    lab_label(ImageDraw.Draw(tmp), (W / 2, 30), data.get("label", ""), NAGI, 24, anchor="mm")
+    lab_label(ImageDraw.Draw(tmp), (W / 2, 30), data.get("label", ""), ACCENT, 24, anchor="mm")
     paste(lay, tmp, (0, 250), k1)
     for i, l in enumerate(lines):
         tmp = Image.new("RGBA", (W, 160), (0, 0, 0, 0))

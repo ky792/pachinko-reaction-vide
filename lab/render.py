@@ -267,6 +267,7 @@ def grade_level(scene, t):
 
 
 def render_layers(scene, t, images):
+    ui.apply_theme(scene.get("theme"))
     ch = scene["chapter"]
     cues = scene["cues"]
     name = scene.get("background") or "lab_room.png"
@@ -287,7 +288,7 @@ def render_layers(scene, t, images):
         bar_a = 1.0
     bar_a *= 1 - skit_state(scene, t)[0]
     y, _ = year_at(scene, t)
-    ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"))
+    ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"), scene.get("chips"))
     for c in cues:
         if c["start"] <= t < c["end"] and c["type"] in BACK:
             element = motion.matching_element(scene, c)
