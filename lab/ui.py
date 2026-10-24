@@ -747,15 +747,30 @@ def _pie_color(i, s):
     return KEY if s.get("key") else pal[i % len(pal)]
 
 
-def pie(canvas, tl, dur, data):
+def _mix(c, to, k):
+    return tuple(int(c[j] + (to[j] - c[j]) * k) for j in range(3)) + (255,)
+
+
+def pie(canvas, tl, dur, data, hl=None):
     """振り分けを、左のドーナツグラフと右の表で見せる。
-    data: heading, tag, center（グラフ中央の文字）, center_sub, slices[{k, s, v, label, key, c}], note"""
+    data: heading, tag, center（グラフ中央の文字）, center_sub, slices[{k, s, v, label, key, c}], note
+    hl: (今の注目項目, 前の注目項目, 切り替えの進み)。台本の @hl。注目項目は飛び出して大きく、ほかは控えめにする"""
     a = life(tl, dur, 0.4, 0.35)
     if a <= 0:
         return
     sl = data["slices"]
     n = len(sl)
     total = sum(s["v"] for s in sl) or 1
+    foc = [0.0] * n
+    act = 0.0
+    if hl:
+        cur, prev, k = hl
+        if cur is not None:
+            foc[cur] += k; act += k
+        if prev is not None:
+            foc[prev] += 1 - k; act += 1 - k
+        act = min(1.0, act)
+    dimk = [0.62 * act * (1 - f) for f in foc]       # 注目していない項目をどれだけ控えめにするか
     pw, ph = 1560, 640
     panel = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
     d = ImageDraw.Draw(panel)
@@ -768,92 +783,117 @@ def pie(canvas, tl, dur, data):
     R, cx, cy = 236, 300, 160 + (ph - 160) / 2 - 4
     sweep = ease_in_out(prog(tl, 0.35, 0.9))
     S = 2
-    g = Image.new("RGBA", (2 * R * S + 4, 2 * R * S + 4), (0, 0, 0, 0))
+    POP = 22                                          # 注目した区画が外へ飛び出す量（px）
+    G = 2 * (R + POP + 8) * S
+    g = Image.new("RGBA", (G, G), (0, 0, 0, 0))
     gd = ImageDraw.Draw(g)
-    box = (2, 2, 2 + 2 * R * S, 2 + 2 * R * S)
+    c0 = G / 2
+    box = (c0 - R * S, c0 - R * S, c0 + R * S, c0 + R * S)
     gd.ellipse(box, fill=PANEL_LINE)
-    ang = -90.0
-    for i, s in enumerate(sl):
-        span = 360.0 * s["v"] / total
-        end = min(ang + span, -90.0 + 360.0 * sweep)
-        if end > ang:
-            gd.pieslice(box, ang, end, fill=_pie_color(i, s))
-        ang += span
-    # 切れ目の細い線と中央の穴
-    ang = -90.0
-    for s in sl:
-        rad = math.radians(ang)
-        c0 = 2 + R * S
-        gd.line((c0, c0, c0 + math.cos(rad) * R * S, c0 + math.sin(rad) * R * S), fill=PANEL, width=4 * S // 2)
-        ang += 360.0 * s["v"] / total
     hole = int(R * 0.42 * S)
-    c0 = 2 + R * S
+    spans, ang = [], -90.0
+    for s_ in sl:
+        sp = 360.0 * s_["v"] / total
+        spans.append((ang, sp)); ang += sp
+    for i, s_ in enumerate(sl):
+        a0, sp = spans[i]
+        e = min(a0 + sp, -90.0 + 360.0 * sweep)
+        if e > a0 and foc[i] < 0.5:
+            gd.pieslice(box, a0, e, fill=_mix(_pie_color(i, s_), PANEL, dimk[i]))
+    for a0, sp in spans:                              # 切れ目の細い線
+        rad = math.radians(a0)
+        gd.line((c0, c0, c0 + math.cos(rad) * R * S, c0 + math.sin(rad) * R * S), fill=PANEL, width=4)
     gd.ellipse((c0 - hole, c0 - hole, c0 + hole, c0 + hole), fill=PANEL)
-    g = g.resize((g.width // S, g.height // S), Image.LANCZOS)
-    panel.alpha_composite(fade(g, ease_out(prog(tl, 0.2, 0.4))), (int(cx - R - 1), int(cy - R - 1)))
-    # グラフの中の文字：広い区画は「名前＋割合」、中くらいは割合だけ、細い区画は表に任せる
+    for i, s_ in enumerate(sl):                       # 注目の区画：外へずらして少し大きく、上に重ねる
+        if foc[i] < 0.5:
+            continue
+        a0, sp = spans[i]
+        e = min(a0 + sp, -90.0 + 360.0 * sweep)
+        if e <= a0:
+            continue
+        mid = math.radians(a0 + sp / 2)
+        off = POP * S * foc[i]
+        ox, oy = math.cos(mid) * off, math.sin(mid) * off
+        rr = (R + 10 * foc[i]) * S
+        layer = Image.new("RGBA", (G, G), (0, 0, 0, 0))
+        ld = ImageDraw.Draw(layer)
+        ld.pieslice((c0 + ox - rr, c0 + oy - rr, c0 + ox + rr, c0 + oy + rr), a0, e, fill=_pie_color(i, s_),
+                    outline=(255, 255, 255, 255), width=3 * S)
+        ld.ellipse((c0 + ox - hole, c0 + oy - hole, c0 + ox + hole, c0 + oy + hole), fill=(0, 0, 0, 0))
+        g.alpha_composite(layer)
+    g = g.resize((G // S, G // S), Image.LANCZOS)
+    gx, gy = int(cx - G / S / 2), int(cy - G / S / 2)
+    panel.alpha_composite(fade(g, ease_out(prog(tl, 0.2, 0.4))), (gx, gy))
+    # グラフの中の文字：広い区画は「名前＋割合」、中くらいは割合だけ、細い区画は表に任せる。注目の区画は大きく
     kt = ease_out(prog(tl, 1.15, 0.4))
     if kt > 0:
-        tx = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
-        td = ImageDraw.Draw(tx)
-        rm = R * 0.71
-        ang = -90.0
         dark = (16, 24, 39, 255)
-        for i, s in enumerate(sl):
-            span = 360.0 * s["v"] / total
-            arc = math.radians(span) * rm
-            mid = math.radians(ang + span / 2)
-            px, py = cx + math.cos(mid) * rm, cy + math.sin(mid) * rm
-            lab = s.get("label", f"{s['v']}%")
+        for i, s_ in enumerate(sl):
+            a0, sp = spans[i]
+            rm = R * 0.71
+            arc = math.radians(sp) * rm
+            mid = math.radians(a0 + sp / 2)
+            off = POP * foc[i]
+            px, py = cx + math.cos(mid) * (rm + off), cy + math.sin(mid) * (rm + off)
+            lab = s_.get("label", f"{s_['v']}%")
+            big = foc[i] >= 0.5
+            tx = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
+            td = ImageDraw.Draw(tx)
             if arc >= 150:
-                td.text((px, py - 15), s.get("in", s["k"]), font=font("black", 24), fill=TEXT, anchor="mm",
-                        stroke_width=4, stroke_fill=dark)
-                td.text((px, py + 16), lab, font=font("black", 26), fill=TEXT, anchor="mm", stroke_width=4, stroke_fill=dark)
-            elif arc >= 52:
-                td.text((px, py), lab.replace("約", ""), font=font("black", 24 if arc < 80 else 28), fill=TEXT, anchor="mm",
-                        stroke_width=4, stroke_fill=dark)
-            ang += span
-        panel.alpha_composite(fade(tx, kt))
+                td.text((px, py - (19 if big else 15)), s_.get("in", s_["k"]), font=font("black", 30 if big else 24), fill=TEXT,
+                        anchor="mm", stroke_width=5, stroke_fill=dark)
+                td.text((px, py + (21 if big else 16)), lab, font=font("black", 36 if big else 26), fill=KEY if big else TEXT,
+                        anchor="mm", stroke_width=5, stroke_fill=dark)
+            elif arc >= 52 or big:
+                td.text((px, py), lab.replace("約", ""), font=font("black", 34 if big else (24 if arc < 80 else 28)),
+                        fill=KEY if big else TEXT, anchor="mm", stroke_width=5, stroke_fill=dark)
+            else:
+                continue
+            panel.alpha_composite(fade(tx, kt * (1 - dimk[i])))
     kc = ease_out(prog(tl, 0.9, 0.4))
     if kc > 0 and data.get("center"):
         cl = Image.new("RGBA", (2 * hole, 2 * hole), (0, 0, 0, 0))
         cdd = ImageDraw.Draw(cl)
-        h2 = hole / S * 2
         cdd.text((hole, hole - (16 if data.get("center_sub") else 0)), data["center"], font=font("black", 34), fill=TEXT, anchor="mm")
         if data.get("center_sub"):
             cdd.text((hole, hole + 24), data["center_sub"], font=font("medium", 22), fill=SUB, anchor="mm")
-        panel.alpha_composite(fade(cl, kc), (int(cx - hole), int(cy - hole)))
-    # 右：表（色・名前・中身・割合）。行は順に出て、key の行は金色
+        panel.alpha_composite(fade(cl, kc * (1 - 0.5 * act)), (int(cx - hole), int(cy - hole)))
+    # 右：表（色・名前・中身・割合）。行は順に出て、key の行は金色。注目の行は色の帯で目立たせ、ほかは薄く
     tx0, tx1 = 600, pw - 56
     rh = min(84, (ph - 200 - (60 if data.get("note") else 0)) / n)
     ty = 176 + ((ph - 200 - (60 if data.get("note") else 0)) - rh * n) / 2
     fname = font("black", 40 if rh >= 70 else 34)
     fsub = font("medium", 28)
     fval = font("black", 50 if rh >= 70 else 42)
-    for i, s in enumerate(sl):
+    fval_big = font("black", 60 if rh >= 70 else 52)
+    for i, s_ in enumerate(sl):
         k = ease_out(prog(tl, 0.45 + 0.22 * i, 0.35))
         if k <= 0:
             continue
         row = Image.new("RGBA", (tx1 - tx0, int(rh)), (0, 0, 0, 0))
         rd = ImageDraw.Draw(row)
-        col = _pie_color(i, s)
-        hot = s.get("key")
-        if hot:
+        col = _pie_color(i, s_)
+        hot = s_.get("key")
+        big = foc[i] >= 0.5
+        if big:
+            rd.rounded_rectangle((0, 3, tx1 - tx0 - 1, rh - 4), 12, fill=(col[0], col[1], col[2], 70), outline=col, width=3)
+        elif hot:
             rd.rounded_rectangle((0, 4, tx1 - tx0 - 1, rh - 5), 10, fill=(KEY[0], KEY[1], KEY[2], 34), outline=KEY, width=2)
         rd.rounded_rectangle((18, rh / 2 - 14, 46, rh / 2 + 14), 6, fill=col)
-        rd.text((72, rh / 2), s["k"], font=fname, fill=KEY if hot else TEXT, anchor="lm")
-        if s.get("s"):
-            rd.text((72 + text_w(s["k"], fname) + 22, rh / 2 + 4), s["s"], font=fsub, fill=SUB, anchor="lm")
-        rd.text((tx1 - tx0 - 24, rh / 2), s.get("label", f"{s['v']}%"), font=fval, fill=KEY if hot else TEXT, anchor="rm")
-        if i < n - 1 and not hot and not sl[i + 1].get("key"):
+        rd.text((72, rh / 2), s_["k"], font=fname, fill=TEXT if big else (KEY if hot else TEXT), anchor="lm")
+        if s_.get("s"):
+            rd.text((72 + text_w(s_["k"], fname) + 22, rh / 2 + 4), s_["s"], font=fsub, fill=TEXT if big else SUB, anchor="lm")
+        rd.text((tx1 - tx0 - 24, rh / 2), s_.get("label", f"{s_['v']}%"), font=fval_big if big else fval,
+                fill=KEY if (big or hot) else TEXT, anchor="rm")
+        if i < n - 1 and not hot and not big and not sl[i + 1].get("key") and foc[i + 1] < 0.5:
             rd.line((18, rh - 1, tx1 - tx0 - 18, rh - 1), fill=PANEL_LINE, width=1)
-        panel.alpha_composite(fade(row, k), (tx0 + int(16 * (1 - k)), int(ty + rh * i)))
+        panel.alpha_composite(fade(row, k * (1 - dimk[i])), (tx0 + int(16 * (1 - k)), int(ty + rh * i)))
     if data.get("note"):
         kn = ease_out(prog(tl, 0.6 + 0.22 * n, 0.4))
         if kn > 0:
             nl = Image.new("RGBA", (tx1 - tx0, 50), (0, 0, 0, 0))
             ImageDraw.Draw(nl).text((18, 25), data["note"], font=font("medium", 28), fill=SUB, anchor="lm")
-            panel.alpha_composite(fade(nl, kn), (tx0, ph - 74))
+            panel.alpha_composite(fade(nl, kn * (1 - 0.5 * act)), (tx0, ph - 74))
     paste(canvas, panel, ((W - pw) / 2, 168 + 14 * (1 - a)), a)
 
 
@@ -1082,12 +1122,13 @@ def _scaled(who, h, bright, face="normal"):
 CHAR_FOOT = {"nagi": (190, H - 24), "baku": (W - 200, H - 24)}
 
 
-def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal"):
-    """呼吸程度のわずかな上下だけ。話している方を明るく。戻り値：素材上の座標→画面座標の変換"""
+def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal", shift=0.0):
+    """呼吸程度のわずかな上下だけ。話している方を明るく。戻り値：素材上の座標→画面座標の変換。shift＝足元の横ずらし（寄りのカット用）"""
     bright = 1.0 if talking else 0.78
     hq = int(round(h * extra_scale / 4) * 4)
     img, s = _scaled(who, hq, bright, face)
     fx, fy = CHAR_FOOT[who]
+    fx += shift
     bob = 3 * math.sin(2 * math.pi * 0.4 * t + (0 if who == "nagi" else 1.9))
     x = fx - img.width / 2
     y = fy - (img.height - 30) + bob

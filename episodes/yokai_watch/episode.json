@@ -22,5 +22,6 @@
    "key": true
   }
  ],
- "voice_tempo": 1.1
+ "voice_tempo": 1.1,
+ "dir_pre": 0.07
 }

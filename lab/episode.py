@@ -69,7 +69,7 @@ def parse_script(path):
 
 
 # @dir の値の範囲（直後の1セリフだけに効く演出）
-DIR_RANGE = {"pre": (0, 2), "post": (0, 2), "speed": (0.7, 1.4), "int": (0.5, 1.6), "vol": (0.5, 1.2)}
+DIR_RANGE = {"pre": (0, 2), "post": (0, 2), "speed": (0.7, 1.4), "int": (0.5, 1.6), "vol": (0.5, 1.2), "zoom": (1.0, 2.6)}
 DIR_TEXT = ("emph", "mark", "face", "lv", "focus", "se", "mood", "tail", "act", "hiki", "fx")
 
 
@@ -173,6 +173,7 @@ def wav_len(path):
         return w.getnframes() / w.getframerate()
 
 
+DIR_PRE = 0.15        # @dir のある章で、pre を書かない行の前の間（episode.json の "dir_pre"）
 VOICE_TEMPO = 1.0     # episode.json の "voice_tempo"：声全体の速さ（1.1＝1割速く。音の高さは変えない）
 
 
@@ -204,6 +205,7 @@ def build_chapter(ep_dir, script_path, data):
     directed = any(it.get("dir") for it in items if it["cmd"] == "line")   # @dir がある章だけ新しい間の付け方
     t = 0.25
     cur = None          # 今出ている資料
+    pending_hl = None   # @hl：次のセリフの中で円グラフの注目項目を切り替える [(項目番号, セリフ内の位置0〜1)]
     chap = None
     line_no = 0
 
@@ -279,6 +281,13 @@ def build_chapter(ep_dir, script_path, data):
         elif c == "clear":
             close_cur(t)
             set_layout("normal", t)
+        elif c == "hl":
+            # @hl 2 … 次のセリフの頭で、円グラフ（pie）の2番目（0始まり）を注目させる
+            # @hl 0,1@0.42,2@0.72 … セリフの途中（長さの割合）で注目を移す ／ @hl - … 注目を解除（全部ふつうに戻す）
+            pending_hl = []
+            for tok in it["arg"].replace(" ", "").split(","):
+                idx, _, frac = tok.partition("@")
+                pending_hl.append((None if idx == "-" else int(idx), float(frac or 0)))
         elif c == "show":
             kind, name = it["arg"].split(":")
             close_cur(t)
@@ -342,7 +351,7 @@ def build_chapter(ep_dir, script_path, data):
                 if hiki["duck"]:   # BGM が鳴っていれば少し絞る（もう切ってあればそのまま）
                     scene["bgm_track"].append({"t": round(t, 3), "level": 0.35, "dur": 0.5})
             if directed:
-                t += dr.get("pre", 0.15)
+                t += dr.get("pre", DIR_PRE)
             line_no += 1
             lid = f"{stem}-{line_no:03d}"
             vpath = ep_dir / "voices" / f"{lid}.wav"
@@ -373,7 +382,16 @@ def build_chapter(ep_dir, script_path, data):
             if face:   # @dir face=… 表情差分（characters/v2/<who>/<face>.png）。セリフの間＋0.3秒だけ
                 scene["faces"].append({"who": it["who"], "start": round(t, 3), "end": round(t + dur + 0.3, 3), "face": face})
             if dr.get("focus"):
-                scene["focus"].append({"who": dr["focus"], "start": round(t - 0.1, 3), "end": round(t + dur + dr.get("post", 0), 3)})
+                fend = t + dur + dr.get("post", 0)
+                if dr.get("zoom", 1.2) > 1.3:            # 大きく寄るカットは長くても2.2秒で戻す
+                    fend = min(fend, t + 2.2)
+                scene["focus"].append({"who": dr["focus"], "start": round(t - 0.1, 3), "end": round(fend, 3),
+                                       "zoom": dr.get("zoom", 1.2)})   # @dir zoom=1.8 で大きく寄る（掛け合いの見せ場のカット）
+            if pending_hl is not None:
+                if cur is not None and cur["type"] == "pie":
+                    for idx, frac in pending_hl:
+                        cur.setdefault("hl", []).append([round(t + frac * dur, 3), idx])
+                pending_hl = None
             if dr.get("se"):
                 scene["se"].append({"t": t, "kind": dr["se"], "gain": 0.18})
             if vpath.exists():
@@ -617,8 +635,9 @@ def main():
     args = ap.parse_args()
     ep = Path(args.episode_dir)
     data, conf = load_data(ep)
-    global VOICE_TEMPO
+    global VOICE_TEMPO, DIR_PRE
     VOICE_TEMPO = float(conf.get("voice_tempo", 1.0))
+    DIR_PRE = float(conf.get("dir_pre", DIR_PRE))
     GAP = conf.get("gap", GAP)        # episode.json の "gap" でセリフ間の間を回ごとに変えられる（テンポ）
     out_dir = Path(args.out or (ep / "build"))
     out_dir.mkdir(parents=True, exist_ok=True)

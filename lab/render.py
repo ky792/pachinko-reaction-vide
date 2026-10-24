@@ -89,12 +89,12 @@ def emphasis_at(scene, who, t):
 
 
 def focus_state(scene, t):
-    """オチの寄り：(寄る相手, 0〜1)。0.4秒で寄り、終わりから0.4秒で戻す"""
+    """オチの寄り：(寄る相手, 0〜1, 拡大率)。0.3秒で寄り、終わりから0.35秒で戻す"""
     for f in scene.get("focus", []):
-        if f["start"] <= t < f["end"] + 0.4:
-            k = min(ui.ease_out(ui.prog(t, f["start"], 0.4)), 1 - ui.ease_in_out(ui.prog(t, f["end"], 0.4)))
-            return f["who"], max(0.0, k)
-    return None, 0.0
+        if f["start"] <= t < f["end"] + 0.35:
+            k = min(ui.ease_out(ui.prog(t, f["start"], 0.3)), 1 - ui.ease_in_out(ui.prog(t, f["end"], 0.35)))
+            return f["who"], max(0.0, k), f.get("zoom", 1.2)
+    return None, 0.0, 1.2
 
 
 HIKI_IN, HIKI_OUT = 0.6, 0.5
@@ -173,11 +173,24 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
     elif tp == "lineup":
         ui.lineup(cv, tl, dur, d)
     elif tp == "pie":
-        ui.pie(cv, tl, dur, d)
+        ui.pie(cv, tl, dur, d, hl_at(c, c["start"] + tl) if c.get("hl") else None)
     elif tp == "spec_table":
         ui.spec_table(cv, tl, dur, d)
     elif tp == "analysis" and data_tank is not None:
         ui.analysis(cv, tl, dur, d, data_tank)
+
+
+HL_SEC = 0.3   # 円グラフの注目が移るのにかける秒数
+
+
+def hl_at(c, t):
+    """円グラフの注目：(今の項目, 前の項目, 切り替えの進み 0〜1)。項目 None＝注目なし"""
+    cur, prev, k = None, None, 1.0
+    for ht, idx in c.get("hl", []):
+        if t >= ht:
+            prev, cur = cur, idx
+            k = ui.ease_in_out(ui.prog(t, ht, HL_SEC))
+    return cur, prev, k
 
 
 def state_key(scene, t):
@@ -208,6 +221,11 @@ def state_key(scene, t):
         outro = ui.OUTRO.get(c["type"], 0.45)
         if tl < settle or tl > dur - outro:
             return None
+        if c.get("hl"):
+            hc, _, hk = hl_at(c, t)
+            if hk < 1:
+                return None
+            key.append(("hl", i, hc))
         key.append(("c", i))
     for i, sb in enumerate(scene["subs"]):
         if sb["start"] <= t < sb["end"]:
@@ -329,9 +347,9 @@ def render_frame(scene, t, images):
     cv = motion.camera_image(under.copy(), cam)
     h, a = layout_state(scene, t)
     who = speaker_at(scene, t)
-    fw, fk = focus_state(scene, t)
-    if fk > 0:                                   # 背景を最大35%暗く
-        shade = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, int(255 * 0.35 * fk)))
+    fw, fk, fz = focus_state(scene, t)
+    if fk > 0:                                   # 背景と資料を暗くして、キャラに目を向ける（大きく寄るほど暗く）
+        shade = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, int(255 * min(0.6, 0.35 + 0.2 * (fz - 1.2)) * fk)))
         cv.alpha_composite(shade)
     if hk > 0:                                   # ヒキ：周りから暗く＋上下に黒帯
         vig = _vignette()
@@ -348,8 +366,11 @@ def render_frame(scene, t, images):
     if a > 0.01:
         for c in ("nagi", "baku"):
             lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
-            ex = emphasis_at(scene, c, t) * (1 + 0.2 * fk if c == fw else 1.0)
-            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t))
+            ex = emphasis_at(scene, c, t) * (1 + (fz - 1) * fk if c == fw else 1.0)
+            shift = 0.0
+            if c == fw and fz > 1.3:             # 大きく寄るときは画面の内側へ（端で切れないように）
+                shift = (1 if c == "nagi" else -1) * 230 * (fz - 1.2) / 1.2 * fk
+            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t), shift=shift)
             dim = (1 - 0.5 * fk if fw and c != fw else 1.0) * (1 - 0.45 * hk if who and c != who else 1.0)
             ui.paste(cv, lay, (0, 0), a * dim)
     fxmod.draw(cv, scene, t)                 # 再現演出（キャラの上・字幕の下。lab/fx.py）
