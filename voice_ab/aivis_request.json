@@ -9,6 +9,10 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 18,
- "kana_only": false
+ "_try": 19,
+ "kana_only": false,
+ "only": [
+  "07_matome-009",
+  "99_ed-001"
+ ]
 }
