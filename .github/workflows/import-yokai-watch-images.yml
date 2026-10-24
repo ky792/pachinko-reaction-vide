@@ -1,0 +1,34 @@
+name: Import Yokai Watch official images
+
+on:
+  push:
+    branches: [feat/yokai-watch-episode]
+    paths:
+      - "episodes/yokai_watch/fetch_official_images.py"
+      - ".github/workflows/import-yokai-watch-images.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Pillow and requests
+        run: python -m pip install --disable-pip-version-check Pillow requests
+      - name: Import official page images with source report
+        run: python episodes/yokai_watch/fetch_official_images.py
+      - name: Commit candidates to the episode branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add episodes/yokai_watch/images
+          git diff --cached --quiet && { echo "No new image files"; exit 0; }
+          git commit -m "yokai_watch: SANKYO公式ページの画像候補と出典"
+          for i in 1 2 3; do git pull --no-rebase -q origin "$GITHUB_REF_NAME" && git push origin "HEAD:$GITHUB_REF_NAME" && break; sleep 5; done
