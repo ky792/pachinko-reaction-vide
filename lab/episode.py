@@ -173,6 +173,20 @@ def wav_len(path):
         return w.getnframes() / w.getframerate()
 
 
+VOICE_TEMPO = 1.0     # episode.json の "voice_tempo"：声全体の速さ（1.1＝1割速く。音の高さは変えない）
+
+
+def tempo_voice(vpath):
+    """voice_tempo が 1 以外なら、速めた写しを voices_tempo<値>/ に作ってそのパスを返す（元の声は変えない）"""
+    if abs(VOICE_TEMPO - 1.0) < 1e-3:
+        return vpath
+    out = vpath.parent.parent / f"voices_tempo{VOICE_TEMPO:g}" / vpath.name
+    if not out.exists() or out.stat().st_mtime < vpath.stat().st_mtime:
+        out.parent.mkdir(exist_ok=True)
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(vpath), "-af", f"atempo={VOICE_TEMPO}", str(out)], check=True)
+    return out
+
+
 def est_len(who, text):
     n = len(re.sub(r"[{}、。！？!?…\s]", "", text))
     return max(1.3, n / CHARS_PER_SEC[who] + 0.25)
@@ -332,6 +346,8 @@ def build_chapter(ep_dir, script_path, data):
             line_no += 1
             lid = f"{stem}-{line_no:03d}"
             vpath = ep_dir / "voices" / f"{lid}.wav"
+            if vpath.exists():
+                vpath = tempo_voice(vpath)
             dur = wav_len(vpath) if vpath.exists() else est_len(it["who"], it["text"])
             if scene["layout"] and scene["layout"][-1]["mode"] == "hidden":
                 set_layout("normal", t - 0.2)
@@ -601,6 +617,8 @@ def main():
     args = ap.parse_args()
     ep = Path(args.episode_dir)
     data, conf = load_data(ep)
+    global VOICE_TEMPO
+    VOICE_TEMPO = float(conf.get("voice_tempo", 1.0))
     GAP = conf.get("gap", GAP)        # episode.json の "gap" でセリフ間の間を回ごとに変えられる（テンポ）
     out_dir = Path(args.out or (ep / "build"))
     out_dir.mkdir(parents=True, exist_ok=True)

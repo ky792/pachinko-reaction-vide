@@ -7,3 +7,4 @@ generator/output/
 generator/audio/generated/
 episodes/*/build/
 episodes/*/reading/ab/
+episodes/*/voices_tempo*/
