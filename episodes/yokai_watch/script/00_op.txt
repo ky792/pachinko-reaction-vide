@@ -14,6 +14,8 @@
 @dir act=jump
 バク: 先にそれ言えや！
 @skit off
+@song op_brass.wav gain=0.6 len=12
 @intro nagi
 @intro baku
-@title
+@logo newmachine.png 3.6
+@title 4.0
