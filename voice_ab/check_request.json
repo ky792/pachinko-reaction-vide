@@ -1,5 +1,12 @@
 {
  "episode": "episodes/yokai_watch",
  "model": "large-v3-turbo",
- "_run": "yokai-v3-all"
+ "only": [
+  "07_matome-009",
+  "07_matome-010",
+  "07_matome-011",
+  "07_matome-012",
+  "07_matome-013"
+ ],
+ "_run": "yokai-v4"
 }
