@@ -1,8 +1,5 @@
 {
- "episode": "episodes/garo_history",
+ "episode": "episodes/news02",
  "model": "large-v3-turbo",
- "only": [
-  "01_eikou-010"
- ],
- "_run": "garo-v4-tere2"
+ "_run": "news02-all-1"
 }
