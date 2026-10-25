@@ -1,0 +1,93 @@
+[
+ {
+  "kind": "誤読",
+  "where": "ゲン",
+  "expect": "ゲン",
+  "reason": "台本は「ゲン」、聞こえたのは「ワキマエ」",
+  "level": "中",
+  "id": "03_naze-013",
+  "who": "nagi",
+  "text": "計算すると、約55%減。帝国データバンクの調べって、業界紙に載ってた。",
+  "asr": "計算すると約55%弁、帝国データバンクの調べって境界紙に載ってた。",
+  "ratio": 0.918,
+  "audio": "episodes/news02/voices/03_naze-013.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ケン",
+  "expect": "ケン",
+  "reason": "台本は「ケン」、聞こえたのは「ミ」",
+  "level": "低",
+  "id": "02_kimatta-002",
+  "who": "baku",
+  "text": "メーカーが揃って会見て、けっこう本気やん。",
+  "asr": "メーカーが揃って買い見て結構本気やん",
+  "ratio": 0.933,
+  "audio": "episodes/news02/voices/02_kimatta-002.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ミセ",
+  "expect": "ミセ",
+  "reason": "台本は「ミセ」、聞こえたのは「テン」",
+  "level": "低",
+  "id": "02_kimatta-013",
+  "who": "nagi",
+  "text": "表示は、星の数と色のロゴ。説明書の表紙や、店のポスターに載る。",
+  "asr": "表示は星の数と色のロゴ、説明書の表紙や点のポスターに載る。",
+  "ratio": 0.947,
+  "audio": "episodes/news02/voices/02_kimatta-013.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "マザ",
+  "expect": "マザ",
+  "reason": "台本は「マザ」、聞こえたのは「カ」",
+  "level": "低",
+  "id": "03_naze-008",
+  "who": "nagi",
+  "text": "業界紙によると、遊パチの島に性能の違う台が混ざってるのが、問題らしい。",
+  "asr": "教会誌によるとアソパチの島に性能の違う台が勝ってるのが問題らしい",
+  "ratio": 0.941,
+  "audio": "episodes/news02/voices/03_naze-008.wav"
+ },
+ {
+  "kind": "誤読（辞書語）",
+  "where": "シン",
+  "expect": "シンダイ",
+  "reason": "台本は「シン」、聞こえたのは「ネ」（辞書語「新台」のところ）",
+  "level": "低",
+  "id": "03_naze-019",
+  "who": "baku",
+  "text": "確かに新台の島、Lv.4っぽいのばっかり並んでる気するわ。",
+  "asr": "確かに寝台の島レベル4っぽいのばっかり並んでる気するわ",
+  "ratio": 0.954,
+  "audio": "episodes/news02/voices/03_naze-019.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ノド",
+  "expect": "ノド",
+  "reason": "台本は「ノド」、聞こえたのは「モト」",
+  "level": "低",
+  "id": "04_kawaru-021",
+  "who": "nagi",
+  "text": "で、2027年2月は、遊びやすいパチンコ・パチスロの導入強化月間。",
+  "asr": "で、2027年2月は遊びやすいパッチンコパチスロも投入強化芸感。",
+  "ratio": 0.899,
+  "audio": "episodes/news02/voices/04_kawaru-021.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ゴニ",
+  "expect": "ゴニ",
+  "reason": "台本は「ゴニ」、聞こえたのは「コジ」",
+  "level": "低",
+  "id": "05_matome-002",
+  "who": "nagi",
+  "text": "理由は、選びやすさ、依存の対策、誤認の対策の3つ。",
+  "asr": "理由は、選びやすさ、依存の対策、個人の対策の3つ。",
+  "ratio": 0.933,
+  "audio": "episodes/news02/voices/05_matome-002.wav"
+ }
+]
