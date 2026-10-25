@@ -80,9 +80,9 @@
   "text": "あの時メダル集めとった子らがちょうどパチンコ売ってる年になったんか"
  },
  "01_kihon-010": {
-  "sha1": "cc2c7c3f25b9368a56ff699752a56a7f00a6bec9",
+  "sha1": "f100b886bb0c95887afe02b3ac06ee72af5c1a85",
   "model": "large-v3-turbo",
-  "text": "7年待たされたらファンも大人なるわ"
+  "text": "稲妻だいぶ待たされたもんな"
  },
  "01_kihon-011": {
   "sha1": "b19813c2db978178f691ce725e99e4ed0f83b482",
@@ -95,9 +95,9 @@
   "text": "リメイクとパチンコが同時か!えらい商売上手やな!"
  },
  "01_kihon-013": {
-  "sha1": "411d8f10783bafa439095bc0c10f6119d322bf66",
+  "sha1": "b9d08bf93eb4cdda90f3f759daffbb785487dac2",
   "model": "large-v3-turbo",
-  "text": "パチンコを作ってるのは3強だよ"
+  "text": "山頂か、当たりはずれでかいとこやな"
  },
  "01_kihon-014": {
   "sha1": "bcc6ff18513689ea07a3bf09f09659e4e33b6bda",
@@ -185,9 +185,9 @@
   "text": "初当たりの出玉は約300個"
  },
  "02_hatsuatari-011": {
-  "sha1": "b6f8278121a2050a70cf0333c97dd61de8717b08",
+  "sha1": "6bde35ddbe57cf9d76c1bd9d9b3e1b7068ccd222",
   "model": "large-v3-turbo",
-  "text": "そこは期待してへんどうせへそで当てるまでが長いねん"
+  "text": "300個は、まぁ、まぁそんなもんやな"
  },
  "02_hatsuatari-012": {
   "sha1": "9913de69a03159787c680dbd20ca35bce7c87e14",
@@ -285,9 +285,9 @@
   "text": "ラッシュに入ったらたたりは平均で4回弱"
  },
  "03_rush-008": {
-  "sha1": "97271efd2831cd59a3334d5eaf67b204fa90abe6",
+  "sha1": "b795485a1d265e3c652c4eef5c96ef6d637052c7",
   "model": "large-v3-turbo",
-  "text": "4回で全部1500やったら6000か微妙やな"
+  "text": "で、一回なんぼ出るん?"
  },
  "03_rush-009": {
   "sha1": "9b19acde055aaecd8d2d2ac5a461f4ed51dbefb8",
@@ -375,9 +375,9 @@
   "text": "鳴らすと1回あたり約2000個"
  },
  "04_dedama-011": {
-  "sha1": "d925db562144a7f483afd2afd2aa30a3bf701f06",
+  "sha1": "ef1c9dc6ea336485767628e624c438462ad426f4",
   "model": "large-v3-turbo",
-  "text": "全部鳴らすと1回あたり約2000個"
+  "text": "1500ばっかりちゃうならまぁええわ"
  },
  "04_dedama-012": {
   "sha1": "44ffc5f38b4d5e9b3ad289c1e8af112b8d48caa9",
@@ -450,9 +450,9 @@
   "text": "平均すると、奪うね決戦1回で約4400、ナッシュ中の約5.7%だから、だいたい18回に1回。"
  },
  "05_ubaune-012": {
-  "sha1": "1d4080fa7d3a97aa7cdfc7865b89d916e705fddd",
+  "sha1": "96d57955cf55da32ff5987bc23586271cdc5b9e3",
   "model": "large-v3-turbo",
-  "text": "18回に1回ってラッシュ5回くらい入れなあかんやんそんな日年に何回あんねん"
+  "text": "18回に1回か引けたらラッキーくらいやな"
  },
  "05_ubaune-013": {
   "sha1": "e384dd091d5ef6b6127c56b4fdcb162436c1e881",

@@ -1,1 +1,15 @@
-[]
+[
+ {
+  "kind": "重複",
+  "where": "マー",
+  "expect": "",
+  "reason": "「マー」がくり返し聞こえる",
+  "level": "低",
+  "id": "02_hatsuatari-011",
+  "who": "baku",
+  "text": "300個は、まあそんなもんやな。",
+  "asr": "300個は、まぁ、まぁそんなもんやな",
+  "ratio": 0.941,
+  "audio": "episodes/yokai_watch/voices/02_hatsuatari-011.wav"
+ }
+]
