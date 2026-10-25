@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SNS投稿 承認デモ</title>
+<style>
+:root {
+  --bg: #f6f7f9; --surface: #ffffff; --text: #1d2330; --muted: #5e6675; --line: #dfe3ea;
+  --accent: #2f6fde; --accent-text: #ffffff; --ok: #1f8a4c; --ok-bg: #e5f5ec; --ng: #c23b3b; --ng-bg: #fbe9e9;
+  --warn: #9a6a00; --warn-bg: #fff4d6; --chip: #eef1f6; --shadow: 0 1px 2px rgba(20, 30, 50, .08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151b; --surface: #1b1f27; --text: #e8ebf1; --muted: #a2a9b6; --line: #2d333e;
+    --accent: #6f9cf0; --accent-text: #0e1420; --ok: #5cc98a; --ok-bg: #173325; --ng: #f08080; --ng-bg: #3a1c1f;
+    --warn: #e7bd52; --warn-bg: #3a3017; --chip: #262b35; --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151b; --surface: #1b1f27; --text: #e8ebf1; --muted: #a2a9b6; --line: #2d333e;
+  --accent: #6f9cf0; --accent-text: #0e1420; --ok: #5cc98a; --ok-bg: #173325; --ng: #f08080; --ng-bg: #3a1c1f;
+  --warn: #e7bd52; --warn-bg: #3a3017; --chip: #262b35; --shadow: none;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--text);
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+  padding-bottom: calc(72px + env(safe-area-inset-bottom));
+}
+header { padding: 14px 16px 8px; max-width: 720px; margin: 0 auto; }
+h1 { font-size: 19px; margin: 0 0 6px; }
+h2 { font-size: 16px; margin: 18px 0 8px; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--chip); color: var(--muted); }
+.badge.safe { background: var(--ok-bg); color: var(--ok); }
+main { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+.view { display: none; }
+.view.active { display: block; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin: 12px 0; box-shadow: var(--shadow); }
+label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+input[type=text], input[type=url], textarea, select {
+  width: 100%; font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px; min-height: 44px;
+}
+textarea { resize: vertical; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.row > * { flex: 1 1 auto; }
+.checks { display: flex; gap: 14px; flex-wrap: wrap; }
+.checks label { display: flex; align-items: center; gap: 6px; color: var(--text); font-size: 15px; margin: 6px 0; min-height: 32px; }
+.checks input { width: 20px; height: 20px; }
+button {
+  font: inherit; font-size: 15px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text);
+  padding: 10px 14px; min-height: 44px; cursor: pointer;
+}
+button.primary { background: var(--accent); color: var(--accent-text); border-color: var(--accent); font-weight: 600; }
+button.ok { background: var(--ok); color: var(--surface); border-color: var(--ok); font-weight: 600; }
+button.ng { color: var(--ng); border-color: var(--ng); }
+button:disabled { opacity: .45; cursor: not-allowed; }
+.full { width: 100%; }
+.note { font-size: 13px; color: var(--muted); }
+.callout { font-size: 14px; border-radius: 10px; padding: 10px 12px; background: var(--warn-bg); color: var(--warn); margin: 10px 0; }
+.callout.safe { background: var(--ok-bg); color: var(--ok); }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0; }
+.chip { flex: 0 0 auto; border-radius: 999px; padding: 6px 12px; min-height: 36px; font-size: 14px; background: var(--chip); border: 1px solid transparent; }
+.chip.on { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+.draft-head { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 6px; }
+.tag { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; background: var(--chip); }
+.status { margin-left: auto; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; background: var(--chip); color: var(--muted); }
+.status.承認済 { background: var(--ok-bg); color: var(--ok); }
+.status.差戻し { background: var(--ng-bg); color: var(--ng); }
+.status.出力済 { background: var(--accent); color: var(--accent-text); }
+.src { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.meter { height: 6px; border-radius: 3px; background: var(--chip); overflow: hidden; margin: 8px 0 2px; }
+.meter > i { display: block; height: 100%; background: var(--accent); }
+.meter.over > i { background: var(--ng); }
+.issues { list-style: none; padding: 0; margin: 6px 0; font-size: 13px; }
+.issues li { padding: 4px 8px; border-radius: 6px; margin: 3px 0; }
+.issues .error { background: var(--ng-bg); color: var(--ng); }
+.issues .warn { background: var(--warn-bg); color: var(--warn); }
+.actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.actions button { flex: 1 1 120px; }
+.posttext { white-space: pre-wrap; word-break: break-word; background: var(--bg); border-radius: 8px; padding: 10px; font-size: 15px; }
+.empty { text-align: center; color: var(--muted); padding: 30px 0; }
+nav.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; display: flex; background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom); z-index: 5;
+}
+nav.tabs button { flex: 1; border: 0; border-radius: 0; background: transparent; min-height: 60px; font-size: 14px; color: var(--muted); }
+nav.tabs button.on { color: var(--accent); font-weight: 700; box-shadow: inset 0 3px 0 var(--accent); }
+.count { display: inline-block; min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--chip); font-size: 12px; margin-left: 4px; }
+#toast {
+  position: fixed; left: 16px; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom)); max-width: 560px; margin: 0 auto;
+  background: var(--text); color: var(--bg); border-radius: 10px; padding: 12px 14px; font-size: 14px; display: none; z-index: 6;
+}
+#toast.show { display: block; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SNS投稿 下書き・承認デモ</h1>
+  <div class="badges">
+    <span class="badge">AI未接続：無料のテンプレート生成</span>
+    <span class="badge safe">外部SNSへ自動投稿しません</span>
+    <span class="badge">データはこの端末内だけに保存</span>
+  </div>
+</header>
+
+<main>
+  <!-- 1. 入力 -->
+  <section class="view active" id="view-input">
+    <div class="card">
+      <div class="row">
+        <button type="button" data-sample="0">記事サンプルを入れる</button>
+        <button type="button" data-sample="1">商品サンプルを入れる</button>
+      </div>
+      <form id="form" autocomplete="off">
+        <label>種類</label>
+        <div class="checks">
+          <label><input type="radio" name="type" value="article" checked> 記事</label>
+          <label><input type="radio" name="type" value="product"> 商品</label>
+        </div>
+        <label for="f-id">管理ID（英数字）</label>
+        <input type="text" id="f-id" name="id" required placeholder="例: A002">
+        <label for="f-title">タイトル・商品名</label>
+        <input type="text" id="f-title" name="title" required>
+        <label for="f-summary">概要（1〜2文）</label>
+        <textarea id="f-summary" name="summary" rows="3" required></textarea>
+        <label for="f-points">要点（1行に1つ・3つまで）</label>
+        <textarea id="f-points" name="points" rows="3"></textarea>
+        <label for="f-url">URL</label>
+        <input type="url" id="f-url" name="url" placeholder="https://">
+        <div class="row">
+          <div><label for="f-price">価格（商品のみ）</label><input type="text" id="f-price" name="price"></div>
+          <div><label for="f-target">対象（例: 共働き家庭）</label><input type="text" id="f-target" name="target"></div>
+        </div>
+        <div class="row">
+          <div><label for="f-brand">ブランド名</label><input type="text" id="f-brand" name="brand"></div>
+          <div><label for="f-cta">行動喚起の一言</label><input type="text" id="f-cta" name="cta" placeholder="空欄なら自動"></div>
+        </div>
+        <label for="f-hashtags">ハッシュタグ（、区切り・#不要）</label>
+        <input type="text" id="f-hashtags" name="hashtags">
+        <div class="checks">
+          <label><input type="checkbox" name="is_pr"> 広告・PR案件（【PR】を自動で付ける）</label>
+        </div>
+        <label>作るSNS</label>
+        <div class="checks" id="platforms"></div>
+        <button type="submit" class="primary full" style="margin-top:12px">投稿案を作る（無料）</button>
+      </form>
+      <p class="note">1件の入力から、SNSごとに「要点まとめ／共感・問いかけ／告知・行動喚起」の3案を作ります。</p>
+      <div class="callout">AIで文章を作る機能は、APIキーを設定したCLIでのみ使えます（有料・従量課金。目安は1件あたり約10円）。このページからAIに接続することはありません。</div>
+    </div>
+  </section>
+
+  <!-- 2. 確認・承認 -->
+  <section class="view" id="view-review">
+    <div class="card">
+      <label for="reviewer">あなたの名前（承認・差戻しの記録に使います）</label>
+      <input type="text" id="reviewer" placeholder="例: 山田">
+    </div>
+    <div class="chips" id="filters"></div>
+    <div id="draft-list"></div>
+  </section>
+
+  <!-- 3. 出力 -->
+  <section class="view" id="view-output">
+    <div class="callout safe">ここで「出力」しても、SNSへは投稿されません。承認済の文章をコピーして、各SNSのアプリから手動で投稿します。</div>
+    <div class="card">
+      <p style="margin:0 0 8px"><strong id="ready-count">0</strong> 件が出力待ち（承認済・本文変更なし）</p>
+      <button type="button" class="primary full" id="btn-export">承認済を出力する</button>
+      <p class="note" id="export-msg"></p>
+    </div>
+    <h2>出力済（コピーして投稿）</h2>
+    <div id="exported-list"></div>
+    <h2>Google Sheets 連携</h2>
+    <div class="card">
+      <div class="actions">
+        <button type="button" id="btn-csv">全件をCSVで保存</button>
+        <button type="button" id="btn-import">CSVを読み込む</button>
+      </div>
+      <input type="file" id="file-import" accept=".csv,text/csv" hidden>
+      <p class="note">CSVの列は Google Sheets の「下書き」シートと同じです。シートで承認した内容を読み込むこともできます（承認後に本文が変わっているものは出力されません）。</p>
+    </div>
+    <div class="card">
+      <button type="button" class="ng full" id="btn-reset">デモを最初の状態に戻す</button>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs">
+  <button type="button" data-tab="input" class="on">① 入力</button>
+  <button type="button" data-tab="review">② 確認・承認<span class="count" id="c-review">0</span></button>
+  <button type="button" data-tab="output">③ 出力<span class="count" id="c-output">0</span></button>
+</nav>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*__CORE__*/
+</script>
+<script>
+var DATA = /*__DATA__*/;
+(function () {
+  'use strict';
+  var C = SNSCore;
+  var RULES = DATA.rules;
+  var KEY = 'sns-studio-demo-v1';
+  var state = loadState();
+  var filter = 'すべて';
+
+  function loadState() {
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (s && Array.isArray(s.drafts)) return s;
+    } catch (e) { /* 保存できない環境でも動かす */ }
+    return { drafts: [], sources: {}, reviewer: '' };
+  }
+  function saveState() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* 無視 */ }
+  }
+  function now() {
+    var d = new Date(Date.now() + 9 * 3600 * 1000);
+    return d.toISOString().slice(0, 19) + '+09:00';
+  }
+  function $(sel) { return document.querySelector(sel); }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  var toastTimer;
+  function toast(msg) {
+    var t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 3200);
+  }
+
+  // ---------- タブ ----------
+  function showTab(name) {
+    document.querySelectorAll('.view').forEach(function (v) { v.classList.toggle('active', v.id === 'view-' + name); });
+    document.querySelectorAll('nav.tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === name); });
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('nav.tabs button').forEach(function (b) {
+    b.addEventListener('click', function () { showTab(b.dataset.tab); });
+  });
+
+  // ---------- 入力 ----------
+  var platformBox = $('#platforms');
+  Object.keys(C.PLATFORMS).forEach(function (p) {
+    platformBox.insertAdjacentHTML('beforeend', '<label><input type="checkbox" name="platform" value="' + p + '" checked> ' + esc(C.PLATFORMS[p].label) + '</label>');
+  });
+  document.querySelectorAll('[data-sample]').forEach(function (b) {
+    b.addEventListener('click', function () { fillForm(DATA.samples[Number(b.dataset.sample)]); toast('サンプルを入れました。「投稿案を作る」を押してください'); });
+  });
+  function fillForm(s) {
+    var f = $('#form');
+    f.querySelector('[name=type][value=' + s.type + ']').checked = true;
+    ['id', 'title', 'summary', 'url', 'price', 'target', 'brand', 'cta'].forEach(function (k) { f.elements[k].value = s[k] || ''; });
+    f.elements.points.value = (s.points || []).join('\n');
+    f.elements.hashtags.value = (s.hashtags || []).join('、');
+    f.elements.is_pr.checked = !!s.is_pr;
+  }
+  $('#form').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var f = ev.target;
+    var input = {
+      id: f.elements.id.value, type: f.querySelector('[name=type]:checked').value, title: f.elements.title.value,
+      summary: f.elements.summary.value, points: f.elements.points.value, url: f.elements.url.value,
+      price: f.elements.price.value, target: f.elements.target.value, brand: f.elements.brand.value,
+      cta: f.elements.cta.value, hashtags: f.elements.hashtags.value, is_pr: f.elements.is_pr.checked
+    };
+    var platforms = Array.prototype.map.call(f.querySelectorAll('[name=platform]:checked'), function (c) { return c.value; });
+    if (!platforms.length) { toast('SNSを1つ以上選んでください'); return; }
+    try {
+      var created = C.generateDrafts(input, RULES, { platforms: platforms, now: now() });
+      state.sources[created[0].source_id] = C.normalizeSource(input);
+      var merged = C.upsert(state.drafts, created);
+      state.drafts = merged.drafts;
+      saveState();
+      render();
+      filter = 'すべて';
+      showTab('review');
+      toast(created.length + '件の投稿案を作りました' + (merged.kept.length ? '（承認済の' + merged.kept.length + '件は上書きしていません）' : ''));
+    } catch (e) { toast(e.message); }
+  });
+
+  // ---------- 確認・承認 ----------
+  var reviewer = $('#reviewer');
+  reviewer.value = state.reviewer || '';
+  reviewer.addEventListener('input', function () { state.reviewer = reviewer.value; saveState(); });
+
+  function counts() {
+    var c = { 'すべて': state.drafts.length };
+    Object.keys(C.STATUS).forEach(function (k) { c[C.STATUS[k]] = 0; });
+    state.drafts.forEach(function (d) { c[d.status] = (c[d.status] || 0) + 1; });
+    return c;
+  }
+  function renderFilters() {
+    var c = counts();
+    $('#filters').innerHTML = ['すべて', C.STATUS.DRAFT, C.STATUS.APPROVED, C.STATUS.REJECTED, C.STATUS.EXPORTED].map(function (s) {
+      return '<button type="button" class="chip' + (s === filter ? ' on' : '') + '" data-filter="' + s + '">' + s + ' ' + (c[s] || 0) + '</button>';
+    }).join('');
+  }
+  function issueList(text) {
+    if (!text) return '';
+    return '<ul class="issues">' + String(text).split(' / ').map(function (i) {
+      return '<li class="' + (i.indexOf('✖') === 0 ? 'error' : 'warn') + '">' + esc(i) + '</li>';
+    }).join('') + '</ul>';
+  }
+  function draftCard(d) {
+    var pct = Math.min(100, Math.round(d.char_count / d.limit * 100));
+    var over = d.char_count > d.limit;
+    var locked = d.status === C.STATUS.EXPORTED;
+    var blocker = d.status === C.STATUS.APPROVED ? C.publishBlocker(d) : '';
+    var actions;
+    if (d.status === C.STATUS.DRAFT) {
+      actions = '<button type="button" class="ok" data-act="approve">承認する</button><button type="button" class="ng" data-act="reject">差戻す</button>';
+    } else if (d.status === C.STATUS.APPROVED) {
+      actions = '<button type="button" data-act="unapprove">承認を取り消す</button>';
+    } else if (d.status === C.STATUS.REJECTED) {
+      actions = '<button type="button" data-act="redraft">直したので下書きに戻す</button>';
+    } else actions = '';
+    return '<article class="card" data-id="' + esc(d.id) + '">' +
+      '<div class="draft-head"><span class="tag">' + esc(C.PLATFORMS[d.platform].label) + '</span><span class="tag">' + esc(d.angle) + '</span>' +
+      '<span class="status ' + esc(d.status) + '">' + esc(d.status) + '</span></div>' +
+      '<div class="src">' + esc(d.source_title) + '・' + esc(d.id) + (d.generator !== 'template' ? '・' + esc(d.generator) : '') + '</div>' +
+      '<textarea rows="7" data-edit ' + (locked ? 'readonly' : '') + ' aria-label="投稿文">' + esc(d.text) + '</textarea>' +
+      '<div class="meter' + (over ? ' over' : '') + '"><i style="width:' + pct + '%"></i></div>' +
+      '<div class="note">' + d.char_count + ' / ' + d.limit + ' 字' + (d.platform === 'x' ? '（全角2・URL23で計算）' : '') + '</div>' +
+      issueList(d.issues) +
+      (d.approver && d.status !== C.STATUS.REJECTED ? '<div class="note">承認: ' + esc(d.approver) + ' ' + esc(d.approved_at) + '</div>' : '') +
+      (d.status === C.STATUS.REJECTED ? '<div class="callout">差戻し（' + esc(d.approver) + '）: ' + esc(d.comment) + '</div>' : '') +
+      (blocker ? '<div class="callout">出力できません: ' + esc(blocker) + '</div>' : '') +
+      '<div class="reject-box" hidden><label>差戻し理由</label><input type="text" data-reason><div class="actions"><button type="button" class="ng" data-act="reject-confirm">差戻しを確定</button></div></div>' +
+      '<div class="actions">' + actions + '</div></article>';
+  }
+  function renderDrafts() {
+    var list = state.drafts.filter(function (d) { return filter === 'すべて' || d.status === filter; });
+    $('#draft-list').innerHTML = list.length ? list.map(draftCard).join('') :
+      '<p class="empty">投稿案はまだありません。「① 入力」から作ってください。</p>';
+  }
+  $('#filters').addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-filter]');
+    if (!b) return;
+    filter = b.dataset.filter;
+    render();
+  });
+  function update(id, fn, okMsg) {
+    var i = state.drafts.findIndex(function (d) { return d.id === id; });
+    if (i < 0) return;
+    try {
+      state.drafts[i] = fn(state.drafts[i]);
+      saveState();
+      render();
+      if (okMsg) toast(okMsg);
+    } catch (e) { toast(e.message); }
+  }
+  $('#draft-list').addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-act]');
+    if (!b) return;
+    var card = b.closest('[data-id]');
+    var id = card.dataset.id;
+    var who = reviewer.value.trim();
+    var act = b.dataset.act;
+    if ((act === 'approve' || act === 'reject-confirm') && !who) { toast('上の欄に名前を入れてください'); reviewer.focus(); return; }
+    if (act === 'approve') update(id, function (d) { return C.approve(d, who, now()); }, '承認しました');
+    if (act === 'reject') { card.querySelector('.reject-box').hidden = false; card.querySelector('[data-reason]').focus(); }
+    if (act === 'reject-confirm') update(id, function (d) { return C.reject(d, who, card.querySelector('[data-reason]').value, now()); }, '差戻しました');
+    if (act === 'unapprove' || act === 'redraft') update(id, function (d) { return C.editText(d, d.text, RULES, now(), state.sources[d.source_id]); }, '下書きに戻しました');
+  });
+  $('#draft-list').addEventListener('change', function (ev) {
+    if (!ev.target.matches('[data-edit]')) return;
+    var id = ev.target.closest('[data-id]').dataset.id;
+    var text = ev.target.value;
+    update(id, function (d) {
+      if (d.text === text) return d;
+      return C.editText(d, text, RULES, now(), state.sources[d.source_id]);
+    }, '本文を更新しました（承認はやり直しです）');
+  });
+
+  // ---------- 出力 ----------
+  function renderOutput() {
+    var ready = state.drafts.filter(C.isPublishable).length;
+    $('#ready-count').textContent = ready;
+    $('#btn-export').disabled = ready === 0;
+    var exported = state.drafts.filter(function (d) { return d.status === C.STATUS.EXPORTED; });
+    $('#exported-list').innerHTML = exported.length ? exported.map(function (d) {
+      return '<article class="card" data-id="' + esc(d.id) + '"><div class="draft-head"><span class="tag">' + esc(C.PLATFORMS[d.platform].label) +
+        '</span><span class="tag">' + esc(d.angle) + '</span><span class="status 出力済">出力済</span></div>' +
+        '<div class="posttext">' + esc(d.text) + '</div><div class="note">承認: ' + esc(d.approver) + ' ' + esc(d.approved_at) + '</div>' +
+        '<div class="actions"><button type="button" data-copy>文章をコピー</button></div></article>';
+    }).join('') : '<p class="empty">まだありません。承認してから「承認済を出力する」を押してください。</p>';
+    $('#c-review').textContent = counts()[C.STATUS.DRAFT] || 0;
+    $('#c-output').textContent = ready;
+  }
+  $('#btn-export').addEventListener('click', function () {
+    var res = C.exportApproved(state.drafts, now());
+    state.drafts = res.drafts;
+    saveState();
+    render();
+    $('#export-msg').textContent = res.exported.length + '件を出力しました（SNSへの投稿は行っていません）' +
+      (res.skipped.length ? '。出力しなかった案: ' + res.skipped.map(function (s) { return s.id + '（' + s.reason + '）'; }).join('、') : '');
+  });
+  $('#exported-list').addEventListener('click', function (ev) {
+    if (!ev.target.matches('[data-copy]')) return;
+    var d = state.drafts.find(function (x) { return x.id === ev.target.closest('[data-id]').dataset.id; });
+    var done = function () { toast('コピーしました。SNSアプリに貼り付けて投稿してください'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(d.text).then(done, function () { fallbackCopy(d.text); done(); });
+    else { fallbackCopy(d.text); done(); }
+  });
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) { /* 無視 */ }
+    ta.remove();
+  }
+  $('#btn-csv').addEventListener('click', function () {
+    var blob = new Blob(['﻿' + C.toCSV(state.drafts)], { type: 'text/csv' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'sns_drafts.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  });
+  $('#btn-import').addEventListener('click', function () { $('#file-import').click(); });
+  $('#file-import').addEventListener('change', function (ev) {
+    var file = ev.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var rows = C.parseCSV(reader.result);
+      var missing = C.COLUMNS.filter(function (c) { return rows.length && !(c in rows[0]); });
+      if (!rows.length || missing.length) { toast('読み込めません（列が足りません: ' + missing.join(', ') + '）'); return; }
+      state.drafts = rows;
+      saveState();
+      render();
+      toast(rows.length + '件を読み込みました');
+    };
+    reader.readAsText(file);
+    ev.target.value = '';
+  });
+  $('#btn-reset').addEventListener('click', function () {
+    if (!confirm('この端末に保存した投稿案をすべて消して、最初の状態に戻しますか？')) return;
+    state = { drafts: [], sources: {}, reviewer: state.reviewer };
+    saveState();
+    render();
+    showTab('input');
+  });
+
+  function render() { renderFilters(); renderDrafts(); renderOutput(); }
+  render();
+})();
+</script>
+</body>
+</html>
