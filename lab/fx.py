@@ -20,6 +20,7 @@
   （牙狼）garo_ken 牙狼剣／fog 顔の枠／konjiki 金色／inazuma 稲妻保留／door 1回転
   （牙狼v2）hane 羽根とメーター／battle 1stバトル／shingeki 震撃／nanairo 7色／yami 闇→光／tokei 長い変動
            byousoku 秒速／kasane 初代と重なる／vlight 光の枠／count3000 カウントアップ／kyokugen 1500vs7500／burst
+  （ニュース第2回・図解のアニメ）lvmeter Lv.1〜Lv.4の札とメーター／flag 通常時が3つの部屋に分かれて玉が移る／hold4 保留4つ→やめどき→？
 """
 import colorsys
 import math
@@ -28,7 +29,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 import ui
-from ui import W, H, prog, ease_out, ease_in_out, fade, paste
+from ui import W, H, prog, ease_out, ease_in_out, ease_out_back, fade, paste
 
 RED = (214, 28, 36)
 BLUE = (60, 150, 255)
@@ -70,8 +71,12 @@ FX = {
     # 牙狼回 v3（栄光・転落・復活）：章の切り替えの演出。実機の再現ではないので注釈は出さない（NO_NOTE）
     "tenraku": {"span": 2, "marks": {"go": ["転落"]}},
     "fukkatsu": {"span": 2, "marks": {"go": ["100万"]}},
+    # ニュース第2回（日工組の4カテゴリ・通常時フラグ）：仕組みの図解アニメ。実機の画面ではない
+    "lvmeter": {"span": 2, "marks": {"l1": ["Lv.1"], "l2": ["Lv.2"], "l3": ["Lv.3"], "l4": ["Lv.4"]}},
+    "flag": {"span": 2, "marks": {"go": ["いくつかの状態"], "k": ["回転数", "チャンス目", "RUSHの終わり"], "move": ["状態が移る"]}},
+    "hold4": {"span": 2, "marks": {"h": ["保留4つ"], "yame": ["やめられる"], "nai": ["無くなる"], "next": ["次の人"]}},
 }
-NO_NOTE = {"tenraku", "fukkatsu"}
+NO_NOTE = {"tenraku", "fukkatsu", "lvmeter"}
 
 
 # ---------------------------------------------------------------- 台本 → 時刻
@@ -205,6 +210,20 @@ def finish(fx, end, scene):
         g = _m(fx, "go", default=s0); add(g, "impact", 0.22); add(g + 0.1, "rumble", 0.2)
     elif k == "fukkatsu":
         g = _m(fx, "go", default=s0); add(g - 0.25, "shu", 0.18); add(g, "don", 0.32); add(g + 0.05, "impact", 0.24)
+    elif k == "lvmeter":
+        for i, nm in enumerate(("l1", "l2", "l3", "l4")):
+            add(_m(fx, nm), "pon" if i < 3 else "impact", 0.16 + 0.04 * i)
+    elif k == "flag":
+        add(_m(fx, "go"), "shu", 0.18)
+        for x in fx["marks"].get("k", [])[:3]:
+            add(x, "piko", 0.15)
+        add(_m(fx, "move"), "pon", 0.24)
+    elif k == "hold4":
+        h = _m(fx, "h", default=s0)
+        for i in range(4):
+            add(h + 0.15 * i, "tick", 0.16)
+        add(_m(fx, "yame"), "pon", 0.18); add(_m(fx, "nai"), "shu", 0.18)
+        nx = _m(fx, "next"); add(nx, "impact", 0.22)
 
     bgm = FX[k].get("bgm")
     if bgm:
@@ -2587,12 +2606,190 @@ def _fukkatsu(cv, t, fx):
     cv.alpha_composite(fade(_edge(GOLDC), 0.35 * a * math.exp(-max(tl, 0) / 0.8)))
 
 
+# ---------------------------------------------------------------- ニュース第2回：4カテゴリ・通常時フラグ・保留4つ（図解のアニメ）
+LV_COL = [(90, 190, 255), (90, 220, 150), (255, 190, 70), (240, 80, 70)]
+LV_NAME = ["スーパーライト", "ライト", "ミドル", "ハイ"]
+
+
+def _lv_bars(n, col, size=120):
+    """電波の強さのような4本の棒（n 本だけ点く）。公式ロゴとは別のオリジナル"""
+    key = ("lvb", n, col, size)
+    if key not in _C:
+        im = Image.new("RGBA", (size, size), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        bw = size / 4 - 8
+        for i in range(4):
+            h = size * (0.3 + 0.7 * (i + 1) / 4)
+            x = i * (bw + 8) + 4
+            on = i < n
+            d.rounded_rectangle((x, size - h, x + bw, size - 2), 5, fill=col + (255,) if on else (255, 255, 255, 40))
+        _C[key] = im
+    return _C[key]
+
+
+def _lvmeter(cv, t, fx):
+    """Lv.1〜Lv.4：言葉に合わせて4枚の札が左から立ち上がり、下のメーターが伸びる"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.55 * a)
+    marks = [_m(fx, f"l{i + 1}", default=fx["start"] + 0.6 * i) for i in range(4)]
+    cy = 400
+    gx0, gx1, gy = 300, W - 300, 700
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.rounded_rectangle((gx0, gy - 10, gx1, gy + 10), 10, fill=(255, 255, 255, 50))
+    lit = sum(1 for m in marks if t >= m)
+    if lit:
+        tl = t - marks[lit - 1]
+        frac = (lit - 1 + ease_out(prog(tl, 0, 0.35))) / 4
+        col = LV_COL[lit - 1]
+        d.rounded_rectangle((gx0, gy - 10, gx0 + (gx1 - gx0) * frac, gy + 10), 10, fill=col + (255,))
+    cv.alpha_composite(fade(lay, a))
+    for i, m in enumerate(marks):
+        tl = t - m
+        if tl < -0.05:
+            continue
+        k = ease_out(prog(tl, 0, 0.35))
+        cx = W * (0.2 + 0.2 * i)
+        col = LV_COL[i]
+        cur = lit - 1 == i
+        _pput(cv, _plate(330, 380, border=col, seed=i + 5), cx, cy + 50 * (1 - k), a * k)
+        _mput(cv, f"Lv.{i + 1}", 92, cx, cy - 105 + 50 * (1 - k), a * k, base=col, glow_a=0.8 if cur else 0.3)
+        _pput(cv, _lv_bars(i + 1, col), cx, cy + 25 + 50 * (1 - k), a * k)
+        f = ui.font("black", 40 if len(LV_NAME[i]) > 4 else 50)
+        tw = int(ui.text_w(LV_NAME[i], f)) + 20
+        tim = Image.new("RGBA", (tw, 70), (0, 0, 0, 0))
+        ImageDraw.Draw(tim).text((tw / 2, 35), LV_NAME[i], font=f, fill=(255, 255, 255, 255), anchor="mm")
+        _pput(cv, tim, cx, cy + 135 + 50 * (1 - k), a * k)
+        if cur:
+            _ring(cv, cx, cy + 20, 180 + 140 * ease_out(prog(tl, 0, 0.6)), 6, col, a * (1 - prog(tl, 0, 0.6)), 1.15)
+    l4 = marks[3]
+    if t >= l4:
+        _sparks(cv, W * 0.8, cy - 60, t - l4, a, 60, 41, (255, 150, 110), (400, 1100), 500, 1.1)
+        cv.alpha_composite(fade(_edge(LV_COL[3]), 0.45 * a * math.exp(-(t - l4) / 0.8)))
+
+
+def _flag_icon(col, size=90):
+    key = ("flag", col, size)
+    if key not in _C:
+        im = Image.new("RGBA", (size, size), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.rectangle((size * 0.18, size * 0.08, size * 0.24, size * 0.95), fill=(235, 235, 240, 255))
+        d.polygon([(size * 0.24, size * 0.1), (size * 0.92, size * 0.28), (size * 0.24, size * 0.5)], fill=col + (255,))
+        _C[key] = im
+    return _C[key]
+
+
+def _flag(cv, t, fx):
+    """通常時フラグ：1つだった「通常時」の箱が3つの部屋に分かれ、きっかけで旗が立ち、玉が隣の部屋へ移る"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.55 * a)
+    go = _m(fx, "go", default=fx["start"] + 0.5)
+    ks = fx["marks"].get("k", [])[:3]
+    mv = _m(fx, "move", default=fx["end"] - 1.0)
+    sp = ease_in_out(prog(t, go, 0.7))           # 0＝1つの箱、1＝3部屋
+    cy, bw, bh = 400, 420, 300
+    names = ["通常A", "通常B", "チャンス"]
+    cols = [(150, 170, 200), (150, 170, 200), (255, 190, 70)]
+    xs = [W / 2 + (i - 1) * (bw + 60) * sp for i in range(3)]
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    if sp < 0.02:
+        d.rounded_rectangle((W / 2 - bw / 2 - 60, cy - bh / 2, W / 2 + bw / 2 + 60, cy + bh / 2), 26, fill=(20, 26, 36, 235), outline=(150, 170, 200, 255), width=4)
+        d.text((W / 2, cy), "通常時", font=ui.font("black", 80), fill=(255, 255, 255, 255), anchor="mm")
+    else:
+        for i in range(3):
+            x = xs[i]
+            hot = i == 2 and t >= mv
+            d.rounded_rectangle((x - bw / 2, cy - bh / 2, x + bw / 2, cy + bh / 2), 26, fill=(20, 26, 36, 235),
+                                outline=cols[i] + (255,), width=6 if hot else 4)
+            d.text((x, cy - 70), names[i], font=ui.font("black", 64), fill=cols[i] + (int(255 * sp),), anchor="mm")
+        for i in range(2):
+            ax = (xs[i] + xs[i + 1]) / 2
+            d.polygon([(ax - 16, cy - 20), (ax + 16, cy), (ax - 16, cy + 20)], fill=(255, 255, 255, int(200 * sp)))
+    cv.alpha_composite(fade(lay, a))
+    # 玉（今いる状態）：通常A → きっかけで通常B → 「状態が移る」でチャンスへ
+    room, tb = 0, None
+    if ks and t >= ks[0] + 0.3:
+        room, tb = 1, ks[0] + 0.3
+    if t >= mv:
+        room, tb = 2, mv
+    prev = max(0, room - 1)
+    kk = ease_in_out(prog(t, tb, 0.45)) if tb is not None else 1
+    bx = xs[prev] + (xs[room] - xs[prev]) * kk
+    by = cy + 50 - 90 * math.sin(math.pi * kk) * (1 if tb is not None and kk < 1 else 0)
+    _pput(cv, _ball(30, (255, 220, 120) if room == 2 else None), bx, by, a)
+    for j, kt in enumerate(ks):
+        tl = t - kt
+        if tl < 0:
+            continue
+        kf = ease_out_back(min(1, tl / 0.35)) if tl < 0.35 else 1
+        fxp = W / 2 + (j - 1) * 260
+        _pput(cv, _flag_icon((255, 190, 70)), fxp, 680 + 30 * (1 - kf), a * min(1, tl / 0.2))
+        lab = ["回転数", "チャンス目", "RUSH終了"][j]
+        f = ui.font("bold", 34); tw = int(ui.text_w(lab, f)) + 20
+        tim = Image.new("RGBA", (tw, 50), (0, 0, 0, 0)); ImageDraw.Draw(tim).text((tw / 2, 25), lab, font=f, fill=(255, 255, 255, 255), anchor="mm")
+        _pput(cv, tim, fxp, 760, a * min(1, tl / 0.2))
+    if t >= mv:
+        tl = t - mv
+        _ring(cv, xs[2], cy, 230 + 160 * ease_out(prog(tl, 0, 0.6)), 6, (255, 190, 70), a * (1 - prog(tl, 0, 0.6)), 0.75)
+        cv.alpha_composite(fade(_edge((255, 190, 70)), 0.35 * a * math.exp(-tl / 0.8)))
+
+
+def _hold4(cv, t, fx):
+    """保留4つ：4つの保留ランプが点いて1つずつ消える →「やめどき」の札 → 札に「？」がかかる → 次の人が当てる"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.5 * a)
+    h = _m(fx, "h", default=fx["start"] + 0.4)
+    ym = _m(fx, "yame", default=h + 1.4)
+    na = _m(fx, "nai", default=ym + 1.2)
+    nx = _m(fx, "next")
+    cy = 330
+    gap = 150
+    # 保留：h で4つ点灯 → ym の手前までに右から1つずつ消化
+    span = max(0.6, ym - h - 0.5)
+    for i in range(4):
+        x = W / 2 + (i - 1.5) * gap
+        on_k = ease_out(prog(t, h + 0.15 * i, 0.2))
+        off_t = h + 0.6 + span * i / 4
+        off_k = ease_in_out(prog(t, off_t, 0.25))
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.ellipse((x - 52, cy - 52, x + 52, cy + 52), outline=(255, 255, 255, 110), width=4)
+        cv.alpha_composite(fade(lay, a))
+        lit = on_k * (1 - off_k)
+        if lit > 0:
+            _pput(cv, _ball(44, (120, 200, 255)), x, cy, a * lit, 1 + 0.15 * (1 - on_k))
+    # 「やめどき」の札
+    if t >= ym - 0.1:
+        tl = t - ym
+        k = ease_out_back(min(1, max(0, tl) / 0.4))
+        _pput(cv, _plate(560, 150, border=(110, 220, 150), seed=12), W / 2, 560, a * min(1, max(0, tl + 0.1) / 0.2), 0.8 + 0.2 * k)
+        _mput(cv, "ここでやめどき", 66, W / 2, 560, a * min(1, max(0, tl + 0.1) / 0.2), 0.8 + 0.2 * k, base=(140, 240, 170), glow_a=0.4)
+    # 「？」がかかる（やめどきが見えにくくなる）
+    if t >= na:
+        tl = t - na
+        kq = ease_out(prog(tl, 0, 0.4))
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.rounded_rectangle((W / 2 - 300, 470, W / 2 + 300, 650), 24, fill=(30, 30, 40, int(200 * kq)))
+        cv.alpha_composite(fade(lay.filter(ImageFilter.GaussianBlur(6)), a))
+        _mput(cv, "？", 190, W / 2, 560 - 20 * (1 - kq), a * kq, 1.3 - 0.3 * kq, base=(255, 255, 255), glow_a=0.6)
+    # 次の人が当てる
+    if nx is not None and t >= nx:
+        tl = t - nx
+        k = ease_out_back(min(1, tl / 0.3))
+        _sparks(cv, W / 2, cy, tl, a, 60, 47, (255, 220, 120), (500, 1300), 500, 1.1)
+        _mput(cv, "次の人が当たり", 96, W / 2, cy, a * min(1, tl / 0.15), 0.7 + 0.3 * k, glow_a=0.8)
+        cv.alpha_composite(fade(_edge(GOLDC), 0.4 * a * math.exp(-tl / 0.7)))
+
+
 DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _inazuma3, "door": _door3,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
         "beat": _beat, "hane": _hane3, "battle": _battle3, "shingeki": _shingeki3, "nanairo": _nanairo2, "yami": _yami3,
         "tokei": _tokei3, "byousoku": _byousoku3, "kasane": _kasane3, "vlight": _vlight3, "count3000": _count3000_3,
-        "kyokugen": _kyokugen3, "burst": _burst3, "tenraku": _tenraku, "fukkatsu": _fukkatsu}
+        "kyokugen": _kyokugen3, "burst": _burst3, "tenraku": _tenraku, "fukkatsu": _fukkatsu,
+        "lvmeter": _lvmeter, "flag": _flag, "hold4": _hold4}
 
 
 NOTE = "※演出はイメージです。実機の演出ではありません"
