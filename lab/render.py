@@ -127,7 +127,7 @@ def _vignette():
     return _VIG["v"]
 
 
-BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup", "pie", "spec_table")
+BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup", "pie", "spec_table", "versus", "meter")
 
 
 def year_at(scene, t):
@@ -176,11 +176,22 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
         ui.pie(cv, tl, dur, d, hl_at(c, c["start"] + tl) if c.get("hl") else None)
     elif tp == "spec_table":
         ui.spec_table(cv, tl, dur, d)
+    elif tp == "versus":
+        ui.versus(cv, tl, dur, d)
+    elif tp == "meter":
+        ui.meter(cv, tl, dur, d, meter_add_since(c, c["start"] + tl))
     elif tp == "analysis" and data_tank is not None:
         ui.analysis(cv, tl, dur, d, data_tank)
 
 
 HL_SEC = 0.3   # 円グラフの注目が移るのにかける秒数
+METER_ADD_SEC = 0.75   # メーターの上乗せぶんが伸びきるまで（この間は描画を使い回さない）
+
+
+def meter_add_since(c, t):
+    """メーター：@hl 1 が来てからの秒数（まだなら None）"""
+    ts = [ht for ht, idx in c.get("hl", []) if idx is not None and idx >= 1 and t >= ht]
+    return t - ts[-1] if ts else None
 
 
 def hl_at(c, t):
@@ -225,6 +236,10 @@ def state_key(scene, t):
             hc, _, hk = hl_at(c, t)
             if hk < 1:
                 return None
+            if c["type"] == "meter":
+                since = meter_add_since(c, t)
+                if since is not None and since < METER_ADD_SEC:
+                    return None
             key.append(("hl", i, hc))
         key.append(("c", i))
     for i, sb in enumerate(scene["subs"]):
@@ -379,7 +394,21 @@ def render_frame(scene, t, images):
         z = cv.resize((int(ui.W * 1.02), int(ui.H * 1.02)), ui.Image.BILINEAR)
         cv.paste(z, (int(-ui.W * 0.01 + dx), int(-ui.H * 0.01 + dy)))
     cv.alpha_composite(over)
+    wipe(cv, scene, t)
     return cv.convert("RGB")
+
+
+WIPE_SEC = 0.32   # 号外テーマ：章の頭で黄色い帯が左から右へ抜ける
+
+
+def wipe(cv, scene, t):
+    if not ui.THEME.get("paper") or scene["chapter"].get("no", 0) == 0 or t >= WIPE_SEC:
+        return
+    k = ui.ease_in_out(t / WIPE_SEC)
+    x = -ui.W * 0.25 + ui.W * 1.6 * k
+    d = ui.ImageDraw.Draw(cv)
+    d.polygon([(x - ui.W, 0), (x, 0), (x - 180, ui.H), (x - ui.W - 180, ui.H)], fill=ui.YEL)
+    d.polygon([(x, 0), (x + 26, 0), (x - 154, ui.H), (x - 180, ui.H)], fill=ui.INK)
 
 
 def read_wav_mono(path):

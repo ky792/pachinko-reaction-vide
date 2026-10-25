@@ -509,6 +509,9 @@ def tank_glow(canvas, center, r, k):
     paste(canvas, g, (center[0] - g.width / 2, center[1] - g.height / 2), 0.5 * k)
 
 
+TYPE_START, TYPE_SEC = 1.2, 0.045   # 解析パネルの見出しを打ち始める時刻と1文字の間隔
+
+
 def analysis(canvas, tl, dur, data, tank):
     """研究施設の端末のように静かに。タンクの光は最初の一瞬だけ→解析ライン→パネル展開→数字が主役"""
     T_OUT = 0.9
@@ -551,7 +554,16 @@ def analysis(canvas, tl, dur, data, tank):
         cd = ImageDraw.Draw(c)
         # 見出し：何を比べているか
         lab_label(cd, (48, 52), data.get("tag", "NAGI ANALYSIS"), ACCENT, 20)
-        cd.text((48, 104), data["heading"], font=font("black", 58), fill=TEXT, anchor="lm")
+        head = data["heading"]
+        if THEME.get("paper"):   # 号外：見出しを端末のように1文字ずつ打つ（音は episode.py が TYPE_SEC 間隔で付ける）
+            n = int(max(0.0, tl - TYPE_START) / TYPE_SEC)
+            shown = head[:n]
+            cd.text((48, 104), shown, font=font("black", 58), fill=TEXT, anchor="lm")
+            if n < len(head) or int(tl * 4) % 2 == 0 and tl < TYPE_START + TYPE_SEC * len(head) + 0.8:
+                cx = 48 + text_w(shown, font("black", 58)) + 8
+                cd.rectangle((cx, 78, cx + 26, 130), fill=NAGI)
+        else:
+            cd.text((48, 104), head, font=font("black", 58), fill=TEXT, anchor="lm")
         cd.line((48, 150, pw - 48, 150), fill=PANEL_LINE, width=2)
         # 数字が主役の2列
         bars = data["bars"]
@@ -1053,14 +1065,139 @@ def intro_card(canvas, tl, dur, data):
     paste(canvas, lay, (0, 0), out)
 
 
+
+# ---------------------------------------------------------------- K 対決カード（当たり vs 転落 など）
+_VS_COL = {"nagi": "#2F7FE0", "baku": "#F07A12", "red": "#E2343B", "ink": "#16161A"}
+
+
+def _ink_box(d, box, top=None):
+    """号外は墨の影つきの角ばった箱、それ以外はいつものパネル"""
+    x0, y0, x1, y1 = box
+    if THEME.get("paper"):
+        d.rectangle((x0 + 12, y0 + 12, x1 + 12, y1 + 12), fill=INK)
+        d.rectangle(box, fill=PANEL, outline=INK, width=LINE_W)
+    else:
+        d.rounded_rectangle(box, RADIUS, fill=(PANEL[0], PANEL[1], PANEL[2], 242), outline=PANEL_LINE, width=LINE_W)
+    if top is not None:
+        d.rectangle((x0 + LINE_W, y0 + LINE_W, x1 - LINE_W, y0 + 20), fill=top)
+
+
+def versus(canvas, tl, dur, data):
+    """2つの確率を左右に並べて『どっちを先に引くか』を見せる。真ん中に VS が弾んで出る"""
+    out = 1 - ease_in_out(prog(tl, dur - 0.4, 0.4))
+    if out <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    kh = ease_out(prog(tl, 0.0, 0.22))
+    if data.get("heading"):
+        tmp = Image.new("RGBA", (W, 90), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((W / 2, 45), data["heading"], font=font("black", 56), fill=TEXT, anchor="mm")
+        paste(lay, tmp, (0, 178 + 16 * (1 - kh)), kh)
+    bw, bh, y = 640, 360, 290
+    for i, side in enumerate((data["left"], data["right"])):
+        k = ease_out(prog(tl, 0.1 + 0.06 * i, 0.28))
+        col = hexc(_VS_COL.get(side.get("c", "ink"), side.get("c", "#16161A")))
+        box = Image.new("RGBA", (bw + 20, bh + 20), (0, 0, 0, 0))
+        bd = ImageDraw.Draw(box)
+        _ink_box(bd, (0, 0, bw - 1, bh - 1), col)
+        bd.text((44, 82), side["k"], font=font("black", 46), fill=SUB, anchor="lm")
+        fv = font("black", 140)
+        while text_w(side["v"], fv) > bw - 80:
+            fv = font("black", fv.size - 6)
+        bd.text((44, 196), side["v"], font=fv, fill=col, anchor="lm")
+        if side.get("s"):
+            bd.line((44, 284, bw - 44, 284), fill=PANEL_LINE, width=2)
+            bd.text((44, 320), side["s"], font=font("bold", 36), fill=TEXT, anchor="lm")
+        x = (W / 2 - bw - 70) if i == 0 else (W / 2 + 70)
+        paste(lay, box, (x + (-1 if i == 0 else 1) * 80 * (1 - k), y), k)
+    kv = ease_out_back(prog(tl, 0.32, 0.4), 2.2)
+    if kv > 0:
+        vs = Image.new("RGBA", (220, 220), (0, 0, 0, 0))
+        vd = ImageDraw.Draw(vs)
+        r = 74 * kv
+        vd.ellipse((110 - r, 110 - r, 110 + r, 110 + r), fill=YEL if THEME.get("paper") else KEY, outline=INK, width=6)
+        vd.text((110, 112), "VS", font=font("black", int(max(8, 64 * kv))), fill=INK, anchor="mm")
+        paste(lay, vs, (W / 2 - 110, y + bh / 2 - 110), min(1.0, kv))
+    if data.get("note"):
+        kn = ease_out(prog(tl, 0.6, 0.16))
+        tmp = Image.new("RGBA", (W, 70), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((W / 2, 35), data["note"], font=font("bold", 38), fill=TEXT, anchor="mm")
+        paste(lay, tmp, (0, y + bh + 40), kn)
+    paste(canvas, lay, (0, 0), out)
+
+
+# ---------------------------------------------------------------- L 継続率メーター（単体 → 引き戻し込み）
+def meter(canvas, tl, dur, data, add_since=None):
+    """横長のメーター。まず単体の数字まで伸び、@hl 1 のタイミングで上乗せぶんが別の色で足される"""
+    out = 1 - ease_in_out(prog(tl, dur - 0.4, 0.4))
+    if out <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    px0, py0, px1, py1 = 200, 170, W - 200, 740
+    kp = ease_out(prog(tl, 0.0, 0.28))
+    panel = Image.new("RGBA", (px1 - px0 + 20, py1 - py0 + 20), (0, 0, 0, 0))
+    pd = ImageDraw.Draw(panel)
+    _ink_box(pd, (0, 0, px1 - px0 - 1, py1 - py0 - 1))
+    lab_label(pd, (56, 60), data.get("tag", "NAGI ANALYSIS"), ACCENT, 20)
+    pd.text((56, 116), data["heading"], font=font("black", 58), fill=TEXT, anchor="lm")
+    paste(lay, panel, (px0, py0 + 24 * (1 - kp)), kp)
+    if kp < 1:
+        paste(canvas, lay, (0, 0), out)
+        return
+    base, add = data["base"], data.get("add")
+    x0, x1, y0, bh = px0 + 60, px1 - 60, py0 + 240, 96
+    w = x1 - x0
+    kb = ease_out(prog(tl, 0.25, 0.9))
+    d.rectangle((x0, y0, x1, y0 + bh), fill=(PANEL_LINE[0], PANEL_LINE[1], PANEL_LINE[2], 40))
+    for g in range(1, 10):                       # 10%ごとの目盛り
+        gx = x0 + w * g / 10
+        d.line((gx, y0 + bh, gx, y0 + bh + (18 if g == 5 else 10)), fill=SUB, width=2)
+    d.text((x0, y0 + bh + 40), "0%", font=font("bold", 28), fill=SUB, anchor="lm")
+    d.text((x1, y0 + bh + 40), "100%", font=font("bold", 28), fill=SUB, anchor="rm")
+    bc = hexc(_VS_COL.get(base.get("c", "nagi"), "#2F7FE0"))
+    bx = x0 + w * base["value"] / 100 * kb
+    d.rectangle((x0, y0, bx, y0 + bh), fill=bc)
+    v = base["value"] * kb
+    if kb > 0.15:
+        d.text((bx - 24, y0 + bh / 2 + 2), f"{base.get('prefix', '')}{v:.0f}%", font=font("black", 60), fill=(255, 255, 255, 255),
+               anchor="rm", stroke_width=5, stroke_fill=INK)
+    d.text((x0, y0 - 36), base["k"], font=font("black", 40), fill=TEXT, anchor="lm")
+    if add and add_since is not None:
+        ka = ease_out(prog(add_since, 0.0, 0.6))
+        ac = hexc(_VS_COL.get(add.get("c", "baku"), "#F07A12"))
+        ax0 = x0 + w * base["value"] / 100
+        ax1 = ax0 + w * (add["value"] - base["value"]) / 100 * ka
+        d.rectangle((ax0, y0, ax1, y0 + bh), fill=ac)
+        d.line((ax0, y0, ax0, y0 + bh), fill=INK if THEME.get("paper") else BG, width=4)
+        kt = ease_out_back(prog(add_since, 0.35, 0.35), 1.6)
+        if kt > 0:
+            tmp = Image.new("RGBA", (900, 130), (0, 0, 0, 0))
+            td = ImageDraw.Draw(tmp)
+            td.text((880, 40), add["k"], font=font("black", 36), fill=ac, anchor="rm")
+            td.text((880, 96), f"{add.get('prefix', '')}{add['value']}%", font=font("black", 72), fill=ac, anchor="rm",
+                    stroke_width=6, stroke_fill=PANEL)
+            sc = 0.7 + 0.3 * kt
+            tmp = tmp.resize((int(900 * sc), int(130 * sc)), Image.LANCZOS)
+            paste(lay, tmp, (x0 + w * add["value"] / 100 - tmp.width + 20, y0 - tmp.height - 4), min(1.0, kt))
+    d.rectangle((x0, y0, x1, y0 + bh), outline=INK if THEME.get("paper") else PANEL_LINE, width=LINE_W)
+    for j, line in enumerate(data.get("note", [])):
+        kn = ease_out(prog(tl, 1.0 + 0.06 * j, 0.16))
+        tmp = Image.new("RGBA", (w, 60), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((0, 30), line, font=font("bold" if j == 0 else "medium", 34), fill=TEXT if j == 0 else SUB, anchor="lm")
+        paste(lay, tmp, (x0, y0 + bh + 90 + 50 * j), kn)
+    paste(canvas, lay, (0, 0), out)
+
 SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中は描画を使い回して高速化）
     "chapter": lambda d: 0.8, "title": lambda d: 1.0, "intro": lambda d: 0.9, "logo": lambda d: 1e9, "keyword": lambda d: 0.5,
     "machine": lambda d: max(0.45 + 0.28 * len(d["rows"]) + 0.95, sum(MACHINE_MOVE) + 0.05),
-    "analysis": lambda d: 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
+    "analysis": lambda d: max(3.4, TYPE_START + TYPE_SEC * len(d.get("heading", "")) + 0.9) if THEME.get("paper") else 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
     "flow": lambda d: 0.35 + 0.45 * len(d["steps"]) + 0.4,
     "lineup": lambda d: 0.3 + (0.32 if d.get("fast") else 0.55) * len(d["items"]) + 0.35,
     "pie": lambda d: max(1.3, 0.6 + 0.22 * len(d["slices"]) + 0.45),
     "spec_table": lambda d: 0.35 + 0.2 * len(d["rows"]) + 0.4,
+    "versus": lambda d: 1.0, "meter": lambda d: 1.4,
 }
 OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45, "intro": 0.35, "logo": 0.35}
 

@@ -216,7 +216,16 @@ def finish(fx, end, scene):
 
 
 # ---------------------------------------------------------------- 効果音（その場で合成・著作権フリー）
-LAB_SE = ("heartbeat", "clap", "alarm", "rumble", "rumble_long", "tick", "flame")
+LAB_SE = ("heartbeat", "clap", "alarm", "rumble", "rumble_long", "tick", "flame", "type")
+
+
+_TYPE_N = [0]
+
+
+def time_seed():
+    """打鍵音の高さを1回ごとにずらす（毎回同じ順番なので書き出し結果は変わらない）"""
+    _TYPE_N[0] += 1
+    return _TYPE_N[0] * 0.137
 
 
 def lab_se(kind, SR):
@@ -252,6 +261,11 @@ def lab_se(kind, SR):
         x = np.sin(2 * np.pi * 52 * t) + 0.4 * np.sin(2 * np.pi * 104 * t)
         x *= (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 12 * t))) * np.clip((d - t) / 0.25, 0, 1) * np.minimum(1, t / 0.02)
         return (x * 0.6).astype(np.float32)
+    if kind == "type":        # キーボードの打鍵：短いクリック＋少しのノイズ（毎回少し高さを変える）
+        n = int(0.035 * SR); t = np.arange(n) / SR
+        f = float(np.random.default_rng(int(time_seed() * 1000) % 9973).uniform(1500, 2300))
+        x = np.sign(np.sin(2 * np.pi * f * t)) * 0.4 + np.random.default_rng(11).standard_normal(n) * 0.25
+        return (x * np.exp(-t / 0.006)).astype(np.float32)
     if kind == "tick":        # タイマーのカチッ
         n = int(0.06 * SR); t = np.arange(n) / SR
         return (np.sin(2 * np.pi * 2400 * t) * np.exp(-t / 0.008) * 0.7).astype(np.float32)

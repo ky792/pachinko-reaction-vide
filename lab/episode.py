@@ -388,7 +388,7 @@ def build_chapter(ep_dir, script_path, data):
                 scene["focus"].append({"who": dr["focus"], "start": round(t - 0.1, 3), "end": round(fend, 3),
                                        "zoom": dr.get("zoom", 1.2)})   # @dir zoom=1.8 で大きく寄る（掛け合いの見せ場のカット）
             if pending_hl is not None:
-                if cur is not None and cur["type"] == "pie":
+                if cur is not None and cur["type"] in ("pie", "meter"):   # meter は @hl 1 で上乗せぶんを足す
                     for idx, frac in pending_hl:
                         cur.setdefault("hl", []).append([round(t + frac * dur, 3), idx])
                 pending_hl = None
@@ -652,6 +652,11 @@ def main():
             sc["background"] = str((ep / sc["background"]).resolve())
         sc["theme"] = conf.get("theme")               # lab（既定）／newmachine（新台解説）
         sc["chips"] = conf.get("chips")               # 新台解説の上部の札
+        if conf.get("theme") == "goggai":             # 号外：解析パネルの見出しを打つ音
+            for c in sc["cues"]:
+                if c["type"] == "analysis":
+                    for i in range(len(c["data"].get("heading", ""))):
+                        sc["se"].append({"t": round(c["start"] + ui.TYPE_START + ui.TYPE_SEC * i, 3), "kind": "type", "gain": 0.16})
         scenes[p.stem] = sc
         (out_dir / f"{p.stem}.scene.json").write_text(json.dumps(sc, ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{p.stem}: {sc['duration'] / 60:5.2f}分  セリフ{len(sc['lines'])}  資料{len(sc['cues'])}")
