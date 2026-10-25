@@ -13,17 +13,17 @@
   "audio": "episodes/yokai_watch/voices/01_kihon-001.wav"
  },
  {
-  "id": "01_kihon-005",
+  "id": "01_kihon-003",
   "who": "nagi",
   "kind": "小数",
   "where": "4.6",
   "expect": "",
   "reason": "台本ルールでは確率などの小数を読ませない",
   "level": "中",
-  "text": "累計の出荷は、約4.6億枚。",
-  "speech": "累計の出荷は、約4.6億枚。",
-  "kana": "ルイケーノシュッカワ、ヤクヨンテンロクオクマイ。",
-  "audio": "episodes/yokai_watch/voices/01_kihon-005.wav"
+  "text": "妖怪メダルの出荷は、累計で約4.6億枚。",
+  "speech": "妖怪メダルの出荷は、累計で約4.6億枚。",
+  "kana": "ヨーカイメダルノシュッカワ、ルイケーデヤクヨンテンロクオクマイ。",
+  "audio": "episodes/yokai_watch/voices/01_kihon-003.wav"
  },
  {
   "id": "04_dedama-008",
@@ -33,9 +33,9 @@
   "expect": "",
   "reason": "台本ルールでは確率などの小数を読ませない",
   "level": "中",
-  "text": "あと、約3.5%がエンマインパクトで3000個。",
-  "speech": "あと、約3.5%がエンマインパクトで3000個。",
-  "kana": "アト、ヤクサンテンゴパーセントガエンマインパクトデサンゼンコ。",
+  "text": "約3.5%が、エンマインパクトで3000個。",
+  "speech": "約3.5%が、エンマインパクトで3000個。",
+  "kana": "ヤクサンテンゴパーセントガ、エンマインパクトデサンゼンコ。",
   "audio": "episodes/yokai_watch/voices/04_dedama-008.wav"
  },
  {
@@ -52,7 +52,7 @@
   "audio": "episodes/yokai_watch/voices/04_dedama-009.wav"
  },
  {
-  "id": "05_ubaune-005",
+  "id": "05_ubaune-006",
   "who": "nagi",
   "kind": "小数",
   "where": "12.5",
@@ -62,10 +62,23 @@
   "text": "3000個で終わるのが50%、4500個が25%、6000個が12.5%。",
   "speech": "3000個で終わるのが50%、4500個が25%、6000個が12.5%。",
   "kana": "サンゼンコデオワルノガゴジュッパーセント、ヨンセンゴヒャッコガニジューゴパーセント、ロクセンコガジューニーテンゴパーセント。",
-  "audio": "episodes/yokai_watch/voices/05_ubaune-005.wav"
+  "audio": "episodes/yokai_watch/voices/05_ubaune-006.wav"
  },
  {
-  "id": "06_uchite-003",
+  "id": "05_ubaune-011",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "5.7",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "平均すると、ウバウネ決戦1回で約4400個。RUSH中の約5.7%だから、だいたい18回に1回。",
+  "speech": "平均すると、ウバウネ決戦1回で約4400個。ラッシュ中の約5.7%だから、だいたい18回に1回。",
+  "kana": "ヘーキンスルト、ウバウネケッセンイッカイデヤクヨンセンヨンヒャッコ。ラッシュチューノヤクゴーテンナナパーセントダカラ、ダイタイジューハチカイニイッカイ。",
+  "audio": "episodes/yokai_watch/voices/05_ubaune-011.wav"
+ },
+ {
+  "id": "06_uchite-002",
   "who": "nagi",
   "kind": "小数",
   "where": "13.6",
@@ -75,6 +88,6 @@
   "text": "1円パチンコの等価なら、200個あたり約13.6回。",
   "speech": "1円パチンコの等価なら、200個あたり約13.6回。",
   "kana": "イチエンパチンコノトーカナラ、ニヒャッコアタリヤクジューサンテンロクカイ。",
-  "audio": "episodes/yokai_watch/voices/06_uchite-003.wav"
+  "audio": "episodes/yokai_watch/voices/06_uchite-002.wav"
  }
 ]

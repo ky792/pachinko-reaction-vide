@@ -1,18 +1,18 @@
 {
  "00_op-001": {
-  "sha1": "b26a8f76a791d675ebcb656a13bd94e7c30aa7bf",
+  "sha1": "d18a12c7b71a542c368b9ae7d647a44f2b79682c",
   "model": "large-v3-turbo",
-  "text": "ナギ、妖怪ウォッチがパチンコになるで!"
+  "text": "なぎ、妖怪ウォッチがパチンコ鳴るらしいで!"
  },
  "00_op-002": {
-  "sha1": "7824c917bdaa96a50d65287e89f4f9736d6f5ff2",
+  "sha1": "dc52823b80fd32162a9be53e9052f3d4869a4e82",
   "model": "large-v3-turbo",
-  "text": "知ってる?しかもかなり遊びやすいスティック"
+  "text": "なる三峡から妻パチで"
  },
  "00_op-003": {
-  "sha1": "a29ddc5657f7184e785f220c436c47bd321e2cb1",
+  "sha1": "bf1c22b53d1efbd8a8e2e6785317d32da2c2ee45",
   "model": "large-v3-turbo",
-  "text": "遊びやすいのはええけどな今って3000発が当たり前やろ?"
+  "text": "で、出玉は?今時3000発ないと誰も座らんで"
  },
  "00_op-004": {
   "sha1": "adc1d684c37edff58868898d33d5682aa777e400",
@@ -20,14 +20,14 @@
   "text": "それで汁出るんかそこが気になんねん"
  },
  "00_op-005": {
-  "sha1": "cfc148f9bb88c5a862dd79ebbf8d2b2ade974f00",
+  "sha1": "c38d9ce38d7d4a0c63afe9edef8acb85d7d903db",
   "model": "large-v3-turbo",
-  "text": "脱出中のお当たりは平均で約2000個"
+  "text": "2000か、微妙なとこついてくるな"
  },
  "00_op-006": {
-  "sha1": "27eb5876310490f13fe7adfcf779af690af941e6",
+  "sha1": "dc81f8c9573b9720eaae799476cf55b0e9573a98",
   "model": "large-v3-turbo",
-  "text": "思ったより出るやんほな中身見せてや"
+  "text": "中身を見てから決めて"
  },
  "00_op-007": {
   "sha1": "42c8dcff8ca44fa66e125d86702b43b804fbb3b4",
@@ -40,19 +40,19 @@
   "text": "妖怪ウォッチは2013年に任天堂3DSで出たゲームが始まり"
  },
  "01_kihon-002": {
-  "sha1": "2888f0046c04963ded2ea54dcee3ed9c9a7c3404",
+  "sha1": "26c296e641d7a64063a5015d179d59bf35d9f50f",
   "model": "large-v3-turbo",
-  "text": "そこからアニメに映画にえらいブームになったんよな"
+  "text": "アニメに映画2と広がって劇場版は8作品シリーズの累計は約1850万本"
  },
  "01_kihon-003": {
-  "sha1": "e64e5e763ba7089ae950a92a6fd92720e0040889",
+  "sha1": "1bb0b08f99c8f9fd947f75779351c569df50344a",
   "model": "large-v3-turbo",
-  "text": "劇場版は8作品、シリーズの累計は約1850万本。"
+  "text": "妖怪メダルの出荷は累計で約4.6億枚"
  },
  "01_kihon-004": {
-  "sha1": "23b6eb4742cb194c26824ec9a581def37666ab5b",
+  "sha1": "2bd87b111494ad4069cc5d5922e74808e3c87ce9",
   "model": "large-v3-turbo",
-  "text": "あと妖怪メダルなおもちゃ屋どこ行っても売り切れやった"
+  "text": "あの頃のメダル、ほんまにどこにも打ってへんかったな"
  },
  "01_kihon-005": {
   "sha1": "c5ffac10a7382221291693ff6a9433463df31284",
@@ -60,19 +60,19 @@
   "text": "累計の出荷は約4.6億枚。"
  },
  "01_kihon-006": {
-  "sha1": "bd620ae275fa1ce6de6ebb47d9a99b9b315e2d81",
+  "sha1": "30202be7587c782ffb2cda15abc9277a84739274",
   "model": "large-v3-turbo",
-  "text": "あんだけ店になかったのにどこ行ったんやろなぁ"
+  "text": "メダル集めとった頃に今度はパチンコ歌そうってことやな"
  },
  "01_kihon-007": {
-  "sha1": "7a5e75a31db369987222e056b076ffd9d0bfb105",
+  "sha1": "806ba81baecde340fcd7362a54e0dfbc5c112f6a",
   "model": "large-v3-turbo",
-  "text": "多分みんなの引き出しの中"
+  "text": "メーカーの狙いとしてはそこだろうね"
  },
  "01_kihon-008": {
-  "sha1": "79a98461914a49c43f8999f3d1beeb436b65a95b",
+  "sha1": "606f52fd7da6ffadeb97043490a572caa284b5fb",
   "model": "large-v3-turbo",
-  "text": "ブームの頃に小学生だった子は2026年には20歳前後。"
+  "text": "作ったんレベル5やろ?あそこ、延期のイメージしかないわ"
  },
  "01_kihon-009": {
   "sha1": "e36aded795028b184e640d41130e8ebd22db2fec",
@@ -80,9 +80,9 @@
   "text": "あの時メダル集めとった子らがちょうどパチンコ売ってる年になったんか"
  },
  "01_kihon-010": {
-  "sha1": "b4c76d58c443a868300b7115201f3487432f8866",
+  "sha1": "cc2c7c3f25b9368a56ff699752a56a7f00a6bec9",
   "model": "large-v3-turbo",
-  "text": "メーカーとしてはちょうどいい狙いどころだろうね。"
+  "text": "7年待たされたらファンも大人なるわ"
  },
  "01_kihon-011": {
   "sha1": "b19813c2db978178f691ce725e99e4ed0f83b482",
@@ -90,29 +90,29 @@
   "text": "作ったんはレベル5やろ?レベル5言うたら延期のイメージあるわ"
  },
  "01_kihon-012": {
-  "sha1": "12948043e356f913fce6f9df8123fc23223c6039",
+  "sha1": "d1a0453c1304d58c299e4cecaaf7e1fd9fa4879b",
   "model": "large-v3-turbo",
-  "text": "稲妻11の新作は2018年夏の予定が出たのは2025年11月"
+  "text": "リメイクとパチンコが同時か!えらい商売上手やな!"
  },
  "01_kihon-013": {
-  "sha1": "e8748587ce142b685ab9be76b6d22c3d79628375",
+  "sha1": "411d8f10783bafa439095bc0c10f6119d322bf66",
   "model": "large-v3-turbo",
-  "text": "待ってる間に稲妻の子らも大人なってまうで"
+  "text": "パチンコを作ってるのは3強だよ"
  },
  "01_kihon-014": {
-  "sha1": "7c2eafc7fae73993602f06dc95d64eca4ed7df7f",
+  "sha1": "bcc6ff18513689ea07a3bf09f09659e4e33b6bda",
   "model": "large-v3-turbo",
-  "text": "そのレベル5は2026年9月に2のリメイクを発表している妖怪ウォッチ2波動"
+  "text": "知っとる!タイミングの話や!"
  },
  "01_kihon-015": {
-  "sha1": "8a70a8b57b4360ecc1617617191ea4a582a6e4b0",
+  "sha1": "ddb88457a697c891c9c6a3e8af7f45bc6554ad00",
   "model": "large-v3-turbo",
-  "text": "2のリメイクにパチンコ化かもしかしてリメイクの資金稼ぎちゃうか?"
+  "text": "で、本来eFever妖怪ウォッチスマパチでコールデビューは2026年11月2日"
  },
  "01_kihon-016": {
-  "sha1": "b461dff684f38a2c9ff085a9be73cc72d17bd442",
+  "sha1": "6bab5c3bb214cc299f542b2c5c48ca127335d78f",
   "model": "large-v3-turbo",
-  "text": "それは分からないパチンコを作ってるのは三峡だし"
+  "text": "産協か新フォギア作ったとこやしそこは信用するわ"
  },
  "01_kihon-017": {
   "sha1": "e3d391970ecdec68207a4df66d77cf66cb753f47",
@@ -125,14 +125,14 @@
   "text": "ほな本題やe-fever妖怪ウォッチ"
  },
  "01_kihon-019": {
-  "sha1": "091882c552605004b54d0118be45e8983fd3c2e6",
+  "sha1": "1a918f3624548b57c74eb8445a515c48b7bc82cf",
   "model": "large-v3-turbo",
-  "text": "スマパチでコールデビューは2026年11月2日"
+  "text": "単発で即やめにならんのはありがたいわ300個で放り出されるのほんま虚しいからな"
  },
  "01_kihon-020": {
-  "sha1": "b1bddece8b700d6c970704849a26036610f53cb6",
+  "sha1": "d56df9c77954b5711ddb721c3e7e5d64d7ecf845",
   "model": "large-v3-turbo",
-  "text": "シンフォギアの三峡が作るんやったらそこは信用できるわ"
+  "text": "あとは店がどんだけ回してくれるかやな"
  },
  "02_hatsuatari-001": {
   "sha1": "da0d22b0f21cd715070ae170f7d7b3f8ebbe7d72",
@@ -140,14 +140,14 @@
   "text": "初当たりはほぼ半分ずつに分かれる"
  },
  "02_hatsuatari-002": {
-  "sha1": "7afbdbaa7c4b9e5cba50fd77d86a767fd650c270",
+  "sha1": "468d1918e1c270555744565eda55d604441f14b0",
   "model": "large-v3-turbo",
-  "text": "ハムはそのままラッシュチョコ"
+  "text": "ハムはナッシュチョコ?"
  },
  "02_hatsuatari-003": {
-  "sha1": "a1edc207592d5b8eb73af93505c422c929153cd9",
+  "sha1": "381922c975fee47e7966cd1de6415a56e713d9c0",
   "model": "large-v3-turbo",
-  "text": "もう半分はどうなるん?"
+  "text": "もう半分はチタン100回のコマチャレンジそこで引き戻せばラッシュ"
  },
  "02_hatsuatari-004": {
   "sha1": "3c95e929b420421092308f1433db1cf9bbef4a40",
@@ -155,39 +155,39 @@
   "text": "時短100回のコマチャレンジそこで引き戻せばナッシュに入る"
  },
  "02_hatsuatari-005": {
-  "sha1": "fe2d31dfd5ce797e53c604ffa78684933ae526aa",
+  "sha1": "7244ab85cd2d2d7eae367fefdea720ed95f58794",
   "model": "large-v3-turbo",
-  "text": "こまさんが拾ってくれるんかかわいい名前してええ仕事するやん"
+  "text": "5回に1回なこういう時短引けた記憶ほとんどないねんけど"
  },
  "02_hatsuatari-006": {
-  "sha1": "668201009b01944f552e04f047b60c0e5a7f35c8",
+  "sha1": "1440b38edab9a9e74d06630e5fcc8beb21f9a65a",
   "model": "large-v3-turbo",
-  "text": "引き戻しは約22%。だいたい5回に1回。"
+  "text": "計算上は5回に1回。"
  },
  "02_hatsuatari-007": {
-  "sha1": "6a824c98a01eb1d9bc91fedd0ed5405992b49b8f",
+  "sha1": "b9101c4553d03e551a8af4c833b228fa2a4d018f",
   "model": "large-v3-turbo",
-  "text": "おまけのチャンスにしては十分やろ?"
+  "text": "計算上はな、像はあなた"
  },
  "02_hatsuatari-008": {
-  "sha1": "4f80070e6632349c76a3329584479333e24ec27e",
+  "sha1": "27e78705f904a51122a0a5a4b94e4a25f8598243",
   "model": "large-v3-turbo",
-  "text": "合わせるとナッシュに入るのはトータル約61%"
+  "text": "パワーセルとラッシュ突入はトータル約61%"
  },
  "02_hatsuatari-009": {
-  "sha1": "c9eaaa0c86071b46e3bd9afd2e8477c9ed96f8da",
+  "sha1": "3b5cc4b4057711f571869be0fac90c3eacb9d39d",
   "model": "large-v3-turbo",
-  "text": "6割超えたらミドルとしては入れやすい方やな"
+  "text": "6割あるならミドルにしたら入れやすい方やな"
  },
  "02_hatsuatari-010": {
-  "sha1": "20f582dfc0c2a821031da9887b6e8925bceef6ec",
+  "sha1": "61c982407c27a2b4e6272575557c725b557f6ac8",
   "model": "large-v3-turbo",
-  "text": "初当たりの出玉は約300個ここは控えめ"
+  "text": "初当たりの出玉は約300個"
  },
  "02_hatsuatari-011": {
-  "sha1": "e0dc5a8a4baae60a5e2015a94b77b9e003b7e205",
+  "sha1": "b6f8278121a2050a70cf0333c97dd61de8717b08",
   "model": "large-v3-turbo",
-  "text": "勝負はラッシュからってことやなわかりやすくてええわ"
+  "text": "そこは期待してへんどうせへそで当てるまでが長いねん"
  },
  "02_hatsuatari-012": {
   "sha1": "9913de69a03159787c680dbd20ca35bce7c87e14",
@@ -250,49 +250,49 @@
   "text": "ほなこの台の3000個もどっかの引き出しに眠とらんやろな"
  },
  "03_rush-001": {
-  "sha1": "073f2681ea6d1ba8bfaaaa3018f8717c05414b3a",
+  "sha1": "6eec825f325adffdc6b6d643c065f3ce78880f6c",
   "model": "large-v3-turbo",
-  "text": "ラッシュの名前はヨーデルソニックカイト"
+  "text": "ダッシュはヨーデルソニック回答"
  },
  "03_rush-002": {
-  "sha1": "57727f3e96888eeb11cb514606ff4dac03d656a9",
+  "sha1": "3d7434140f5f683982716c279a38b310ef817589",
   "model": "large-v3-turbo",
-  "text": "名前からも歌いだしそうやな"
+  "text": "大当たり約42分の1と最終決戦の負け約117分の1の転落タイプ"
  },
  "03_rush-003": {
-  "sha1": "9975432075950b7c730923b938edda39b055355c",
+  "sha1": "ead45010ec47cbb985c6d29dee6b206e2d9a21e4",
   "model": "large-v3-turbo",
-  "text": "中身はレース。大当たりが約42分の1。最終決戦の負けが約117分の1。"
+  "text": "転落か。行けへん日はほんまに一瞬で終わるからな。"
  },
  "03_rush-004": {
-  "sha1": "ee095936d91c72e7577f2048b77838635ff394ae",
+  "sha1": "f96a2c05a4a5233153e284b9abc9746a020dc7dc",
   "model": "large-v3-turbo",
-  "text": "当たりを先に引いたら続行負けを先に引いたら終わりやな"
+  "text": "ダッシュだけの継続は約74%、負けても時短100回がついて、そこで引き戻せばラッシュに戻る。"
  },
  "03_rush-005": {
-  "sha1": "7a4f35706e8aee185997ca16e078d214c391b892",
+  "sha1": "5b24f2d621325da668faf913d6d962a48efeee36",
   "model": "large-v3-turbo",
-  "text": "そうラッシュだけで見ると継続は約74%"
+  "text": "それ込みでトータル約80%"
  },
  "03_rush-006": {
-  "sha1": "64af815df6b7cc7217b2c9e26759db8db2ff1ab5",
+  "sha1": "02010d8a6ea80be4eaab993ce9e012044791596f",
   "model": "large-v3-turbo",
-  "text": "しかも負けてもまた時短100回がつく"
+  "text": "80あるならええやん 最近継続だけ高くて出玉スカスカの代多いけどな"
  },
  "03_rush-007": {
-  "sha1": "51b49e27ecafa8e925bc146618309eadc56b4895",
+  "sha1": "6e58bf0bf5629c72cd0f44f5f0dbab7d6f8790ce",
   "model": "large-v3-turbo",
-  "text": "ここでも駒さんか2回目の出番やな"
+  "text": "ラッシュに入ったらたたりは平均で4回弱"
  },
  "03_rush-008": {
-  "sha1": "188392a953bb2531bdf268f1155a50b9658328b4",
+  "sha1": "97271efd2831cd59a3334d5eaf67b204fa90abe6",
   "model": "large-v3-turbo",
-  "text": "それを足してトータル継続は約80%"
+  "text": "4回で全部1500やったら6000か微妙やな"
  },
  "03_rush-009": {
-  "sha1": "03197b77b77c106bbce2e9a80027810b516e94f6",
+  "sha1": "9b19acde055aaecd8d2d2ac5a461f4ed51dbefb8",
   "model": "large-v3-turbo",
-  "text": "80あったらちゃんとレンちゃんの気持ちよさを味わえるな"
+  "text": "全部1500じゃないそれは次"
  },
  "03_rush-010": {
   "sha1": "c61b10b3870aeaddb279d6e028bce7eaf65c4d49",
@@ -325,19 +325,19 @@
   "text": "4回か。で、1回なんぼ出るん?そこが一番大事やろ?"
  },
  "04_dedama-001": {
-  "sha1": "12fe138e75b2b296c5dde8cac0f257aa4ed00848",
+  "sha1": "e067962434db2f97c3c4bacba2c0752da2e4d6d3",
   "model": "large-v3-turbo",
-  "text": "脱出中の大当たりの振り分け、いくよ"
+  "text": "ダッシュ中の5当たりの振り分け"
  },
  "04_dedama-002": {
-  "sha1": "4c5d198381b368ab2e82467b0b0c6b0a453ee3a2",
+  "sha1": "d8f78a31a078a61cd503202b067b26fc0a0e957d",
   "model": "large-v3-turbo",
-  "text": "約49%は普通の1500個"
+  "text": "約49%が普通の1500個"
  },
  "04_dedama-003": {
-  "sha1": "649082aee21e39ae3f97236b2b57ca65bea0c9a1",
+  "sha1": "39d39619fc086ef81eeaf055ac80b9c049dad623",
   "model": "large-v3-turbo",
-  "text": "約22%は銀座しチャンスに失敗した1500個"
+  "text": "約22%がピンザシチャンスに失敗した1500個。"
  },
  "04_dedama-004": {
   "sha1": "2ac7725043d2467a7aef267785bd3571cb9b07c1",
@@ -345,24 +345,24 @@
   "text": "約19%がリンザシチャンス成功で3000個。"
  },
  "04_dedama-005": {
-  "sha1": "826453efb74e2cef9f6104e1a263f28c05fe1584",
+  "sha1": "a3785f9268aeadbcc4dbe3a38d562ed754d3c0db",
   "model": "large-v3-turbo",
-  "text": "ピン刺しチャンスって成功どんくらいなん?"
+  "text": "ピン刺しって成功どれくらいなん?"
  },
  "04_dedama-006": {
-  "sha1": "cc2087a1ddbd93d96ec40b557dc432787d82cf05",
+  "sha1": "c2c6a825fdd6b03cca4957cb6e8def5087622fc4",
   "model": "large-v3-turbo",
-  "text": "振り分けから割ると大体46%"
+  "text": "振り分けから割ると約46%。"
  },
  "04_dedama-007": {
-  "sha1": "dc9127c8887fb0efc694aa32f76eefb6a4fb0512",
+  "sha1": "add2591c46b6c97ae73f309486f3cb77e3ecb9be",
   "model": "large-v3-turbo",
-  "text": "ほぼ半々で倍かそこが一番手に汗かくとこやな"
+  "text": "ほぼ半々かここ外したらしばらく立ち直られへんやつや"
  },
  "04_dedama-008": {
-  "sha1": "e41662b7396db09af2c19050524711f643f462ae",
+  "sha1": "f228a1cfcfdecff6b2755f3aa6b3a5cfeff1da00",
   "model": "large-v3-turbo",
-  "text": "あと約3.5%がレマインパクトで3000個"
+  "text": "約3.5%がレンマインパクトで3000個"
  },
  "04_dedama-009": {
   "sha1": "c4585591cd8ba60410fb8f4c51fde8a09d280c87",
@@ -370,9 +370,9 @@
   "text": "残り約5.7%がウバウネ決戦"
  },
  "04_dedama-010": {
-  "sha1": "86ce76d5caaf3777188fcc460c0f0cad02e156ba",
+  "sha1": "074910bbceb5c1ed7f1f335380c673ca2e8c474b",
   "model": "large-v3-turbo",
-  "text": "出た!名前からして一番ヤバいやつ!"
+  "text": "鳴らすと1回あたり約2000個"
  },
  "04_dedama-011": {
   "sha1": "d925db562144a7f483afd2afd2aa30a3bf701f06",
@@ -380,14 +380,14 @@
   "text": "全部鳴らすと1回あたり約2000個"
  },
  "04_dedama-012": {
-  "sha1": "b218527b9da5f47444faa8f2147e441ddd3b2550",
+  "sha1": "44ffc5f38b4d5e9b3ad289c1e8af112b8d48caa9",
   "model": "large-v3-turbo",
-  "text": "さっきの継続と掛け合わせるとナッシュ1回で約7600個の計算"
+  "text": "7600か思ってたより全然出るやん"
  },
  "04_dedama-013": {
-  "sha1": "727cec29bd6c088ccab35bd3c88819d3237699fd",
+  "sha1": "ca13c7027a3392f62bfb1c0935094094e545c435",
   "model": "large-v3-turbo",
-  "text": "7600あったらその日はもう帰ってええやつや"
+  "text": "だから中身を見てから決めてって言った"
  },
  "04_dedama-014": {
   "sha1": "7ca70500f6107127361b59596b84464c41777afb",
@@ -400,24 +400,24 @@
   "text": "奪うね決戦がこの代のラッキー取りた"
  },
  "05_ubaune-002": {
-  "sha1": "379906d70dcb7387985095ce95d114585e04c623",
+  "sha1": "46a6b5f0a8fe9d22e1f9dcb4753d0382d90ecc89",
   "model": "large-v3-turbo",
-  "text": "奪うねって、妖怪ウォッチ2のラスボスやんな!"
+  "text": "え?ラッキートリガーついてんの?フル時短で遊びやすいダイヤと思っとったわ"
  },
  "05_ubaune-003": {
-  "sha1": "95b74cb6055cbe55070db2e79df66280a57a17aa",
+  "sha1": "b88de954d384f7c10775f49f5cf1de762575d737",
   "model": "large-v3-turbo",
-  "text": "うん劇場版の一作目でも敵として出てくる"
+  "text": "入ったら最低3000個そこから1500個ずつ伸びるかの勝負"
  },
  "05_ubaune-004": {
-  "sha1": "b2c275796a13b7a5cfbd5a016100fc7604e20558",
+  "sha1": "e209937760424cf33b7f71191d11806601e848be",
   "model": "large-v3-turbo",
-  "text": "入ったら最低でも3000個そこから1500個ずつ伸びるかの勝負"
+  "text": "マイルドな顔してちゃんと一発持っとるやん"
  },
  "05_ubaune-005": {
-  "sha1": "527e4090d826ed6db541be5c1d9497f3b1af2e82",
+  "sha1": "a1ccee961122f4bf6ae5d9de99e2403d4e5b73ad",
   "model": "large-v3-turbo",
-  "text": "3000個で終わるのが50%、4500個が25%、6000個が12.5%。"
+  "text": "奪うねはミノラスボス劇場版の一作目にも出てくる"
  },
  "05_ubaune-006": {
   "sha1": "4885bb95aa2b7211801deb40fd8025822089191a",
@@ -430,9 +430,9 @@
   "text": "つまり一段上がるごとに50%当て続けてる"
  },
  "05_ubaune-008": {
-  "sha1": "3b717ad85d4f918729da3846982f5a784879b6dc",
+  "sha1": "cb1d4b0516aa2ac1a02b7f02e5df44f57c27f9a5",
   "model": "large-v3-turbo",
-  "text": "7500個が約6%9000個以上も約6%"
+  "text": "9000以上?上はなんぼなん?"
  },
  "05_ubaune-009": {
   "sha1": "8d31c064addc4066f5bce2a35d29e03b5f0b0149",
@@ -440,19 +440,19 @@
   "text": "9000個以上? 上はなんぼなん?"
  },
  "05_ubaune-010": {
-  "sha1": "984527cf47d730aa1ee1f8371ec7f50af8e6e382",
-  "model": "large-v3-turbo",
-  "text": "書いてない"
- },
- "05_ubaune-011": {
-  "sha1": "75c44a6b28aa74d53024ea83d13499bf8a788cce",
+  "sha1": "5b725784358ce871a2a9b892eea87a46f91b5bca",
   "model": "large-v3-turbo",
   "text": "書いてへんのが一番夢あるやつや"
  },
- "05_ubaune-012": {
-  "sha1": "0e29d72fdefd1c8f8c822113e33e8ae68610f081",
+ "05_ubaune-011": {
+  "sha1": "879125b3902f7efe0688d37e7243f859f814ff97",
   "model": "large-v3-turbo",
-  "text": "平均するとウバウネ決戦1回で約4400個。"
+  "text": "平均すると、奪うね決戦1回で約4400、ナッシュ中の約5.7%だから、だいたい18回に1回。"
+ },
+ "05_ubaune-012": {
+  "sha1": "1d4080fa7d3a97aa7cdfc7865b89d916e705fddd",
+  "model": "large-v3-turbo",
+  "text": "18回に1回ってラッシュ5回くらい入れなあかんやんそんな日年に何回あんねん"
  },
  "05_ubaune-013": {
   "sha1": "e384dd091d5ef6b6127c56b4fdcb162436c1e881",
@@ -465,9 +465,9 @@
   "text": "ラッシュで18回に1回くらい来て来たら4400かそれは追いかけたなるな"
  },
  "06_uchite-001": {
-  "sha1": "79298b768db790cfb3033150fae1eacb0f607d21",
+  "sha1": "1f1a1c8758896e8e02361ff8fd2a97ba8d28f505",
   "model": "large-v3-turbo",
-  "text": "最後に打ち手目線。ゴーダーは10日で1000円あたり約17回。"
+  "text": "打ち手目線オーダーは10日で1000円あたり約17回"
  },
  "06_uchite-002": {
   "sha1": "fbc2f91e7fe9f41ea210e81b64b672554ee2b065",
@@ -475,39 +475,39 @@
   "text": "17個、緑やったら普通の部類やな"
  },
  "06_uchite-003": {
-  "sha1": "2f3916469a35e44e1667ab19da389b39661cf70a",
+  "sha1": "9f248ded31f16effd39ba1d5ce15d46fb533c3cc",
   "model": "large-v3-turbo",
-  "text": "1円パチンコの10日なら200個あたり約13.6回"
+  "text": "17か。数字は普通やけど、寝台で17回る店、なかなかないで。"
  },
  "06_uchite-004": {
-  "sha1": "7c23da7628db1778efe0487a5d35b62a4c28d92e",
+  "sha1": "430743612592803d409898e5738c610a544794e6",
   "model": "large-v3-turbo",
-  "text": "17回るかどうかは結局へそ次第や"
+  "text": "そこは店次第"
  },
  "06_uchite-005": {
-  "sha1": "1129120deb4007fbab9de9e127808a093d4a9129",
+  "sha1": "26bdf8b55acdf771632f4d25cec09bbc593440c3",
   "model": "large-v3-turbo",
-  "text": "ただの今は3000発が当たり前の時代やろ"
+  "text": "最初だけ回して、あとは閉めるいつものやつや"
  },
  "06_uchite-006": {
-  "sha1": "261139c0bbc38e2c70ce9b433ea49f72563606b1",
+  "sha1": "02cabffe38b9fcdbceeeb413e64728ce09ea95a3",
   "model": "large-v3-turbo",
-  "text": "それに慣れた人やと1500中心は知る出えへんかもな"
+  "text": "あとな今は3000発が当たり前やろ1500中には慣れた人には物足りんかもな"
  },
  "06_uchite-007": {
-  "sha1": "b16cf1e5489e3294b2a741455e82ad016e7b547d",
+  "sha1": "1dadf9dd51978f82a0235f2c30775f64004794ea",
   "model": "large-v3-turbo",
-  "text": "そこは好みが分かれると思うその代わりフル時短で当たれば何かついてくる"
+  "text": "その代わり来る時短で当たれば何かついてくる"
  },
  "06_uchite-008": {
-  "sha1": "d85992d6a689fc6b860525dfb24c73570eb4e671",
+  "sha1": "43ba653ec77d2a1d21d72843b5ee731fc01162c3",
   "model": "large-v3-turbo",
-  "text": "妖怪ウォッチでパチンコデビューする人にちょうどええ作りやな"
+  "text": "まぁ妖怪ウォッチで初めて撃つ人にはちょうどええかもな"
  },
  "06_uchite-009": {
-  "sha1": "a2216891d59ef81372dcdf778ca873a83343810b",
+  "sha1": "b4482fa3521a58a0b10e243e32075c86cc27beab",
   "model": "large-v3-turbo",
-  "text": "うん、初めてでも浮いていかれない優しいステックだね"
+  "text": "初めてでも置いていかれない優しいスティックだと思う"
  },
  "06_uchite-010": {
   "sha1": "505a933fe7383e0d9fd9fc40f9ab036e8a2231c5",
@@ -655,9 +655,9 @@
   "text": "また次回おやすみ"
  },
  "01_kihon-021": {
-  "sha1": "851d50c46eb723a8173a449703778b3a11e7271a",
+  "sha1": "b8739fee3aa6d8239265fce26f67bbcc98c527f5",
   "model": "large-v3-turbo",
-  "text": "お当たり確率は319分の1Uタイムはなしでその代わりフルシタン"
+  "text": "それは店次第"
  },
  "01_kihon-022": {
   "sha1": "df81d43fbea69c45d07b36f80300e95bf1088289",
