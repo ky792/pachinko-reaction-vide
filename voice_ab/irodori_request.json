@@ -1,11 +1,11 @@
 {
  "action": "lines",
- "episode": "episodes/garo_history",
+ "episode": "episodes/news02",
  "who": "baku",
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "garo2_fix_s53",
+   "name": "news02_s53",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -16,7 +16,7 @@
    ]
   },
   {
-   "name": "garo2_fix_s71",
+   "name": "news02_s71",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -26,9 +26,6 @@
     "71"
    ]
   }
- ],
- "only": [
-  "01_eikou-010"
  ],
  "_try": 1
 }

@@ -1,6 +1,6 @@
 {
  "action": "lines",
- "episode": "episodes/garo_history",
+ "episode": "episodes/news02",
  "who": "nagi",
  "model": {
   "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
@@ -9,10 +9,6 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 17,
- "kana_only": false,
- "only": [
-  "00_op-010",
-  "00_op-012"
- ]
+ "_try": 1,
+ "kana_only": false
 }
