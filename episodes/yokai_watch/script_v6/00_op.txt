@@ -1,0 +1,18 @@
+# OP（v2）：妖怪ウォッチがパチンコに → 遊びやすいスペック → 「3000が当たり前の今、汁出るんか？」を今回の問いに
+@skit on
+@dir act=jump
+バク: ナギ！妖怪ウォッチがパチンコになるで！
+@dir act=tilt
+ナギ: 知ってる。しかも、かなり遊びやすいスペック。
+@dir act=lean
+バク: 遊びやすいのはええけどな。今って3000発が当たり前やろ？
+バク: それで汁出るんか、そこが気になんねん。
+ナギ: RUSH中の大当たりは、平均で約2000個。
+@dir act=jump
+バク: お、思ったより出るやん！ほな中身見せてや！
+@skit off
+@song op_brass.wav gain=0.6 len=12
+@intro nagi
+@intro baku
+@logo newmachine.png 3.6
+@title 4.0
