@@ -1,0 +1,42 @@
+{
+  "_note": "無料のテンプレート生成ルール。{{name}} は置換、{{#name}}…{{/name}} は値があるときだけ表示。web/index.html と apps_script/Core.gs は build.js でこのファイルから作り直す。",
+  "ng_words": ["絶対", "必ず痩せ", "確実に儲か", "100%", "日本一", "業界No.1", "最安値", "完治", "誰でも簡単に稼げ", "副作用なし"],
+  "templates": [
+    {
+      "platform": "x", "key": "summary", "angle": "要点まとめ",
+      "body": "{{#is_article}}【新着記事】{{/is_article}}{{#is_product}}【新商品】{{/is_product}}{{title}}\n\n{{summary}}\n{{#points}}\n{{points_lines}}\n{{/points}}{{#price}}\n価格：{{price}}{{/price}}{{#url}}\n{{url}}{{/url}}"
+    },
+    {
+      "platform": "x", "key": "question", "angle": "共感・問いかけ",
+      "body": "{{#target}}{{target}}の方へ。{{/target}}こんな悩み、ありませんか？\n\n{{summary}}\n{{#point1}}\nポイントは「{{point1}}」。{{/point1}}{{#url}}\n{{url}}{{/url}}"
+    },
+    {
+      "platform": "x", "key": "announce", "angle": "告知・行動喚起",
+      "body": "{{#brand}}{{brand}}より{{/brand}}お知らせ📣\n「{{title}}」{{#is_article}}を公開しました{{/is_article}}{{#is_product}}が登場{{/is_product}}\n{{#points}}\n{{points_inline}}\n{{/points}}\n{{cta}}{{#url}}\n{{url}}{{/url}}"
+    },
+    {
+      "platform": "instagram", "key": "summary", "angle": "要点まとめ",
+      "body": "{{title}}\n\n{{summary}}\n{{#points}}\n＼ ポイント ／\n{{points_lines}}\n{{/points}}{{#price}}\n価格：{{price}}\n{{/price}}{{#target}}\nこんな方におすすめ：{{target}}\n{{/target}}\n{{cta}}"
+    },
+    {
+      "platform": "instagram", "key": "question", "angle": "共感・問いかけ",
+      "body": "{{#target}}{{target}}のみなさん、{{/target}}最近こんなこと感じていませんか？\n\n{{summary}}\n{{#points}}\n今回まとめたのはこの{{#is_article}}内容{{/is_article}}{{#is_product}}特長{{/is_product}}👇\n{{points_lines}}\n{{/points}}\n保存して見返してくださいね。\nあなたの意見もコメントで教えてください💬"
+    },
+    {
+      "platform": "instagram", "key": "announce", "angle": "告知・行動喚起",
+      "body": "{{#brand}}{{brand}}から{{/brand}}お知らせです✨\n\n「{{title}}」{{#is_article}}の記事を公開しました。{{/is_article}}{{#is_product}}の取り扱いを始めました。{{/is_product}}\n{{#points}}\n{{points_lines}}\n{{/points}}{{#price}}\n価格：{{price}}\n{{/price}}\n{{cta}}"
+    },
+    {
+      "platform": "threads", "key": "summary", "angle": "要点まとめ",
+      "body": "{{title}}\n\n{{summary}}\n{{#points}}\n{{points_lines}}\n{{/points}}{{#price}}\n価格：{{price}}{{/price}}{{#url}}\n{{url}}{{/url}}"
+    },
+    {
+      "platform": "threads", "key": "question", "angle": "共感・問いかけ",
+      "body": "ちょっと聞いてみたいんですが、{{#target}}{{target}}の方って{{/target}}どうしてますか？\n\n{{summary}}\n{{#point1}}\n個人的には「{{point1}}」が大事だと思っています。{{/point1}}\nみなさんの工夫もぜひ返信で。{{#url}}\n{{url}}{{/url}}"
+    },
+    {
+      "platform": "threads", "key": "announce", "angle": "告知・行動喚起",
+      "body": "{{#brand}}{{brand}}です。{{/brand}}「{{title}}」{{#is_article}}を公開しました。{{/is_article}}{{#is_product}}の取り扱いを始めました。{{/is_product}}\n{{#points}}\n{{points_inline}}\n{{/points}}\n{{cta}}{{#url}}\n{{url}}{{/url}}"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "sns-studio-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "記事・商品情報からSNS投稿案を作り、承認してから出力するデモ（無料・依存なし・自動投稿なし）",
+  "license": "UNLICENSED",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "build": "node build.js",
+    "test": "node build.js --check && node --test test/*.test.js",
+    "demo": "node cli.js demo",
+    "snapshot": "node test/update-snapshot.js"
+  }
+}

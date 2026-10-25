@@ -1,0 +1,48 @@
+name: SNS studio demo (test + demo run)
+
+# sns-studio/ だけを対象にした独立ワークフロー。既存のナギバク制作ワークフローとは無関係。
+# 外部SNS・AI API には接続しない（シークレット不要・無料枠内で完結）。
+on:
+  pull_request:
+    paths:
+      - "sns-studio/**"
+      - ".github/workflows/sns-studio.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: sns-studio
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install browser for phone-width UI test
+        run: |
+          npm install --no-save playwright@1.48.2
+          npx playwright install --with-deps chromium
+      - name: Check generated files and run tests
+        run: |
+          mkdir -p work/shots
+          SNS_STUDIO_SCREENSHOTS=work/shots npm test
+      - name: Run fixed sample demo
+        run: |
+          node cli.js demo --out work/demo
+          cat work/demo/demo_log.txt
+          cp web/index.html work/sns_studio_demo.html
+      - name: Upload demo outputs (HTML, screenshots, approved posts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: sns-studio-demo
+          path: |
+            sns-studio/work/demo/
+            sns-studio/work/shots/
+            sns-studio/work/sns_studio_demo.html
+          retention-days: 7
