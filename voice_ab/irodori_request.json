@@ -16,9 +16,13 @@
    ]
   }
  ],
- "_try": 12,
+ "_try": 13,
  "only": [
-  "06_uchite-006",
-  "07_matome-006"
+  "01_kihon-010",
+  "01_kihon-013",
+  "02_hatsuatari-011",
+  "03_rush-008",
+  "04_dedama-011",
+  "05_ubaune-012"
  ]
 }
