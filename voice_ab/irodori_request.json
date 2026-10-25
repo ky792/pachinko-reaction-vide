@@ -5,49 +5,19 @@
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "garo2_fix_s53",
+   "name": "garo2_fix_s54",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
     "--duration-scale",
     "0.88",
     "--seed",
-    "53"
+    "54"
    ]
   }
  ],
- "_try": 10,
+ "_try": 11,
  "only": [
-  "00_op-001",
-  "00_op-003",
-  "00_op-005",
-  "01_kihon-004",
-  "01_kihon-006",
-  "01_kihon-008",
-  "01_kihon-010",
-  "01_kihon-012",
-  "01_kihon-014",
-  "01_kihon-016",
-  "01_kihon-019",
-  "01_kihon-020",
-  "02_hatsuatari-005",
-  "02_hatsuatari-007",
-  "02_hatsuatari-009",
-  "02_hatsuatari-011",
-  "03_rush-003",
-  "03_rush-006",
-  "03_rush-008",
-  "04_dedama-005",
-  "04_dedama-007",
-  "04_dedama-012",
-  "05_ubaune-002",
-  "05_ubaune-004",
-  "05_ubaune-008",
-  "05_ubaune-010",
-  "05_ubaune-012",
-  "06_uchite-003",
-  "06_uchite-005",
-  "06_uchite-006",
-  "06_uchite-008"
+  "02_hatsuatari-007"
  ]
 }
