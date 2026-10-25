@@ -95,9 +95,9 @@
   "text": "リメイクとパチンコが同時か!えらい商売上手やな!"
  },
  "01_kihon-013": {
-  "sha1": "b9d08bf93eb4cdda90f3f759daffbb785487dac2",
+  "sha1": "572d81cf3f11917f61b3d43f7f41fe380dc40a95",
   "model": "large-v3-turbo",
-  "text": "山頂か、当たりはずれでかいとこやな"
+  "text": "三峡か、当たり外れ、でかいとこやな"
  },
  "01_kihon-014": {
   "sha1": "bcc6ff18513689ea07a3bf09f09659e4e33b6bda",
@@ -185,9 +185,9 @@
   "text": "初当たりの出玉は約300個"
  },
  "02_hatsuatari-011": {
-  "sha1": "6bde35ddbe57cf9d76c1bd9d9b3e1b7068ccd222",
+  "sha1": "0b420c977dbcd227abeaafc72d84f765243961e7",
   "model": "large-v3-turbo",
-  "text": "300個は、まぁ、まぁそんなもんやな"
+  "text": "300個はまあそんな思うやな"
  },
  "02_hatsuatari-012": {
   "sha1": "9913de69a03159787c680dbd20ca35bce7c87e14",
