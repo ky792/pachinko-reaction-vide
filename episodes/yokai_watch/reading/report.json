@@ -1,15 +1,1 @@
-[
- {
-  "kind": "誤読",
-  "where": "ツー",
-  "expect": "ツー",
-  "reason": "台本は「ツー」、聞こえたのは「ニ」",
-  "level": "低",
-  "id": "01_kihon-014",
-  "who": "baku",
-  "text": "ほな、ウチらが打った分で、2作ってもらおか。",
-  "asr": "ほな、うちらが打った分で2作ってもらおうか",
-  "ratio": 0.909,
-  "audio": "episodes/yokai_watch/voices/01_kihon-014.wav"
- }
-]
+[]

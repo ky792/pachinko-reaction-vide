@@ -555,24 +555,24 @@
   "text": "あと、奪うね決戦な。あれが本体や。"
  },
  "07_matome-004": {
-  "sha1": "08515dbdd2628ec000bd0920f812d1df89fd2215",
-  "model": "large-v3-turbo",
-  "text": "本体は私の後ろのタンクに入ってるのだよ。"
- },
- "07_matome-005": {
-  "sha1": "4f2402292dcd5e6a24cd75950d79f3b63cd45b49",
-  "model": "large-v3-turbo",
-  "text": "あんたの話はしてへんえ?"
- },
- "07_matome-006": {
   "sha1": "49ccaf62b2e350b2a7d74283b9e4dc11b67de08b",
   "model": "large-v3-turbo",
-  "text": "へそに入らんのも、はまるのも、ぜーんぶ妖怪のせいにしたらええねん"
+  "text": "へそに入らんのも、ハマるのも、全部妖怪のせいにしたらええねん"
  },
- "07_matome-007": {
+ "07_matome-005": {
   "sha1": "ad4aa3b3344a2e96ae67c0ee00aa02c23a372373",
   "model": "large-v3-turbo",
   "text": "妖怪ウォッチってそういう話だもんね"
+ },
+ "07_matome-006": {
+  "sha1": "554aab22a133d0831c2200ecce1b7134b117cb5b",
+  "model": "large-v3-turbo",
+  "text": "ケータ、夜中に釘締めに来る妖怪、釘締め退治してくれ!"
+ },
+ "07_matome-007": {
+  "sha1": "43ac7bed2244563ee39b41683fea14fe7ad937cb",
+  "model": "large-v3-turbo",
+  "text": "それ店長だね"
  },
  "07_matome-008": {
   "sha1": "554aab22a133d0831c2200ecce1b7134b117cb5b",
