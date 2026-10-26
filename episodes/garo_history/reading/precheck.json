@@ -1,0 +1,93 @@
+[
+ {
+  "id": "00_op-006",
+  "who": "nagi",
+  "kind": "辞書と違う",
+  "where": "台",
+  "expect": "ダイ",
+  "reason": "辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。ナギはこの読みになる見込みが高い",
+  "level": "高",
+  "text": "牙狼って、台の歴史もそんな感じだよ。",
+  "speech": "ガロって、台の歴史もそんな感じだよ。",
+  "kana": "ガロッテ、タイノレキシモソンナカンジダヨ。",
+  "audio": "episodes/garo_history/voices/00_op-006.wav"
+ },
+ {
+  "id": "01_eikou-022",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "3.8",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "平均の連チャンは3.8回、って資料もある。",
+  "speech": "平均の連チャンは3.8回、って資料もある。",
+  "kana": "ヘーキンノレンチャンワサンテンハチカイ、ッテシリョーモアル。",
+  "audio": "episodes/garo_history/voices/01_eikou-022.wav"
+ },
+ {
+  "id": "03_tenraku-012",
+  "who": "nagi",
+  "kind": "小数",
+  "where": "13.3",
+  "expect": "",
+  "reason": "台本ルールでは確率などの小数を読ませない",
+  "level": "中",
+  "text": "17インチと13.3インチ、2枚の液晶を縦に使う大画面。",
+  "speech": "17インチと13.3インチ、2枚の液晶を縦に使う大画面。",
+  "kana": "ジューナナインチトジューサンテンサンインチ、ニマイノエキショーヲタテニツカウダイガメン。",
+  "audio": "episodes/garo_history/voices/03_tenraku-012.wav"
+ },
+ {
+  "id": "02_eikou2-024",
+  "who": "baku",
+  "kind": "辞書と違う",
+  "where": "一択",
+  "expect": "イッタク",
+  "reason": "辞書の読み「イッタク」と違う（この行での OpenJTalk の読み：イチヨ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）",
+  "level": "低",
+  "text": "来たで金色。給料日はこれ一択やった。",
+  "speech": "来たでこんじき。給料日はこれ一択やった。",
+  "kana": "キタデコンジキ。キューリョービワコレイチヨヤッタ。",
+  "audio": "episodes/garo_history/voices/02_eikou2-024.wav"
+ },
+ {
+  "id": "03_tenraku-013",
+  "who": "baku",
+  "kind": "辞書と違う",
+  "where": "台",
+  "expect": "ダイ",
+  "reason": "辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）",
+  "level": "低",
+  "text": "上と下の画面がつながるやつな。台デカすぎて隣が狭かったわ。",
+  "speech": "上と下の画面がつながるやつな。台デカすぎて隣が狭かったわ。",
+  "kana": "ウエトシタノガメンガツナガルヤツナ。タイデカスギテトナリガセマカッタワ。",
+  "audio": "episodes/garo_history/voices/03_tenraku-013.wav"
+ },
+ {
+  "id": "04_tenraku2-038",
+  "who": "baku",
+  "kind": "辞書と違う",
+  "where": "台",
+  "expect": "ダイ",
+  "reason": "辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）",
+  "level": "低",
+  "text": "台ごと変えるんか。サンセイ、本気やな。",
+  "speech": "台ごと変えるんか。サンセイ、本気やな。",
+  "kana": "タイゴトカエルンカ。サンセイ、ホンキヤナ。",
+  "audio": "episodes/garo_history/voices/04_tenraku2-038.wav"
+ },
+ {
+  "id": "05_fukkatsu-021",
+  "who": "baku",
+  "kind": "辞書にない固有名詞",
+  "where": "諭吉",
+  "expect": "",
+  "reason": "辞書にない固有名詞。OpenJTalk の読み（参考・未確定）：ユキチ",
+  "level": "低",
+  "text": "1777とか、ハマったら諭吉何枚溶けんねん。",
+  "speech": "1777とか、ハマったら諭吉何枚溶けんねん。",
+  "kana": "センナナヒャクナナジューナナトカ、ハマッタラユキチナンマイトケンネン。",
+  "audio": "episodes/garo_history/voices/05_fukkatsu-021.wav"
+ }
+]

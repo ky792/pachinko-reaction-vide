@@ -1,0 +1,17 @@
+{
+ "action": "lines",
+ "episode": "episodes/news01",
+ "who": "baku",
+ "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
+ "variants": [
+  {
+   "name": "news01_mao_fix",
+   "ref": "voice_ab/vc_out/ref__からかい.m4a",
+   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。"
+  }
+ ],
+ "_try": 2,
+ "only": [
+  "01_eva319red-052"
+ ]
+}

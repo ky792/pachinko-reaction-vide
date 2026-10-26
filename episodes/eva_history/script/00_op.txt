@@ -1,0 +1,24 @@
+# OP：寸劇 → OP曲（op_rock）→ キャラ紹介 → タイトル（テイコウペンギン型）
+@skit on
+@dir act=jump
+バク: ナギ！エヴァのRED、打ってきたで！
+@dir act=sweat
+ナギ: また初日に並んだの。
+@dir act=lean
+バク: 当たり前やん。うち、初代の暴走モードから全部打っとるんやで。
+@dir act=lean
+ナギ: じゃあ聞くけど。初代の暴走モードって、どんな仕組みだったか覚えてる？
+@dir act=tilt
+バク: え？1・3・5が揃って、なんか確変になるやつやろ？
+ナギ: ほぼ合ってる。それが20年で、小当たりRUSHになって、LTの演出にまでなってる。
+@dir act=shock
+バク: 暴走、そんな出世しとったん！？
+ナギ: 今日は、エヴァのゲーム性が20年でどう変わったか、全部見る。
+@dir act=jump
+バク: 次打つ前に、エヴァの歴史おさらいや！
+@skit off
+@song op_rock.wav gain=0.6 len=12
+@intro nagi
+@intro baku
+@logo history.png 3.6
+@title 4.0
