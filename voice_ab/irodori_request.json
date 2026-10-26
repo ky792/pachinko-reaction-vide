@@ -1,35 +1,17 @@
 {
  "action": "lines",
- "episode": "episodes/news02",
+ "episode": "episodes/news01",
  "who": "baku",
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "news02_s53",
+   "name": "news01_mao_fix",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
-   "extra": [
-    "--duration-scale",
-    "0.88",
-    "--seed",
-    "53"
-   ]
-  },
-  {
-   "name": "news02_s71",
-   "ref": "voice_ab/vc_out/ref__からかい.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
-   "extra": [
-    "--duration-scale",
-    "0.88",
-    "--seed",
-    "71"
-   ]
+   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。"
   }
  ],
- "_try": 2,
+ "_try": 1,
  "only": [
-  "02_kimatta-002",
-  "03_naze-019"
+  "01_eva319red-052"
  ]
 }
