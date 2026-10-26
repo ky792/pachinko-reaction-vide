@@ -1,9 +1,9 @@
 {
- "episode": "episodes/news02",
+ "episode": "episodes/news01",
  "model": "large-v3-turbo",
  "only": [
-  "02_kimatta-002",
-  "03_naze-019"
+  "01_eva319red-052"
  ],
- "_run": "news02-fix-2"
+ "_run": "news02-fix-2",
+ "_try": 1
 }
