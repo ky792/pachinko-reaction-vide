@@ -1,80 +1,15 @@
 [
  {
   "kind": "誤読",
-  "where": "テン",
-  "expect": "テン",
-  "reason": "台本は「テン」、聞こえたのは「ジュー」",
-  "level": "低",
-  "id": "01_kihon-008",
-  "who": "nagi",
-  "text": "2014年には、流行語大賞のトップテンにも入ってる。",
-  "asr": "2014年には流行語対象のトップ10にも入ってる",
-  "ratio": 0.93,
-  "audio": "episodes/yokai_watch/voices/01_kihon-008.wav"
- },
- {
-  "kind": "誤読",
   "where": "ツー",
   "expect": "ツー",
   "reason": "台本は「ツー」、聞こえたのは「ニ」",
   "level": "低",
   "id": "01_kihon-014",
   "who": "baku",
-  "text": "ほな、俺らが打った分で、2作ってもらおか。",
-  "asr": "ほな、俺らが打った分で2作ってもらおうか?",
+  "text": "ほな、ウチらが打った分で、2作ってもらおか。",
+  "asr": "ほな、うちらが打った分で2作ってもらおうか",
   "ratio": 0.909,
   "audio": "episodes/yokai_watch/voices/01_kihon-014.wav"
- },
- {
-  "kind": "誤読",
-  "where": "ダイ",
-  "expect": "ダイ",
-  "reason": "台本は「ダイ」、聞こえたのは「ラ」",
-  "level": "低",
-  "id": "01_kihon-016",
-  "who": "nagi",
-  "text": "で、本題。eフィーバー妖怪ウォッチ。スマパチで、ホールデビューは2026年11月2日。",
-  "asr": "で、本来インフィーバー妖怪ウォッチスマパチでコールデビューは2026年11月2日。",
-  "ratio": 0.944,
-  "audio": "episodes/yokai_watch/voices/01_kihon-016.wav"
- },
- {
-  "kind": "脱落（辞書語）",
-  "where": "ー",
-  "expect": "オオアタリ",
-  "reason": "台本の「ー」が聞こえない（辞書語「大当たり」のところ）",
-  "level": "低",
-  "id": "01_kihon-018",
-  "who": "nagi",
-  "text": "大当たり確率は1/319。遊タイムは無しで、そのかわりフル時短。",
-  "asr": "お当たり確率は319分の1Uタイムはなしでその代わりフルシタン",
-  "ratio": 0.943,
-  "audio": "episodes/yokai_watch/voices/01_kihon-018.wav"
- },
- {
-  "kind": "脱落（辞書語）",
-  "where": "ユー",
-  "expect": "ユウタイム",
-  "reason": "台本の「ユー」が聞こえない（辞書語「遊タイム」のところ）",
-  "level": "低",
-  "id": "01_kihon-018",
-  "who": "nagi",
-  "text": "大当たり確率は1/319。遊タイムは無しで、そのかわりフル時短。",
-  "asr": "お当たり確率は319分の1Uタイムはなしでその代わりフルシタン",
-  "ratio": 0.943,
-  "audio": "episodes/yokai_watch/voices/01_kihon-018.wav"
- },
- {
-  "kind": "誤読（辞書語）",
-  "where": "ジ",
-  "expect": "ジタン",
-  "reason": "台本は「ジ」、聞こえたのは「シ」（辞書語「時短」のところ）",
-  "level": "低",
-  "id": "01_kihon-018",
-  "who": "nagi",
-  "text": "大当たり確率は1/319。遊タイムは無しで、そのかわりフル時短。",
-  "asr": "お当たり確率は319分の1Uタイムはなしでその代わりフルシタン",
-  "ratio": 0.943,
-  "audio": "episodes/yokai_watch/voices/01_kihon-018.wav"
  }
 ]
