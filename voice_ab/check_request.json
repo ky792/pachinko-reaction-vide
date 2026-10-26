@@ -3,7 +3,14 @@
  "model": "large-v3-turbo",
  "_run": "yokai-v6-all-b",
  "only": [
-  "01_kihon-013"
+  "01_kihon-008",
+  "01_kihon-009",
+  "01_kihon-010",
+  "01_kihon-011",
+  "01_kihon-012",
+  "01_kihon-013",
+  "01_kihon-014",
+  "01_kihon-015"
  ],
- "_try": 10
+ "_try": 11
 }
