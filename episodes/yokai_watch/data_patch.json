@@ -250,7 +250,12 @@
   "yokai_hadou": {
    "tag": "DATA LOG",
    "word": "妖怪ウォッチ2 覇道",
-   "sub": "2026年9月発表の『妖怪ウォッチ2』リメイク／Nintendo Switch 2"
+   "sub": "2026年9月発表の『妖怪ウォッチ2』リメイク／Nintendo Switch 2・グラフィック一新"
+  },
+  "yokai_ryukogo": {
+   "tag": "DATA LOG",
+   "word": "2014年 流行語大賞トップテン",
+   "sub": "「妖怪ウォッチ」がトップテン入り（ユーキャン新語・流行語大賞）"
   }
  },
  "intro": {
