@@ -3,7 +3,7 @@
  "model": "large-v3-turbo",
  "_run": "yokai-v6-all-b",
  "only": [
-  "02_hatsuatari-011"
+  "03_rush-006"
  ],
- "_try": 6
+ "_try": 7
 }
