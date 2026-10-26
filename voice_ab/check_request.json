@@ -4,13 +4,14 @@
  "_run": "yokai-v6-all-b",
  "only": [
   "01_kihon-008",
-  "01_kihon-009",
-  "01_kihon-010",
-  "01_kihon-011",
-  "01_kihon-012",
-  "01_kihon-013",
   "01_kihon-014",
-  "01_kihon-015"
+  "01_kihon-016",
+  "01_kihon-017",
+  "01_kihon-018",
+  "01_kihon-019",
+  "01_kihon-020",
+  "01_kihon-021",
+  "01_kihon-022"
  ],
- "_try": 12
+ "_try": 13
 }
