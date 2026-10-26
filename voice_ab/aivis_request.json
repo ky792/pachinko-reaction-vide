@@ -9,9 +9,9 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 2,
+ "_try": 3,
  "kana_only": false,
  "only": [
-  "02_kimatta-013"
+  "03_naze-013"
  ]
 }
