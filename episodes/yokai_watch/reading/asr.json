@@ -265,54 +265,54 @@
   "text": "転落か。行けへん日はほんまに一瞬で終わるからな。"
  },
  "03_rush-004": {
-  "sha1": "810201d060ef5056b1d56fb25eb5942f81dbbd02",
+  "sha1": "3986258c3c41aaefbbae69f7087911e9e5b3657e",
   "model": "large-v3-turbo",
-  "text": "ほなうちの発明の出番やRNC-01起動"
+  "text": "ん?スペック表の継続率トータル約80%ってなっとるのこのトータルってどういう内訳や?"
  },
  "03_rush-005": {
+  "sha1": "e72052cbf5b33edb0f0a0c2af3a854effbc27c52",
+  "model": "large-v3-turbo",
+  "text": "よっしゃ!あれ起動するか!RNC-01起動!"
+ },
+ "03_rush-006": {
   "sha1": "cfa04b003f9c1d68c7372ff5c7ea815d9b4abe7c",
   "model": "large-v3-turbo",
   "text": "レンの頭から煙出てるけど"
  },
- "03_rush-006": {
+ "03_rush-007": {
   "sha1": "cbc2a5dd83d714f0458f22da71b076965fffffb4",
   "model": "large-v3-turbo",
   "text": "いつものことやほっといたら止まる"
  },
- "03_rush-007": {
+ "03_rush-008": {
   "sha1": "033458bef89715ac3c4340567b3d72dc63a1e5fc",
   "model": "large-v3-turbo",
   "text": "解析結果、ラッシュだけで続く確率は約74%。"
  },
- "03_rush-008": {
+ "03_rush-009": {
   "sha1": "466e40992a048a66b669433e84dc1eb7647b773a",
   "model": "large-v3-turbo",
   "text": "転落しても時短100回がつく。ここで引き戻せるのが約22%。"
  },
- "03_rush-009": {
+ "03_rush-010": {
   "sha1": "3fddb31ab29262d102cbda90e99bc858785f57e4",
   "model": "large-v3-turbo",
   "text": "2つを合わせてトータル約80%"
  },
- "03_rush-010": {
+ "03_rush-011": {
   "sha1": "89b8702e731b6f88face69b2c7831def271ab3c5",
   "model": "large-v3-turbo",
   "text": "80か最近は継続そこそこで一発でかい台ばっかやのにこっちは続けて撮る方か"
  },
- "03_rush-011": {
+ "03_rush-012": {
   "sha1": "6e58bf0bf5629c72cd0f44f5f0dbab7d6f8790ce",
   "model": "large-v3-turbo",
   "text": "ラッシュに入ったらたたりは平均で4回弱"
  },
- "03_rush-012": {
+ "03_rush-013": {
   "sha1": "b795485a1d265e3c652c4eef5c96ef6d637052c7",
   "model": "large-v3-turbo",
   "text": "で、一回なんぼ出るん?"
- },
- "03_rush-013": {
-  "sha1": "1262af6b36e9b412985404d1db2c766f8e4b6c8f",
-  "model": "large-v3-turbo",
-  "text": "こまさん、2回目の出番屋、今度こそ頼むで!"
  },
  "03_rush-014": {
   "sha1": "d578aeecffec5c90f5125de7d92f686511849e4a",
