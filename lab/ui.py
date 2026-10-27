@@ -1198,7 +1198,7 @@ SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中�
     "pie": lambda d: max(1.3, 0.6 + 0.22 * len(d["slices"]) + 0.45),
     "spec_table": lambda d: 0.35 + 0.2 * len(d["rows"]) + 0.4,
     "versus": lambda d: 1.0, "meter": lambda d: 1.4,
-    "invention": lambda d: (2.6 if d.get("gag") == "smoke" else 1.4) + 0.45 + 0.7,   # lab/invention.py（起動＋煙＋1段目）
+    "invention": lambda d: 1e9,   # lab/invention.py：発明品はずっと動いている
 }
 OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45, "intro": 0.35, "logo": 0.35}
 

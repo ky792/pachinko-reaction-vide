@@ -216,7 +216,7 @@ def finish(fx, end, scene):
 
 
 # ---------------------------------------------------------------- 効果音（その場で合成・著作権フリー）
-LAB_SE = ("heartbeat", "clap", "alarm", "rumble", "rumble_long", "tick", "flame", "type", "boot", "blip", "puff")
+LAB_SE = ("heartbeat", "clap", "alarm", "rumble", "rumble_long", "tick", "flame", "type", "boot", "blip", "puff", "zap")
 
 
 _TYPE_N = [0]
@@ -289,6 +289,13 @@ def lab_se(kind, SR):
         n = int(0.16 * SR); t = np.arange(n) / SR
         f = np.where(t < 0.07, 1320, 1760)
         return (np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-((t % 0.08) / 0.05)) * 0.5).astype(np.float32)
+    if kind == "zap":         # バチバチ：短い電気のノイズを3回
+        n = int(0.9 * SR); t = np.arange(n) / SR
+        x = np.zeros(n, np.float32)
+        for b0 in (0.0, 0.15, 0.32):
+            m = (t >= b0) & (t < b0 + 0.1)
+            x[m] = (rng.standard_normal(m.sum()) * np.sign(np.sin(2 * np.pi * 120 * t[m]))) * 0.5
+        return x.astype(np.float32)
     if kind == "puff":        # 煙がポフッ：柔らかいノイズ
         n = int(0.7 * SR); t = np.arange(n) / SR
         x = rng.standard_normal(n)

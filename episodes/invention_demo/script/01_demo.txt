@@ -1,0 +1,57 @@
+# 発明品の見本（全7種）。声なし・字幕だけ（推定の長さ）
+@chapter demo
+@show invention:robot
+バク: 継続率分解ロボ、起動！
+ナギ: ……煙、出てるけど。
+@hl 1
+ナギ: 引き戻し、約22%。
+@hl 2
+ナギ: 合わせて、約80%。
+@pause 0.6
+@clear
+@show invention:glasses
+バク: スペック透視メガネ、装着！
+ナギ: まぶしい。
+@hl 1
+ナギ: 成功は、約46%。
+@pause 0.6
+@clear
+@show invention:portal
+バク: 時空転送装置、スイッチオン！
+ナギ: 2013年に到着。
+@hl 1
+ナギ: で、2026年にパチンコ。
+@pause 0.6
+@clear
+@show invention:radar
+バク: ハマり予報機、スキャン開始！
+ナギ: 500回ハマるのは、約21%。
+@hl 1
+ナギ: 1000回は、約4%。
+@pause 0.6
+@clear
+@show invention:scale
+バク: 出玉はかり、乗せるで！
+ナギ: まずは1500個。
+@hl 1
+ナギ: 3000個は、こっち。
+@pause 0.6
+@clear
+@show invention:roulette
+バク: 振り分けルーレット、回すで！
+ナギ: 1500個が約49%。
+@hl 1
+ナギ: ピン刺し失敗、約22%。
+@hl 2
+ナギ: 成功、約19%。
+@hl 3
+ナギ: ウバウネ、約6%。
+@pause 0.6
+@clear
+@show invention:calc
+バク: ボーダー電卓、計算開始！
+ナギ: 4円等価で、約17回。
+@hl 1
+ナギ: 1円なら、約13.6回。
+@pause 0.6
+@clear

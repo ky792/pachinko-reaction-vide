@@ -230,6 +230,8 @@ def state_key(scene, t):
             continue
         if c["type"] == "tsukkomi":
             continue
+        if c["type"] == "invention":   # 発明品はずっと動いている（lab/invention.py）
+            return None
         tl, dur = t - c["start"], c["end"] - c["start"]
         settle = ui.SETTLE.get(c["type"], lambda d: 0.6)(c.get("data", {}))
         outro = ui.OUTRO.get(c["type"], 0.45)

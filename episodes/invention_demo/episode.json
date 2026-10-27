@@ -1,0 +1,10 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "background": "../yokai_watch/images/bg_kv.png",
+ "theme": "goggai",
+ "bgm": "newmachine_matsuri.wav",
+ "bgm_gain": 0.12,
+ "gap": 0.12,
+ "_note": "発明品の見本（声なし・確認用）。公開しない"
+}

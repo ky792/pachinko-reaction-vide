@@ -300,8 +300,9 @@ def build_chapter(ep_dir, script_path, data):
                 # 発明品（docs/NAGIBAKU_WORLD.md）：起動音→（煙）→結果の1段目。@hl 1/2… で段を足す
                 d = cue["data"] = invmod.resolve(d)
                 scene["se"].append({"t": t + 0.1, "kind": "boot", "gain": 0.22})
-                if d.get("gag") == "smoke":
-                    scene["se"].append({"t": t + 0.6, "kind": "puff", "gain": 0.25})
+                gag_se = {"smoke": ("puff", 0.6, 0.25), "sparks": ("zap", 0.6, 0.2), "flash": ("piko", 0.85, 0.22)}.get(d.get("gag"))
+                if gag_se:
+                    scene["se"].append({"t": t + gag_se[1], "kind": gag_se[0], "gain": gag_se[2]})
                 if not d.get("hold"):
                     scene["se"].append({"t": t + invmod.BOOT_SEC, "kind": "blip", "gain": 0.2})
             cur = cue
