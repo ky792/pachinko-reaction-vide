@@ -216,7 +216,7 @@ def finish(fx, end, scene):
 
 
 # ---------------------------------------------------------------- 効果音（その場で合成・著作権フリー）
-LAB_SE = ("heartbeat", "clap", "alarm", "rumble", "rumble_long", "tick", "flame", "type")
+LAB_SE = ("heartbeat", "clap", "alarm", "rumble", "rumble_long", "tick", "flame", "type", "boot", "blip", "puff")
 
 
 _TYPE_N = [0]
@@ -275,6 +275,26 @@ def lab_se(kind, SR):
         for _ in range(3):
             x = np.convolve(x, np.ones(12) / 12, mode="same")
         x *= np.minimum(1, t / 0.08) * np.exp(-t / 0.5) * 3.0
+        return x.astype(np.float32)
+    if kind == "boot":        # 発明品の起動：キュイーンと上がる音＋ピピッ（lab/invention.py）
+        n = int(1.25 * SR); t = np.arange(n) / SR
+        f = 260 + 1300 * np.clip(t / 0.85, 0, 1) ** 1.6
+        x = np.sin(2 * np.pi * np.cumsum(f) / SR) * 0.45 + 0.18 * np.sign(np.sin(2 * np.pi * np.cumsum(f * 2) / SR))
+        x *= np.minimum(1, t / 0.03) * np.clip((0.95 - t) / 0.12, 0, 1)
+        for b0 in (1.0, 1.12):
+            m = (t >= b0) & (t < b0 + 0.07)
+            x[m] += np.sign(np.sin(2 * np.pi * 1760 * (t[m] - b0))) * 0.3
+        return x.astype(np.float32)
+    if kind == "blip":        # 解析結果の段が出る：短い2音のピコッ
+        n = int(0.16 * SR); t = np.arange(n) / SR
+        f = np.where(t < 0.07, 1320, 1760)
+        return (np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-((t % 0.08) / 0.05)) * 0.5).astype(np.float32)
+    if kind == "puff":        # 煙がポフッ：柔らかいノイズ
+        n = int(0.7 * SR); t = np.arange(n) / SR
+        x = rng.standard_normal(n)
+        for _ in range(4):
+            x = np.convolve(x, np.ones(16) / 16, mode="same")
+        x *= np.minimum(1, t / 0.04) * np.exp(-t / 0.22) * 4.0
         return x.astype(np.float32)
     return None
 

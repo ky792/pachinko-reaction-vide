@@ -1,0 +1,40 @@
+{
+ "_note": "ナギバク研究所の発明品カタログ（docs/NAGIBAKU_WORLD.md）。台本では @show invention:<キー> の device にここの id を書く。登場した回は appearances に足す",
+ "inventions": {
+  "keizoku_robot": {
+   "no": 1,
+   "name": "継続率分解ロボ",
+   "read": "けいぞくりつぶんかいロボ",
+   "maker": "バク",
+   "purpose": "メーカー公表のトータル継続率を、RUSH単体の継続率と、時短（引き戻し）の上乗せに分けて見せる",
+   "use_when": "トータル継続率が『RUSH継続＋時短引き戻しの合算』の台。数字は公式スペックの注記で内訳を確認してから",
+   "visual": "robot",
+   "gag": "起動すると頭から煙が出る",
+   "appearances": [
+    {"episode": "yokai_watch", "chapter": "03_rush", "date": "2026-10-27", "what": "トータル約80％＝RUSH継続約74％＋コマチャレンジ引き戻し約22％（SANKYO公式）"}
+   ]
+  },
+  "spec_glasses": {
+   "no": 2,
+   "name": "スペック透視メガネ",
+   "read": "スペックとうしメガネ",
+   "maker": "バク",
+   "purpose": "スペック表の細かい条件（振り分けの内訳、突入条件、小当たり経由など）を透かして見せる",
+   "use_when": "見落としやすい条件が勝ち負けに効く台",
+   "visual": "glasses",
+   "gag": "かけると周りがまぶしすぎる",
+   "appearances": []
+  },
+  "time_portal": {
+   "no": 3,
+   "name": "時空転送装置",
+   "read": "じくうてんそうそうち",
+   "maker": "バク",
+   "purpose": "過去の台・当時の規制・当時のゲーム性へ飛ぶ（歴史回の年代の切り替え）",
+   "use_when": "歴史回で章の年代が大きく変わるとき。今の基準と照らし合わせて語るルールは変えない",
+   "visual": "portal",
+   "gag": "行き先の年がたまにずれる",
+   "appearances": []
+  }
+ }
+}

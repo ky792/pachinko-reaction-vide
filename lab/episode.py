@@ -31,6 +31,7 @@ import ui  # noqa: E402
 import skit  # noqa: E402
 import reading  # noqa: E402
 import fx as fxmod  # noqa: E402
+import invention as invmod  # noqa: E402
 
 SR = 44100
 CHARS_PER_SEC = {"nagi": 5.0, "baku": 5.3}   # 音声が無いときの推定読み上げ速度
@@ -295,6 +296,13 @@ def build_chapter(ep_dir, script_path, data):
             cue = {"type": kind, "start": t, "end": None, "data": d, "id": f"{kind}:{name}"}
             if kind == "machine":
                 cue["image"] = d.get("image")
+            if kind == "invention":
+                # 発明品（docs/NAGIBAKU_WORLD.md）：起動音→（煙）→結果の1段目。@hl 1/2… で段を足す
+                d = cue["data"] = invmod.resolve(d)
+                scene["se"].append({"t": t + 0.1, "kind": "boot", "gain": 0.22})
+                if d.get("gag") == "smoke":
+                    scene["se"].append({"t": t + 0.6, "kind": "puff", "gain": 0.25})
+                scene["se"].append({"t": t + invmod.BOOT_SEC, "kind": "blip", "gain": 0.2})
             cur = cue
             set_layout("machine" if kind == "machine" else "normal", t - 0.1)
             scene["se"].append({"t": t + 0.02, "kind": "pon" if kind == "analysis" else "shu", "gain": 0.22})
@@ -388,9 +396,11 @@ def build_chapter(ep_dir, script_path, data):
                 scene["focus"].append({"who": dr["focus"], "start": round(t - 0.1, 3), "end": round(fend, 3),
                                        "zoom": dr.get("zoom", 1.2)})   # @dir zoom=1.8 で大きく寄る（掛け合いの見せ場のカット）
             if pending_hl is not None:
-                if cur is not None and cur["type"] in ("pie", "meter"):   # meter は @hl 1 で上乗せぶんを足す
+                if cur is not None and cur["type"] in ("pie", "meter", "invention"):   # meter は @hl 1 で上乗せぶんを足す
                     for idx, frac in pending_hl:
                         cur.setdefault("hl", []).append([round(t + frac * dur, 3), idx])
+                        if cur["type"] == "invention" and idx is not None:
+                            scene["se"].append({"t": round(t + frac * dur, 3), "kind": "blip", "gain": 0.2})
                 pending_hl = None
             if dr.get("se"):
                 scene["se"].append({"t": t, "kind": dr["se"], "gain": 0.18})

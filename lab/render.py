@@ -28,6 +28,7 @@ import ui  # noqa: E402
 import fx as fxmod  # noqa: E402
 import motion  # noqa: E402
 import skit  # noqa: E402
+import invention as invmod  # noqa: E402
 
 SR = 44100
 CHAR_H = {"normal": 330, "machine": 250, "hidden": 330, "skit": 330}
@@ -127,7 +128,7 @@ def _vignette():
     return _VIG["v"]
 
 
-BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup", "pie", "spec_table", "versus", "meter")
+BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup", "pie", "spec_table", "versus", "meter", "invention")
 
 
 def year_at(scene, t):
@@ -182,6 +183,8 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
         ui.meter(cv, tl, dur, d, meter_add_since(c, c["start"] + tl))
     elif tp == "analysis" and data_tank is not None:
         ui.analysis(cv, tl, dur, d, data_tank)
+    elif tp == "invention":
+        invmod.draw(cv, tl, dur, d, *invmod.stage_at(c, c["start"] + tl))
 
 
 HL_SEC = 0.3   # 円グラフの注目が移るのにかける秒数
@@ -240,6 +243,10 @@ def state_key(scene, t):
                 since = meter_add_since(c, t)
                 if since is not None and since < METER_ADD_SEC:
                     return None
+            if c["type"] == "invention":
+                if invmod.busy(c, t):
+                    return None
+                hc = invmod.stage_at(c, t)[0]
             key.append(("hl", i, hc))
         key.append(("c", i))
     for i, sb in enumerate(scene["subs"]):
