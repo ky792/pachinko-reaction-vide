@@ -1,15 +1,15 @@
 [
  {
   "kind": "余分な音",
-  "where": "ワカッテタ",
+  "where": "ホナンテ",
   "expect": "",
-  "reason": "台本にない「ワカッテタ」が聞こえる",
+  "reason": "台本にない「ホナンテ」が聞こえる",
   "level": "中",
   "id": "03_rush-006",
   "who": "baku",
   "text": "いつものことや。",
-  "asr": "いつものことや分かってた",
-  "ratio": 0.737,
+  "asr": "いつものことや、ほなんて",
+  "ratio": 0.778,
   "audio": "episodes/yokai_watch/voices/03_rush-006.wav"
  }
 ]
