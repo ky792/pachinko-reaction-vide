@@ -40,6 +40,10 @@ def resolve(d):
     out.setdefault("name", e["name"])
     out.setdefault("no", e["no"])
     out.setdefault("visual", e.get("visual", "gadget"))
+    if e.get("sprite") and (SPRITE_DIR / e["sprite"]).is_dir():   # 絵がそろっていれば図形の代わりに絵を使う
+        out.setdefault("sprite", e["sprite"])
+        out["visual"] = "sprite"
+    out.setdefault("kind", e.get("kind"))
     return out
 
 
@@ -138,7 +142,7 @@ def _fit_text(d, xy, txt, w, size, col, weight="black"):
 
 
 def _robot(s):
-    """No.01 継続率分解ロボ：箱型の頭、スキャンする目、胸のモニターに今の数字。段が出るたびに右腕を上げる"""
+    """No.01 RNC-01（絵が無いときの図形版）：箱型の頭、スキャンする目、胸のモニターに今の数字。段が出るたびに右腕を上げる"""
     img, d = _ctx()
     lw, ln = _lw(), _line()
     blink_on = _pulse(s, 0.9) > 0.5 or s["tl"] < BOOT_SEC
@@ -421,7 +425,45 @@ def _simulator(s):
     return img
 
 
-DEVICES = {"simulator": _simulator, "robot": _robot, "glasses": _glasses, "portal": _portal, "radar": _radar,
+SPRITE_DIR = ui.ASSETS / "inventions"
+
+
+@lru_cache(maxsize=64)
+def _sprite(folder, face, box):
+    """絵の発明品（generator/assets/inventions/<folder>/<face>.png）を box に収まる大きさで読む"""
+    f = SPRITE_DIR / folder / f"{face}.png"
+    if not f.exists():
+        f = SPRITE_DIR / folder / "base.png"
+    im = Image.open(f).convert("RGBA")
+    k = min(box[0] / im.width, box[1] / im.height)
+    return im.resize((max(1, int(im.width * k)), max(1, int(im.height * k))), Image.LANCZOS)
+
+
+def _face_for(s):
+    """セリフの流れに合わせた表情：起動中は考え中、ギャグ中は困り顔、結果ごとに分析中→元気→解説"""
+    data, tl, stage = s["data"], s["tl"], s["stage"]
+    faces = data.get("faces") or ["bunseki", "genki", "kaisetsu"]
+    if tl < BOOT_SEC:
+        return "kangae"
+    if stage == 0:
+        return {"smoke": "komari", "sparks": "bikkuri", "flash": "bikkuri"}.get(data.get("gag"), "kangae")
+    if s["since"] is not None and s["since"] < 0.5 and stage > 1:
+        return "genki"   # 段が出た直後はうれしそう
+    return faces[min(stage - 1, len(faces) - 1)]
+
+
+def _sprite_device(s):
+    """絵で描いた発明品（RNC-01 など）。呼吸（少し伸び縮み）と、段が出たときのぴょんは draw 側の動きと重なる"""
+    folder = s["data"].get("sprite")
+    im = _sprite(folder, _face_for(s), (DEV_W - 10, DEV_H - 20))
+    br = 1 + 0.018 * math.sin(s["tl"] * 3.1)
+    im = im.resize((im.width, max(1, int(im.height * br))), Image.BILINEAR)
+    img = Image.new("RGBA", (DEV_W, DEV_H), (0, 0, 0, 0))
+    img.alpha_composite(im, ((DEV_W - im.width) // 2, DEV_H - im.height - 6))
+    return img
+
+
+DEVICES = {"sprite": _sprite_device, "simulator": _simulator, "robot": _robot, "glasses": _glasses, "portal": _portal, "radar": _radar,
            "scale": _scale, "roulette": _roulette, "calculator": _calc}
 
 
@@ -483,7 +525,11 @@ def draw(canvas, tl, dur, data, stage, since):
     ui.lab_label(pd, (RIGHT_X0 - x0, 40), f"BAKU WORKS  ·  INVENTION No.{int(data.get('no', 0)):02d}", ORANGE, 20)
     sep_x = RIGHT_X0 - x0 - 40
     pd.line((sep_x, 80, sep_x, y1 - y0 - 40), fill=_line(), width=3 if ui.THEME.get("paper") else 2)
-    pd.text((DEVICE_C[0] - x0, y1 - y0 - 66), data["name"], font=ui.font("black", 40), fill=ui.TEXT, anchor="mm")
+    if data.get("kind"):
+        pd.text((DEVICE_C[0] - x0, y1 - y0 - 82), data["name"], font=ui.font("black", 40), fill=ui.TEXT, anchor="mm")
+        pd.text((DEVICE_C[0] - x0, y1 - y0 - 42), data["kind"], font=ui.font("bold", 24), fill=ui.SUB, anchor="mm")
+    else:
+        pd.text((DEVICE_C[0] - x0, y1 - y0 - 66), data["name"], font=ui.font("black", 40), fill=ui.TEXT, anchor="mm")
     ui.paste(lay, panel, (x0, y0 + 24 * (1 - kp)), kp)
 
     # 発明品：上から落ちてきて、起動中は小刻みに震え、そのあとはふわふわ浮く

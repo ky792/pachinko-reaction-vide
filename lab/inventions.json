@@ -3,13 +3,13 @@
  "inventions": {
   "keizoku_robot": {
    "no": 1,
-   "name": "継続率分解ロボ",
-   "read": "けいぞくりつぶんかいロボ",
+   "name": "RNC-01",
+   "read": "アールエヌシー ゼロワン",
    "maker": "バク",
    "purpose": "メーカー公表のトータル継続率を、RUSH単体の継続率と、時短（引き戻し）の上乗せに分けて見せる",
    "use_when": "トータル継続率が『RUSH継続＋時短引き戻しの合算』の台。数字は公式スペックの注記で内訳を確認してから",
    "visual": "robot",
-   "gag": "起動すると頭から煙が出る",
+   "gag": "起動すると煙が出て困り顔になる（gag: smoke）",
    "appearances": [
     {
      "episode": "yokai_watch",
@@ -17,7 +17,14 @@
      "date": "2026-10-27",
      "what": "RUSH章：トータル約80%＝RUSH継続約74%＋コマチャレンジ引き戻し約22%（SANKYO公式）。起動で煙のギャグ"
     }
-   ]
+   ],
+   "kind": "継続率解析ロボ",
+   "sprite": "rnc01",
+   "call": {
+    "baku": "RNC-01（正式名称で呼ぶ）",
+    "nagi": "レン（長いので）"
+   },
+   "design": "白×黒のバク（獏）型ロボ。背中に青いデータタンク（うさぎのマーク）、電子アイ、足裏ライト、タブレット。表情は generator/assets/inventions/rnc01/（base・genki・bunseki・kangae・komari・tsukare・bikkuri・kaisetsu・nemu）。元絵は _sheet.png"
   },
   "spec_glasses": {
    "no": 2,
