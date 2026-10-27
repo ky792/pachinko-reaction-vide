@@ -5,18 +5,18 @@
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "garo2_fix_s54",
+   "name": "garo2_fix_s53",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
     "--duration-scale",
     "0.88",
     "--seed",
-    "54"
+    "53"
    ]
   }
  ],
- "_try": 27,
+ "_try": 28,
  "only": [
   "03_rush-006"
  ]
