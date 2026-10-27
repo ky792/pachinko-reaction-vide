@@ -182,8 +182,11 @@ def tempo_voice(vpath):
     """voice_tempo が 1 以外なら、速めた写しを voices_tempo<値>/ に作ってそのパスを返す（元の声は変えない）"""
     if abs(VOICE_TEMPO - 1.0) < 1e-3:
         return vpath
-    out = vpath.parent.parent / f"voices_tempo{VOICE_TEMPO:g}" / vpath.name
-    if not out.exists() or out.stat().st_mtime < vpath.stat().st_mtime:
+    # 写しの名前に元の声の中身のハッシュを入れる（ID をずらして git mv した声は更新日時が古いままなので、日時では古い写しを使ってしまう）
+    import hashlib
+    h = hashlib.sha1(vpath.read_bytes()).hexdigest()[:12]
+    out = vpath.parent.parent / f"voices_tempo{VOICE_TEMPO:g}" / f"{vpath.stem}.{h}.wav"
+    if not out.exists():
         out.parent.mkdir(exist_ok=True)
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(vpath), "-af", f"atempo={VOICE_TEMPO}", str(out)], check=True)
     return out
