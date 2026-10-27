@@ -9,12 +9,10 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 30,
+ "_try": 31,
  "kana_only": false,
  "only": [
   "03_rush-005",
-  "03_rush-007",
-  "03_rush-008",
-  "03_rush-009"
+  "03_rush-007"
  ]
 }
