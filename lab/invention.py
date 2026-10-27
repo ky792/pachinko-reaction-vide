@@ -254,7 +254,7 @@ def _results(lay, data, stage, since):
     steps = list(data.get("steps", []))
     rows = steps + ([dict(data["total"], total=True)] if data.get("total") else [])
     d = ImageDraw.Draw(lay)
-    y = 262
+    y = 290
     for i, row in enumerate(rows[:stage]):
         newest = i == stage - 1
         k = ui.ease_out(ui.prog(since, 0, 0.35)) if newest and since is not None else 1.0
@@ -299,16 +299,16 @@ def _results(lay, data, stage, since):
 
 def _row(lay, row, y, k):
     """結果の1段。左に見出しと補足、右に大きな数字。total は数字を赤（号外）／金（研究所）で"""
-    h = 112 if row.get("s") else 84
+    h = 100 if row.get("s") else 80
     tmp = Image.new("RGBA", (RIGHT_X1 - RIGHT_X0, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(tmp)
     col = ui.KEY if row.get("total") else _col(row.get("c"))
-    d.rectangle((0, 8, 10, h - 22), fill=col)
-    d.text((28, 34), row["k"], font=ui.font("black", 36), fill=ui.TEXT, anchor="lm")
+    d.rectangle((0, 6, 10, h - 18), fill=col)
+    d.text((28, 30), row["k"], font=ui.font("black", 36), fill=ui.TEXT, anchor="lm")
     if row.get("s"):
-        d.text((28, 78), row["s"], font=ui.font("medium", 26), fill=ui.SUB, anchor="lm")
+        d.text((28, 70), row["s"], font=ui.font("medium", 26), fill=ui.SUB, anchor="lm")
     fv = ui.font("black", 78 if row.get("total") else 68)
-    d.text((tmp.width - 4, 40), row["v"], font=fv, fill=col, anchor="rm",
+    d.text((tmp.width - 4, 38), row["v"], font=fv, fill=col, anchor="rm",
            stroke_width=4 if ui.THEME.get("paper") else 0, stroke_fill=ui.PANEL)
     ui.paste(lay, tmp, (RIGHT_X0 + 60 * (1 - k), y), k)
     return h
