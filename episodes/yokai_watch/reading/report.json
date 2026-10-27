@@ -1,15 +1,1 @@
-[
- {
-  "kind": "余分な音",
-  "where": "ホナンテ",
-  "expect": "",
-  "reason": "台本にない「ホナンテ」が聞こえる",
-  "level": "中",
-  "id": "03_rush-006",
-  "who": "baku",
-  "text": "いつものことや。",
-  "asr": "いつものことや、ほなんて",
-  "ratio": 0.778,
-  "audio": "episodes/yokai_watch/voices/03_rush-006.wav"
- }
-]
+[]
