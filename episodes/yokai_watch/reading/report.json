@@ -1,1 +1,28 @@
-[]
+[
+ {
+  "kind": "誤読",
+  "where": "ワン",
+  "expect": "ワン",
+  "reason": "台本は「ワン」、聞こえたのは「イチ」",
+  "level": "低",
+  "id": "03_rush-004",
+  "who": "baku",
+  "text": "ほな、ウチの発明の出番や。RNC-01、起動！",
+  "asr": "ほなうちの発明の出番やRNC-01起動",
+  "ratio": 0.909,
+  "audio": "episodes/yokai_watch/voices/03_rush-004.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "レン",
+  "expect": "レン",
+  "reason": "台本は「レン」、聞こえたのは「ネ」",
+  "level": "低",
+  "id": "03_rush-005",
+  "who": "nagi",
+  "text": "……レン、煙出てるけど。",
+  "asr": "ね煙出てるけど",
+  "ratio": 0.842,
+  "audio": "episodes/yokai_watch/voices/03_rush-005.wav"
+ }
+]
