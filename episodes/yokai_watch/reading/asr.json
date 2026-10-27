@@ -275,14 +275,14 @@
   "text": "煙出てるけど"
  },
  "03_rush-006": {
-  "sha1": "9993b9ab64e08cb5b4e99c9db729c28b62ad599a",
+  "sha1": "448bc9ce3a1e4cea685d353471ceab897d26bfdd",
   "model": "large-v3-turbo",
-  "text": "気にせんでー?いつものことや!"
+  "text": "いつものことや分かってた"
  },
  "03_rush-007": {
-  "sha1": "5b405dd17976ccb3d0983ac9cd278382cc357387",
+  "sha1": "033458bef89715ac3c4340567b3d72dc63a1e5fc",
   "model": "large-v3-turbo",
-  "text": "解析結果、ラッシュだけの計測は約74%。"
+  "text": "解析結果、ラッシュだけで続く確率は約74%。"
  },
  "03_rush-008": {
   "sha1": "466e40992a048a66b669433e84dc1eb7647b773a",

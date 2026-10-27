@@ -1,1 +1,15 @@
-[]
+[
+ {
+  "kind": "余分な音",
+  "where": "ワカッテタ",
+  "expect": "",
+  "reason": "台本にない「ワカッテタ」が聞こえる",
+  "level": "中",
+  "id": "03_rush-006",
+  "who": "baku",
+  "text": "いつものことや。",
+  "asr": "いつものことや分かってた",
+  "ratio": 0.737,
+  "audio": "episodes/yokai_watch/voices/03_rush-006.wav"
+ }
+]
