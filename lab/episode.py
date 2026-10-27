@@ -302,7 +302,8 @@ def build_chapter(ep_dir, script_path, data):
                 scene["se"].append({"t": t + 0.1, "kind": "boot", "gain": 0.22})
                 if d.get("gag") == "smoke":
                     scene["se"].append({"t": t + 0.6, "kind": "puff", "gain": 0.25})
-                scene["se"].append({"t": t + invmod.BOOT_SEC, "kind": "blip", "gain": 0.2})
+                if not d.get("hold"):
+                    scene["se"].append({"t": t + invmod.BOOT_SEC, "kind": "blip", "gain": 0.2})
             cur = cue
             set_layout("machine" if kind == "machine" else "normal", t - 0.1)
             scene["se"].append({"t": t + 0.02, "kind": "pon" if kind == "analysis" else "shu", "gain": 0.22})

@@ -11,7 +11,12 @@
    "visual": "robot",
    "gag": "起動すると頭から煙が出る",
    "appearances": [
-    {"episode": "yokai_watch", "chapter": "03_rush", "date": "2026-10-27", "what": "トータル約80％＝RUSH継続約74％＋コマチャレンジ引き戻し約22％（SANKYO公式）"}
+    {
+     "episode": "yokai_watch",
+     "chapter": "03_rush",
+     "date": "2026-10-27",
+     "what": "RUSH章：トータル約80%＝RUSH継続約74%＋コマチャレンジ引き戻し約22%（SANKYO公式）。起動で煙のギャグ"
+    }
    ]
   },
   "spec_glasses": {

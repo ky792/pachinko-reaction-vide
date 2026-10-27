@@ -57,7 +57,8 @@ def stage_at(c, t):
     tl = t - c["start"]
     if tl < BOOT_SEC:
         return 0, None
-    st, since = 1, tl - BOOT_SEC
+    hold = c.get("data", {}).get("hold")   # hold=true：1段目も @hl 0 を待つ（それまで ANALYZING のまま）
+    st, since = (0, None) if hold else (1, tl - BOOT_SEC)
     for ht, idx in c.get("hl", []):
         if idx is not None and t >= ht and idx + 1 > st:
             st, since = idx + 1, t - ht
@@ -228,9 +229,10 @@ def draw(canvas, tl, dur, data, stage, since):
 
     d = ImageDraw.Draw(lay)
     d.text((RIGHT_X0, y0 + 92), data.get("heading", ""), font=ui.font("black", 50), fill=ui.TEXT, anchor="lm")
-    if tl < BOOT_SEC + 0.3:
-        ka = 1 - ui.ease_in_out(ui.prog(tl, BOOT_SEC, 0.3))
-        _analyzing(lay, tl, ka)
+    if stage == 0:
+        _analyzing(lay, tl, 1.0)
+    elif since is not None and since < 0.3 and (data.get("hold") and stage == 1 or not data.get("hold") and tl < BOOT_SEC + 0.3):
+        _analyzing(lay, tl, 1 - ui.ease_in_out(since / 0.3))
     if stage > 0:
         _results(lay, data, stage, since)
     ui.paste(canvas, lay, (0, 0), out * kp if kp < 1 else out)
@@ -242,8 +244,12 @@ def _analyzing(lay, tl, a):
     tmp = Image.new("RGBA", (RIGHT_X1 - RIGHT_X0, 220), (0, 0, 0, 0))
     d = ImageDraw.Draw(tmp)
     dots = "." * (1 + int(tl * 6) % 3)
+    if tl >= BOOT_SEC:
+        dots = "..."   # 起動が終わったら止める（描画を使い回せるように）
     d.text((0, 60), "ANALYZING" + dots, font=ui.font("black", 54), fill=ORANGE, anchor="lm")
     k = ui.prog(tl, 0.55, BOOT_SEC - 0.6)
+    if k >= 1:
+        dots = "..."
     w = tmp.width
     d.rectangle((0, 130, w, 160), outline=_line(), width=3)
     d.rectangle((4, 134, 4 + (w - 8) * k, 156), fill=ORANGE)
