@@ -265,49 +265,49 @@
   "text": "転落か。行けへん日はほんまに一瞬で終わるからな。"
  },
  "03_rush-004": {
-  "sha1": "f96a2c05a4a5233153e284b9abc9746a020dc7dc",
+  "sha1": "ea71789c01051353c803cc706720386cef230862",
   "model": "large-v3-turbo",
-  "text": "ダッシュだけの継続は約74%、負けても時短100回がついて、そこで引き戻せばラッシュに戻る。"
+  "text": "ほなうちの発明の出番や継続率分解ロボ起動"
  },
  "03_rush-005": {
-  "sha1": "5b24f2d621325da668faf913d6d962a48efeee36",
+  "sha1": "c0f15ae751ea9c8a2bfecc951cce1b9adf7f4878",
   "model": "large-v3-turbo",
-  "text": "それ込みでトータル約80%"
+  "text": "ひむり出てるけど"
  },
  "03_rush-006": {
+  "sha1": "ff4cb1436952edb5aa16c1a8a6435b66cd1ac364",
+  "model": "large-v3-turbo",
+  "text": "気にせんで、いつものことや"
+ },
+ "03_rush-007": {
+  "sha1": "2d939b37e34a483c4e9528fbb34296318ac0f336",
+  "model": "large-v3-turbo",
+  "text": "解析結果、ラッシュだけの計測は約74%"
+ },
+ "03_rush-008": {
+  "sha1": "466e40992a048a66b669433e84dc1eb7647b773a",
+  "model": "large-v3-turbo",
+  "text": "転落しても時短100回がつく。ここで引き戻せるのが約22%。"
+ },
+ "03_rush-009": {
+  "sha1": "3fddb31ab29262d102cbda90e99bc858785f57e4",
+  "model": "large-v3-turbo",
+  "text": "2つを合わせてトータル約80%"
+ },
+ "03_rush-010": {
   "sha1": "89b8702e731b6f88face69b2c7831def271ab3c5",
   "model": "large-v3-turbo",
   "text": "80か最近は継続そこそこで一発でかい台ばっかやのにこっちは続けて撮る方か"
  },
- "03_rush-007": {
+ "03_rush-011": {
   "sha1": "6e58bf0bf5629c72cd0f44f5f0dbab7d6f8790ce",
   "model": "large-v3-turbo",
   "text": "ラッシュに入ったらたたりは平均で4回弱"
  },
- "03_rush-008": {
+ "03_rush-012": {
   "sha1": "b795485a1d265e3c652c4eef5c96ef6d637052c7",
   "model": "large-v3-turbo",
   "text": "で、一回なんぼ出るん?"
- },
- "03_rush-009": {
-  "sha1": "9b19acde055aaecd8d2d2ac5a461f4ed51dbefb8",
-  "model": "large-v3-turbo",
-  "text": "全部1500じゃないそれは次"
- },
- "03_rush-010": {
-  "sha1": "c61b10b3870aeaddb279d6e028bce7eaf65c4d49",
-  "model": "large-v3-turbo",
-  "text": "ダッシュに入ってからの当たりは平均で4回弱。"
- },
- "03_rush-011": {
-  "sha1": "dad8fe69b77f1e39e75bfa2be188b8fb54903c45",
-  "model": "large-v3-turbo",
-  "text": "で、一回なんぼ出る?そこが一番大事や"
- },
- "03_rush-012": {
-  "sha1": "5311d88ca7156443db84e629c110610fe122bf2d",
-  "model": "large-v3-turbo",
-  "text": "そこの約22%を足してトータル継続は約80%"
  },
  "03_rush-013": {
   "sha1": "1262af6b36e9b412985404d1db2c766f8e4b6c8f",
