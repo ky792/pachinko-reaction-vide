@@ -49,6 +49,8 @@ def settle(d):
 
 
 def n_stages(d):
+    if d.get("sim"):
+        return 2   # 1段目＝シミュレーションを回す、2段目＝理論値と平均を重ねる
     return len(d.get("steps", [])) + (1 if d.get("total") else 0)
 
 
@@ -367,7 +369,59 @@ def _calc(s):
     return img
 
 
-DEVICES = {"robot": _robot, "glasses": _glasses, "portal": _portal, "radar": _radar,
+def _sim_draws(sim):
+    """上乗せシミュレーター：毎回同じ結果になるよう、seed 固定で trials 回ぶん引く（確率どおりの振り分け）"""
+    import numpy as np
+    ps = np.array([b["p"] for b in sim["buckets"]], float)
+    ps = ps / ps.sum()
+    return np.random.default_rng(int(sim.get("seed", 7))).choice(len(ps), size=int(sim.get("trials", 1000)), p=ps)
+
+
+def sim_progress(data, stage, since):
+    """何回目まで回したか（0〜trials）"""
+    sim = data["sim"]
+    n = int(sim.get("trials", 1000))
+    if stage <= 0 or since is None:
+        return 0
+    if stage >= 2:
+        return n
+    k = min(1.0, since / float(sim.get("run_sec", 4.0)))
+    return int(round(n * (k ** 1.6)))   # 最初はゆっくり、だんだん速く
+
+
+def _simulator(s):
+    """No.08 上乗せシミュレーター：画面で回数がカウントアップ。横のレバーが回すたびにガチャッと動き、今の結果がピカッ"""
+    img, d = _ctx()
+    lw, ln = _lw(), _line()
+    data = s["data"]
+    sim = data.get("sim", {"buckets": [{"k": "?", "p": 1}]})
+    n = sim_progress(data, s["stage"], s["since"])
+    _box(d, (40, 40, 360, 440), 28)
+    _box(d, (70, 74, 330, 250), 14, f=ui.hexc("#16161A"))
+    if n > 0:
+        draws = _sim_draws(sim)
+        last = sim["buckets"][int(draws[n - 1])]["k"]
+        _fit_text(d, (200, 130), last, 240, 50, ui.hexc("#FFD21F"))
+        _fit_text(d, (200, 210), f"{n:,} / {int(sim.get('trials', 1000)):,}回", 240, 30, ui.hexc("#9BFFB8"), "bold")
+    else:
+        _fit_text(d, (200, 160), "READY" if s["tl"] > BOOT_SEC else "BOOT…", 240, 46, ui.hexc("#9BFFB8"))
+    for i in range(5):   # ランプ
+        on = (int(s["tl"] * 8) + i) % 5 == 0 if n and n < int(sim.get("trials", 1000)) else s["glow"] > 0.5 and i % 2 == 0
+        x = 96 + i * 52
+        d.ellipse((x - 16, 272, x + 16, 304), fill=ui.hexc("#FFD21F") if on else ui.hexc("#5A5A5A"), outline=ln, width=3)
+    for j in range(3):   # 放出口と玉
+        d.rounded_rectangle((90 + j * 80, 330, 150 + j * 80, 410), 10, fill=ui.hexc("#16161A"), outline=ln, width=3)
+    running = 0 < n < int(sim.get("trials", 1000))
+    lever = math.sin(s["tl"] * 24) if running else 0
+    lx, ly = 380, 220
+    tip = (lx + 10 + 26 * lever, ly - 120 + 30 * abs(lever))
+    d.line((lx, ly, tip[0], tip[1]), fill=ln, width=lw + 4)
+    d.ellipse((tip[0] - 24, tip[1] - 24, tip[0] + 24, tip[1] + 24), fill=ORANGE, outline=ln, width=lw)
+    _box(d, (360, 200, 400, 260), 8, f=ORANGE)
+    return img
+
+
+DEVICES = {"simulator": _simulator, "robot": _robot, "glasses": _glasses, "portal": _portal, "radar": _radar,
            "scale": _scale, "roulette": _roulette, "calculator": _calc}
 
 
@@ -460,7 +514,7 @@ def draw(canvas, tl, dur, data, stage, since):
     elif since is not None and since < 0.3 and (data.get("hold") and stage == 1 or not data.get("hold") and tl < BOOT_SEC + 0.3):
         _analyzing(lay, tl, 1 - ui.ease_in_out(since / 0.3))
     if stage > 0:
-        _results(lay, data, stage, since)
+        (_sim_results if data.get("sim") else _results)(lay, data, stage, since)
     ui.paste(canvas, lay, (0, 0), out * kp if kp < 1 else out)
 
 
@@ -547,3 +601,50 @@ def _row(lay, row, y, k):
            stroke_width=4 if ui.THEME.get("paper") else 0, stroke_fill=ui.PANEL)
     ui.paste(lay, tmp, (RIGHT_X0 + 60 * (1 - k), y), k)
     return h
+
+
+def _sim_results(lay, data, stage, since):
+    """上乗せシミュレーターの結果：出玉ごとの棒グラフが、回した回数に合わせて伸びる。2段目で理論値の線と平均"""
+    import numpy as np
+    sim = data["sim"]
+    bk = sim["buckets"]
+    n = sim_progress(data, stage, since)
+    draws = _sim_draws(sim)[:n]
+    counts = np.bincount(draws, minlength=len(bk)) if n else np.zeros(len(bk), int)
+    d = ImageDraw.Draw(lay)
+    x0, x1, base, top = RIGHT_X0 + 10, RIGHT_X1 - 10, 600, 300
+    pmax = max(b["p"] for b in bk) * 1.25
+    slot = (x1 - x0) / len(bk)
+    bw = slot * 0.62
+    d.line((x0, base, x1, base), fill=_line(), width=ui.LINE_W + 1)
+    show_theory = stage >= 2
+    kt = ui.ease_out(min(1.0, since / 0.5)) if show_theory and since is not None else (1.0 if show_theory else 0)
+    for i, b in enumerate(bk):
+        cx = x0 + slot * (i + 0.5)
+        pct = 100 * counts[i] / n if n else 0
+        h = (base - top) * pct / pmax
+        col = ui.hexc(PAL[i % len(PAL)])
+        d.rectangle((cx - bw / 2, base - h, cx + bw / 2, base), fill=col, outline=_line(), width=2)
+        d.text((cx, base + 28), b["k"], font=ui.font("black", 26), fill=ui.TEXT, anchor="mm")
+        if n:
+            d.text((cx, base - h - 22), f"{pct:.1f}%", font=ui.font("black", 30), fill=col, anchor="mm",
+                   stroke_width=3 if ui.THEME.get("paper") else 0, stroke_fill=ui.PANEL)
+        if kt > 0:   # 理論値（確率）の線
+            ty = base - (base - top) * b["p"] / pmax
+            for xx in range(int(cx - bw / 2 - 10), int(cx + bw / 2 + 10), 18):
+                xe = min(xx + 10, cx + bw / 2 + 10)
+                d.line((xx, ty, xe, ty), fill=(22, 22, 26, int(255 * kt)), width=9)          # 墨のふち
+                d.line((xx, ty, xe, ty), fill=(255, 210, 31, int(255 * kt)), width=5)        # 黄色の点線
+    head = (f"{n:,}回の結果" + ("　黄色の点線＝確率どおり" if show_theory else "")) if n else ""
+    d.text((x1, 296), head, font=ui.font("bold", 26), fill=ui.SUB, anchor="rm")
+    foot = 664
+    if n:
+        vals = np.array(sim["values"], float)
+        avg = float(vals[draws].mean())
+        txt = f"シミュレーション平均 約{avg:,.0f}個"
+        if show_theory:
+            th = float((vals * np.array([b["p"] for b in bk]) / sum(b["p"] for b in bk)).sum())
+            txt += f"　／　確率どおりの平均 約{th:,.0f}個"
+        d.text((RIGHT_X0, foot + 20), txt, font=ui.font("bold", 30), fill=ui.TEXT, anchor="lm")
+    if data.get("note"):
+        d.text((RIGHT_X0, foot + 72), data["note"], font=ui.font("medium", 22), fill=ui.SUB, anchor="lm")
