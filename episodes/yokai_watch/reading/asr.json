@@ -270,19 +270,19 @@
   "text": "ほなうちの発明の出番や継続率分解ロボ起動"
  },
  "03_rush-005": {
-  "sha1": "c0f15ae751ea9c8a2bfecc951cce1b9adf7f4878",
+  "sha1": "939ea982ac817efa85f95e0d5638452038dd21fd",
   "model": "large-v3-turbo",
-  "text": "ひむり出てるけど"
+  "text": "煙出てるけど"
  },
  "03_rush-006": {
-  "sha1": "ff4cb1436952edb5aa16c1a8a6435b66cd1ac364",
+  "sha1": "9993b9ab64e08cb5b4e99c9db729c28b62ad599a",
   "model": "large-v3-turbo",
-  "text": "気にせんで、いつものことや"
+  "text": "気にせんでー?いつものことや!"
  },
  "03_rush-007": {
-  "sha1": "2d939b37e34a483c4e9528fbb34296318ac0f336",
+  "sha1": "5b405dd17976ccb3d0983ac9cd278382cc357387",
   "model": "large-v3-turbo",
-  "text": "解析結果、ラッシュだけの計測は約74%"
+  "text": "解析結果、ラッシュだけの計測は約74%。"
  },
  "03_rush-008": {
   "sha1": "466e40992a048a66b669433e84dc1eb7647b773a",
