@@ -18,6 +18,8 @@ import ui
 
 CATALOG_PATH = Path(__file__).resolve().parent / "inventions.json"
 BOOT_SEC = 1.4      # 起動の演出（この後に結果の1段目が出る）
+LAUNCH_SEC = 2.5    # launch=true：起動シーン（画面が切り替わる）の長さ
+LAUNCH_OPEN = 1.95  # 起動シーンのシャッターが開き始める時刻（ここからパネルの時間が始まる）
 STEP_SEC = 0.7      # 段が足されるときの動き（この間は描画を使い回さない）
 
 PANEL_BOX = (200, 150, 1720, 770)
@@ -58,9 +60,14 @@ def n_stages(d):
     return len(d.get("steps", [])) + (1 if d.get("total") else 0)
 
 
+def launch_offset(d):
+    """起動シーンがある発明品は、パネルの時間をシャッターが開くところから数える"""
+    return LAUNCH_OPEN if d.get("launch") else 0.0
+
+
 def stage_at(c, t):
     """(出ている段の数, 最後の段が出てからの秒数)。起動が終わるまでは 0 段"""
-    tl = t - c["start"]
+    tl = t - c["start"] - launch_offset(c.get("data", {}))
     if tl < BOOT_SEC:
         return 0, None
     hold = c.get("data", {}).get("hold")   # hold=true：1段目も @hl 0 を待つ（それまで ANALYZING のまま）
@@ -581,7 +588,9 @@ GAGS = {"smoke": 2.6, "sparks": 1.8, "flash": 1.4}   # ギャグ → 終わる�
 # ---------------------------------------------------------------- パネル
 def draw(canvas, tl, dur, data, stage, since):
     out = 1 - ui.ease_in_out(ui.prog(tl, dur - 0.4, 0.4))
-    if out <= 0:
+    off = launch_offset(data)
+    tl, dur = tl - off, dur - off
+    if out <= 0 or tl < 0:
         return
     W, H = ui.W, ui.H
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
@@ -851,3 +860,114 @@ def _sim_results(lay, data, stage, since):
         d.text((RIGHT_X0, foot + 20), txt, font=ui.font("bold", 30), fill=ui.TEXT, anchor="lm")
     if data.get("note"):
         d.text((RIGHT_X0, foot + 72), data["note"], font=ui.font("medium", 22), fill=ui.SUB, anchor="lm")
+
+
+# ---------------------------------------------------------------- 起動シーン（launch=true）：画面が切り替わる
+def _hazard(d, y0, y1, shift, W):
+    """黄色と黒の斜めしま（警告テープ）"""
+    d.rectangle((0, y0, W, y1), fill=ui.hexc("#FFD21F"))
+    step = 70
+    for x in range(-step * 2, W + step * 2, step):
+        xx = x + shift % step
+        d.polygon([(xx, y0), (xx + 34, y0), (xx + 34 - (y1 - y0), y1), (xx - (y1 - y0), y1)], fill=ui.hexc("#16161A"))
+
+
+def _shutter_k(tl):
+    """シャッターの閉じ具合（1＝閉じている）と、その下に見せる画面（"scene"＝起動シーン / "normal"＝いつもの画面）"""
+    e = ui.ease_in_out
+    if tl < 0.26:
+        return e(tl / 0.26), "normal"                       # 閉じる
+    if tl < 0.46:
+        return 1 - e((tl - 0.26) / 0.2), "scene"            # 開くと起動シーン
+    if tl < LAUNCH_OPEN - 0.22:
+        return 0.0, "scene"
+    if tl < LAUNCH_OPEN:
+        return e((tl - (LAUNCH_OPEN - 0.22)) / 0.22), "scene"   # また閉じる
+    return 1 - e(min(1.0, (tl - LAUNCH_OPEN) / (LAUNCH_SEC - LAUNCH_OPEN))), "normal"   # 開くといつもの画面
+
+
+def _launch_scene(tl, data):
+    W, H = ui.W, ui.H
+    sc = Image.new("RGBA", (W, H), ui.hexc("#070C18"))
+    d = ImageDraw.Draw(sc)
+    hy = 640
+    for i in range(14):   # 奥へ流れる床のグリッド
+        z = ((i + tl * 2.2) % 14) / 14
+        y = hy + (H - hy) * z ** 2
+        d.line((0, y, W, y), fill=(40, 120, 220, int(40 + 160 * z)), width=2)
+    for j in range(-12, 13):
+        d.line((W / 2 + j * 30, hy, W / 2 + j * 260, H), fill=(40, 120, 220, 90), width=2)
+    wake = ui.prog(tl, 1.15, 0.6)
+    for r, a in ((260 + 420 * wake, int(220 * (1 - wake))), (210, 70)):   # 目を覚ますと光の輪が広がる
+        if a > 0:
+            d.ellipse((W / 2 - r, 520 - r, W / 2 + r, 520 + r), outline=(100, 191, 255, a), width=10)
+    folder = data.get("sprite")
+    if folder:   # ロボ：最初は黒い影 → 光って色が付き、飛び起きる
+        face = "nemu" if tl < 1.15 else ("bikkuri" if tl < 1.6 else "base")
+        im = _sprite(folder, face, (700, 520))
+        pop = 1 + 0.08 * max(0.0, 1 - abs(tl - 1.2) / 0.2)
+        im = im.resize((int(im.width * pop), int(im.height * pop)), Image.LANCZOS)
+        lit = ui.ease_out(ui.prog(tl, 1.1, 0.25))
+        if lit < 1:
+            sil = Image.new("RGBA", im.size, (14, 20, 36, 255))
+            sil.putalpha(im.getchannel("A"))
+            im = Image.blend(sil, im, lit)
+        hop = -50 * math.sin(math.pi * ui.prog(tl, 1.15, 0.4)) if 1.15 < tl < 1.55 else 0
+        sc.alpha_composite(im, (int(W / 2 - im.width / 2), int(980 - im.height + hop)))
+    kn = ui.ease_out(ui.prog(tl, 0.4, 0.3))
+    glitch = 8 * math.sin(tl * 90) if 0.4 < tl < 0.7 else 0
+    ui.draw_spaced(d, (W / 2 + glitch, 120), "BAKU WORKS  ·  INVENTION No.%02d" % int(data.get("no", 0)),
+                   ui.font("bold", 30), (240, 122, 18, int(255 * kn)), 6, anchor="mm")
+    name = data.get("name", "")
+    shown = name[: max(0, int((tl - 0.45) * 16))]
+    d.text((W / 2 + glitch, 230), shown, font=ui.font("black", 150), fill=(255, 255, 255, int(255 * kn)), anchor="mm",
+           stroke_width=6, stroke_fill=(47, 127, 224, 255))
+    if data.get("kind"):
+        d.text((W / 2, 372), data["kind"], font=ui.font("bold", 40), fill=(154, 168, 188, int(255 * kn)), anchor="mm")
+    for i, ck in enumerate(("POWER", "SENSOR", "DATA TANK", "LINK")):   # 起動チェック
+        st = 0.55 + 0.14 * i
+        if tl < st:
+            continue
+        y = 460 + i * 52
+        ok = tl > st + 0.1
+        d.text((130, y), ck, font=ui.font("bold", 30), fill=(124, 255, 178, 255), anchor="lm")
+        d.text((370, y), "OK" if ok else "...", font=ui.font("black", 30),
+               fill=(124, 255, 178, 255) if ok else (154, 168, 188, 255), anchor="lm")
+    if tl > 1.2:
+        ko = ui.ease_out_back(ui.prog(tl, 1.2, 0.3), 2.0)
+        tmp = Image.new("RGBA", (720, 130), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((360, 65), "SYSTEM ONLINE", font=ui.font("black", 72), fill=ui.hexc("#FFD21F"),
+                                   anchor="mm", stroke_width=5, stroke_fill=ui.hexc("#16161A"))
+        s2 = max(0.05, 1.5 - 0.5 * ko)
+        tmp = tmp.resize((int(720 * s2), int(130 * s2)), Image.LANCZOS)
+        ui.paste(sc, tmp, (W - 110 - tmp.width, 560 - tmp.height / 2), min(1.0, ko))
+    _hazard(d, 0, 54, tl * 400, W)
+    _hazard(d, H - 54, H, -tl * 400, W)
+    fl = max(0.0, 1 - abs(tl - 1.18) / 0.12)   # 目を覚ます瞬間のフラッシュ
+    if fl > 0:   # 重ねて塗る（直接塗ると透けてしまう）
+        sc.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(220 * fl))))
+    return sc
+
+
+def draw_launch(cv, tl, data):
+    """起動シーン：シャッターが閉じる → 暗い研究所でロボが光って目を覚ます（SYSTEM ONLINE）→ シャッターが閉じて開くと元の画面"""
+    if tl < 0 or tl >= LAUNCH_SEC:
+        return
+    W, H = ui.W, ui.H
+    k, under = _shutter_k(tl)
+    if under == "scene":
+        cv.alpha_composite(_launch_scene(tl, data))
+    if k > 0.001:
+        sh = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        d = ImageDraw.Draw(sh)
+        half = W / 2 * k
+        col = ui.hexc("#16161A")
+        d.rectangle((0, 0, half, H), fill=col)
+        d.rectangle((W - half, 0, W, H), fill=col)
+        for x0 in (half - 40, W - half):   # シャッターの縁の警告テープ
+            d.rectangle((x0, 0, x0 + 40, H), fill=ui.hexc("#FFD21F"))
+            for y in range(-80, H + 80, 60):
+                d.polygon([(x0, y), (x0 + 40, y - 30), (x0 + 40, y - 6), (x0, y + 24)], fill=col)
+        if k > 0.98:   # 閉じきったところに「ガシャン」の文字
+            d.text((W / 2, H / 2), "BAKU WORKS", font=ui.font("black", 90), fill=ui.hexc("#FFD21F"), anchor="mm")
+        cv.alpha_composite(sh)

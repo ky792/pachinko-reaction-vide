@@ -302,6 +302,13 @@ def build_chapter(ep_dir, script_path, data):
             if kind == "invention":
                 # 発明品（docs/NAGIBAKU_WORLD.md）：起動音→（煙）→結果の1段目。@hl 1/2… で段を足す
                 d = cue["data"] = invmod.resolve(d)
+                off = invmod.launch_offset(d)
+                if off:   # 起動シーン：シャッター（ガシャン×2）、起動音、目を覚ます一打。パネルの時間はそのぶん後ろへ
+                    scene["se"] += [{"t": t + 0.2, "kind": "impact", "gain": 0.22}, {"t": t + 0.35, "kind": "boot", "gain": 0.24},
+                                    {"t": t + 1.18, "kind": "don", "gain": 0.3}, {"t": t + off - 0.02, "kind": "impact", "gain": 0.2},
+                                    {"t": t + off + 0.05, "kind": "shu", "gain": 0.2}]
+                    cue["start"] = t
+                    t += off
                 scene["se"].append({"t": t + 0.1, "kind": "boot", "gain": 0.22})
                 gag_se = {"smoke": ("puff", 0.6, 0.25), "sparks": ("zap", 0.6, 0.2), "flash": ("piko", 0.85, 0.22)}.get(d.get("gag"))
                 if gag_se:

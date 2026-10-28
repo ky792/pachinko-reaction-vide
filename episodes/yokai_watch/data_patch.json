@@ -508,7 +508,8 @@
     "SCAN  コマチャレンジ  100回",
     "MATCH SANKYO公式 ※4  合算",
     "CALC  74% ＋ 26% × 22%"
-   ]
+   ],
+   "launch": true
   }
  }
 }

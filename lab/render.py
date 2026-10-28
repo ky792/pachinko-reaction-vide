@@ -403,6 +403,9 @@ def render_frame(scene, t, images):
         z = cv.resize((int(ui.W * 1.02), int(ui.H * 1.02)), ui.Image.BILINEAR)
         cv.paste(z, (int(-ui.W * 0.01 + dx), int(-ui.H * 0.01 + dy)))
     cv.alpha_composite(over)
+    for c in scene["cues"]:                  # 発明品の起動シーン（launch=true）：画面ごと切り替える。字幕も覆う
+        if c["type"] == "invention" and c.get("data", {}).get("launch") and c["start"] <= t < c["start"] + invmod.LAUNCH_SEC:
+            invmod.draw_launch(cv, t - c["start"], c["data"])
     wipe(cv, scene, t)
     return cv.convert("RGB")
 
