@@ -439,27 +439,95 @@ def _sprite(folder, face, box):
     return im.resize((max(1, int(im.width * k)), max(1, int(im.height * k))), Image.LANCZOS)
 
 
+WAKE_SEC = 0.55      # ここまでは寝ている（落ちてくる間）
+SURPRISE_SEC = 1.15  # 起動で飛び起きる（びっくり）
+KOMARI_SEC = 3.2     # 煙で困り顔 → そのあとは疲れ顔で結果待ち
+
+
 def _face_for(s):
-    """セリフの流れに合わせた表情：起動中は考え中、ギャグ中は困り顔、結果ごとに分析中→元気→解説"""
+    """表情の流れ（表情シート rnc01/ を使う）：
+    寝てる → 起動で飛び起きる（びっくり）→ 考え中 → 煙なら困り顔 → 疲れ顔で待つ → 分析中 → 段ごとににっこり → 解説"""
     data, tl, stage = s["data"], s["tl"], s["stage"]
     faces = data.get("faces") or ["bunseki", "genki", "kaisetsu"]
-    if tl < BOOT_SEC:
-        return "kangae"
+    if tl < WAKE_SEC:
+        return "nemu"
+    if tl < SURPRISE_SEC:
+        return "bikkuri"
     if stage == 0:
-        return {"smoke": "komari", "sparks": "bikkuri", "flash": "bikkuri"}.get(data.get("gag"), "kangae")
-    if s["since"] is not None and s["since"] < 0.5 and stage > 1:
+        gag = data.get("gag")
+        if tl < BOOT_SEC or not gag:
+            return "kangae"
+        if gag == "smoke":
+            return "komari" if tl < KOMARI_SEC else "tsukare"
+        return "bikkuri" if tl < KOMARI_SEC else "kangae"
+    if s["since"] is not None and s["since"] < 0.6 and stage > 1:
         return "genki"   # 段が出た直後はうれしそう
     return faces[min(stage - 1, len(faces) - 1)]
 
 
+def _face_switch(s):
+    """今の表情に変わってから何秒か（さかのぼって探す。最大0.3秒）"""
+    cur = _face_for(s)
+    for k in range(1, 11):
+        back = dict(s, tl=s["tl"] - 0.03 * k,
+                    since=None if s["since"] is None else s["since"] - 0.03 * k)
+        if back["since"] is not None and back["since"] < 0:
+            back["stage"] = max(0, s["stage"] - 1)
+            back["since"] = None if back["stage"] == 0 else 9
+        if back["tl"] < 0 or _face_for(back) != cur:
+            return cur, 0.03 * (k - 1), (_face_for(back) if back["tl"] >= 0 else None)
+    return cur, 9.0, None
+
+
+def _pose(face, tl, sw):
+    """表情ごとの動き：(横のずれ, 縦のずれ, 回転, 横の伸び, 縦の伸び)"""
+    if face == "nemu":      # すやすや：ゆっくり大きく呼吸
+        b = math.sin(tl * 2.2)
+        return 0, 0, 0, 1 + 0.02 * b, 1 - 0.03 * b
+    if face == "bikkuri":   # 飛び起きる：ぴょんと跳ねて縦に伸びる
+        k = min(1.0, sw / 0.45)
+        return 0, -60 * math.sin(math.pi * k), 0, 1 - 0.06 * math.sin(math.pi * k), 1 + 0.1 * math.sin(math.pi * k)
+    if face == "kangae":    # 考え中：首をかしげて左右にゆらゆら
+        return 0, 0, 5 * math.sin(tl * 2.4), 1, 1
+    if face == "komari":    # 困り顔：小刻みにふるえる
+        return 3 * math.sin(tl * 55), 0, 0, 1, 1
+    if face == "tsukare":   # 疲れ顔：沈んでゆっくりため息
+        b = math.sin(tl * 1.4)
+        return 0, 8 + 4 * b, 0, 1 + 0.02 * b, 1 - 0.03 * b
+    if face == "genki":     # にっこり：小さくジャンプ
+        k = min(1.0, sw / 0.35)
+        return 0, -30 * math.sin(math.pi * k), 0, 1, 1 + 0.05 * math.sin(math.pi * k)
+    if face == "kaisetsu":  # 解説：画面を指して少し前のめり
+        return 0, 0, -3 + 1.5 * math.sin(tl * 1.8), 1, 1
+    b = math.sin(tl * 3.1)  # 分析中など：ふつうの呼吸
+    return 0, 0, 0, 1, 1 + 0.018 * b
+
+
+def _sprite_layer(folder, face, tl, sw, alpha=1.0):
+    im = _sprite(folder, face, (DEV_W - 30, DEV_H - 40))
+    dx, dy, rot, sx, sy = _pose(face, tl, sw)
+    pop = 1 + 0.12 * max(0.0, 1 - sw / 0.18)   # 表情が変わった瞬間に少しふくらむ
+    w, h = max(1, int(im.width * sx * pop)), max(1, int(im.height * sy * pop))
+    im = im.resize((w, h), Image.BILINEAR)
+    if abs(rot) > 0.1:
+        im = im.rotate(rot, resample=Image.BICUBIC, expand=True)
+    layer = Image.new("RGBA", (DEV_W, DEV_H), (0, 0, 0, 0))
+    layer.alpha_composite(im, (int((DEV_W - im.width) / 2 + dx), int(DEV_H - im.height - 34 + dy)))
+    if alpha < 1:
+        layer = ui.fade(layer, alpha)
+    return layer
+
+
 def _sprite_device(s):
-    """絵で描いた発明品（RNC-01 など）。呼吸（少し伸び縮み）と、段が出たときのぴょんは draw 側の動きと重なる"""
+    """絵で描いた発明品（RNC-01 など）。表情シートの絵を流れで切り替え、表情ごとに動きを付ける。切り替えは0.15秒で重ねる"""
     folder = s["data"].get("sprite")
-    im = _sprite(folder, _face_for(s), (DEV_W - 10, DEV_H - 20))
-    br = 1 + 0.018 * math.sin(s["tl"] * 3.1)
-    im = im.resize((im.width, max(1, int(im.height * br))), Image.BILINEAR)
+    face, sw, prev = _face_switch(s)
     img = Image.new("RGBA", (DEV_W, DEV_H), (0, 0, 0, 0))
-    img.alpha_composite(im, ((DEV_W - im.width) // 2, DEV_H - im.height - 6))
+    if prev and sw < 0.15:
+        img.alpha_composite(_sprite_layer(folder, prev, s["tl"], 9.0, 1 - sw / 0.15))
+        img.alpha_composite(_sprite_layer(folder, face, s["tl"], sw, sw / 0.15))
+    else:
+        img.alpha_composite(_sprite_layer(folder, face, s["tl"], sw))
     return img
 
 
