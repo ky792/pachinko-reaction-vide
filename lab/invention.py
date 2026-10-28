@@ -624,30 +624,119 @@ def draw(canvas, tl, dur, data, stage, since):
     d = ImageDraw.Draw(lay)
     d.text((RIGHT_X0, y0 + 92), data.get("heading", ""), font=ui.font("black", 50), fill=ui.TEXT, anchor="lm")
     if stage == 0:
-        _analyzing(lay, tl, 1.0)
-    elif since is not None and since < 0.3 and (data.get("hold") and stage == 1 or not data.get("hold") and tl < BOOT_SEC + 0.3):
-        _analyzing(lay, tl, 1 - ui.ease_in_out(since / 0.3))
+        _analyzing(lay, tl, 1.0, data)
+        if tl > BOOT_SEC:
+            _beam(lay, tl)
+    elif since is not None and since < 0.75 and (data.get("hold") and stage == 1 or not data.get("hold") and tl < BOOT_SEC + 0.75):
+        # 結果が出る瞬間：COMPLETE のスタンプを押してから、解析画面が消える
+        _analyzing(lay, tl, 1 - ui.ease_in_out(min(1.0, max(0.0, since - 0.45) / 0.15)), data, done=min(1.0, since / 0.45) + 1e-3)
     if stage > 0:
-        (_sim_results if data.get("sim") else _results)(lay, data, stage, since)
+        first = stage == 1 and since is not None and (data.get("hold") or tl < BOOT_SEC + 0.75)
+        if first and since < 0.6:
+            pass   # COMPLETE のスタンプの間は、まだ結果を出さない
+        else:
+            (_sim_results if data.get("sim") else _results)(lay, data, stage, (since - 0.6) if first else since)
     ui.paste(canvas, lay, (0, 0), out * kp if kp < 1 else out)
 
 
-def _analyzing(lay, tl, a):
+def _log_lines(data):
+    """解析ログに流す行。data["log"] があればそれ、無ければ結果の見出しから作る"""
+    if data.get("log"):
+        return list(data["log"])
+    rows = list(data.get("steps", [])) + ([data["total"]] if data.get("total") else [])
+    return ["LOAD   SPEC DATA"] + [f"SCAN   {r['k']}" for r in rows] + ["CALC   ..."]
+
+
+def _analyzing(lay, tl, a, data=None, done=0.0):
+    """解析中の画面：端末のログが1文字ずつ打たれ、横でデータの波形が揺れ、進捗が99%まで上がる。
+    done（0〜1）は結果が出た瞬間の『COMPLETE』の出方"""
     if a <= 0 or tl < 0.45:
         return
-    tmp = Image.new("RGBA", (RIGHT_X1 - RIGHT_X0, 220), (0, 0, 0, 0))
+    data = data or {}
+    W0 = RIGHT_X1 - RIGHT_X0
+    tmp = Image.new("RGBA", (W0, 380), (0, 0, 0, 0))
     d = ImageDraw.Draw(tmp)
-    dots = "." * (1 + int(tl * 6) % 3)
-    if tl >= BOOT_SEC:
-        dots = "..."   # 起動が終わったら止める（描画を使い回せるように）
-    d.text((0, 60), "ANALYZING" + dots, font=ui.font("black", 54), fill=ORANGE, anchor="lm")
-    k = ui.prog(tl, 0.55, BOOT_SEC - 0.6)
-    if k >= 1:
-        dots = "..."
-    w = tmp.width
-    d.rectangle((0, 130, w, 160), outline=_line(), width=3)
-    d.rectangle((4, 134, 4 + (w - 8) * k, 156), fill=ORANGE)
-    ui.paste(lay, tmp, (RIGHT_X0, 330), a)
+    paper = ui.THEME.get("paper")
+    term_bg = ui.hexc("#16161A") if paper else ui.hexc("#0B1220")
+    green = ui.hexc("#7CFFB2")
+    # 端末の窓
+    d.rounded_rectangle((0, 0, W0 - 1, 300), 10, fill=term_bg, outline=_line(), width=3)
+    for i, c in enumerate(("#E2343B", "#FFB020", "#3FAE6A")):
+        d.ellipse((16 + i * 24, 14, 32 + i * 24, 30), fill=ui.hexc(c))
+    d.text((W0 - 18, 22), "RNC-01 / ANALYZE", font=ui.font("bold", 18), fill=ui.hexc("#6B7A90"), anchor="rm")
+    # 走査線（上から下へ流れる）
+    sy = 40 + (tl * 160) % 250
+    d.rectangle((2, sy, W0 - 3, sy + 3), fill=(124, 255, 178, 60))
+    # ログを1文字ずつ（左側）
+    lines = _log_lines(data)
+    cps = 26.0
+    budget = max(0.0, (tl - 0.6) * cps) if done <= 0 else 1e9   # 結果が出たらログは全部出しきる
+    f = ui.font("bold", 24)
+    y = 58
+    for ln in lines:
+        if budget <= 0:
+            break
+        shown = ln[: int(budget)]
+        budget -= len(ln) + 6   # 行の終わりで少し待つ
+        d.text((22, y), "> " + shown, font=f, fill=green, anchor="lm")
+        if 0 < budget + len(ln) + 6 - len(shown) <= len(ln) + 6 and len(shown) < len(ln) and int(tl * 4) % 2 == 0:
+            d.rectangle((22 + ui.text_w("> " + shown, f) + 4, y - 12, 22 + ui.text_w("> " + shown, f) + 18, y + 12), fill=green)
+        y += 40
+    if budget > 0 and int(tl * 3) % 2 == 0:   # 全部打ち終わったら次の行でカーソルが点滅
+        d.rectangle((22, y - 12, 36, y + 12), fill=green)
+    # 右側：データの波形（イコライザー）
+    gx0, gx1, gy = int(W0 * 0.62), W0 - 24, 270
+    nbar = 14
+    bw = (gx1 - gx0) / nbar
+    for i in range(nbar):
+        h = 40 + 150 * (0.5 + 0.5 * math.sin(tl * (5 + i * 0.7) + i * 1.3)) * (0.6 + 0.4 * math.sin(tl * 1.7 + i))
+        if done > 0:
+            h *= max(0.0, 1 - min(1.0, done))
+        if h < 1:
+            continue
+        x = gx0 + i * bw
+        col = ui.hexc("#64BFFF") if i % 3 else ORANGE
+        d.rectangle((x + 3, gy - h, x + bw - 3, gy), fill=col)
+    d.line((gx0, gy + 2, gx1, gy + 2), fill=ui.hexc("#6B7A90"), width=2)
+    # 進捗（99%で止まって、結果が出たら100%）
+    k = 0.99 * (1 - math.exp(-max(0.0, tl - 0.55) / 1.6))
+    if done > 0:
+        k = 1.0
+    pct = int(k * 100)
+    by = 322
+    label = "ANALYZING" + "." * (1 + int(tl * 4) % 3)
+    d.text((0, by - 2), label if done <= 0 else "COMPLETE", font=ui.font("black", 34), fill=ORANGE, anchor="lm")
+    d.text((W0, by - 2), f"{pct}%", font=ui.font("black", 34), fill=ORANGE, anchor="rm")
+    d.rectangle((0, by + 24, W0 - 1, by + 50), outline=_line(), width=3)
+    d.rectangle((4, by + 28, 4 + (W0 - 9) * k, by + 46), fill=ORANGE)
+    # 進捗バーの上を光が走る
+    gx = 4 + ((tl * 380) % max(1, (W0 - 9) * k))
+    d.rectangle((gx, by + 28, gx + 24, by + 46), fill=(255, 255, 255, 120))
+    ui.paste(lay, tmp, (RIGHT_X0, 284), a)
+    if done > 0:   # COMPLETE のスタンプ
+        ks = ui.ease_out_back(min(1.0, done * 2.2), 2.0)
+        st = Image.new("RGBA", (520, 140), (0, 0, 0, 0))
+        sd = ImageDraw.Draw(st)
+        sd.rounded_rectangle((6, 6, 514, 134), 14, outline=ui.KEY, width=8)
+        sd.text((260, 72), "COMPLETE", font=ui.font("black", 76), fill=ui.KEY, anchor="mm")
+        st = st.rotate(-6, resample=Image.BICUBIC, expand=True)
+        sc = max(0.05, 1.6 - 0.6 * ks)
+        st = st.resize((int(st.width * sc), int(st.height * sc)), Image.LANCZOS)
+        ui.paste(lay, st, (RIGHT_X0 + W0 / 2 - st.width / 2, 430 - st.height / 2), a * min(1.0, done * 3))
+
+
+def _beam(lay, tl):
+    """レン（発明品）から解析画面へ、データの粒が流れていく"""
+    d = ImageDraw.Draw(lay)
+    sx, sy = DEVICE_C[0] + 120, DEVICE_C[1] - 40
+    ex, ey = RIGHT_X0 + 20, 450
+    for j in range(10):
+        ph = (tl * 0.9 + j / 10) % 1.0
+        x = sx + (ex - sx) * ph
+        y = sy + (ey - sy) * ph - 80 * math.sin(math.pi * ph)
+        a = int(255 * math.sin(math.pi * ph))
+        ch = "01%#"[j % 4]
+        d.text((x, y), ch, font=ui.font("black", 26), fill=(100, 191, 255, a), anchor="mm")
 
 
 def _results(lay, data, stage, since):
