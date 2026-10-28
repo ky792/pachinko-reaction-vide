@@ -304,9 +304,9 @@ def build_chapter(ep_dir, script_path, data):
                 d = cue["data"] = invmod.resolve(d)
                 off = invmod.launch_offset(d)
                 if off:   # 起動シーン：シャッター（ガシャン×2）、起動音、目を覚ます一打。パネルの時間はそのぶん後ろへ
-                    scene["se"] += [{"t": t + 0.2, "kind": "impact", "gain": 0.22}, {"t": t + 0.35, "kind": "boot", "gain": 0.24},
-                                    {"t": t + 1.18, "kind": "don", "gain": 0.3}, {"t": t + off - 0.02, "kind": "impact", "gain": 0.2},
-                                    {"t": t + off + 0.05, "kind": "shu", "gain": 0.2}]
+                    scene["se"] += invmod.launch_se(t)
+                    scene["bgm_track"] += [{"t": round(t + 0.3, 3), "level": 0.45, "dur": 0.4},          # 起動シーンの間はBGMを絞る
+                                           {"t": round(t + off + 0.2, 3), "level": 1.0, "dur": 0.8}]
                     cue["start"] = t
                     t += off
                 scene["se"].append({"t": t + 0.1, "kind": "boot", "gain": 0.22})

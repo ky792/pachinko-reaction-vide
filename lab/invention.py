@@ -18,8 +18,12 @@ import ui
 
 CATALOG_PATH = Path(__file__).resolve().parent / "inventions.json"
 BOOT_SEC = 1.4      # 起動の演出（この後に結果の1段目が出る）
-LAUNCH_SEC = 2.5    # launch=true：起動シーン（画面が切り替わる）の長さ
-LAUNCH_OPEN = 1.95  # 起動シーンのシャッターが開き始める時刻（ここからパネルの時間が始まる）
+LAUNCH_SEC = 6.3    # launch=true：起動シーン（画面が切り替わる）の長さ
+LAUNCH_OPEN = 5.75  # 起動シーンのシャッターが開き始める時刻（ここからパネルの時間が始まる）
+# 起動シーンの段取り（秒）
+L_SHUT, L_HOLD, L_OPEN1 = 0.35, 0.75, 1.0       # 閉じる／ロゴを見せる／開いて暗い研究所へ
+L_CHECK0, L_CHARGE0, L_WAKE = 1.15, 2.55, 3.75  # 起動チェック開始／充電開始／目を覚ます（フラッシュ）
+L_NAME0, L_ONLINE = 4.05, 4.95                  # 名前が1文字ずつ落ちてくる／SYSTEM ONLINE
 STEP_SEC = 0.7      # 段が足されるときの動き（この間は描画を使い回さない）
 
 PANEL_BOX = (200, 150, 1720, 770)
@@ -656,12 +660,100 @@ def _log_lines(data):
     return ["LOAD   SPEC DATA"] + [f"SCAN   {r['k']}" for r in rows] + ["CALC   ..."]
 
 
+TARGET_END = 3.7   # spec_rows があるとき：ここまではスペック表にカーソルを合わせる場面、そのあと端末で解析
+
+
+def _cursor(d, x, y, s=1.0):
+    """マウスカーソル（白い矢印・墨のふち）"""
+    pts = [(0, 0), (0, 46), (12, 35), (21, 56), (30, 52), (21, 32), (37, 32)]
+    pts = [(x + px * s, y + py * s) for px, py in pts]
+    d.polygon(pts, fill=(255, 255, 255, 255), outline=(22, 22, 26, 255))
+    d.line(pts + [pts[0]], fill=(22, 22, 26, 255), width=3)
+
+
+def _spec_target(lay, tl, a, data):
+    """スペック表の窓：カーソルが動いて『トータル継続率 約80%』をクリック → 行が選ばれ、虫めがねで数字に寄る"""
+    rows = data["spec_rows"]
+    ti = int(data.get("target", len(rows) - 1))
+    W0 = RIGHT_X1 - RIGHT_X0
+    x0, y0 = RIGHT_X0, 284
+    lay2 = Image.new("RGBA", lay.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay2)
+    paper = ui.THEME.get("paper")
+    win_h = 70 + 84 * len(rows)
+    ki = ui.ease_out(ui.prog(tl, 0.5, 0.3))
+    if ki <= 0:
+        return
+    d.rounded_rectangle((x0, y0, x0 + W0, y0 + win_h), 10, fill=ui.hexc("#FFFFFF") if paper else ui.hexc("#0B1220"),
+                        outline=_line(), width=3)
+    d.rectangle((x0 + 3, y0 + 3, x0 + W0 - 3, y0 + 46), fill=ui.hexc("#16161A"))
+    d.text((x0 + 20, y0 + 25), "SPEC  " + data.get("spec_title", ""), font=ui.font("bold", 24), fill=ui.hexc("#FFD21F"), anchor="lm")
+    vx = x0 + W0 - 30
+    click = 2.3
+    for i, (k, v) in enumerate(rows):
+        ry = y0 + 60 + 84 * i
+        sel = i == ti and tl > click
+        if sel:   # 選ばれた行：黄色の帯と、ぐるぐる回る点線の枠
+            d.rectangle((x0 + 10, ry, x0 + W0 - 10, ry + 74), fill=(255, 210, 31, 110))
+            ph = int(tl * 40) % 24
+            for xx in range(x0 + 10 - ph, x0 + W0 - 10, 24):
+                xa, xb = max(x0 + 10, xx), min(x0 + W0 - 10, xx + 12)
+                if xb > xa:
+                    d.line((xa, ry, xb, ry), fill=(226, 52, 59, 255), width=4)
+                    d.line((xa, ry + 74, xb, ry + 74), fill=(226, 52, 59, 255), width=4)
+        d.text((x0 + 30, ry + 37), k, font=ui.font("bold", 34), fill=ui.TEXT if not paper else ui.INK, anchor="lm")
+        d.text((vx, ry + 37), v, font=ui.font("black", 48), fill=ui.KEY if sel else (ui.TEXT if not paper else ui.INK), anchor="rm")
+        if i < len(rows) - 1:
+            d.line((x0 + 20, ry + 80, x0 + W0 - 20, ry + 80), fill=ui.hexc("#C9CED6") if paper else ui.hexc("#2A3B55"), width=2)
+    tx, ty = vx - 70, y0 + 60 + 84 * ti + 37      # 狙う数字の位置
+    # カーソル：レンのほうから数字へ
+    sx, sy = DEVICE_C[0] + 150, DEVICE_C[1] + 60
+    km = ui.ease_in_out(ui.prog(tl, 1.3, 0.9))
+    wob = 12 * math.sin(tl * 7) * (1 - km)
+    cx, cy = sx + (tx - sx) * km + wob, sy + (ty - sy) * km - 60 * math.sin(math.pi * km)
+    pressed = click <= tl < click + 0.12
+    if tl > 1.1:
+        _cursor(d, cx, cy, 0.85 if pressed else 1.0)
+    if click <= tl < click + 0.5:   # クリックの波紋
+        r = 10 + 70 * ui.prog(tl, click, 0.5)
+        d.ellipse((tx - r, ty - r, tx + r, ty + r), outline=(226, 52, 59, int(255 * (1 - ui.prog(tl, click, 0.5)))), width=5)
+    # 虫めがね：数字に寄ってスキャン
+    kz = ui.ease_out_back(ui.prog(tl, click + 0.25, 0.35), 1.6)
+    if kz > 0:
+        R = int(120 * min(1.0, kz))
+        lx, ly = tx - 400, ty - 40
+        lens = Image.new("RGBA", (2 * R + 1, 2 * R + 1), (0, 0, 0, 0))
+        ld = ImageDraw.Draw(lens)
+        ld.ellipse((0, 0, 2 * R, 2 * R), fill=ui.hexc("#FFFDF6") if paper else ui.hexc("#13213A"))
+        ld.text((R, R), rows[ti][1], font=ui.font("black", max(10, int(84 * min(1.0, kz)))), fill=ui.KEY, anchor="mm")
+        sline = R + R * 0.8 * math.sin(tl * 6)
+        ld.rectangle((0, sline - 3, 2 * R, sline + 3), fill=(100, 191, 255, 140))
+        mask = Image.new("L", lens.size, 0)
+        ImageDraw.Draw(mask).ellipse((0, 0, 2 * R, 2 * R), fill=255)
+        lens.putalpha(Image.composite(lens.getchannel("A"), mask, mask))
+        lay2.alpha_composite(lens, (int(lx - R), int(ly - R)))
+        d.ellipse((lx - R, ly - R, lx + R, ly + R), outline=ui.hexc("#16161A"), width=8)
+        d.line((lx + R * 0.7, ly + R * 0.7, lx + R * 1.15, ly + R * 1.15), fill=ui.hexc("#16161A"), width=16)
+        if tl > click + 0.6:
+            ui.draw_spaced(d, (lx, ly - R - 26), "TARGET LOCK", ui.font("black", 26), (226, 52, 59, 255), 4, anchor="mm")
+    ui.paste(lay, lay2, (0, 0), a * ki)
+
+
 def _analyzing(lay, tl, a, data=None, done=0.0):
     """解析中の画面：端末のログが1文字ずつ打たれ、横でデータの波形が揺れ、進捗が99%まで上がる。
-    done（0〜1）は結果が出た瞬間の『COMPLETE』の出方"""
+    done（0〜1）は結果が出た瞬間の『COMPLETE』の出方。
+    spec_rows があるときは、先にスペック表で数字にカーソルを合わせる場面（TARGET_END まで）"""
     if a <= 0 or tl < 0.45:
         return
     data = data or {}
+    if data.get("spec_rows") and done <= 0:
+        if tl < TARGET_END:
+            _spec_target(lay, tl, a, data)
+            return
+        if tl < TARGET_END + 0.3:   # 端末へ切り替え
+            _spec_target(lay, tl, a * (1 - (tl - TARGET_END) / 0.3), data)
+    if data.get("spec_rows"):
+        tl = tl - (TARGET_END - 0.6)   # ログ・進捗は切り替えてから始める
     W0 = RIGHT_X1 - RIGHT_X0
     tmp = Image.new("RGBA", (W0, 380), (0, 0, 0, 0))
     d = ImageDraw.Draw(tmp)
@@ -875,77 +967,159 @@ def _hazard(d, y0, y1, shift, W):
 def _shutter_k(tl):
     """シャッターの閉じ具合（1＝閉じている）と、その下に見せる画面（"scene"＝起動シーン / "normal"＝いつもの画面）"""
     e = ui.ease_in_out
-    if tl < 0.26:
-        return e(tl / 0.26), "normal"                       # 閉じる
-    if tl < 0.46:
-        return 1 - e((tl - 0.26) / 0.2), "scene"            # 開くと起動シーン
-    if tl < LAUNCH_OPEN - 0.22:
+    if tl < L_SHUT:
+        return e(tl / L_SHUT), "normal"                                  # 閉じる
+    if tl < L_HOLD:
+        return 1.0, "scene"                                              # 閉じたままロゴ
+    if tl < L_OPEN1:
+        return 1 - e((tl - L_HOLD) / (L_OPEN1 - L_HOLD)), "scene"         # 開くと起動シーン
+    if tl < LAUNCH_OPEN - 0.3:
         return 0.0, "scene"
     if tl < LAUNCH_OPEN:
-        return e((tl - (LAUNCH_OPEN - 0.22)) / 0.22), "scene"   # また閉じる
+        return e((tl - (LAUNCH_OPEN - 0.3)) / 0.3), "scene"               # また閉じる
     return 1 - e(min(1.0, (tl - LAUNCH_OPEN) / (LAUNCH_SEC - LAUNCH_OPEN))), "normal"   # 開くといつもの画面
+
+
+def launch_se(t0):
+    """起動シーンの効果音（episode.py が入れる）"""
+    se = [(0.3, "impact", 0.24), (0.32, "rumble", 0.14), (L_OPEN1 - 0.15, "shu", 0.2)]
+    for i in range(4):                                     # 起動チェックのカチッ
+        se += [(L_CHECK0 + 0.3 * i, "tick", 0.3), (L_CHECK0 + 0.3 * i + 0.22, "blip", 0.16)]
+    se += [(L_CHARGE0, "boot", 0.24), (L_CHARGE0 + 0.2, "rumble_long", 0.16), (L_WAKE - 0.05, "don", 0.34),
+           (L_WAKE, "impact", 0.22)]
+    for i in range(6):                                     # 名前が1文字ずつ落ちる
+        se.append((L_NAME0 + 0.12 * i, "piko" if i < 5 else "don", 0.1 if i < 5 else 0.3))
+    se += [(L_ONLINE, "impact", 0.26), (LAUNCH_OPEN - 0.05, "impact", 0.2), (LAUNCH_OPEN + 0.05, "shu", 0.2)]
+    return [{"t": round(t0 + a, 3), "kind": k, "gain": g} for a, k, g in se]
 
 
 def _launch_scene(tl, data):
     W, H = ui.W, ui.H
     sc = Image.new("RGBA", (W, H), ui.hexc("#070C18"))
     d = ImageDraw.Draw(sc)
+    charge = ui.prog(tl, L_CHARGE0, L_WAKE - L_CHARGE0)           # 0〜1：充電
+    woke = tl >= L_WAKE
     hy = 640
-    for i in range(14):   # 奥へ流れる床のグリッド
-        z = ((i + tl * 2.2) % 14) / 14
+    spd = 1.2 + 4 * charge + (2 if woke else 0)
+    for i in range(14):   # 奥へ流れる床のグリッド（充電でだんだん速く）
+        z = ((i + tl * spd) % 14) / 14
         y = hy + (H - hy) * z ** 2
         d.line((0, y, W, y), fill=(40, 120, 220, int(40 + 160 * z)), width=2)
     for j in range(-12, 13):
         d.line((W / 2 + j * 30, hy, W / 2 + j * 260, H), fill=(40, 120, 220, 90), width=2)
-    wake = ui.prog(tl, 1.15, 0.6)
-    for r, a in ((260 + 420 * wake, int(220 * (1 - wake))), (210, 70)):   # 目を覚ますと光の輪が広がる
-        if a > 0:
-            d.ellipse((W / 2 - r, 520 - r, W / 2 + r, 520 + r), outline=(100, 191, 255, a), width=10)
+    cx, cy = W / 2, 560
+    # 上からのスポットライト（だんだん明るく）
+    spot = ui.ease_out(ui.prog(tl, L_CHECK0, 1.2))
+    if spot > 0:
+        sp = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(sp).polygon([(cx - 90, 0), (cx + 90, 0), (cx + 420, 980), (cx - 420, 980)], fill=(120, 190, 255, int(46 * spot)))
+        sc.alpha_composite(sp)
+    # 充電：下から光の粒が吸い込まれ、輪が回りながら縮む
+    if L_CHARGE0 <= tl < L_WAKE + 0.2:
+        for j in range(26):
+            ph = (tl * (0.8 + 1.6 * charge) + j / 26) % 1.0
+            ang = j * 0.9
+            r = 520 * (1 - ph)
+            x, y = cx + r * math.cos(ang), cy + 40 + r * 0.55 * math.sin(ang)
+            a = int(255 * min(1.0, ph * 3) * (0.4 + 0.6 * charge))
+            d.ellipse((x - 7, y - 7, x + 7, y + 7), fill=(100, 191, 255, a))
+        for i, rr in enumerate((330, 280)):
+            r2 = rr * (1.05 - 0.25 * charge)
+            a0 = (tl * (200 + 300 * charge) * (1 if i else -1)) % 360
+            d.arc((cx - r2, cy - r2, cx + r2, cy + r2), a0, a0 + 250, fill=(100, 191, 255, 200), width=8)
+    wake = ui.prog(tl, L_WAKE, 0.8)
+    if woke:   # 目を覚ますと光の輪が広がる
+        for r, a in ((260 + 700 * wake, int(240 * (1 - wake))), (220, 90)):
+            if a > 0:
+                d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=(100, 191, 255, a), width=12)
     folder = data.get("sprite")
-    if folder:   # ロボ：最初は黒い影 → 光って色が付き、飛び起きる
-        face = "nemu" if tl < 1.15 else ("bikkuri" if tl < 1.6 else "base")
-        im = _sprite(folder, face, (700, 520))
-        pop = 1 + 0.08 * max(0.0, 1 - abs(tl - 1.2) / 0.2)
+    if folder:   # ロボ：影のまま眠っている → 充電でふるえる → 光って飛び起きる → タブレットを構える
+        if tl < L_WAKE:
+            face = "nemu"
+        elif tl < L_NAME0 + 0.4:
+            face = "bikkuri"
+        else:
+            face = "base"
+        box = (760, 560) if face == "base" else (620, 470)
+        im = _sprite(folder, face, box)
+        pop = 1 + 0.1 * max(0.0, 1 - abs(tl - L_WAKE) / 0.22) + (0.06 * max(0.0, 1 - abs(tl - (L_NAME0 + 0.4)) / 0.2))
         im = im.resize((int(im.width * pop), int(im.height * pop)), Image.LANCZOS)
-        lit = ui.ease_out(ui.prog(tl, 1.1, 0.25))
-        if lit < 1:
+        lit = ui.ease_out(ui.prog(tl, L_WAKE - 0.08, 0.25))
+        if lit < 1:   # まだ暗い：輪郭だけ青く光る影
             sil = Image.new("RGBA", im.size, (14, 20, 36, 255))
             sil.putalpha(im.getchannel("A"))
+            glow = Image.new("RGBA", im.size, (100, 191, 255, 255))
+            glow.putalpha(im.getchannel("A").point(lambda v: int(v * (0.15 + 0.5 * charge))))
+            sil.alpha_composite(glow)
             im = Image.blend(sil, im, lit)
-        hop = -50 * math.sin(math.pi * ui.prog(tl, 1.15, 0.4)) if 1.15 < tl < 1.55 else 0
-        sc.alpha_composite(im, (int(W / 2 - im.width / 2), int(980 - im.height + hop)))
-    kn = ui.ease_out(ui.prog(tl, 0.4, 0.3))
-    glitch = 8 * math.sin(tl * 90) if 0.4 < tl < 0.7 else 0
-    ui.draw_spaced(d, (W / 2 + glitch, 120), "BAKU WORKS  ·  INVENTION No.%02d" % int(data.get("no", 0)),
+        shake = (6 * charge * math.sin(tl * 80)) if L_CHARGE0 < tl < L_WAKE else 0
+        hop = -70 * math.sin(math.pi * ui.prog(tl, L_WAKE, 0.45)) if L_WAKE < tl < L_WAKE + 0.45 else 0
+        sc.alpha_composite(im, (int(cx - im.width / 2 + shake), int(1000 - im.height + hop)))
+        if face == "bikkuri" and tl < L_WAKE + 0.5:   # 目の光線（ピカーン）
+            k = 1 - ui.prog(tl, L_WAKE, 0.5)
+            ImageDraw.Draw(sc).polygon([(cx - 20, 690), (cx + 20, 690), (cx + 900, 600), (cx + 900, 780)], fill=(255, 255, 255, int(120 * k)))
+    # 上：BAKU WORKS と名前（名前は目を覚ましてから1文字ずつ落ちてくる）
+    kn = ui.ease_out(ui.prog(tl, L_OPEN1, 0.4))
+    ui.draw_spaced(d, (W / 2, 110), "BAKU WORKS  ·  INVENTION No.%02d" % int(data.get("no", 0)),
                    ui.font("bold", 30), (240, 122, 18, int(255 * kn)), 6, anchor="mm")
     name = data.get("name", "")
-    shown = name[: max(0, int((tl - 0.45) * 16))]
-    d.text((W / 2 + glitch, 230), shown, font=ui.font("black", 150), fill=(255, 255, 255, int(255 * kn)), anchor="mm",
-           stroke_width=6, stroke_fill=(47, 127, 224, 255))
-    if data.get("kind"):
-        d.text((W / 2, 372), data["kind"], font=ui.font("bold", 40), fill=(154, 168, 188, int(255 * kn)), anchor="mm")
-    for i, ck in enumerate(("POWER", "SENSOR", "DATA TANK", "LINK")):   # 起動チェック
-        st = 0.55 + 0.14 * i
+    f_big = ui.font("black", 160)
+    if tl < L_NAME0:
+        d.text((W / 2, 230), "BOOT SEQUENCE" if tl < L_CHARGE0 else "CHARGING", font=ui.font("black", 74),
+               fill=(255, 255, 255, int(255 * kn * (0.55 + 0.45 * (int(tl * 3) % 2)))), anchor="mm")
+    else:
+        widths = [ui.text_w(ch, f_big) + 6 for ch in name]
+        x = W / 2 - sum(widths) / 2
+        for i, ch in enumerate(name):
+            k = ui.prog(tl, L_NAME0 + 0.12 * i, 0.18)
+            if k > 0:
+                y = 230 - 160 * (1 - ui.ease_out_back(k, 1.8))
+                d.text((x + widths[i] / 2, y), ch, font=f_big, fill=(255, 255, 255, int(255 * min(1, k * 2))), anchor="mm",
+                       stroke_width=7, stroke_fill=(47, 127, 224, 255))
+            x += widths[i]
+        if data.get("kind"):
+            kk = ui.ease_out(ui.prog(tl, L_NAME0 + 0.8, 0.3))
+            d.text((W / 2 + 80 * (1 - kk), 375), data["kind"], font=ui.font("black", 48), fill=(154, 210, 255, int(255 * kk)), anchor="mm")
+    # 左：起動チェック（ゲージが伸びて OK）
+    for i, ck in enumerate(("POWER", "SENSOR", "DATA TANK", "LINK")):
+        st = L_CHECK0 + 0.3 * i
         if tl < st:
             continue
-        y = 460 + i * 52
-        ok = tl > st + 0.1
-        d.text((130, y), ck, font=ui.font("bold", 30), fill=(124, 255, 178, 255), anchor="lm")
-        d.text((370, y), "OK" if ok else "...", font=ui.font("black", 30),
-               fill=(124, 255, 178, 255) if ok else (154, 168, 188, 255), anchor="lm")
-    if tl > 1.2:
-        ko = ui.ease_out_back(ui.prog(tl, 1.2, 0.3), 2.0)
-        tmp = Image.new("RGBA", (720, 130), (0, 0, 0, 0))
-        ImageDraw.Draw(tmp).text((360, 65), "SYSTEM ONLINE", font=ui.font("black", 72), fill=ui.hexc("#FFD21F"),
-                                   anchor="mm", stroke_width=5, stroke_fill=ui.hexc("#16161A"))
-        s2 = max(0.05, 1.5 - 0.5 * ko)
-        tmp = tmp.resize((int(720 * s2), int(130 * s2)), Image.LANCZOS)
-        ui.paste(sc, tmp, (W - 110 - tmp.width, 560 - tmp.height / 2), min(1.0, ko))
+        y = 450 + i * 64
+        g = ui.prog(tl, st, 0.22)
+        d.text((110, y), ck, font=ui.font("bold", 32), fill=(124, 255, 178, 255), anchor="lm")
+        d.rectangle((330, y - 10, 520, y + 10), outline=(124, 255, 178, 160), width=2)
+        d.rectangle((333, y - 7, 333 + 184 * g, y + 7), fill=(124, 255, 178, 255))
+        if g >= 1:
+            d.text((540, y), "OK", font=ui.font("black", 32), fill=(124, 255, 178, 255), anchor="lm")
+    # 右：充電の％
+    if L_CHARGE0 <= tl < L_WAKE + 0.6:
+        pct = int(100 * min(1.0, charge))
+        d.text((W - 110, 470), "CHARGE", font=ui.font("bold", 32), fill=(255, 210, 31, 255), anchor="rm")
+        d.text((W - 110, 545), f"{pct}%", font=ui.font("black", 96), fill=(255, 210, 31, 255), anchor="rm",
+               stroke_width=4, stroke_fill=ui.hexc("#16161A"))
+    if tl > L_ONLINE:
+        ko = ui.ease_out_back(ui.prog(tl, L_ONLINE, 0.3), 2.0)
+        tmp = Image.new("RGBA", (760, 140), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((380, 70), "SYSTEM ONLINE", font=ui.font("black", 78), fill=ui.hexc("#FFD21F"),
+                                   anchor="mm", stroke_width=6, stroke_fill=ui.hexc("#16161A"))
+        tmp = tmp.rotate(-4, resample=Image.BICUBIC, expand=True)
+        s2 = max(0.05, 1.6 - 0.6 * ko)
+        tmp = tmp.resize((int(tmp.width * s2), int(tmp.height * s2)), Image.LANCZOS)
+        ui.paste(sc, tmp, (W - 90 - tmp.width, 600 - tmp.height / 2), min(1.0, ko))
     _hazard(d, 0, 54, tl * 400, W)
     _hazard(d, H - 54, H, -tl * 400, W)
-    fl = max(0.0, 1 - abs(tl - 1.18) / 0.12)   # 目を覚ます瞬間のフラッシュ
-    if fl > 0:   # 重ねて塗る（直接塗ると透けてしまう）
-        sc.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(220 * fl))))
+    fl = max(0.0, 1 - abs(tl - L_WAKE) / 0.14)   # 目を覚ます瞬間のフラッシュ
+    if fl > 0:
+        sc.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(235 * fl))))
+    # ゆっくりカメラが寄る（充電中は揺れる）
+    z = 1 + 0.06 * ui.ease_in_out(ui.prog(tl, L_OPEN1, L_WAKE - L_OPEN1)) - 0.04 * ui.ease_out(ui.prog(tl, L_WAKE, 0.4))
+    jx = 7 * charge * math.sin(tl * 61) if L_CHARGE0 < tl < L_WAKE else 0
+    if abs(z - 1) > 1e-3 or jx:
+        big = sc.resize((int(W * z), int(H * z)), Image.BILINEAR)
+        out = Image.new("RGBA", (W, H), ui.hexc("#070C18"))
+        out.alpha_composite(big, (int((W - big.width) / 2 + jx), int((H - big.height) / 2)))
+        sc = out
     return sc
 
 
@@ -968,6 +1142,9 @@ def draw_launch(cv, tl, data):
             d.rectangle((x0, 0, x0 + 40, H), fill=ui.hexc("#FFD21F"))
             for y in range(-80, H + 80, 60):
                 d.polygon([(x0, y), (x0 + 40, y - 30), (x0 + 40, y - 6), (x0, y + 24)], fill=col)
-        if k > 0.98:   # 閉じきったところに「ガシャン」の文字
-            d.text((W / 2, H / 2), "BAKU WORKS", font=ui.font("black", 90), fill=ui.hexc("#FFD21F"), anchor="mm")
+        if k > 0.98:   # 閉じきったところにロゴ（ガシャン）
+            kl = ui.ease_out_back(ui.prog(tl, L_SHUT, 0.3), 1.8) if tl < L_OPEN1 else 1.0
+            d.text((W / 2, H / 2 - 30), "BAKU WORKS", font=ui.font("black", int(40 + 70 * min(1.0, kl))), fill=ui.hexc("#FFD21F"), anchor="mm")
+            if tl < L_OPEN1:
+                d.text((W / 2, H / 2 + 60), "LAUNCH", font=ui.font("bold", 40), fill=(255, 255, 255, 200), anchor="mm")
         cv.alpha_composite(sh)
