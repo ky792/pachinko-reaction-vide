@@ -1369,139 +1369,165 @@ def _anchor(who, name, role, side, k):
     return lay
 
 
+def _globe(lay, cx, cy, R, rot, alpha, col=(150, 195, 255)):
+    """回る地球儀（経線・緯線）"""
+    rd = ImageDraw.Draw(lay)
+    c = lambda a: (col[0], col[1], col[2], int(a * alpha))
+    rd.ellipse((cx - R, cy - R, cx + R, cy + R), outline=c(120), width=3)
+    for i in range(8):
+        w = abs(math.cos(rot + i * math.pi / 8)) * R
+        rd.ellipse((cx - w, cy - R, cx + w, cy + R), outline=c(60), width=2)
+    for j in (-0.75, -0.5, -0.25, 0.25, 0.5, 0.75):
+        yy = cy + R * j
+        ww = R * math.sqrt(1 - j * j)
+        rd.line((cx - ww, yy, cx + ww, yy), fill=c(60), width=2)
+    rd.line((cx - R, cy, cx + R, cy), fill=c(90), width=2)
+
+
+_NO_RNG = np.random.default_rng(7)
+_NO_STREAKS = _NO_RNG.random((70, 4))      # 光の線：角度・速さ・太さ・色
+_NO_DOTS = _NO_RNG.random((260, 3))        # 奥から流れてくる光の粒
+_NO_TAGS = ["DATA", "HALL", "SPEC", "NEWS", "1/319", "LIVE DATA", "MARKET", "RULE", "6,706", "REPORT", "2026"]
+
+
 def news_open(canvas, tl, dur, data):
-    """ニュース番組のOP（15秒・news_open.wav に合わせる）。
-    帯が走る → ロゴが決まる → 下にニュースの帯 → ナギとバクがキャスターとして登場 → 今回のニュースの見出し
-    → 全員でテーマ（光が走る）→ 決めの一発で見出しが弾む → 帯が横切って本編へ"""
+    """ニュース番組のOP（15秒・news_open.wav に合わせる）。普通のニュース番組と同じく、ずっとアニメーションで、ロゴは最後だけ。
+      0〜1.9    奥へ吸い込まれる光の線（ワープ）＋赤白の帯
+      1.9〜5.6  地球儀が回り、床の方眼が流れる（カメラが前へ進む）。拍ごとに光の輪が広がる
+      5.6〜9.4  データの板・数字のタグが手前を横切る。横に光の帯が走る
+      9.4〜11.2 全部が真ん中へ吸い寄せられて光が集まる（曲は静かにためる）
+      11.25     フラッシュ → タイトルロゴ（後ろに光の筋）→ 13.6 決めの一発でロゴが弾む → 帯で本編へ"""
     lead = data.get("lead", 0.0)
     tl, dur = tl - lead, dur - lead
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    d = ImageDraw.Draw(lay)
     g = np.linspace(0, 1, H, dtype=np.float32)[:, None]
-    top, bot = np.array([18, 52, 108], np.float32), np.array([6, 18, 44], np.float32)
+    top, bot = np.array([16, 46, 100], np.float32), np.array([4, 12, 34], np.float32)
     arr = (top * (1 - g) + bot * g)[:, None, :].repeat(W, 1).reshape(H, W, 3)
     lay.alpha_composite(Image.fromarray(arr.astype(np.uint8), "RGB").convert("RGBA"))
-    cx, cy = W / 2, H / 2 - 60
-    # 回る輪（地球儀）と方眼。決めの拍で少し脈打つ
-    kr = ease_out(prog(tl, 0.4, 1.2))
-    if kr > 0:
-        ring = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-        rd = ImageDraw.Draw(ring)
-        for x in range(0, W, 96):
-            rd.line((x, 0, x, H), fill=(120, 170, 255, 18), width=1)
-        for y in range(0, H, 96):
-            rd.line((0, y, W, y), fill=(120, 170, 255, 18), width=1)
-        beat = max(0.0, 1 - ((tl - NO_LOGO) % (60 / 128)) / 0.25) if tl > NO_LOGO else 0.0
-        R = 330 + 40 * (1 - kr) + 12 * beat
-        rd.ellipse((cx - R, cy - R, cx + R, cy + R), outline=(150, 195, 255, 90 + int(60 * beat)), width=3)
-        rd.ellipse((cx - R * 1.18, cy - R * 1.18, cx + R * 1.18, cy + R * 1.18), outline=(150, 195, 255, 40), width=2)
-        rot = tl * 0.9
-        for i in range(6):
-            w = abs(math.cos(rot + i * math.pi / 6)) * R
-            rd.ellipse((cx - w, cy - R, cx + w, cy + R), outline=(150, 195, 255, 55), width=2)
-        for j in (-0.6, -0.3, 0.3, 0.6):
-            yy = cy + R * j
-            ww = R * math.sqrt(1 - j * j)
-            rd.line((cx - ww, yy, cx + ww, yy), fill=(150, 195, 255, 55), width=2)
-        rd.line((cx - R, cy, cx + R, cy), fill=(150, 195, 255, 70), width=2)
-        for i in range(3):
-            a = tl * 2.4 + i * 2.1
-            px, py = cx + R * math.cos(a), cy + R * math.sin(a)
-            rd.ellipse((px - 7, py - 7, px + 7, py + 7), fill=(255, 90, 90, 220))
-        lay.alpha_composite(fade(ring.filter(ImageFilter.GaussianBlur(0.6)), kr * (1 - 0.55 * prog(tl, NO_ANCHOR, 0.5))))
+    cx, cy = W / 2, H / 2
+    fx = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(fx)
+    gather = ease_in_out(prog(tl, NO_HEAD, NO_FULL - NO_HEAD))    # 9.4〜11.25 で真ん中へ集まる
+    after = prog(tl, NO_FULL, 0.01) > 0                             # ロゴの場面
+    # 床の方眼（パースつき・手前へ流れる）
+    kf = ease_out(prog(tl, NO_LOGO - 0.3, 0.8)) * (1 - gather)
+    if kf > 0 and not after:
+        hz = cy + 40
+        for i in range(-14, 15):
+            d.line((cx + i * 40, hz, cx + i * 420, H), fill=(110, 160, 255, int(55 * kf)), width=2)
+        off = (tl * 1.6) % 1
+        for j in range(12):
+            z = (j + off) / 12
+            y = hz + (H - hz) * z ** 2.2
+            d.line((0, y, W, y), fill=(110, 160, 255, int(70 * kf * z)), width=2)
+    # 地球儀（1.9〜）。集まる時に縮んで光になる
+    kg = ease_out(prog(tl, NO_LOGO, 0.8)) * (1 - gather)
+    if kg > 0 and not after:
+        beat = max(0.0, 1 - ((tl - NO_LOGO) % (60 / 128)) / 0.3)
+        R = 300 * (0.7 + 0.3 * kg) * (1 - 0.15 * prog(tl, NO_ANCHOR, 4.0))
+        _globe(fx, cx, cy - 20, R, tl * 0.8, kg)
+        for b in range(3):   # 拍ごとに広がる光の輪
+            ph = ((tl - NO_LOGO) / (60 / 128) - b * 0.33) % 1
+            rr = R * (1 + 0.9 * ph)
+            d.ellipse((cx - rr, cy - 20 - rr, cx + rr, cy - 20 + rr), outline=(120, 190, 255, int(80 * (1 - ph) * kg)), width=3)
+        for i in range(4):   # 輪の上を走る赤い光点
+            a = tl * 2.2 + i * 1.6
+            px, py = cx + R * math.cos(a), cy - 20 + R * 0.35 * math.sin(a)
+            d.ellipse((px - 8, py - 8, px + 8, py + 8), fill=(255, 80, 80, int(230 * kg)))
+        d.ellipse((cx - R * 0.08, cy - 20 - R * 0.08, cx + R * 0.08, cy - 20 + R * 0.08), fill=(255, 255, 255, int(40 * beat * kg)))
+    # 奥から流れてくる光の粒（ずっと）
+    if not after:
+        speed = 0.35 + 1.4 * prog(tl, 0, NO_LOGO) * (1 - 0.6 * prog(tl, NO_LOGO, 1.0)) + 1.2 * gather
+        for ang, sp, sz in _NO_DOTS:
+            z = (sp + tl * speed * 0.25) % 1
+            a2 = ang * 2 * math.pi
+            r = 40 + 1300 * z ** 2 * (1 - 0.85 * gather)
+            px, py = cx + r * math.cos(a2), cy + r * math.sin(a2) * 0.62
+            rr = 1 + 4 * z * sz
+            d.ellipse((px - rr, py - rr, px + rr, py + rr), fill=(190, 220, 255, int(200 * z)))
+    # ワープの光の線（頭の1.9秒・集まる時にもう一度）
+    kw = (1 - prog(tl, NO_LOGO - 0.4, 0.6)) + gather * (1 - prog(tl, NO_FULL - 0.1, 0.1))
+    if kw > 0 and not after:
+        for ang, sp, wd, cc in _NO_STREAKS:
+            a2 = ang * 2 * math.pi
+            z = (sp + tl * (0.9 + sp)) % 1
+            if gather > 0:
+                z = 1 - z
+            r0, r1 = 60 + 1500 * z ** 2, 60 + 1500 * min(1, z + 0.12) ** 2
+            col = (255, 80, 80) if cc < 0.18 else (255, 255, 255) if cc < 0.5 else (140, 190, 255)
+            d.line((cx + r0 * math.cos(a2), cy + r0 * math.sin(a2) * 0.6, cx + r1 * math.cos(a2), cy + r1 * math.sin(a2) * 0.6),
+                   fill=col + (int(200 * kw * z),), width=int(2 + 4 * wd))
+    # データの板と数字のタグが手前を横切る（5.6〜9.4）
+    kp = prog(tl, NO_ANCHOR, NO_HEAD - NO_ANCHOR)
+    if 0 < kp < 1:
+        for i, tag in enumerate(_NO_TAGS):
+            row = i % 4
+            sp = 0.8 + 0.25 * (i % 3)
+            x = W + 200 - (W + 700) * ((kp * sp * 1.6 + i * 0.137) % 1.25)
+            y = 170 + row * 230 + 40 * math.sin(i)
+            al = int(230 * min(1, kp * 6, (1 - kp) * 6))
+            pw = 220 + 26 * len(tag)
+            d.rectangle((x, y, x + pw, y + 74), fill=(255, 255, 255, int(al * 0.10)), outline=(150, 200, 255, al // 2), width=2)
+            d.rectangle((x, y, x + 10, y + 74), fill=(255, 70, 70, al) if i % 3 == 0 else (120, 190, 255, al))
+            d.text((x + 30, y + 37), tag, font=font("black", 40), fill=(235, 244, 255, al), anchor="lm")
+            for b in range(5):   # 小さな棒グラフ
+                bh = 10 + 40 * abs(math.sin(i * 1.7 + b + tl * 3))
+                d.rectangle((x + pw - 120 + b * 20, y + 64 - bh, x + pw - 108 + b * 20, y + 64), fill=(120, 190, 255, al // 2))
+        k2 = prog(tl, NO_ANCHOR + 1.0, 1.2)   # 横に走る光の帯
+        if 0 < k2 < 1:
+            _stripes(fx, ease_in_out(k2), 470, 26, [(255, 255, 255, 170), (255, 70, 70, 200)], slant=120)
+        k3 = prog(tl, NO_ANCHOR + 2.6, 1.0)
+        if 0 < k3 < 1:
+            _stripes(fx, ease_in_out(k3), 760, 18, [(140, 200, 255, 170), (255, 255, 255, 150)], slant=90)
     # 頭の赤白の帯
-    ks = prog(tl, 0.0, 1.4)
+    ks = prog(tl, 0.2, 1.3)
     if 0 < ks < 1:
-        _stripes(lay, ease_in_out(ks), 300, 120, [NEWS_RED, NEWS_WHITE])
-        _stripes(lay, ease_in_out(max(0, ks - 0.12) / 0.88), 640, 70, [NEWS_WHITE, NEWS_RED])
-    # キャスター（ナギ左・バク右）。見出しが出たら少し下がって控える
-    ka = ease_out(prog(tl, NO_ANCHOR, 0.5))
-    if ka > 0:
-        an = data.get("anchors", {})
-        dn = 0.0
-        ex = ease_in_out(prog(tl, NO_HEAD - 0.3, 0.5))   # 最後のロゴに向けて左右へはける
-        for who, side, delay in (("nagi", -1, 0.0), ("baku", 1, 0.25)):
-            k = ease_out_back(prog(tl, NO_ANCHOR + delay, 0.5), 1.3) * (1 - ex)
-            if k <= 0:
-                continue
-            nm, role = an.get(who, ({"nagi": "ナギ", "baku": "バク"}[who], ""))
-            im = _anchor(who, nm, role, side, k)
-            s2 = 1 - 0.4 * dn
-            im = im.resize((int(im.width * s2), int(im.height * s2)), Image.LANCZOS)
-            m = 60 - 40 * dn
-            x = (m if side < 0 else W - m - im.width) + side * 700 * (1 - k)
-            y = 225 + 240 * dn
-            paste(lay, im, (x, y), min(1.0, k))
-    # ロゴ（キャスター登場で上へ寄って小さく）。data["logo"] があれば番組ロゴ画像（generator/assets/logos/）
-    kl = ease_out_back(prog(tl, NO_LOGO, 0.45), 1.6)
-    if kl > 0:
+        _stripes(fx, ease_in_out(ks), 300, 110, [NEWS_RED, NEWS_WHITE])
+        _stripes(fx, ease_in_out(max(0, ks - 0.12) / 0.88), 650, 60, [NEWS_WHITE, NEWS_RED])
+    # 集まった光（11.25 の直前に真ん中で強く光る）
+    if gather > 0 and not after:
+        rr = 30 + 260 * gather ** 3
+        glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ImageDraw.Draw(glow).ellipse((cx - rr, cy - rr, cx + rr, cy + rr), fill=(200, 225, 255, int(200 * gather)))
+        fx.alpha_composite(glow.filter(ImageFilter.GaussianBlur(40)))
+    lay.alpha_composite(fx)
+    # ロゴ（11.25〜）：後ろに回る光の筋、決めの一発で弾む
+    if tl >= NO_FULL - 0.02:
+        kl = ease_out_back(prog(tl, NO_FULL, 0.5), 1.5)
+        rays = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        rd = ImageDraw.Draw(rays)
+        for i in range(18):
+            a2 = i * math.pi / 9 + tl * 0.25
+            rd.polygon([(cx, cy), (cx + 1400 * math.cos(a2 - 0.05), cy + 1400 * math.sin(a2 - 0.05)),
+                        (cx + 1400 * math.cos(a2 + 0.05), cy + 1400 * math.sin(a2 + 0.05))], fill=(120, 180, 255, 34))
+        lay.alpha_composite(fade(rays.filter(ImageFilter.GaussianBlur(3)), min(1, prog(tl, NO_FULL, 0.4))))
+        _globe(lay, cx, cy, 470, tl * 0.5, 0.35 * min(1, prog(tl, NO_FULL, 0.6)))
         if data.get("logo"):
             logo = load_logo(data["logo"]).copy()
-            base = 700 / logo.height
+            base = 760 / logo.height
         else:
             logo = Image.new("RGBA", (1500, 420), (0, 0, 0, 0))
             ld = ImageDraw.Draw(logo)
             ld.text((750, 150), "ナギバク", font=font("black", 210), fill=NEWS_WHITE, anchor="mm", stroke_width=4, stroke_fill=NEWS_NAVY)
-            kb = ease_out(prog(tl, NO_LOGO + 0.3, 0.4))
-            bw = int(1120 * kb)
-            if bw > 0:
-                ld.polygon([(750 - bw / 2 + 30, 285), (750 + bw / 2 + 30, 285), (750 + bw / 2 - 30, 385), (750 - bw / 2 - 30, 385)], fill=NEWS_RED)
-                if kb > 0.6:
-                    ld.text((750, 335), "PACHINKO  NEWS", font=font("black", 74), fill=NEWS_WHITE, anchor="mm")
+            ld.polygon([(220, 285), (1340, 285), (1280, 385), (160, 385)], fill=NEWS_RED)
+            ld.text((750, 335), "PACHINKO  NEWS", font=font("black", 74), fill=NEWS_WHITE, anchor="mm")
             base = 1.0
-        up = ease_in_out(prog(tl, NO_ANCHOR - 0.3, 0.6)) * (1 - ease_out_back(prog(tl, NO_HEAD - 0.2, 0.6), 1.4))
-        small = 0.5 if data.get("logo") else 0.65
         pop = 1 + 0.08 * max(0.0, 1 - prog(tl, NO_FINAL, 0.4)) if tl >= NO_FINAL else 1.0
-        s = base * (0.8 + 0.2 * kl) * (1 - (1 - small) * up) * pop
-        im = logo.resize((max(1, int(logo.width * s)), max(1, int(logo.height * s))), Image.LANCZOS)
-        for t0 in (3.4, NO_FULL):   # 光が横切る
-            sh = prog(tl, t0, 0.9)
-            if 0 < sh < 1:
-                m = Image.new("L", im.size, 0)
-                x = -300 + (im.width + 600) * sh
-                ImageDraw.Draw(m).polygon([(x, 0), (x + 120, 0), (x - 80, im.height), (x - 200, im.height)], fill=130)
-                shine = Image.new("RGBA", im.size, (255, 255, 255, 0))
-                shine.putalpha(Image.fromarray(np.minimum(np.asarray(m), np.asarray(im.getchannel("A")))))
-                im.alpha_composite(shine.filter(ImageFilter.GaussianBlur(6)))
-        y_big = (H - 110 - im.height) / 2 - 10
-        ly = y_big * (1 - up) + 20 * up
-        paste(lay, im, ((W - im.width) / 2, ly), min(1.0, prog(tl, NO_LOGO, 0.12)))
-    # 下のニュースの帯（流れる文字）
-    kt = ease_out(prog(tl, NO_TICKER, 0.4))
-    if kt > 0:
-        bar = Image.new("RGBA", (W, 76), (0, 0, 0, 0))
-        bd = ImageDraw.Draw(bar)
-        bd.rectangle((0, 0, W, 76), fill=(255, 255, 255, 240))
-        f = font("bold", 36)
-        unit = data.get("ticker", "NAGIBAKU PACHINKO NEWS") + "　●　"
-        uw = text_w(unit, f)
-        x = 250 - (tl - NO_TICKER) * 260 % uw
-        while x < W:
-            bd.text((x, 38), unit, font=f, fill=NEWS_NAVY, anchor="lm")
-            x += uw
-        bd.rectangle((0, 0, 230, 76), fill=NEWS_RED)
-        bd.text((115, 38), "NEWS", font=font("black", 40), fill=NEWS_WHITE, anchor="mm")
-        paste(lay, bar, (0, H - 110 + 80 * (1 - kt)), kt)
-    # 今回のニュースの見出し（決めの一発で弾む）
-    kh = ease_out(prog(tl, NO_HEAD, 0.45))
-    if kh > 0 and data.get("headline") and data.get("show_headline"):
-        hb = Image.new("RGBA", (1000, 230), (0, 0, 0, 0))
-        hd = ImageDraw.Draw(hb)
-        hd.rectangle((0, 0, 1000, 230), fill=(255, 255, 255, 245))
-        hd.rectangle((0, 0, 16, 230), fill=NEWS_RED)
-        hd.text((60, 58), data.get("kicker", "今回のニュース"), font=font("black", 40), fill=NEWS_RED, anchor="lm")
-        hf = font("black", 92)
-        while text_w(data["headline"], hf) > 900 and hf.size > 48:
-            hf = font("black", hf.size - 4)
-        hd.text((60, 150), data["headline"], font=hf, fill=NEWS_NAVY, anchor="lm")
-        pop = 1 + 0.07 * max(0.0, 1 - prog(tl, NO_FINAL, 0.35)) if tl >= NO_FINAL else 1.0
-        if pop != 1.0:
-            hb = hb.resize((int(1000 * pop), int(230 * pop)), Image.LANCZOS)
-        paste(lay, hb, ((W - hb.width) / 2 + 160 * (1 - kh), 470 - (hb.height - 230) / 2), kh)
-    # フラッシュ（ロゴが決まる瞬間・全員でテーマ・決めの一発）
-    for t0, a0 in ((NO_LOGO, 150), (NO_FULL, 70), (NO_FINAL, 110)):
-        if t0 <= tl < t0 + 0.2:
-            lay.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(a0 * (1 - prog(tl, t0, 0.2))))))
+        sc = base * (0.6 + 0.4 * kl) * pop * (1 + 0.03 * prog(tl, NO_FULL, dur - NO_FULL))
+        im = logo.resize((max(1, int(logo.width * sc)), max(1, int(logo.height * sc))), Image.LANCZOS)
+        sh = prog(tl, NO_FINAL + 0.1, 0.8)   # 光が横切る
+        if 0 < sh < 1:
+            m = Image.new("L", im.size, 0)
+            x = -300 + (im.width + 600) * sh
+            ImageDraw.Draw(m).polygon([(x, 0), (x + 120, 0), (x - 80, im.height), (x - 200, im.height)], fill=130)
+            shine = Image.new("RGBA", im.size, (255, 255, 255, 0))
+            shine.putalpha(Image.fromarray(np.minimum(np.asarray(m), np.asarray(im.getchannel("A")))))
+            im.alpha_composite(shine.filter(ImageFilter.GaussianBlur(6)))
+        paste(lay, im, ((W - im.width) / 2, (H - im.height) / 2 - 10), min(1.0, prog(tl, NO_FULL, 0.15)))
+    # フラッシュ（ワープ明け・ロゴが出る瞬間・決めの一発）
+    for t0, a0 in ((NO_LOGO, 110), (NO_FULL, 220), (NO_FINAL, 110)):
+        if t0 <= tl < t0 + 0.25:
+            lay.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(a0 * (1 - prog(tl, t0, 0.25))))))
     # 抜け：帯が横切って本編へ
     ke = prog(tl, dur - 0.45, 0.45)
     out = 1.0
