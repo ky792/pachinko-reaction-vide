@@ -280,7 +280,7 @@ def build_chapter(ep_dir, script_path, data):
             scene["cues"].append({"type": "newsopen", "start": t - lead, "end": t + nd, "data": {"lead": lead,
                 "headline": tt.get("headline") or tt.get("main", "").replace("\n", ""),
                 "kicker": tt.get("kicker", "今回のニュース"), "ticker": tt.get("ticker", "NAGIBAKU PACHINKO NEWS"),
-                "anchors": tt.get("anchors", {"nagi": ["ナギ", "解析担当"], "baku": ["バク", "現場担当"]})}})
+                "logo": tt.get("logo"), "anchors": tt.get("anchors", {"nagi": ["ナギ", "解析担当"], "baku": ["バク", "現場担当"]})}})
             t += nd
         elif c == "intro":
             # @intro nagi … data["intro"][who] のキャラ紹介カードを全画面で出す（ニュース解説のOP）

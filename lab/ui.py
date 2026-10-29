@@ -1431,31 +1431,38 @@ def news_open(canvas, tl, dur, data):
             x = (m if side < 0 else W - m - im.width) + side * 700 * (1 - k)
             y = 225 + 240 * dn
             paste(lay, im, (x, y), min(1.0, k))
-    # ロゴ（キャスター登場で上へ寄って小さく）
+    # ロゴ（キャスター登場で上へ寄って小さく）。data["logo"] があれば番組ロゴ画像（generator/assets/logos/）
     kl = ease_out_back(prog(tl, NO_LOGO, 0.45), 1.6)
     if kl > 0:
-        logo = Image.new("RGBA", (1500, 420), (0, 0, 0, 0))
-        ld = ImageDraw.Draw(logo)
-        ld.text((750, 150), "ナギバク", font=font("black", 210), fill=NEWS_WHITE, anchor="mm", stroke_width=4, stroke_fill=NEWS_NAVY)
-        kb = ease_out(prog(tl, NO_LOGO + 0.3, 0.4))
-        bw = int(1120 * kb)
-        if bw > 0:
-            ld.polygon([(750 - bw / 2 + 30, 285), (750 + bw / 2 + 30, 285), (750 + bw / 2 - 30, 385), (750 - bw / 2 - 30, 385)], fill=NEWS_RED)
-            if kb > 0.6:
-                ld.text((750, 335), "PACHINKO  NEWS", font=font("black", 74), fill=NEWS_WHITE, anchor="mm")
+        if data.get("logo"):
+            logo = load_logo(data["logo"]).copy()
+            base = 700 / logo.height
+        else:
+            logo = Image.new("RGBA", (1500, 420), (0, 0, 0, 0))
+            ld = ImageDraw.Draw(logo)
+            ld.text((750, 150), "ナギバク", font=font("black", 210), fill=NEWS_WHITE, anchor="mm", stroke_width=4, stroke_fill=NEWS_NAVY)
+            kb = ease_out(prog(tl, NO_LOGO + 0.3, 0.4))
+            bw = int(1120 * kb)
+            if bw > 0:
+                ld.polygon([(750 - bw / 2 + 30, 285), (750 + bw / 2 + 30, 285), (750 + bw / 2 - 30, 385), (750 - bw / 2 - 30, 385)], fill=NEWS_RED)
+                if kb > 0.6:
+                    ld.text((750, 335), "PACHINKO  NEWS", font=font("black", 74), fill=NEWS_WHITE, anchor="mm")
+            base = 1.0
         up = ease_in_out(prog(tl, NO_ANCHOR - 0.3, 0.6))
-        s = (0.8 + 0.2 * kl) * (1 - 0.35 * up)
-        im = logo.resize((int(1500 * s), int(420 * s)), Image.LANCZOS)
+        small = 0.5 if data.get("logo") else 0.65
+        s = base * (0.8 + 0.2 * kl) * (1 - (1 - small) * up)
+        im = logo.resize((max(1, int(logo.width * s)), max(1, int(logo.height * s))), Image.LANCZOS)
         for t0 in (3.4, NO_FULL):   # 光が横切る
             sh = prog(tl, t0, 0.9)
             if 0 < sh < 1:
                 m = Image.new("L", im.size, 0)
                 x = -300 + (im.width + 600) * sh
-                ImageDraw.Draw(m).polygon([(x, 0), (x + 120, 0), (x - 80, im.height), (x - 200, im.height)], fill=150)
+                ImageDraw.Draw(m).polygon([(x, 0), (x + 120, 0), (x - 80, im.height), (x - 200, im.height)], fill=130)
                 shine = Image.new("RGBA", im.size, (255, 255, 255, 0))
                 shine.putalpha(Image.fromarray(np.minimum(np.asarray(m), np.asarray(im.getchannel("A")))))
                 im.alpha_composite(shine.filter(ImageFilter.GaussianBlur(6)))
-        ly = (cy - im.height / 2) * (1 - up) + 90 * up
+        y_big = (H - 110 - im.height) / 2 - 10
+        ly = y_big * (1 - up) + 20 * up
         paste(lay, im, ((W - im.width) / 2, ly), min(1.0, prog(tl, NO_LOGO, 0.12)))
     # 下のニュースの帯（流れる文字）
     kt = ease_out(prog(tl, NO_TICKER, 0.4))
