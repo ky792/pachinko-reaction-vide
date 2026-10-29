@@ -412,10 +412,14 @@ def render_frame(scene, t, images):
             shift = 0.0
             if c == fw and fz > 1.3:             # 大きく寄るときは画面の内側へ（端で切れないように）
                 shift = (1 if c == "nagi" else -1) * 230 * (fz - 1.2) / 1.2 * fk
-            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t), shift=shift)
+            face = face_at(scene, c, t)
+            pointing = card_on and who == c and not fk and ui.has_point(c)
+            if pointing:                          # ニュース回：資料が出ている間、話しているナギは指し棒の絵に
+                face = "point_explain"
+            elif card_on and c == "nagi" and ui.has_point(c) and not fk:
+                face = "point_normal"
+            ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face, shift=shift)
             dim = (1 - 0.5 * fk if fw and c != fw else 1.0) * (1 - 0.45 * hk if who and c != who else 1.0)
-            if card_on and who == c and not fk:   # 話している方が指し棒で資料を指す
-                ui.draw_pointer(lay, c, pointer_k(scene, t))
             ui.paste(cv, lay, (0, 0), a * dim)
     if ui.THEME.get("desk"):
         if a > 0.99:

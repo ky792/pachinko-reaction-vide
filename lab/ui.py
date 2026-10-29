@@ -4,6 +4,7 @@
 その瞬間の見た目を描くだけの関数。動き（出る・引っ込む）は tl と dur から決まるので、
 台本側（scene.json）では「いつからいつまで、どの部品に、何を出すか」だけを書けばよい。
 """
+import json
 import math
 from functools import lru_cache
 from pathlib import Path
@@ -1489,6 +1490,8 @@ def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal", shift=
     fx += shift
     bob = 3 * math.sin(2 * math.pi * 0.4 * t + (0 if who == "nagi" else 1.9))
     x = fx - img.width / 2
+    if face and face.startswith("point"):   # 指し棒の絵：体の中心を足元に合わせる（棒のぶん絵が横に広い）
+        x = fx - (20 + (img.width - 40) * _point_meta(who).get(face, {}).get("body_cx", 0.5))
     y = fy - (img.height - 30) + bob
     canvas.alpha_composite(img, (int(x), int(y)))
     LAST_BOX[who] = (x, y, img.width, img.height)
@@ -1496,6 +1499,16 @@ def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal", shift=
 
 
 LAST_BOX = {}
+
+
+@lru_cache(maxsize=None)
+def _point_meta(who):
+    p = ASSETS / "characters" / "v2" / who / "point.json"
+    return json.loads(p.read_text()) if p.exists() else {}
+
+
+def has_point(who):
+    return (ASSETS / "characters" / "v2" / who / "point_normal.png").exists()
 
 
 def draw_pointer(canvas, who, k):
