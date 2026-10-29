@@ -1418,9 +1418,10 @@ def news_open(canvas, tl, dur, data):
     ka = ease_out(prog(tl, NO_ANCHOR, 0.5))
     if ka > 0:
         an = data.get("anchors", {})
-        dn = ease_in_out(prog(tl, NO_HEAD, 0.5))
+        dn = 0.0
+        ex = ease_in_out(prog(tl, NO_HEAD - 0.3, 0.5))   # 最後のロゴに向けて左右へはける
         for who, side, delay in (("nagi", -1, 0.0), ("baku", 1, 0.25)):
-            k = ease_out_back(prog(tl, NO_ANCHOR + delay, 0.5), 1.3)
+            k = ease_out_back(prog(tl, NO_ANCHOR + delay, 0.5), 1.3) * (1 - ex)
             if k <= 0:
                 continue
             nm, role = an.get(who, ({"nagi": "ナギ", "baku": "バク"}[who], ""))
@@ -1448,9 +1449,10 @@ def news_open(canvas, tl, dur, data):
                 if kb > 0.6:
                     ld.text((750, 335), "PACHINKO  NEWS", font=font("black", 74), fill=NEWS_WHITE, anchor="mm")
             base = 1.0
-        up = ease_in_out(prog(tl, NO_ANCHOR - 0.3, 0.6))
+        up = ease_in_out(prog(tl, NO_ANCHOR - 0.3, 0.6)) * (1 - ease_out_back(prog(tl, NO_HEAD - 0.2, 0.6), 1.4))
         small = 0.5 if data.get("logo") else 0.65
-        s = base * (0.8 + 0.2 * kl) * (1 - (1 - small) * up)
+        pop = 1 + 0.08 * max(0.0, 1 - prog(tl, NO_FINAL, 0.4)) if tl >= NO_FINAL else 1.0
+        s = base * (0.8 + 0.2 * kl) * (1 - (1 - small) * up) * pop
         im = logo.resize((max(1, int(logo.width * s)), max(1, int(logo.height * s))), Image.LANCZOS)
         for t0 in (3.4, NO_FULL):   # 光が横切る
             sh = prog(tl, t0, 0.9)
@@ -1482,7 +1484,7 @@ def news_open(canvas, tl, dur, data):
         paste(lay, bar, (0, H - 110 + 80 * (1 - kt)), kt)
     # 今回のニュースの見出し（決めの一発で弾む）
     kh = ease_out(prog(tl, NO_HEAD, 0.45))
-    if kh > 0 and data.get("headline"):
+    if kh > 0 and data.get("headline") and data.get("show_headline"):
         hb = Image.new("RGBA", (1000, 230), (0, 0, 0, 0))
         hd = ImageDraw.Draw(hb)
         hd.rectangle((0, 0, 1000, 230), fill=(255, 255, 255, 245))
