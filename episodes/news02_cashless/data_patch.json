@@ -62,7 +62,8 @@
   "headline": "パチンコがキャッシュレスに？",
   "kicker": "今回のニュース",
   "ticker": "NAGIBAKU PACHINKO NEWS　●　業界ニュースをナギとバクが解説",
-  "logo": "pachinko_news.png"
+  "logo": "pachinko_news.png",
+  "ticker_body": "パチンコのキャッシュレス化　日遊協、2027年12月末のシステム完成を目指す"
  },
  "intro": {
   "nagi": {
@@ -86,7 +87,7 @@
  },
  "flow": {
   "cl_history": {
-   "tag": "LAB RECORD",
+   "tag": "NEWS FILE",
    "heading": "キャッシュレス化の流れ",
    "steps": [
     {
@@ -116,22 +117,22 @@
    "sub": "公表された情報をもとに見ていく"
   },
   "cl_pppay": {
-   "tag": "DATA LOG",
+   "tag": "NEWS FILE",
    "word": "PPPAY",
    "sub": "スマホで決済→ICカードに玉・メダル（2025年秋に話題）"
   },
   "cl_market": {
-   "tag": "DATA LOG",
+   "tag": "NEWS FILE",
    "word": "約11兆7133億円",
    "sub": "2024年 ホール経営法人の総売上高（前年比+5.0%・帝国データバンク）"
   },
   "cl_halls": {
-   "tag": "DATA LOG",
+   "tag": "NEWS FILE",
    "word": "6,706店",
    "sub": "2024年末のホール数（警察庁）／単純計算で1店あたり約17億円"
   },
   "cl_limit": {
-   "tag": "LAB MEMO",
+   "tag": "NEWS FILE",
    "word": "上限を決められる",
    "sub": "使える額の上限・利用履歴の共有（日遊協 西村会長）"
   }
@@ -160,7 +161,7 @@
  },
  "spec_table": {
   "cl_purpose": {
-   "tag": "DATA LOG",
+   "tag": "NEWS FILE",
    "heading": "キャッシュレス化の目的（日遊協）",
    "rows": [
     {
@@ -187,7 +188,7 @@
    ]
   },
   "cl_summary": {
-   "tag": "DATA LOG",
+   "tag": "NEWS FILE",
    "heading": "パチンコのキャッシュレス化 まとめ",
    "rows": [
     {

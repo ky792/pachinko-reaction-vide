@@ -687,6 +687,7 @@ def main():
             sc["background"] = str((ep / sc["background"]).resolve())
         sc["theme"] = conf.get("theme")               # lab（既定）／newmachine（新台解説）
         sc["chips"] = conf.get("chips")               # 新台解説の上部の札
+        sc["ticker_body"] = (data.get("title") or {}).get("ticker_body")   # ニュース回の下の帯
         sc["point_label"] = conf.get("point_label")   # 章カードの札（既定は「POINT」）
         sc["bar_label"] = conf.get("bar_label")       # 号外テーマ左上の札（既定は「新台解説」）
         if conf.get("theme") == "goggai":             # 号外：解析パネルの見出しを打つ音

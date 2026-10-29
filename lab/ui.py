@@ -43,6 +43,9 @@ THEMES = {
             "SUB": "#9AA8BC", "bar": "timeline", "chapter": "lab", "blur": 9, "bg_mix": (0.34, 0.42)},
     "newmachine": {"BG": "#140A10", "PANEL": "#26121B", "PANEL_LINE": "#4D2634", "ACCENT": "#FF5D6C", "KEY": "#FFD34E",
                    "SUB": "#CDB0B9", "bar": "chips", "chapter": "band", "blur": 16, "bg_mix": (0.30, 0.50)},
+    # news＝ニュース回（報道スタジオ風：濃紺×赤×白。左上は赤い札の「NEWS」、下に固定のニュース帯）
+    "news": {"BG": "#081833", "PANEL": "#0F2550", "PANEL_LINE": "#2E5291", "ACCENT": "#5AAEFF", "KEY": "#FFD04A",
+             "SUB": "#A9BCDC", "bar": "news", "chapter": "band", "band": "#C81E2A", "radius": 6, "studio": True},
     # goggai＝新台解説の号外（紙×黄×墨）。歴史回の紺と一目で違う明るい画。枠は太い墨線
     "goggai": {"BG": "#F7F5EE", "PANEL": "#FFFDF6", "PANEL_LINE": "#16161A", "ACCENT": "#16161A", "KEY": "#E2343B",
                "SUB": "#6B6658", "TEXT": "#16161A", "bar": "goggai", "chapter": "band", "band": "#FFD21F",
@@ -202,6 +205,8 @@ def background(name="lab_room.png"):
             for x in range((y // 36 % 2) * 18, W + 36, 36):
                 d.ellipse((x - 2.4, y - 2.4, x + 2.4, y + 2.4), fill=(22, 22, 26, 16))
         return img
+    if THEME.get("studio"):
+        return _studio_bg()
     p = Path(name) if name and Path(name).is_absolute() else ASSETS / "backgrounds" / (name or "lab_room.png")
     if p.exists():
         src = Image.open(p).convert("RGB")
@@ -218,6 +223,67 @@ def background(name="lab_room.png"):
     vign = np.clip(np.sqrt(((xx - W / 2) / (W * 0.62)) ** 2 + ((yy - H / 2) / (H * 0.62)) ** 2), 0, 1.4)
     img *= (1 - 0.35 * np.clip(vign - 0.5, 0, 1))[..., None]
     return Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+
+
+def _studio_bg():
+    """ニュース回の背景：濃紺のグラデーションに、奥のモニター壁・薄い地球儀・光の筋・床の反射"""
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    top, bot = np.array([14, 40, 88], np.float32), np.array([5, 14, 36], np.float32)
+    k = (yy / H)[..., None]
+    img = top * (1 - k) + bot * k
+    glow = np.exp(-(((xx - W / 2) / (W * 0.45)) ** 2 + ((yy - H * 0.42) / (H * 0.45)) ** 2))[..., None]
+    img += glow * np.array([20, 40, 80], np.float32)
+    base = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    # 奥のモニター壁（3×6の面）
+    mw, mh, gx, y0 = 250, 140, 18, 150
+    x0 = (W - (6 * mw + 5 * gx)) / 2
+    for r in range(3):
+        for c in range(6):
+            x, y = x0 + c * (mw + gx), y0 + r * (mh + gx)
+            d.rectangle((x, y, x + mw, y + mh), fill=(30, 70, 140, 60), outline=(90, 150, 230, 70), width=2)
+            for b in range(6):
+                bh = 14 + ((r * 7 + c * 3 + b * 5) % 9) * 8
+                d.rectangle((x + 24 + b * 34, y + mh - 18 - bh, x + 44 + b * 34, y + mh - 18), fill=(90, 160, 255, 40))
+    # 薄い地球儀
+    cx, cy, R = W / 2, 400, 330
+    d.ellipse((cx - R, cy - R, cx + R, cy + R), outline=(140, 190, 255, 45), width=3)
+    for i in range(8):
+        w = abs(math.cos(i * math.pi / 8 + 0.3)) * R
+        d.ellipse((cx - w, cy - R, cx + w, cy + R), outline=(140, 190, 255, 26), width=2)
+    for j in (-0.6, -0.3, 0, 0.3, 0.6):
+        ww = R * math.sqrt(1 - j * j)
+        d.line((cx - ww, cy + R * j, cx + ww, cy + R * j), fill=(140, 190, 255, 26), width=2)
+    # 斜めの光の筋
+    for i, (x, w, a) in enumerate(((260, 90, 26), (520, 40, 18), (1480, 120, 22), (1700, 50, 16))):
+        d.polygon([(x, 0), (x + w, 0), (x + w - 260, H), (x - 260, H)], fill=(170, 210, 255, a))
+    # 床（キャスター台の反射）
+    d.rectangle((0, 760, W, H), fill=(4, 12, 32, 120))
+    d.line((0, 760, W, 760), fill=(90, 150, 230, 90), width=2)
+    lay = lay.filter(ImageFilter.GaussianBlur(1.2))
+    base.alpha_composite(lay)
+    vign = np.clip(np.sqrt(((xx - W / 2) / (W * 0.62)) ** 2 + ((yy - H / 2) / (H * 0.62)) ** 2), 0, 1.4)
+    arr = np.asarray(base).astype(np.float32)
+    arr[..., :3] *= (1 - 0.4 * np.clip(vign - 0.45, 0, 1))[..., None]
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA")
+
+
+NEWS_TICKER = ""   # ニュース回の下の帯に出す見出し（episode の title.ticker_body）
+
+
+def news_ticker(canvas):
+    """ニュース回の下の帯：左に赤い「NEWS」、右に今回の見出し（止まったテロップ）"""
+    if not NEWS_TICKER:
+        return
+    h, y = 54, H - 54
+    lay = Image.new("RGBA", (W, h), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    d.rectangle((0, 0, W, h), fill=(255, 255, 255, 235))
+    d.rectangle((0, 0, 190, h), fill=hexc("#C81E2A"))
+    d.text((95, h / 2), "NEWS", font=font("black", 32), fill=(255, 255, 255, 255), anchor="mm")
+    d.text((220, h / 2), NEWS_TICKER, font=font("bold", 30), fill=hexc("#0B2A5B"), anchor="lm")
+    canvas.alpha_composite(lay, (0, y))
 
 
 # ---------------------------------------------------------------- 常設：上部バー（章ラベル＋年表ミニマップ）
@@ -238,6 +304,17 @@ def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=(),
         return
     lay = Image.new("RGBA", (W, 150), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
+    if THEME.get("bar") == "news":   # 左上：赤い「NEWS」札＋濃紺の帯に章タイトル、右：スペックの札
+        ft = font("black", 40)
+        bw = max(520, int(text_w(chapter_title, ft)) + 230)
+        d.rectangle((0, 40, bw, 120), fill=(11, 32, 72, 235))
+        d.rectangle((0, 116, bw, 120), fill=hexc("#C81E2A"))
+        d.rectangle((0, 40, 150, 120), fill=hexc("#C81E2A"))
+        d.text((75, 80), "NEWS", font=font("black", 34), fill=(255, 255, 255, 255), anchor="mm")
+        d.text((178, 80), chapter_title, font=ft, fill=(255, 255, 255, 255), anchor="lm")
+        _spec_chips(d, chips or [])
+        paste(canvas, lay, (-int(60 * (1 - a)), 0), a)
+        return
     if THEME.get("bar") == "goggai":   # 左上：墨の帯に黄の差し色と「新台解説」、右：スペックの札
         ft = font("black", 40)
         bw = max(560, int(text_w(chapter_title, ft)) + 110)

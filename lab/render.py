@@ -334,6 +334,9 @@ def render_layers(scene, t, images):
         bar_a = 1.0
     bar_a *= 1 - skit_state(scene, t)[0]
     y, _ = year_at(scene, t)
+    if ui.THEME.get("bar") == "news":
+        ui.NEWS_TICKER = scene.get("ticker_body") or ""
+        ui.news_ticker(under) if bar_a > 0.99 else None
     ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"), scene.get("chips"))
     for c in cues:
         if c["start"] <= t < c["end"] and c["type"] in BACK:
