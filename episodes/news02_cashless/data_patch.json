@@ -58,7 +58,10 @@
  "title": {
   "main": "パチンコが\nキャッシュレスに？",
   "sub": "【業界ニュース】千円札はいらなくなるのか",
-  "label": "NAGIBAKU PACHINKO NEWS"
+  "label": "NAGIBAKU PACHINKO NEWS",
+  "headline": "パチンコがキャッシュレスに？",
+  "kicker": "今回のニュース",
+  "ticker": "NAGIBAKU PACHINKO NEWS　●　業界ニュースをナギとバクが解説"
  },
  "intro": {
   "nagi": {
@@ -143,13 +146,8 @@
      "key": true
     },
     {
-     "k": "2030年 目標",
-     "sub": "国の中間目標",
-     "value": 65
-    },
-    {
-     "k": "将来の目標",
-     "sub": "国内指標",
+     "k": "国の目標",
+     "sub": "国内指標（2030年は65%）",
      "value": 80
     }
    ],

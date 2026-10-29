@@ -49,6 +49,8 @@ THEMES = {
                "paper": True, "line_w": 5, "radius": 4},
 }
 THEME = dict(THEMES["lab"], name="lab")
+POINT_LABEL = "POINT"   # 章カードの番号の上の札（ニュース回は "TOPIC"）
+BAR_LABEL = "新台解説"   # 号外テーマの左上の札（ニュース回は episode.json の "bar_label" で「ニュース」）
 
 
 def apply_theme(name):
@@ -242,7 +244,7 @@ def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=(),
         d.rectangle((10, 46, bw + 10, 136), fill=INK)
         d.rectangle((0, 36, bw, 126), fill=INK)
         d.rectangle((0, 36, 16, 126), fill=YEL)
-        d.text((48, 62), "新台解説", font=font("black", 24), fill=YEL, anchor="lm")
+        d.text((48, 62), BAR_LABEL, font=font("black", 24), fill=YEL, anchor="lm")
         d.text((48, 100), chapter_title, font=ft, fill=BG, anchor="lm")
         _spec_chips(d, chips or [])
         paste(canvas, lay, (-int(60 * (1 - a)), 0), a)
@@ -343,7 +345,7 @@ def _chapter_band(canvas, tl, dur, data, out):
     kt = ease_out(prog(tl, 0.2, 0.4))
     no = Image.new("RGBA", (420, 300), (0, 0, 0, 0))
     nd = ImageDraw.Draw(no)
-    nd.text((210, 70), "POINT", font=font("black", 44), fill=TEXT, anchor="mm")
+    nd.text((210, 70), POINT_LABEL, font=font("black", 44), fill=TEXT, anchor="mm")
     nd.text((210, 185), f"{data['no']:02d}", font=font("black", 190), fill=TEXT, anchor="mm", stroke_width=6, stroke_fill=BG)
     paste(lay, no, (120, cy - 165 + 20 * (1 - kt)), kt)
     tt = Image.new("RGBA", (1300, 200), (0, 0, 0, 0))
@@ -1330,3 +1332,137 @@ def serif(size):
             if (d / name).exists():
                 return ImageFont.truetype(str(d / name), size, index=0)
     return font("black", size)
+
+
+# ---------------------------------------------------------------- L ニュース番組のOP（@newsopen）
+NEWS_NAVY = hexc("#0B2A5B")
+NEWS_RED = hexc("#D7262E")
+NEWS_WHITE = (255, 255, 255, 255)
+
+
+def _stripes(lay, k, y, h, cols, slant=260):
+    """斜めの帯を左から右へ流す。k=0〜1（1で画面を覆いきる）"""
+    d = ImageDraw.Draw(lay)
+    x1 = -slant + (W + slant * 2) * k
+    for i, c in enumerate(cols):
+        off = i * 70
+        xa = x1 - off
+        d.polygon([(xa - W - slant, y), (xa, y), (xa - slant, y + h), (xa - W - slant * 2, y + h)], fill=c)
+
+
+def news_open(canvas, tl, dur, data):
+    """ニュース番組のOP（約6.5秒・news_open.wav に合わせる）。
+    0〜0.6 紺の地＋赤白の帯が走る → 0.5〜1.5 回る輪と光の線 → 1.2 ロゴが決まる（金管の一発）
+    → 2.2〜4.4 光が横切る・下にニュースの帯 → 4.4〜 今回のニュースの見出し → 最後の0.45秒で帯が横切って本編へ"""
+    lead = data.get("lead", 0.0)
+    tl, dur = tl - lead, dur - lead
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    # 地：紺のグラデーション
+    k0 = 1.0   # 頭から紺で覆う（号外の地や上部バーを見せない）
+    if k0 > 0:
+        g = np.linspace(0, 1, H, dtype=np.float32)[:, None]
+        top, bot = np.array([18, 52, 108], np.float32), np.array([6, 18, 44], np.float32)
+        arr = (top * (1 - g) + bot * g)[:, None, :].repeat(W, 1).reshape(H, W, 3)
+        bgimg = Image.fromarray(arr.astype(np.uint8), "RGB").convert("RGBA")
+        lay.alpha_composite(fade(bgimg, k0))
+    cx, cy = W / 2, H / 2 - 60
+    # 回る輪（地球儀っぽい経線・緯線）と方眼
+    kr = ease_out(prog(tl, 0.4, 0.9))
+    if kr > 0:
+        ring = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        rd = ImageDraw.Draw(ring)
+        for x in range(0, W, 96):
+            rd.line((x, 0, x, H), fill=(120, 170, 255, 18), width=1)
+        for y in range(0, H, 96):
+            rd.line((0, y, W, y), fill=(120, 170, 255, 18), width=1)
+        R = 330 + 40 * (1 - kr)
+        rd.ellipse((cx - R, cy - R, cx + R, cy + R), outline=(150, 195, 255, 90), width=3)
+        rd.ellipse((cx - R * 1.18, cy - R * 1.18, cx + R * 1.18, cy + R * 1.18), outline=(150, 195, 255, 40), width=2)
+        rot = tl * 0.9
+        for i in range(6):   # 経線：横に潰した楕円を回す
+            w = abs(math.cos(rot + i * math.pi / 6)) * R
+            rd.ellipse((cx - w, cy - R, cx + w, cy + R), outline=(150, 195, 255, 55), width=2)
+        for j in (-0.6, -0.3, 0.3, 0.6):   # 緯線
+            yy = cy + R * j
+            ww = R * math.sqrt(1 - j * j)
+            rd.line((cx - ww, yy, cx + ww, yy), fill=(150, 195, 255, 55), width=2)
+        rd.line((cx - R, cy, cx + R, cy), fill=(150, 195, 255, 70), width=2)
+        # 輪の上を走る赤い光点
+        for i in range(3):
+            a = tl * 2.4 + i * 2.1
+            px, py = cx + R * math.cos(a), cy + R * math.sin(a)
+            rd.ellipse((px - 7, py - 7, px + 7, py + 7), fill=(255, 90, 90, 220))
+        lay.alpha_composite(fade(ring.filter(ImageFilter.GaussianBlur(0.6)), kr * (1 - 0.6 * prog(tl, 4.2, 0.5))))
+    # 頭の赤白の帯（左から走って抜ける）
+    ks = prog(tl, 0.0, 0.7)
+    if 0 < ks < 1:
+        _stripes(lay, ease_in_out(ks), 300, 120, [NEWS_RED, NEWS_WHITE])
+        _stripes(lay, ease_in_out(max(0, ks - 0.12) / 0.88), 640, 70, [NEWS_WHITE, NEWS_RED])
+    # ロゴ
+    kl = ease_out_back(prog(tl, 1.15, 0.45), 1.6)
+    if kl > 0:
+        logo = Image.new("RGBA", (1500, 420), (0, 0, 0, 0))
+        ld = ImageDraw.Draw(logo)
+        ld.text((750, 150), "ナギバク", font=font("black", 210), fill=NEWS_WHITE, anchor="mm", stroke_width=4, stroke_fill=NEWS_NAVY)
+        kb = ease_out(prog(tl, 1.45, 0.4))
+        bw = int(1120 * kb)
+        if bw > 0:
+            ld.polygon([(750 - bw / 2 + 30, 285), (750 + bw / 2 + 30, 285), (750 + bw / 2 - 30, 385), (750 - bw / 2 - 30, 385)], fill=NEWS_RED)
+            if kb > 0.6:
+                ld.text((750, 335), "PACHINKO  NEWS", font=font("black", 74), fill=NEWS_WHITE, anchor="mm")
+        s = 0.8 + 0.2 * kl
+        im = logo.resize((int(1500 * s), int(420 * s)), Image.LANCZOS)
+        # 光が横切る
+        sh = prog(tl, 2.3, 0.9)
+        if 0 < sh < 1:
+            m = Image.new("L", im.size, 0)
+            md = ImageDraw.Draw(m)
+            x = -300 + (im.width + 600) * sh
+            md.polygon([(x, 0), (x + 120, 0), (x - 80, im.height), (x - 200, im.height)], fill=150)
+            shine = Image.new("RGBA", im.size, (255, 255, 255, 0))
+            shine.putalpha(Image.fromarray(np.minimum(np.asarray(m), np.asarray(im.getchannel("A")))))
+            im.alpha_composite(shine.filter(ImageFilter.GaussianBlur(6)))
+        ly = cy - im.height / 2 - 150 * ease_in_out(prog(tl, 4.3, 0.5))
+        paste(lay, im, ((W - im.width) / 2, ly), min(1.0, prog(tl, 1.15, 0.12)))
+        if 1.15 <= tl < 1.35:   # 決まった瞬間のフラッシュ
+            d.rectangle((0, 0, W, H), fill=(255, 255, 255, int(150 * (1 - prog(tl, 1.15, 0.2)))))
+    # 下のニュースの帯（流れる文字）
+    kt = ease_out(prog(tl, 1.9, 0.4))
+    if kt > 0:
+        bar = Image.new("RGBA", (W, 76), (0, 0, 0, 0))
+        bd = ImageDraw.Draw(bar)
+        bd.rectangle((0, 0, W, 76), fill=(255, 255, 255, 240))
+        bd.rectangle((0, 0, 230, 76), fill=NEWS_RED)
+        msg = data.get("ticker", "NAGIBAKU PACHINKO NEWS")
+        f = font("bold", 36)
+        unit = msg + "　●　"
+        uw = text_w(unit, f)
+        x0 = 250 - (tl - 1.9) * 260 % uw
+        x = x0
+        while x < W:
+            bd.text((x, 38), unit, font=f, fill=NEWS_NAVY, anchor="lm")
+            x += uw
+        bd.rectangle((0, 0, 230, 76), fill=NEWS_RED)
+        bd.text((115, 38), "NEWS", font=font("black", 40), fill=NEWS_WHITE, anchor="mm")
+        paste(lay, bar, (0, H - 170 + 80 * (1 - kt)), kt)
+    # 今回のニュースの見出し
+    kh = ease_out(prog(tl, 4.45, 0.45))
+    if kh > 0 and data.get("headline"):
+        hb = Image.new("RGBA", (1500, 230), (0, 0, 0, 0))
+        hd = ImageDraw.Draw(hb)
+        hd.rectangle((0, 0, 1500, 230), fill=(255, 255, 255, 245))
+        hd.rectangle((0, 0, 16, 230), fill=NEWS_RED)
+        hd.text((60, 58), data.get("kicker", "今回のニュース"), font=font("black", 40), fill=NEWS_RED, anchor="lm")
+        hf = font("black", 92)
+        while text_w(data["headline"], hf) > 1400 and hf.size > 56:
+            hf = font("black", hf.size - 4)
+        hd.text((60, 150), data["headline"], font=hf, fill=NEWS_NAVY, anchor="lm")
+        paste(lay, hb, ((W - 1500) / 2 + 160 * (1 - kh), cy + 110), kh)
+    # 抜け：帯が横切って本編へ
+    ke = prog(tl, dur - 0.45, 0.45)
+    out = 1.0
+    if ke > 0:
+        _stripes(lay, ease_in_out(ke), 0, H, [NEWS_RED, NEWS_WHITE, NEWS_NAVY], slant=420)
+        out = 1 - prog(tl, dur - 0.12, 0.12)
+    paste(canvas, lay, (0, 0), out)

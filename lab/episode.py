@@ -270,6 +270,17 @@ def build_chapter(ep_dir, script_path, data):
             scene["cues"].append({"type": "logo", "start": t, "end": t + ld, "data": {"file": bits[0]}})
             scene["se"].append({"t": t + 0.05, "kind": "pon", "gain": 0.3})
             t += ld
+        elif c == "newsopen":
+            # @newsopen [秒] … ニュース番組のOP（ロゴ→今回のニュースの見出し）。曲は @song news_open.wav を直前に置く
+            nd = float(it["arg"]) if it["arg"].strip() else 6.5
+            close_cur(t)
+            set_layout("hidden", t)
+            tt = data.get("title", {})
+            lead = t if t <= 0.3 else 0.0   # 章の頭なら0秒から紺で覆う（曲と動きは t から）
+            scene["cues"].append({"type": "newsopen", "start": t - lead, "end": t + nd, "data": {"lead": lead,
+                "headline": tt.get("headline") or tt.get("main", "").replace("\n", ""),
+                "kicker": tt.get("kicker", "今回のニュース"), "ticker": tt.get("ticker", "NAGIBAKU PACHINKO NEWS")}})
+            t += nd
         elif c == "intro":
             # @intro nagi … data["intro"][who] のキャラ紹介カードを全画面で出す（ニュース解説のOP）
             close_cur(t)
@@ -450,7 +461,8 @@ def build_chapter(ep_dir, script_path, data):
     if hiki is not None:      # 章の終わりまで続いたヒキ（章の最後の一言など）
         scene["hiki"].append({"start": hiki["start"], "end": round(t + 0.6, 3)})
     close_cur(t)
-    t += 0.6
+    if not (scene["cues"] and scene["cues"][-1]["type"] == "newsopen" and scene["cues"][-1]["end"] >= t - 1e-6):
+        t += 0.6   # ニュースOPで終わる章は、帯で抜けたらすぐ本編へ（余白を付けない）
     for cue in scene["cues"]:
         if cue["end"] is None or cue["end"] > t:
             cue["end"] = t
@@ -674,6 +686,8 @@ def main():
             sc["background"] = str((ep / sc["background"]).resolve())
         sc["theme"] = conf.get("theme")               # lab（既定）／newmachine（新台解説）
         sc["chips"] = conf.get("chips")               # 新台解説の上部の札
+        sc["point_label"] = conf.get("point_label")   # 章カードの札（既定は「POINT」）
+        sc["bar_label"] = conf.get("bar_label")       # 号外テーマ左上の札（既定は「新台解説」）
         if conf.get("theme") == "goggai":             # 号外：解析パネルの見出しを打つ音
             for c in sc["cues"]:
                 if c["type"] == "analysis":

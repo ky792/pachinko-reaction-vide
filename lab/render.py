@@ -128,7 +128,7 @@ def _vignette():
     return _VIG["v"]
 
 
-BACK = ("chapter", "title", "intro", "logo", "timeline", "machine", "keyword", "flow", "lineup", "pie", "spec_table", "versus", "meter", "invention")
+BACK = ("chapter", "title", "intro", "logo", "newsopen", "timeline", "machine", "keyword", "flow", "lineup", "pie", "spec_table", "versus", "meter", "invention")
 
 
 def year_at(scene, t):
@@ -163,6 +163,8 @@ def _draw_cue(cv, c, tl, dur, images, data_tank=None):
         ui.logo_card(cv, tl, dur, d)
     elif tp == "intro":
         ui.intro_card(cv, tl, dur, d)
+    elif tp == "newsopen":
+        ui.news_open(cv, tl, dur, d)
     elif tp == "timeline":
         ui.timeline(cv, tl, dur, d)
     elif tp == "machine":
@@ -219,7 +221,7 @@ def state_key(scene, t):
     if not still:
         return None
     cues = scene["cues"]
-    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=0)
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo", "newsopen")), default=0)
     if chap_end and chap_end - 0.4 <= t < chap_end + 0.15:
         return None
     key.append(round(y, 3))
@@ -230,7 +232,7 @@ def state_key(scene, t):
             continue
         if c["type"] == "tsukkomi":
             continue
-        if c["type"] == "invention":   # 発明品はずっと動いている（lab/invention.py）
+        if c["type"] in ("invention", "newsopen"):   # 発明品・ニュースOPはずっと動いている
             return None
         tl, dur = t - c["start"], c["end"] - c["start"]
         settle = ui.SETTLE.get(c["type"], lambda d: 0.6)(c.get("data", {}))
@@ -310,6 +312,8 @@ def grade_level(scene, t):
 
 def render_layers(scene, t, images):
     ui.apply_theme(scene.get("theme"))
+    ui.BAR_LABEL = scene.get("bar_label") or "新台解説"
+    ui.POINT_LABEL = scene.get("point_label") or "POINT"
     ch = scene["chapter"]
     cues = scene["cues"]
     name = scene.get("background") or "lab_room.png"
@@ -317,14 +321,14 @@ def render_layers(scene, t, images):
         under = _grade_bg(name, scene["grade"], grade_level(scene, t)).copy()
     else:
         under = ui.background(name).copy()
-    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=0)
-    first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo")), default=1e9)
-    in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo"))
+    chap_end = max((c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo", "newsopen")), default=0)
+    first_bg = min((c["start"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo", "newsopen")), default=1e9)
+    in_card = any(c["start"] <= t < c["end"] for c in cues if c["type"] in ("chapter", "title", "intro", "logo", "newsopen"))
     if in_card:
         bar_a = 0.0 if t >= first_bg + 0.3 else 1 - ui.prog(t, first_bg, 0.3)
         # 全画面表示が終わる直前から上部バーを戻す
         for c in cues:
-            if c["type"] in ("chapter", "title", "intro", "logo") and c["start"] <= t < c["end"]:
+            if c["type"] in ("chapter", "title", "intro", "logo", "newsopen") and c["start"] <= t < c["end"]:
                 bar_a = max(bar_a, ui.ease_out(ui.prog(t, c["end"] - 0.4, 0.5)))
     else:
         bar_a = 1.0
