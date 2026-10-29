@@ -1,0 +1,17 @@
+# OP：サンド前で千円札が尽きる → ATM往復あるある → 「千円札がいらなくなる話」で本題へ。所長は出さない（ユーザー指定）
+@skit on
+@dir act=shake
+バク: あかん。千円札、もう無いわ。
+@dir act=tilt
+ナギ: 財布、逆さにしても出てこないよ。
+バク: ちょっとコンビニのATM行ってくる。
+ナギ: 行って、戻ってきて、また入れるんでしょ。
+@dir act=slump
+バク: それが一番負けるパターンやねん。分かっとんねん。
+@dir act=jump
+ナギ: じゃあ今回は、その千円札がいらなくなる話。
+@skit off
+@song op_brass.wav gain=0.6 len=12
+@intro nagi
+@intro baku
+@title 4.0

@@ -1,0 +1,16 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.12,
+ "_note": "ニュース回 第2回：パチンコのキャッシュレス化（日遊協×GMO、2027年12月末のシステム完成目標）。号外テーマ。声は yokai_watch と同じ設定。所長は出さない（ユーザー指定 2026-10-29）",
+ "theme": "goggai",
+ "chips": [
+  {"k": "目標", "v": "2027年12月末"},
+  {"k": "クレカ", "v": "認めない方向"},
+  {"k": "キャッシュレス比率", "v": "58.0%", "key": true}
+ ],
+ "voice_tempo": 1.1,
+ "dir_pre": 0.07
+}
