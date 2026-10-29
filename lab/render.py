@@ -336,7 +336,6 @@ def render_layers(scene, t, images):
     y, _ = year_at(scene, t)
     if ui.THEME.get("bar") == "news":
         ui.NEWS_TICKER = scene.get("ticker_body") or ""
-        ui.news_ticker(under) if bar_a > 0.99 else None
     ui.top_bar(under, bar_a, ch["no"], ch["title"], y, ch.get("era"), scene.get("milestones", ()), ch.get("label"), scene.get("chips"))
     for c in cues:
         if c["start"] <= t < c["end"] and c["type"] in BACK:
@@ -404,6 +403,11 @@ def render_frame(scene, t, images):
             ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t), shift=shift)
             dim = (1 - 0.5 * fk if fw and c != fw else 1.0) * (1 - 0.45 * hk if who and c != who else 1.0)
             ui.paste(cv, lay, (0, 0), a * dim)
+    if ui.THEME.get("desk"):
+        ui.news_desk(cv, a)                  # ニュース回：キャラの前に報道台（下半身が隠れて座っている画になる）
+        if a > 0.99:
+            ui.NEWS_TICKER = scene.get("ticker_body") or ""
+            ui.news_ticker(cv)
     fxmod.draw(cv, scene, t)                 # 再現演出（キャラの上・字幕の下。lab/fx.py）
     dx, dy = fxmod.shake(scene, t)
     if dx or dy:                             # レバー振動：字幕以外を画面ごと揺らす（端が見えないよう少し拡大）

@@ -45,7 +45,7 @@ THEMES = {
                    "SUB": "#CDB0B9", "bar": "chips", "chapter": "band", "blur": 16, "bg_mix": (0.30, 0.50)},
     # news＝ニュース回（報道スタジオ風：濃紺×赤×白。左上は赤い札の「NEWS」、下に固定のニュース帯）
     "news": {"BG": "#081833", "PANEL": "#0F2550", "PANEL_LINE": "#2E5291", "ACCENT": "#5AAEFF", "KEY": "#FFD04A",
-             "SUB": "#A9BCDC", "bar": "news", "chapter": "band", "band": "#C81E2A", "radius": 6, "studio": True},
+             "SUB": "#A9BCDC", "bar": "news", "chapter": "band", "band": "#C81E2A", "radius": 6, "studio": True, "desk": True},
     # goggai＝新台解説の号外（紙×黄×墨）。歴史回の紺と一目で違う明るい画。枠は太い墨線
     "goggai": {"BG": "#F7F5EE", "PANEL": "#FFFDF6", "PANEL_LINE": "#16161A", "ACCENT": "#16161A", "KEY": "#E2343B",
                "SUB": "#6B6658", "TEXT": "#16161A", "bar": "goggai", "chapter": "band", "band": "#FFD21F",
@@ -1381,14 +1381,59 @@ def _scaled(who, h, bright, face="normal"):
 
 
 CHAR_FOOT = {"nagi": (190, H - 24), "baku": (W - 200, H - 24)}
+DESK_FOOT = {"nagi": (225, H - 110), "baku": (W - 225, H - 35)}   # 報道台の後ろ（下半身は台で隠れる）
+DESK_SCALE = 1.38
+DESK_TOP = 872   # 報道台の天板の高さ
+
+
+@lru_cache(maxsize=1)
+def _desk_img():
+    """ニュース回の報道台：天板（手前に原稿とマイク）＋前板（濃紺のつや・赤い線）。キャラの前、字幕の後ろに重ねる"""
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    y0 = DESK_TOP
+    d.polygon([(-40, y0 + 34), (60, y0), (W - 60, y0), (W + 40, y0 + 34)], fill=(196, 212, 236, 255))   # 天板
+    d.line((60, y0, W - 60, y0), fill=(255, 255, 255, 255), width=3)
+    d.rectangle((0, y0 + 34, W, H), fill=(12, 34, 78, 255))                                                # 前板
+    g = np.linspace(1, 0, H - y0 - 34, dtype=np.float32)[:, None]
+    sheen = np.zeros((H - y0 - 34, W, 4), np.uint8)
+    sheen[..., :3] = 255
+    sheen[..., 3] = (g * 40).astype(np.uint8)
+    lay.alpha_composite(Image.fromarray(sheen, "RGBA"), (0, y0 + 34))
+    d.rectangle((0, y0 + 34, W, y0 + 42), fill=hexc("#C81E2A"))
+    for x in (W * 0.30, W * 0.70):   # 前板のパネルの継ぎ目
+        d.line((x, y0 + 50, x, H), fill=(60, 100, 170, 160), width=2)
+    for who, (fx, _) in DESK_FOOT.items():   # 原稿とマイク
+        side = -1 if who == "nagi" else 1
+        px = fx + side * 40
+        sheet = Image.new("RGBA", (230, 60), (0, 0, 0, 0))
+        sd = ImageDraw.Draw(sheet)
+        sd.polygon([(20, 0), (210, 0), (230, 60), (0, 60)], fill=(250, 250, 246, 255), outline=(170, 180, 200, 255))
+        for i in range(4):
+            sd.line((40 + i * 4, 12 + i * 11, 190 + i * 4, 12 + i * 11), fill=(150, 160, 180, 255), width=2)
+        lay.alpha_composite(sheet, (int(px - 115), y0 - 26))
+        mx = fx - side * 190
+        d.line((mx, y0 + 4, mx + side * 30, y0 - 70), fill=(40, 44, 54, 255), width=6)
+        d.rounded_rectangle((mx + side * 30 - 14, y0 - 104, mx + side * 30 + 14, y0 - 62), 12, fill=(30, 32, 40, 255))
+        d.ellipse((mx - 34, y0 - 4, mx + 34, y0 + 14), fill=(40, 44, 54, 255))
+    return lay
+
+
+def news_desk(canvas, a=1.0):
+    if a <= 0.01:
+        return
+    img = _desk_img()
+    canvas.alpha_composite(img if a >= 0.999 else fade(img, a))
 
 
 def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal", shift=0.0):
     """呼吸程度のわずかな上下だけ。話している方を明るく。戻り値：素材上の座標→画面座標の変換。shift＝足元の横ずらし（寄りのカット用）"""
     bright = 1.0 if talking else 0.78
+    if THEME.get("desk"):   # ニュース回：報道台の後ろに座っているように、少し大きく・足元は台の下へ
+        h = h * DESK_SCALE
     hq = int(round(h * extra_scale / 4) * 4)
     img, s = _scaled(who, hq, bright, face)
-    fx, fy = CHAR_FOOT[who]
+    fx, fy = (DESK_FOOT if THEME.get("desk") else CHAR_FOOT)[who]
     fx += shift
     bob = 3 * math.sin(2 * math.pi * 0.4 * t + (0 if who == "nagi" else 1.9))
     x = fx - img.width / 2
