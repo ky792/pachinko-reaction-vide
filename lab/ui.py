@@ -44,8 +44,8 @@ THEMES = {
     "newmachine": {"BG": "#140A10", "PANEL": "#26121B", "PANEL_LINE": "#4D2634", "ACCENT": "#FF5D6C", "KEY": "#FFD34E",
                    "SUB": "#CDB0B9", "bar": "chips", "chapter": "band", "blur": 16, "bg_mix": (0.30, 0.50)},
     # news＝ニュース回（報道スタジオ風：濃紺×赤×白。左上は赤い札の「NEWS」、下に固定のニュース帯）
-    "news": {"BG": "#081833", "PANEL": "#0F2550", "PANEL_LINE": "#2E5291", "ACCENT": "#5AAEFF", "KEY": "#FFD04A",
-             "SUB": "#A9BCDC", "bar": "news", "chapter": "band", "band": "#C81E2A", "radius": 6, "studio": True, "desk": True},
+    "news": {"BG": "#0B2556", "PANEL": "#0D2B63", "PANEL_LINE": "#3A78D8", "ACCENT": "#4FB2FF", "KEY": "#FF9A2E",
+             "SUB": "#B4C8EA", "bar": "news", "chapter": "band", "band": "#1C5FD8", "radius": 6, "studio": True, "desk": True},
     # goggai＝新台解説の号外（紙×黄×墨）。歴史回の紺と一目で違う明るい画。枠は太い墨線
     "goggai": {"BG": "#F7F5EE", "PANEL": "#FFFDF6", "PANEL_LINE": "#16161A", "ACCENT": "#16161A", "KEY": "#E2343B",
                "SUB": "#6B6658", "TEXT": "#16161A", "bar": "goggai", "chapter": "band", "band": "#FFD21F",
@@ -226,7 +226,13 @@ def background(name="lab_room.png"):
 
 
 def _studio_bg():
-    """ニュース回の背景：濃紺のグラデーションに、奥のモニター壁・薄い地球儀・光の筋・床の反射"""
+    """ニュース回の背景：backgrounds/news_studio.png（ユーザー提供の明るいスタジオ）を少しだけぼかして敷く。
+    無ければ濃紺のグラデーションに、奥のモニター壁・薄い地球儀・光の筋・床の反射"""
+    p = ASSETS / "backgrounds" / "news_studio.png"
+    if p.exists():
+        src = Image.open(p).convert("RGB").resize((W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(3.0))
+        arr = np.asarray(src).astype(np.float32) * 0.82
+        return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB").convert("RGBA")
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
     top, bot = np.array([14, 40, 88], np.float32), np.array([5, 14, 36], np.float32)
     k = (yy / H)[..., None]
@@ -269,6 +275,7 @@ def _studio_bg():
     return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA")
 
 
+NEWS_ORANGE = hexc("#FF8A1F")
 NEWS_TICKER = ""   # ニュース回の下の帯に出す見出し（episode の title.ticker_body）
 
 
@@ -280,7 +287,7 @@ def news_ticker(canvas):
     lay = Image.new("RGBA", (W, h), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
     d.rectangle((0, 0, W, h), fill=(255, 255, 255, 235))
-    d.rectangle((0, 0, 190, h), fill=hexc("#C81E2A"))
+    d.rectangle((0, 0, 190, h), fill=NEWS_ORANGE)
     d.text((95, h / 2), "NEWS", font=font("black", 32), fill=(255, 255, 255, 255), anchor="mm")
     d.text((220, h / 2), NEWS_TICKER, font=font("bold", 30), fill=hexc("#0B2A5B"), anchor="lm")
     canvas.alpha_composite(lay, (0, y))
@@ -308,8 +315,8 @@ def top_bar(canvas, a, chapter_no, chapter_title, year, era=None, milestones=(),
         ft = font("black", 40)
         bw = max(520, int(text_w(chapter_title, ft)) + 230)
         d.rectangle((0, 40, bw, 120), fill=(11, 32, 72, 235))
-        d.rectangle((0, 116, bw, 120), fill=hexc("#C81E2A"))
-        d.rectangle((0, 40, 150, 120), fill=hexc("#C81E2A"))
+        d.rectangle((0, 116, bw, 120), fill=NEWS_ORANGE)
+        d.rectangle((0, 40, 150, 120), fill=NEWS_ORANGE)
         d.text((75, 80), "NEWS", font=font("black", 34), fill=(255, 255, 255, 255), anchor="mm")
         d.text((178, 80), chapter_title, font=ft, fill=(255, 255, 255, 255), anchor="lm")
         _spec_chips(d, chips or [])
@@ -1386,9 +1393,50 @@ DESK_SCALE = 1.38
 DESK_TOP = 872   # 報道台の天板の高さ
 
 
+# 座り絵（ユーザー提供・2026-10-29）：下端が報道台の天板の下に隠れる。cx＝中心、bottom＝絵の下端、h＝絵の高さ
+SEATED = {"nagi": {"cx": 235, "bottom": 935, "h": 450}, "baku": {"cx": W - 290, "bottom": 1020, "h": 500}}
+DESK_SHIFT = 90   # 報道台の画像を下へずらす量（天板が上から約817pxになり、資料カードとかぶらない）
+
+
+@lru_cache(maxsize=None)
+def _news_sprite_path(who, face):
+    for f in (face or "normal", "normal"):
+        p = ASSETS / "characters" / "news" / who / f"{f}.png"
+        if p.exists():
+            return p
+    return None
+
+
+@lru_cache(maxsize=16)
+def _seated_img(who, face, h, bright):
+    src = Image.open(_news_sprite_path(who, face)).convert("RGBA")
+    im = src.resize((max(1, int(src.width * h / src.height)), h), Image.LANCZOS)
+    if bright < 0.999:
+        rgb = Image.eval(im.convert("RGB"), lambda v: int(v * bright))
+        im = Image.merge("RGBA", (*rgb.split(), im.split()[3]))
+    return im
+
+
+def _draw_seated(canvas, who, t, bright, extra_scale, face, shift):
+    c = SEATED[who]
+    h = int(round(c["h"] * extra_scale / 4) * 4)
+    img = _seated_img(who, face or "normal", h, round(bright, 2))
+    bob = 2 * math.sin(2 * math.pi * 0.4 * t + (0 if who == "nagi" else 1.9))
+    x = c["cx"] + shift - img.width / 2
+    y = c["bottom"] - img.height + bob
+    canvas.alpha_composite(img, (int(x), int(y)))
+    s = h / Image.open(_news_sprite_path(who, face or "normal")).height
+    return lambda px, py: (x + px * s, y + py * s)
+
+
 @lru_cache(maxsize=1)
 def _desk_img():
-    """ニュース回の報道台：天板（手前に原稿とマイク）＋前板（濃紺のつや・赤い線）。キャラの前、字幕の後ろに重ねる"""
+    """ニュース回の報道台。backgrounds/news_desk.png（ユーザー提供の透過画像）があればそれを、無ければ図形で描く。キャラの前、字幕の後ろに重ねる"""
+    p = ASSETS / "backgrounds" / "news_desk.png"
+    if p.exists():
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        lay.alpha_composite(Image.open(p).convert("RGBA").resize((W, H), Image.LANCZOS), (0, DESK_SHIFT))
+        return lay
     lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
     y0 = DESK_TOP
@@ -1400,7 +1448,7 @@ def _desk_img():
     sheen[..., :3] = 255
     sheen[..., 3] = (g * 40).astype(np.uint8)
     lay.alpha_composite(Image.fromarray(sheen, "RGBA"), (0, y0 + 34))
-    d.rectangle((0, y0 + 34, W, y0 + 42), fill=hexc("#C81E2A"))
+    d.rectangle((0, y0 + 34, W, y0 + 42), fill=NEWS_ORANGE)
     for x in (W * 0.30, W * 0.70):   # 前板のパネルの継ぎ目
         d.line((x, y0 + 50, x, H), fill=(60, 100, 170, 160), width=2)
     for who, (fx, _) in DESK_FOOT.items():   # 原稿とマイク
@@ -1429,7 +1477,9 @@ def news_desk(canvas, a=1.0):
 def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal", shift=0.0):
     """呼吸程度のわずかな上下だけ。話している方を明るく。戻り値：素材上の座標→画面座標の変換。shift＝足元の横ずらし（寄りのカット用）"""
     bright = 1.0 if talking else 0.78
-    if THEME.get("desk"):   # ニュース回：報道台の後ろに座っているように、少し大きく・足元は台の下へ
+    if THEME.get("desk") and _news_sprite_path(who, face):   # ニュース回：報道台の座り絵（characters/news/）
+        return _draw_seated(canvas, who, t, bright, extra_scale, face, shift)
+    if THEME.get("desk"):   # 座り絵が無いとき：立ち絵を台で隠す
         h = h * DESK_SCALE
     hq = int(round(h * extra_scale / 4) * 4)
     img, s = _scaled(who, hq, bright, face)
@@ -1458,7 +1508,7 @@ def serif(size):
 
 # ---------------------------------------------------------------- L ニュース番組のOP（@newsopen）
 NEWS_NAVY = hexc("#0B2A5B")
-NEWS_RED = hexc("#D7262E")
+NEWS_RED = hexc("#FF8A1F")   # OPの差し色（スタジオに合わせてオレンジ）
 NEWS_WHITE = (255, 255, 255, 255)
 
 
