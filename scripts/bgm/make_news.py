@@ -2,7 +2,7 @@
 """ニュース回の音（合成音だけなので著作権の心配がない）
 
   python scripts/bgm/make_news.py
-    → generator/assets/bgm/news_open.wav  … OPのジングル（約6.5秒。lab/ui.py の news_open の動きに合わせてある）
+    → generator/assets/bgm/news_open.wav  … OPのジングル（15秒・8小節。lab/ui.py の news_open の動きに合わせてある）
     → generator/assets/bgm/news_bed.wav   … 本編の下に敷くBGM（104BPM・16小節でつなぎ目なくループ）
 
 ジングルの山場（ui.news_open と同じ秒数）
@@ -62,52 +62,103 @@ def strings(ms, dur, g):
     return sig * (t / dur) ** 1.6 * g
 
 
+BPM_O = 128
+BO = 60 / BPM_O          # 1拍 0.469秒
+BAR_O = 4 * BO           # 1小節 1.875秒 → 8小節でちょうど15秒
+# 覚えてもらう「ナギバクニュースのテーマ」（拍, 音, 長さ拍）。タ・タタ・ターン、の頭が看板
+HOOK = [(0, 81, 0.5), (0.5, 81, 0.25), (0.75, 81, 0.25), (1, 86, 1.5), (2.5, 83, 0.5), (3, 81, 1)]
+ANS1 = [(0, 78, 0.5), (0.5, 79, 0.5), (1, 81, 1), (2, 76, 0.5), (2.5, 78, 0.5), (3, 74, 1)]
+ANS2 = [(0, 78, 0.5), (0.5, 79, 0.5), (1, 81, 0.5), (1.5, 83, 0.5), (2, 86, 2)]
+# 半小節ごとの和音（ルート, 和音）
+HARM = {1: [(50, (62, 66, 69)), (50, (62, 66, 69))], 2: [(43, (62, 67, 71)), (45, (61, 64, 69))],
+        3: [(47, (62, 66, 71)), (43, (62, 67, 71))], 4: [(45, (61, 64, 69)), (50, (62, 66, 69))],
+        5: [(43, (62, 67, 71)), (45, (61, 64, 69))], 6: [(50, (62, 66, 69)), (43, (62, 67, 71))]}
+
+
+def melody(buf, t0, notes, g=0.34, octave=True):
+    for b, m, ln in notes:
+        op.add(buf, t0 + b * BO, brass(m, ln * BO * 0.92), g)
+        if octave:
+            op.add(buf, t0 + b * BO, brass(m - 12, ln * BO * 0.92), g * 0.45)
+
+
+def band(buf, bar, full=True):
+    t0 = bar * BAR_O
+    for h, (root, ms) in enumerate(HARM[bar]):
+        th = t0 + h * 2 * BO
+        if full:   # 8分で刻むブラスの裏打ち
+            for e in (0.5, 1.5):
+                chord(buf, th + e * BO, ms, 0.22, 0.16)
+        else:
+            chord(buf, th, ms, 1.8 * BO, 0.10)
+        for e in range(4):   # 8分のベース
+            n = int(BO / 2 * 0.9 * SR)
+            f = note(root - 12) * (2 if e % 2 else 1)
+            op.add(buf, th + e * BO / 2, op.lp(op.saw(f, n), 800) * op.env(n, d=0.12, s=0.5), 0.36 if full else 0.2)
+    for q in range(4):
+        tq = t0 + q * BO
+        if full:
+            op.add(buf, tq, op.kick(), 0.85 if q % 2 == 0 else 0.6)
+            if q % 2:
+                op.add(buf, tq, op.snare(), 0.6)
+            op.add(buf, tq + BO / 2, op.hat(), 0.6)
+            op.add(buf, tq + BO / 4 * 3, op.hat(), 0.3)
+        else:
+            op.add(buf, tq, op.hat(), 0.4)
+
+
+def hit(buf, t, big=1.0):
+    op.add(buf, t, op.kick(), 1.2 * big); op.add(buf, t, op.crash(), 1.0 * big); op.add(buf, t, timpani(note(38), 1.1 * big))
+
+
 def make_open():
-    L = 6.5
-    buf = np.zeros(int((L + 0.3) * SR))
-    # 0〜1.15：ティンパニのロール（だんだん強く）＋弦＋ライザー
+    """15秒のOPジングル。秒数は lab/ui.py の news_open と同じ
+      0〜1.875   ティンパニのロール＋弦＋ライザー（帯が走る）
+      1.875      ロゴが決まる一発 → 2小節 テーマ（看板のフレーズ）
+      5.625      ナギとバクが登場 → 2小節 テーマの2回目＋高く解決
+      9.375      今回のニュースの見出し → 1小節 静かにためる（ベルでテーマ、スネアのロール）
+      11.25      全員でテーマ → 13.125 決めの一発（タ・タタ・ターン）→ 15秒で消える"""
+    L = 8 * BAR_O
+    buf = np.zeros(int((L + 1.0) * SR))
     t = 0.0
-    while t < 1.1:
-        op.add(buf, t, timpani(note(38), 0.15 + 0.6 * t / 1.1))
+    while t < BAR_O - 0.08:
+        op.add(buf, t, timpani(note(38), 0.12 + 0.6 * t / BAR_O))
         t += 0.055
-    op.add(buf, 0, strings((50, 57, 62, 66), 1.15, 0.12))
-    op.add(buf, 0.1, op.riser(1.05), 0.8)
-    # 1.15：ロゴが決まる
-    T1 = 1.15
-    op.add(buf, T1, op.kick(), 1.2); op.add(buf, T1, op.crash(), 1.1); op.add(buf, T1, timpani(note(38), 1.2))
-    chord(buf, T1, (50, 57, 62, 66, 69), 0.55, 0.5)
-    # 1.45〜4.3：ファンファーレ（128BPM、D→G→A→D）
-    B = 60 / 128
-    T2 = 1.45
-    motif = [  # (拍, 音, 長さ拍)
-        (0, 69, 0.75), (0.75, 69, 0.25), (1, 74, 1), (2, 73, 0.5), (2.5, 71, 0.5), (3, 69, 1),
-        (4, 71, 0.75), (4.75, 71, 0.25), (5, 76, 1), (6, 74, 0.5), (6.5, 73, 0.5), (7, 76, 1.2),
-    ]
-    for b, m, ln in motif:
-        op.add(buf, T2 + b * B, brass(m, ln * B * 0.95), 0.34)
-        op.add(buf, T2 + b * B, brass(m - 12, ln * B * 0.95), 0.16)
-    harm = [(0, (62, 66, 69)), (2, (62, 67, 71)), (4, (64, 67, 71)), (6, (64, 69, 73))]
-    for b, ms in harm:
-        chord(buf, T2 + b * B, ms, 1.9 * B, 0.22)
-        op.add(buf, T2 + b * B, op.lp(op.saw(note(ms[0] - 24), int(1.9 * B * SR)), 500) * op.env(int(1.9 * B * SR), d=0.5, s=0.4), 0.35)
-    for q in range(8):
-        op.add(buf, T2 + q * B, op.kick(), 0.7 if q % 2 == 0 else 0.45)
-        op.add(buf, T2 + q * B + B / 2, op.hat(), 0.6)
-        if q % 2:
-            op.add(buf, T2 + q * B, op.snare(), 0.5)
-    for e in range(4):   # 決めの前のフィル
-        op.add(buf, T2 + 7 * B + e * B / 4, op.snare(), 0.4 + 0.12 * e)
-    # 4.45：見出し。解決の和音＋ベル
-    T3 = 4.45
-    op.add(buf, T3, op.kick(), 1.1); op.add(buf, T3, op.crash(), 0.9); op.add(buf, T3, timpani(note(38), 1.0))
-    chord(buf, T3, (50, 57, 62, 66, 69, 74), 1.8, 0.55)
-    op.add(buf, T3, bell(86), 0.25); op.add(buf, T3 + 0.12, bell(81), 0.18)
+    op.add(buf, 0, strings((50, 57, 62, 66), BAR_O, 0.12))
+    op.add(buf, 0.15, op.riser(BAR_O - 0.15), 0.8)
+    hit(buf, BAR_O)
+    chord(buf, BAR_O, (50, 57, 62, 66, 69), 0.5, 0.5)
+    for bar in (1, 2, 3, 4):
+        band(buf, bar)
+    melody(buf, 1 * BAR_O, HOOK); melody(buf, 2 * BAR_O, ANS1)
+    op.add(buf, 3 * BAR_O, op.crash(), 0.7)
+    melody(buf, 3 * BAR_O, HOOK); melody(buf, 4 * BAR_O, ANS2)
+    # 5小節目：見出し。静かにためる
+    hit(buf, 5 * BAR_O, 0.8)
+    band(buf, 5, full=False)
+    for b, m, ln in HOOK:
+        op.add(buf, 5 * BAR_O + b * BO, bell(m + 12, 1.0), 0.16)
+    for e in range(16):
+        op.add(buf, 5 * BAR_O + 2 * BO + e * BO / 8, op.snare(), 0.12 + 0.5 * e / 16)
+    # 6小節目：全員でテーマ
+    hit(buf, 6 * BAR_O)
+    band(buf, 6)
+    melody(buf, 6 * BAR_O, HOOK, g=0.4)
+    for b, m, ln in HOOK:
+        op.add(buf, 6 * BAR_O + b * BO, brass(m + 4 if m != 86 else 90, ln * BO * 0.92), 0.16)   # 3度上でハモる
+    # 7小節目：決め。タ・タタ・ターン
+    T = 7 * BAR_O
+    for b, ln in ((0, 0.5), (0.5, 0.25), (0.75, 0.25)):
+        chord(buf, T + b * BO, (62, 66, 69, 74), ln * BO * 0.9, 0.45)
+        op.add(buf, T + b * BO, op.snare(), 0.7)
+    hit(buf, T + BO, 1.2)
+    chord(buf, T + BO, (50, 57, 62, 66, 69, 74, 78), 2.6, 0.6)
+    op.add(buf, T + BO, bell(86, 2.4), 0.25); op.add(buf, T + BO + 0.1, bell(81, 2.4), 0.18)
     buf = op.hp(buf, 35)
     buf = np.tanh(buf * 1.3) / np.tanh(1.3)
     buf *= 0.9 / np.max(np.abs(buf))
-    end = int(L * SR)
-    buf = buf[:end]
-    f = int(0.9 * SR)
+    buf = buf[:int(L * SR)]
+    f = int(1.0 * SR)
     buf[-f:] *= np.linspace(1, 0, f) ** 1.5
     write("news_open.wav", buf)
 
@@ -145,7 +196,10 @@ def make_bed():
             op.add(buf, t0 + q * B + B / 2, op.hat(), 0.35)
             if q in (1, 3):
                 op.add(buf, t0 + q * B, op.hat(True), 0.18)
-        if bar % 4 == 3:   # 4小節ごとにベルで区切る
+        if bar % 8 == 7:   # 8小節ごとに、OPのテーマの頭（タ・タタ・ターン）をベルで小さく
+            for b, m, ln in HOOK[:4]:
+                op.add(buf, t0 + b * B, bell(m, 1.4), 0.06)
+        elif bar % 4 == 3:
             op.add(buf, t0 + 3 * B, bell(81, 1.2), 0.05)
     tail = buf[n:].copy()   # はみ出した残響を頭に回して、つなぎ目をなくす
     buf = buf[:n]

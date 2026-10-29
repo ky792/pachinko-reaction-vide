@@ -272,14 +272,15 @@ def build_chapter(ep_dir, script_path, data):
             t += ld
         elif c == "newsopen":
             # @newsopen [秒] … ニュース番組のOP（ロゴ→今回のニュースの見出し）。曲は @song news_open.wav を直前に置く
-            nd = float(it["arg"]) if it["arg"].strip() else 6.5
+            nd = float(it["arg"]) if it["arg"].strip() else 15.0
             close_cur(t)
             set_layout("hidden", t)
             tt = data.get("title", {})
             lead = t if t <= 0.3 else 0.0   # 章の頭なら0秒から紺で覆う（曲と動きは t から）
             scene["cues"].append({"type": "newsopen", "start": t - lead, "end": t + nd, "data": {"lead": lead,
                 "headline": tt.get("headline") or tt.get("main", "").replace("\n", ""),
-                "kicker": tt.get("kicker", "今回のニュース"), "ticker": tt.get("ticker", "NAGIBAKU PACHINKO NEWS")}})
+                "kicker": tt.get("kicker", "今回のニュース"), "ticker": tt.get("ticker", "NAGIBAKU PACHINKO NEWS"),
+                "anchors": tt.get("anchors", {"nagi": ["ナギ", "解析担当"], "baku": ["バク", "現場担当"]})}})
             t += nd
         elif c == "intro":
             # @intro nagi … data["intro"][who] のキャラ紹介カードを全画面で出す（ニュース解説のOP）

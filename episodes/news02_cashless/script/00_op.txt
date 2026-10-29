@@ -1,3 +1,3 @@
 # OP（2026-10-29 ユーザー指定）：寸劇なし。普通のニュース番組のように、専用ジングル＋OPアニメ（ロゴ→今回のニュースの見出し）からいきなり本題
-@song news_open.wav gain=0.85 len=6.5
-@newsopen 6.5
+@song news_open.wav gain=0.85 len=15
+@newsopen 15
