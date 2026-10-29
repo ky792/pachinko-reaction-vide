@@ -1390,6 +1390,8 @@ def _scaled(who, h, bright, face="normal"):
 CHAR_FOOT = {"nagi": (190, H - 24), "baku": (W - 200, H - 24)}
 DESK_FOOT = {"nagi": (225, H - 110), "baku": (W - 225, H - 35)}   # 報道台の後ろ（下半身は台で隠れる）
 DESK_SCALE = 1.38
+STAND_FOOT = {"nagi": (210, H - 52), "baku": (W - 215, H - 52)}   # ニュース回：報道台の手前に立つ（足元はニュース帯の上）
+STAND_SCALE = 1.22
 DESK_TOP = 872   # 報道台の天板の高さ
 
 
@@ -1477,19 +1479,43 @@ def news_desk(canvas, a=1.0):
 def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal", shift=0.0):
     """呼吸程度のわずかな上下だけ。話している方を明るく。戻り値：素材上の座標→画面座標の変換。shift＝足元の横ずらし（寄りのカット用）"""
     bright = 1.0 if talking else 0.78
-    if THEME.get("desk") and _news_sprite_path(who, face):   # ニュース回：報道台の座り絵（characters/news/）
+    if THEME.get("seated") and _news_sprite_path(who, face):   # 座り絵（characters/news/）を使うテーマのとき
         return _draw_seated(canvas, who, t, bright, extra_scale, face, shift)
-    if THEME.get("desk"):   # 座り絵が無いとき：立ち絵を台で隠す
-        h = h * DESK_SCALE
+    if THEME.get("desk"):   # ニュース回：報道台の手前に立つ。少し大きく
+        h = h * STAND_SCALE
     hq = int(round(h * extra_scale / 4) * 4)
     img, s = _scaled(who, hq, bright, face)
-    fx, fy = (DESK_FOOT if THEME.get("desk") else CHAR_FOOT)[who]
+    fx, fy = (STAND_FOOT if THEME.get("desk") else CHAR_FOOT)[who]
     fx += shift
     bob = 3 * math.sin(2 * math.pi * 0.4 * t + (0 if who == "nagi" else 1.9))
     x = fx - img.width / 2
     y = fy - (img.height - 30) + bob
     canvas.alpha_composite(img, (int(x), int(y)))
+    LAST_BOX[who] = (x, y, img.width, img.height)
     return lambda px, py: (x + 20 + px * s, y + py * s)
+
+
+LAST_BOX = {}
+
+
+def draw_pointer(canvas, who, k):
+    """指し棒：キャラの内側の手元から、画面の真ん中（資料）へ伸びる。k＝0〜1で伸びる"""
+    if k <= 0 or who not in LAST_BOX:
+        return
+    x, y, w, h = LAST_BOX[who]
+    side = 1 if who == "nagi" else -1
+    hx = x + w * (0.74 if side > 0 else 0.26)
+    hy = y + h * 0.52
+    ang = math.radians(-40)
+    L = 470 * ease_out(k)
+    ex, ey = hx + side * L * math.cos(ang), hy + L * math.sin(ang)
+    d = ImageDraw.Draw(canvas)
+    d.line((hx, hy, ex, ey), fill=(22, 26, 36, 255), width=16)
+    d.line((hx, hy, ex, ey), fill=(245, 248, 255, 255), width=9)
+    gx, gy = hx + side * 70 * math.cos(ang), hy + 70 * math.sin(ang)      # 握りの部分は濃紺
+    d.line((hx, hy, gx, gy), fill=(13, 43, 99, 255), width=14)
+    if k > 0.6:   # 先端のオレンジの玉
+        d.ellipse((ex - 18, ey - 18, ex + 18, ey + 18), fill=NEWS_ORANGE, outline=(22, 26, 36, 255), width=4)
 
 
 # ---------------------------------------------------------------- 明朝（再現演出の文字。lab/fx.py）

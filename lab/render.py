@@ -358,6 +358,15 @@ def render_layers(scene, t, images):
 
 
 _CACHE = {}
+POINTER_CUES = ("machine", "keyword", "flow", "lineup", "pie", "spec_table", "versus", "meter", "analysis", "timeline")
+
+
+def pointer_k(scene, t):
+    """指し棒の伸び具合：話者のセリフの頭から0.2秒で伸びる"""
+    for sb in scene["subs"]:
+        if sb["start"] <= t < sb["end"]:
+            return ui.prog(t, sb["start"], 0.2)
+    return 0.0
 
 
 def render_frame(scene, t, images):
@@ -393,6 +402,9 @@ def render_frame(scene, t, images):
     if sk > 0.01:
         skit.draw(cv, scene, t, who, ui.prog(since, 0, 0.7), sk, lambda w, tt: face_at(scene, w, tt))
     a *= 1 - sk
+    if ui.THEME.get("desk"):
+        ui.news_desk(cv, a)                  # ニュース回：報道台（キャラはその手前に立つ）
+    card_on = ui.THEME.get("desk") and any(c["start"] <= t < c["end"] and c["type"] in POINTER_CUES for c in scene["cues"])
     if a > 0.01:
         for c in ("nagi", "baku"):
             lay = ui.Image.new("RGBA", (ui.W, ui.H), (0, 0, 0, 0))
@@ -402,9 +414,10 @@ def render_frame(scene, t, images):
                 shift = (1 if c == "nagi" else -1) * 230 * (fz - 1.2) / 1.2 * fk
             ui.draw_char(lay, c, h, t, talking=(who == c or who is None), extra_scale=ex, face=face_at(scene, c, t), shift=shift)
             dim = (1 - 0.5 * fk if fw and c != fw else 1.0) * (1 - 0.45 * hk if who and c != who else 1.0)
+            if card_on and who == c and not fk:   # 話している方が指し棒で資料を指す
+                ui.draw_pointer(lay, c, pointer_k(scene, t))
             ui.paste(cv, lay, (0, 0), a * dim)
     if ui.THEME.get("desk"):
-        ui.news_desk(cv, a)                  # ニュース回：キャラの前に報道台（下半身が隠れて座っている画になる）
         if a > 0.99:
             ui.NEWS_TICKER = scene.get("ticker_body") or ""
             ui.news_ticker(cv)
