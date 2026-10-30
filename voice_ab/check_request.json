@@ -1,9 +1,6 @@
 {
- "episode": "episodes/yokai_watch",
+ "episode": "episodes/news02_cashless",
  "model": "large-v3-turbo",
  "_run": "yokai-v6-all-b",
- "only": [
-  "03_rush-011"
- ],
- "_try": 28
+ "_try": 29
 }
