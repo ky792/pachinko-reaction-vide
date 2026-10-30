@@ -1,0 +1,542 @@
+{
+ "01_gaiyou-001": {
+  "sha1": "d905b2beca3e75d62f5e3eb436a47bf21a9c16d7",
+  "model": "large-v3-turbo",
+  "text": "なぎ爆ニュース最初のニュースはパチンコのキャッシュレスか"
+ },
+ "01_gaiyou-002": {
+  "sha1": "938618e2d9d32e290e2a80cebb7d5e5c27bc9cc8",
+  "model": "large-v3-turbo",
+  "text": "ついに話が進んできたでホールで現金いらんくなるかもしれん"
+ },
+ "01_gaiyou-003": {
+  "sha1": "4b2b6787292f1551497dbf22aea4ae230a9472e1",
+  "model": "large-v3-turbo",
+  "text": "このニュースの時点ではパチンコの貸し玉は献金だけ。"
+ },
+ "01_gaiyou-004": {
+  "sha1": "6b0ef822d99b35972719a6423754b1660f7e9143",
+  "model": "large-v3-turbo",
+  "text": "2026年3月13日日中共の西村会長が2027年度内に投入したいと話した"
+ },
+ "01_gaiyou-005": {
+  "sha1": "3522fce55580b04e558292c61994b336415156de",
+  "model": "large-v3-turbo",
+  "text": "日中協はホールやメーカーが入ってる協会団体"
+ },
+ "01_gaiyou-006": {
+  "sha1": "ec4216f0e973ee34851f55cd2170d6b80ef85a24",
+  "model": "large-v3-turbo",
+  "text": "で、6月にもう一個でかいのが来たんやろ?"
+ },
+ "01_gaiyou-007": {
+  "sha1": "3f92fb57ad79d0f1e1db62795be0ce6aad15bcfe",
+  "model": "large-v3-turbo",
+  "text": "2026年6月15日の総会でGMOグループが協力することになった"
+ },
+ "01_gaiyou-008": {
+  "sha1": "126953b22f230c684677513fb0f214399ef90fe8",
+  "model": "large-v3-turbo",
+  "text": "決済の仕組みはGMOペイメントゲートウェイが作る目標は2027年12月末の完成"
+ },
+ "01_gaiyou-009": {
+  "sha1": "d1e7dc03e9014757933936bfb979f84bc7832cf1",
+  "model": "large-v3-turbo",
+  "text": "GMOってネット銀行とかやってるとこかガチの会社連れてきたな"
+ },
+ "01_gaiyou-010": {
+  "sha1": "87a18be6fc726efcdca8368bb67a190aaec2170f",
+  "model": "large-v3-turbo",
+  "text": "今回見るのは2つ何が変わるのかそれと打ち手にとってれなのか"
+ },
+ "01_gaiyou-011": {
+  "sha1": "9d97b8705cf5a71a3567c385b876ffa581d1cd3e",
+  "model": "large-v3-turbo",
+  "text": "うち的には両替機に並ばんでよくなるならもう賛成やけどな"
+ },
+ "01_gaiyou-012": {
+  "sha1": "1b64136afb4b72f462497c7111610eb83f299f58",
+  "model": "large-v3-turbo",
+  "text": "そこだけで決めないで"
+ },
+ "02_zure-001": {
+  "sha1": "ff755f9acffe1ed2e724ed536162611d310df567",
+  "model": "large-v3-turbo",
+  "text": "日本全体だと2025年のキャッシュレス決済の比率は58.0%過去最高"
+ },
+ "02_zure-002": {
+  "sha1": "cbef599e74eacaee1ea1a9a99113dfc50f703a0a",
+  "model": "large-v3-turbo",
+  "text": "国は2030年に65%、その先は80%を目標にしている。"
+ },
+ "02_zure-003": {
+  "sha1": "5e1ca4718a84ed29022a72e319ebe2e84ee6f4fc",
+  "model": "large-v3-turbo",
+  "text": "コンビニも病院もスマホで払えるのにホールだけ札握りしめていくんやもんな"
+ },
+ "02_zure-004": {
+  "sha1": "0344d0060b666e6ff89b701ac7f7da8dbccc2ea9",
+  "model": "large-v3-turbo",
+  "text": "サンドに千円札入れて吸い込まれへんで戻ってくるやつ毎回イラッとするわ"
+ },
+ "02_zure-005": {
+  "sha1": "452bcdffd93ba69cf828c9e23dd19554e761d26c",
+  "model": "large-v3-turbo",
+  "text": "シュワシュワのお札ね伸ばしても戻ってくる"
+ },
+ "02_zure-006": {
+  "sha1": "6629e45294f7aa6f143bc31fe78cda22dc849304",
+  "model": "large-v3-turbo",
+  "text": "ほんで、1万円札しかない時は描画機まであるかなあかん"
+ },
+ "02_zure-007": {
+  "sha1": "7a014bf5f83f1bbc5f0897417fccfe2db0c8232c",
+  "model": "large-v3-turbo",
+  "text": "その和夜に泊りの人に代を取られる心配もある"
+ },
+ "02_zure-008": {
+  "sha1": "6cf4069771941fa106769360faeb44bf9d06db4d",
+  "model": "large-v3-turbo",
+  "text": "休憩札も取らんとダッシュで行くやつな"
+ },
+ "02_zure-009": {
+  "sha1": "4266acbbf6d5a56f15ec8fc61135f16ed7dc7280",
+  "model": "large-v3-turbo",
+  "text": "でも、なんで今まで現金だけやったん?"
+ },
+ "02_zure-010": {
+  "sha1": "2b1926bcdb26c044c4f4413ef6331cb477118135",
+  "model": "large-v3-turbo",
+  "text": "西村会長曰く、協会が現金を選んでたわけじゃない。"
+ },
+ "02_zure-011": {
+  "sha1": "47ee89f7c2288d2f18ff20cd2efa0048b153ca70",
+  "model": "large-v3-turbo",
+  "text": "パチンコ向けに繋いでくれる決済会社がなかなかなかった"
+ },
+ "02_zure-012": {
+  "sha1": "1a7e27e04e4dbba7ad50b067e7e426f751e55773",
+  "model": "large-v3-turbo",
+  "text": "なるほどな決済会社からしたらパチンコはちょっと触りにくいんか"
+ },
+ "02_zure-013": {
+  "sha1": "e3c5d192f737686fc06799ae117193ca3fcf3a7f",
+  "model": "large-v3-turbo",
+  "text": "2025年の秋にはキーピーペイっていう専用アプリが話題になった"
+ },
+ "02_zure-014": {
+  "sha1": "136acfc3a9dbaadcff9d3086e8739e95115e9d6d",
+  "model": "large-v3-turbo",
+  "text": "スマホで払うとICカードに玉やメダルが入る仕組み"
+ },
+ "02_zure-015": {
+  "sha1": "56d2baf1015e7beff94dffedc8feda828566feec",
+  "model": "large-v3-turbo",
+  "text": "関西のホールがテスト導入を告知したけど、素は取り下げてる。"
+ },
+ "02_zure-016": {
+  "sha1": "f1e19a23f3db9d2dbc93d0ec550c943ea2dc8ccc",
+  "model": "large-v3-turbo",
+  "text": "告知して即取り下げって店の中も相当バタバタしてたんやろな"
+ },
+ "02_zure-017": {
+  "sha1": "8de3505fbcaca8e2824d1bcca62c62630e42122b",
+  "model": "large-v3-turbo",
+  "text": "問題が片付いてないのに先に出ちゃった感じだね"
+ },
+ "03_shijou-001": {
+  "sha1": "ad571dac3b185eabb706b8b0d143febca6de2a3d",
+  "model": "large-v3-turbo",
+  "text": "ちなみに、協会の売上は2024年で約11兆7千億円。"
+ },
+ "03_shijou-002": {
+  "sha1": "121afd35ea87e2562b0ca46cb0574aca8d60803e",
+  "model": "large-v3-turbo",
+  "text": "11丁?いや、そのうちうちの分どんだけ入っとんねん"
+ },
+ "03_shijou-003": {
+  "sha1": "cb7209879477431237c134e506529f33c6fe5ada",
+  "model": "large-v3-turbo",
+  "text": "前の年より5%増えてここ10年で初めてのプラス"
+ },
+ "03_shijou-004": {
+  "sha1": "0d6d5261a563d9cba3f4350ab713325fa7d11846",
+  "model": "large-v3-turbo",
+  "text": "一方でコールの数は2024年末で6706点減り続けてる"
+ },
+ "03_shijou-005": {
+  "sha1": "737c03ac1978a764b03703049e48f83d9d1112a4",
+  "model": "large-v3-turbo",
+  "text": "店は減っとるのに売り上げは増えとんの?"
+ },
+ "03_shijou-006": {
+  "sha1": "987f6480f268b93cd5fe4e380e83c03b318e7fef",
+  "model": "large-v3-turbo",
+  "text": "単純に割れると1点あたり約17億円"
+ },
+ "03_shijou-007": {
+  "sha1": "381a45a212b3f3a14f0b76996fdf75556e7bbfdd",
+  "model": "large-v3-turbo",
+  "text": "17億点、そら信頼入れまくれるわけや"
+ },
+ "03_shijou-008": {
+  "sha1": "dddbd81e7a3bc6b8a4b80ccc3c56817006f6a6f5",
+  "model": "large-v3-turbo",
+  "text": "売り上げはお客さんが借りた玉の後継、儲けとは別。"
+ },
+ "03_shijou-009": {
+  "sha1": "37d27a37fbfb675936da16e6e97b4e6d23278afd",
+  "model": "large-v3-turbo",
+  "text": "あ、そうか、出した分も入っとんのか"
+ },
+ "03_shijou-010": {
+  "sha1": "cc039e715bb4b64851df29870c6f3bc05b419579",
+  "model": "large-v3-turbo",
+  "text": "そう、だから売上が増えた理由は、一人がたくさん使うようになったか、客が戻ってきたか。"
+ },
+ "03_shijou-011": {
+  "sha1": "7e754a80a272ce787655feb8699465ca9b0772aa",
+  "model": "large-v3-turbo",
+  "text": "スマスロで一気に何万も入れる人増えたもんな"
+ },
+ "03_shijou-012": {
+  "sha1": "5629eef3d806adb06fc32845e8399042507e7f88",
+  "model": "large-v3-turbo",
+  "text": "それだけ献金が動いてる協会ってこと"
+ },
+ "04_kawaru-001": {
+  "sha1": "74091fbb01a2df4fe9295ceb888dea336af6785a",
+  "model": "large-v3-turbo",
+  "text": "日中今日が上げてる目的は大きく4つ"
+ },
+ "04_kawaru-002": {
+  "sha1": "467e552ef4763871d2e4971f881d9dce5eac8a86",
+  "model": "large-v3-turbo",
+  "text": "一つ目は依存対策。これは後で詳しく見る。"
+ },
+ "04_kawaru-003": {
+  "sha1": "77c268529befab14f91341918b19100d98270477",
+  "model": "large-v3-turbo",
+  "text": "2つ目は、お店の手間。献金の回収とか、集計とか、金庫への入金とか。"
+ },
+ "04_kawaru-004": {
+  "sha1": "e87bd3dfb814acee6c2edfd414ffc92aba8424ec",
+  "model": "large-v3-turbo",
+  "text": "閉店後に裏で札数えとるやつかあれ店員さんほんま大変そうやもんな"
+ },
+ "04_kawaru-005": {
+  "sha1": "cb2d1501bbfbee7a6f03f522d632a9b55772b337",
+  "model": "large-v3-turbo",
+  "text": "3つ目が防犯。大量の現金を扱わなくて済む。"
+ },
+ "04_kawaru-006": {
+  "sha1": "f1cb888d8bb814b9209e66c916f4530ce13b18ff",
+  "model": "large-v3-turbo",
+  "text": "確かにホールって街で一番現金置いてそうやもんな"
+ },
+ "04_kawaru-007": {
+  "sha1": "13ef583f73dac3acf3a32833848a5b92028e56d4",
+  "model": "large-v3-turbo",
+  "text": "4つ目は若い人、現金を持ち歩かない人でもATMによらず少しから遊べる。"
+ },
+ "04_kawaru-008": {
+  "sha1": "a4242c338ae38387bb936e30e958c04ff2f623be",
+  "model": "large-v3-turbo",
+  "text": "財布も単とスマホだけで来る子ほんまに多いからな"
+ },
+ "04_kawaru-009": {
+  "sha1": "b2d4d03d789d4e75b6f44063e041efb5b4ed9292",
+  "model": "large-v3-turbo",
+  "text": "教会としては新しいお客さんを呼びたいんだろうね"
+ },
+ "04_kawaru-010": {
+  "sha1": "939767879023a510de6f54b32579831656fb1c4b",
+  "model": "large-v3-turbo",
+  "text": "でもな、現金使わんで打つ方法もう一個あるやんちょだま"
+ },
+ "04_kawaru-011": {
+  "sha1": "60bb6becc000cb771cc421f04c7021faeea30bed",
+  "model": "large-v3-turbo",
+  "text": "会員カードに玉を預けて、次の日にそれで打つやつね。"
+ },
+ "04_kawaru-012": {
+  "sha1": "7d2ebb14587477dbae1594681b3e932f50b06e61",
+  "model": "large-v3-turbo",
+  "text": "そうそう、勝った日の球で次の日打つのが一番気持ちええねん"
+ },
+ "04_kawaru-013": {
+  "sha1": "86b8a928e97d297b032d070c3a6b01943cd8dfdd",
+  "model": "large-v3-turbo",
+  "text": "で、負けた日は…"
+ },
+ "04_kawaru-014": {
+  "sha1": "920b73e97671c204e52545945feb3cffeb97ae5f",
+  "model": "large-v3-turbo",
+  "text": "次の日結局ATM行っとる"
+ },
+ "04_kawaru-015": {
+  "sha1": "88b13d09760010c3e5a74ef75665693c6282578b",
+  "model": "large-v3-turbo",
+  "text": "キャッシュレスはそのATMに行くの部分を変える話"
+ },
+ "04_kawaru-016": {
+  "sha1": "b0118c3ac64dab0081f9460d1905ea673840ef16",
+  "model": "large-v3-turbo",
+  "text": "で、宇都川は結局どう変わるん?"
+ },
+ "04_kawaru-017": {
+  "sha1": "19105665e19505978b2aa5ac5aad74eba517d10c",
+  "model": "large-v3-turbo",
+  "text": "なんでハラウモ子はまだ詳しく出てない"
+ },
+ "04_kawaru-018": {
+  "sha1": "a6524d19df07179c9da942f7b97690c072f771d6",
+  "model": "large-v3-turbo",
+  "text": "そこ一番知りたいとこやのに"
+ },
+ "04_kawaru-019": {
+  "sha1": "a38d4705f8f988ef7427cfb7a198628163f3ae8e",
+  "model": "large-v3-turbo",
+  "text": "ただ、一個だけはっきりしてることがある。"
+ },
+ "05_honne-001": {
+  "sha1": "2235d2bf3352b9811457b16edf2a6b012f49bb06",
+  "model": "large-v3-turbo",
+  "text": "クレジットカードは使えない方向"
+ },
+ "05_honne-002": {
+  "sha1": "343dc32d28ef32f6dd693f9afae9d18c0d496eb9",
+  "model": "large-v3-turbo",
+  "text": "え?クレカわかんの?ポイント貯めながら撃てると思っとったのに"
+ },
+ "05_honne-003": {
+  "sha1": "ef46c1459514e16dec2235a15db7198df74d517c",
+  "model": "large-v3-turbo",
+  "text": "コールの団体の全日売れは、2026年3月にクレカで弾は貸さないと言ってる。"
+ },
+ "05_honne-004": {
+  "sha1": "c85da4b2bb1d16e72f5b2537c9e44e957da2ab84",
+  "model": "large-v3-turbo",
+  "text": "日中共の西村会長もクレカには慎重?"
+ },
+ "05_honne-005": {
+  "sha1": "0cc6c7345ab70e8612849e7f3c3c9c7ea6c07c53",
+  "model": "large-v3-turbo",
+  "text": "その代わりプリペイドやデビットなら時代に合わせて考えるって"
+ },
+ "05_honne-006": {
+  "sha1": "c5f06463e87fbfac42f8556598f01b9496e7a453",
+  "model": "large-v3-turbo",
+  "text": "なんでクレカだけそんな嫌われとんの?"
+ },
+ "05_honne-007": {
+  "sha1": "98b7bcacfb30bb87f4546ac31d3f825ac4c16731",
+  "model": "large-v3-turbo",
+  "text": "クレカは後払い手持ちがなくても借金しながら打てちゃう"
+ },
+ "05_honne-008": {
+  "sha1": "380508087c589e46febfe7679e9a018c8c3665e3",
+  "model": "large-v3-turbo",
+  "text": "ああ、財布空っぽでもまだ売てるってことか"
+ },
+ "05_honne-009": {
+  "sha1": "f37e8b789ee4736a158bfd310b7aa8a30859c9b5",
+  "model": "large-v3-turbo",
+  "text": "それ、うちみたいなんが一番アカンやつやん!"
+ },
+ "05_honne-010": {
+  "sha1": "1f5ec4516f383115e710d83654d3a3a7175df282",
+  "model": "large-v3-turbo",
+  "text": "自覚はあるんだね"
+ },
+ "05_honne-011": {
+  "sha1": "bcdc022b8173ec1499bb5fd8c6af79393d0488b6",
+  "model": "large-v3-turbo",
+  "text": "もう一個の問題が現金か"
+ },
+ "05_honne-012": {
+  "sha1": "f8ea41618ed1816dddfef106bb198785cb3d4e4d",
+  "model": "large-v3-turbo",
+  "text": "クレカで玉を借りて、それを監禁したら、実質カードからお金を引き出したのと同じ。"
+ },
+ "05_honne-013": {
+  "sha1": "033b50dc2898fa101b24fb1e9ecceab29554cb86",
+  "model": "large-v3-turbo",
+  "text": "ほんまや、歌んでも借りてすぐ流したら元気になるやん"
+ },
+ "05_honne-014": {
+  "sha1": "c3b501723bf923689ef7b84b4804ca15a1a68461",
+  "model": "large-v3-turbo",
+  "text": "それはカードも規約違反。だから最初からクレカは入れない。"
+ },
+ "05_honne-015": {
+  "sha1": "b6e0ca68c1a528ba94e62feff5ee24f34dbd2767",
+  "model": "large-v3-turbo",
+  "text": "店も業界もそこは最初に締めとかなあかんわな"
+ },
+ "06_tomeru-001": {
+  "sha1": "3b1deac4860b69898ea511784bce94bbbf5d4900",
+  "model": "large-v3-turbo",
+  "text": "でもスマホで払えたらうち絶対止まらんで財布の中身見えへんもん"
+ },
+ "06_tomeru-002": {
+  "sha1": "67f05a9d68ae5beff595fb507d24bd2093b96cb5",
+  "model": "large-v3-turbo",
+  "text": "そこは逆の考え方もある西村会長は上限を決められるのが強みだって"
+ },
+ "06_tomeru-003": {
+  "sha1": "5119e6ab37e59a3fe91ea2c2a92142f0284fdb47",
+  "model": "large-v3-turbo",
+  "text": "例えば1日1万円までって先に決めたらそれ以上は払えない"
+ },
+ "06_tomeru-004": {
+  "sha1": "c82a55c43bb3ea618a0ab8bd945003b4881cf413",
+  "model": "large-v3-turbo",
+  "text": "現金やったらATMいったら終わりやもんな"
+ },
+ "06_tomeru-005": {
+  "sha1": "48a5fa527b6a675df4b52861c30253e26bb35cbf",
+  "model": "large-v3-turbo",
+  "text": "それに候補のプリペイドやデビットはどっちも先払い"
+ },
+ "06_tomeru-006": {
+  "sha1": "6a1281a94c34ae87b3b7ff8732762b78e250bf13",
+  "model": "large-v3-turbo",
+  "text": "プリペイドはチャージした分だけデビットは口座にある分だけ"
+ },
+ "06_tomeru-007": {
+  "sha1": "ad925937a7c60c664054cd74b571acf29d9fe820",
+  "model": "large-v3-turbo",
+  "text": "口座にある分だけて給料日の後は口座パンパンやで"
+ },
+ "06_tomeru-008": {
+  "sha1": "83a518ed71a239f47f41edaa49f219d51296a4d6",
+  "model": "large-v3-turbo",
+  "text": "給料日の後が一番危ないってことだね"
+ },
+ "06_tomeru-009": {
+  "sha1": "3f72529a47c5a868c59c8d55c4de694aeb3e6420",
+  "model": "large-v3-turbo",
+  "text": "給料時の夜のホールほんまに人多いもんな"
+ },
+ "06_tomeru-010": {
+  "sha1": "241a8f675bbb26282ffbc9b3e495d66ffe4aef23",
+  "model": "large-v3-turbo",
+  "text": "使ったお金の記録も全部残る家族と共有するなんて案もある"
+ },
+ "06_tomeru-011": {
+  "sha1": "c7b2ceba3400e25732449ed73bea6079b81b39de",
+  "model": "large-v3-turbo",
+  "text": "家族と共有はきついっておかんに毎日の負け額届くんやろ"
+ },
+ "06_tomeru-012": {
+  "sha1": "fd3989d19b42b2d3d907e3e51a3543972bf9f7ba",
+  "model": "large-v3-turbo",
+  "text": "それで止まるなら聞いてるってことだよ"
+ },
+ "06_tomeru-013": {
+  "sha1": "0d71aaf99c9c760aa1709f67e1a0c9877bf9a4b2",
+  "model": "large-v3-turbo",
+  "text": "でも上限いっぱいまで行ったら別のとこで借りてくる人もおるやろ"
+ },
+ "06_tomeru-014": {
+  "sha1": "c12d0851260165782b7c716c52c86c8e387c1405",
+  "model": "large-v3-turbo",
+  "text": "そう、そこは記事でも抜け道として書かれてる"
+ },
+ "06_tomeru-015": {
+  "sha1": "27ced95acaa0264aa3d3b909caf856116773e193",
+  "model": "large-v3-turbo",
+  "text": "キャッシュレスにしただけで依存対策が完成するわけじゃない。"
+ },
+ "06_tomeru-016": {
+  "sha1": "937a98b19cae50bf62a8bacc5e95da48a6f55b84",
+  "model": "large-v3-turbo",
+  "text": "結局最後は打つ本人の問題か"
+ },
+ "06_tomeru-017": {
+  "sha1": "3c534b0c8fb2ab182ccebf25147dcfc6e7be1e3c",
+  "model": "large-v3-turbo",
+  "text": "道具は使い方次第"
+ },
+ "07_matome-001": {
+  "sha1": "304f1131a298deaaabad08c9667ecc8846a3b133",
+  "model": "large-v3-turbo",
+  "text": "まとめ?日中今日は2027年12月末までのシステム完成を目指してる"
+ },
+ "07_matome-002": {
+  "sha1": "d9b6bdea2f81592f5bccef87c422bb2cef6051eb",
+  "model": "large-v3-turbo",
+  "text": "クレカは使わない方向プリペイドやデビットが候補"
+ },
+ "07_matome-003": {
+  "sha1": "cc98cb0b4d02940f1044525266d5d8b9b1c5d945",
+  "model": "large-v3-turbo",
+  "text": "上限を決められれば使い過ぎを止める道具にもなる"
+ },
+ "07_matome-004": {
+  "sha1": "bf9b215248e806c9c9f188695577d3706f5983bd",
+  "model": "large-v3-turbo",
+  "text": "両替機に並ばんでええのは普通にありがたいわ"
+ },
+ "07_matome-005": {
+  "sha1": "ccb159aad28830e0e1af451694c1a56ae2ccd611",
+  "model": "large-v3-turbo",
+  "text": "私の見たてだと打ち手が一番変わるのはお金の見え方"
+ },
+ "07_matome-006": {
+  "sha1": "4a336011f1b048a0507fad556e4ec0943cb6679e",
+  "model": "large-v3-turbo",
+  "text": "千円札が減っていく感覚がなくなる代わりに使った額が全部数字で残る"
+ },
+ "07_matome-007": {
+  "sha1": "bcde9a677de3490803beef08418a8dd2d3793f27",
+  "model": "large-v3-turbo",
+  "text": "負けた額が毎回きっちり出てくるんかそれはそれで心に来るな"
+ },
+ "07_matome-008": {
+  "sha1": "411debf26a30f69b465a4472bdbbbc97c4ff9bf3",
+  "model": "large-v3-turbo",
+  "text": "よし決めたキャッシュレスになったらうちも上限設定する"
+ },
+ "07_matome-009": {
+  "sha1": "6b159473c467925198258d66c57fcd5d4d579e7e",
+  "model": "large-v3-turbo",
+  "text": "いくらにするの?"
+ },
+ "07_matome-010": {
+  "sha1": "6786b2f3d29c0afac28cb3ae08bec5f5f4603c9f",
+  "model": "large-v3-turbo",
+  "text": "月3万 これで完璧やろ?"
+ },
+ "07_matome-011": {
+  "sha1": "1082fa0ef52ce2baf513c55e8811c911b9b50287",
+  "model": "large-v3-turbo",
+  "text": "旋律いくら使ったっけ"
+ },
+ "07_matome-012": {
+  "sha1": "b76b3f0857f414c121f0bec0f3022cb903ebd2ec",
+  "model": "large-v3-turbo",
+  "text": "上限はあくまで目標や"
+ },
+ "99_ed-001": {
+  "sha1": "4aa9371eb860ca0c08d0198bd90d5d80380b1760",
+  "model": "large-v3-turbo",
+  "text": "以上、なぎばくニュースでした。"
+ },
+ "99_ed-002": {
+  "sha1": "06c06dedad99b6f0ee2bb34a12f8264987610e75",
+  "model": "large-v3-turbo",
+  "text": "パチンコのキャッシュレス賛成か反対かコメントで教えてよ"
+ },
+ "99_ed-003": {
+  "sha1": "29bc7ff0b289611affea47a7a1701dd7aab16541",
+  "model": "large-v3-turbo",
+  "text": "チャンネル登録もよろしくな"
+ },
+ "99_ed-004": {
+  "sha1": "30901a84ac1e4dd1eb93c2fc50d72f4a3aacf792",
+  "model": "large-v3-turbo",
+  "text": "また次回おやすみ"
+ }
+}
