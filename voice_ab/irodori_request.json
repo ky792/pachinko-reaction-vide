@@ -1,6 +1,6 @@
 {
  "action": "lines",
- "episode": "episodes/yokai_watch",
+ "episode": "episodes/news02_cashless",
  "who": "baku",
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
@@ -16,8 +16,5 @@
    ]
   }
  ],
- "_try": 34,
- "only": [
-  "03_rush-011"
- ]
+ "_try": 35
 }
