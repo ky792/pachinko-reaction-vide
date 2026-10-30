@@ -2,7 +2,7 @@
  "data": "../ken_full/data.json",
  "data_patch": "data_patch.json",
  "bgm": "news_bed.wav",
- "bgm_gain": 0.14,
+ "bgm_gain": 0.3,
  "gap": 0.12,
  "_note": "ニュース回 第2回：パチンコのキャッシュレス化（日遊協×GMO、2027年12月末のシステム完成目標）。ニュース番組テーマ（news：報道スタジオ風の背景・左上のNEWS札・下のニュース帯）。OPは専用ジングル news_open.wav＋@newsopen、本編BGMは news_bed.wav（scripts/bgm/make_news.py）。声は yokai_watch と同じ設定。所長は出さない（ユーザー指定 2026-10-29）",
  "theme": "news",
