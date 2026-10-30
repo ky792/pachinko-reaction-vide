@@ -2005,6 +2005,26 @@
    "for": "nagi",
    "action": "ナギ：台本で《妖怪ウォッチ2 覇道|ようかいウォッチツー、ハドウ》と書く（ひらがなの『は』は助詞として『ワ』と読まれる）",
    "note": ""
+  },
+  {
+   "date": "2026-10-30",
+   "surface": "日遊協",
+   "yomi": "ニチユウキョウ",
+   "heard": "ニチュウキョウ",
+   "line": "news02_cashless:05_honne-003",
+   "for": "nagi",
+   "action": "ナギ：AivisSpeech のユーザー辞書（aivis_words）に登録。ひらがなで書くと『ちゆ』が『チュ』に縮む",
+   "note": ""
+  },
+  {
+   "date": "2026-10-30",
+   "surface": "全日遊連",
+   "yomi": "ゼンニチユウレン",
+   "heard": "ゼンニチュウレン",
+   "line": "news02_cashless:05_honne-003",
+   "for": "nagi",
+   "action": "ナギ：AivisSpeech のユーザー辞書（aivis_words）に登録。ひらがなで書くと『ちゆ』が『チュ』に縮む",
+   "note": ""
   }
  ],
  "aivis_words": [
@@ -2097,6 +2117,24 @@
    "priority": 8,
    "status": "ok",
    "accent_status": "確認済み"
+  },
+  {
+   "surface": "日遊協",
+   "pronunciation": "ニチユウキョウ",
+   "accent_type": 3,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "全日遊連",
+   "pronunciation": "ゼンニチユウレン",
+   "accent_type": 5,
+   "word_type": "PROPER_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
   }
  ]
 }

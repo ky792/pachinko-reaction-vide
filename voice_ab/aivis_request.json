@@ -10,5 +10,15 @@
  "speed": 0.95,
  "intonation": 0.65,
  "_try": 36,
- "kana_only": false
+ "kana_only": false,
+ "only": [
+  "01_gaiyou-004",
+  "01_gaiyou-005",
+  "02_zure-007",
+  "04_kawaru-001",
+  "04_kawaru-017",
+  "05_honne-003",
+  "05_honne-004",
+  "07_matome-001"
+ ]
 }
