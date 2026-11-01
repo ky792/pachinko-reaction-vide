@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/*
+ * なおしてナビ デザイントークン
+ * 白ベース + ネイビー（信頼・主要操作） + グリーン（安心・完了・料金無料）。
+ * グラデーション・過剰な影は使わない。境界線と余白で整理する。
+ */
+@theme {
+  --color-navy-50: #f1f4f9;
+  --color-navy-100: #dde5f0;
+  --color-navy-200: #b9c8dd;
+  --color-navy-600: #2a4a78;
+  --color-navy-700: #1f3a63;
+  --color-navy-800: #172d4d;
+  --color-navy-900: #10213a;
+
+  --color-green-50: #eef7f2;
+  --color-green-100: #d5ecdf;
+  --color-green-600: #1e7a4c;
+  --color-green-700: #17623d;
+
+  --color-ink: #1c2430;
+  --color-muted: #5b6573;
+  --color-line: #dde1e7;
+  --color-surface: #f6f7f9;
+
+  --color-warn-50: #fff8e6;
+  --color-warn-200: #f3dc9b;
+  --color-warn-800: #6b4e00;
+  --color-danger-50: #fdf0ef;
+  --color-danger-600: #b42318;
+
+  --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "BIZ UDPGothic",
+    "Yu Gothic UI", "Meiryo", system-ui, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "palt" 1;
+  line-height: 1.7;
+}
+
+/* キーボード操作時のフォーカスを明確に */
+:focus-visible {
+  outline: 3px solid var(--color-navy-600);
+  outline-offset: 2px;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px; /* iOS のズーム防止 */
+}
