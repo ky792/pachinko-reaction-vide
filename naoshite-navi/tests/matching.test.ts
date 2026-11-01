@@ -4,7 +4,7 @@ import { overlaps, weekdayOf } from "@/lib/domain/time";
 import { vendor } from "./helpers";
 
 const req = {
-  equipmentType: "freezer" as const,
+  equipmentCategory: "ice_machine" as const,
   area: "chuo" as const,
   visitDate: "2026-11-02", // 月曜
   visitWindow: { start: "10:00", end: "12:00" },
@@ -28,7 +28,7 @@ describe("業者候補の抽出", () => {
       vendor({ id: "pending", status: "pending" }),
       vendor({ id: "rejected", status: "rejected" }),
       vendor({ id: "closed-today", acceptingToday: false }),
-      vendor({ id: "no-freezer", equipmentTypes: ["refrigerator"] }),
+      vendor({ id: "no-freezer", categories: ["refrigeration"] }),
       vendor({ id: "other-area", areas: ["taniyama"] }),
       vendor({ id: "sunday-only", weeklyHours: { 0: { start: "08:00", end: "20:00" } } }),
       vendor({ id: "evening", weeklyHours: { 1: { start: "17:00", end: "22:00" } } }),

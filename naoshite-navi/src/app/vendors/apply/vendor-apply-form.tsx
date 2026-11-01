@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button, ButtonLink, Card, ChoiceTile, DemoTag, Field, Loading, Notice, inputClass } from "@/components/ui";
-import { AREAS, EQUIPMENT_TYPES, WEEKDAYS, type AreaId, type EquipmentType } from "@/lib/domain/config";
+import { AREAS, CATEGORIES, MAKERS, WEEKDAYS, type ActiveCategory, type AreaId } from "@/lib/domain/config";
 import { fieldErrors, vendorApplicationSchema } from "@/lib/domain/validation";
 import { submitVendorApplication } from "@/lib/domain/workflow";
 import { setDemoActor, useDemo } from "@/lib/demo/store";
@@ -20,7 +20,10 @@ export function VendorApplyForm() {
   const [representative, setRepresentative] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [equipmentTypes, setEquipmentTypes] = useState<EquipmentType[]>([]);
+  const [categories, setCategories] = useState<ActiveCategory[]>([]);
+  const [makers, setMakers] = useState<string[]>([]);
+  const [intro, setIntro] = useState("");
+  const [foundedYear, setFoundedYear] = useState("");
   const [areas, setAreas] = useState<AreaId[]>([]);
   const [hours, setHours] = useState<Hours>(() =>
     Object.fromEntries(
@@ -72,7 +75,7 @@ export function VendorApplyForm() {
         .map(([d, h]) => [d, { start: h.start, end: h.end }]),
     );
     const parsed = vendorApplicationSchema.safeParse({
-      companyName, representative, phone, email, equipmentTypes, areas, weeklyHours, licenseNote, agreeTerms,
+      companyName, representative, phone, email, categories, makers, areas, weeklyHours, intro, foundedYear, licenseNote, agreeTerms,
     });
     if (!parsed.success) {
       setErrors(fieldErrors(parsed.error));
@@ -112,15 +115,33 @@ export function VendorApplyForm() {
         <input id="vemail" type="email" inputMode="email" className={inputClass} value={email} onChange={(e) => setEmail(e.target.value)} maxLength={254} autoComplete="email" />
       </Field>
 
-      <Field label="対応できる設備" required error={errors.equipmentTypes}>
-        <div className="grid gap-2 sm:grid-cols-3">
-          {EQUIPMENT_TYPES.map((t) => (
-            <ChoiceTile key={t.id} type="checkbox" name="equipmentTypes" value={t.id}
-              checked={equipmentTypes.includes(t.id)} onChange={() => setEquipmentTypes(toggle(equipmentTypes, t.id))}>
-              {t.label}
+      <Field label="対応できる設備" required hint="準備中の設備は現在登録できません" error={errors.categories}>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {CATEGORIES.filter((c) => c.status === "active").map((c) => (
+            <ChoiceTile key={c.id} type="checkbox" name="categories" value={c.id}
+              checked={categories.includes(c.id as ActiveCategory)} onChange={() => setCategories(toggle(categories, c.id as ActiveCategory))}>
+              {c.label}
             </ChoiceTile>
           ))}
         </div>
+      </Field>
+
+      <Field label="対応メーカー" required error={errors.makers}>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {MAKERS.map((m) => (
+            <ChoiceTile key={m} type="checkbox" name="makers" value={m} checked={makers.includes(m)} onChange={() => setMakers(toggle(makers, m))}>
+              {m}
+            </ChoiceTile>
+          ))}
+        </div>
+      </Field>
+
+      <Field label="紹介文（店舗に表示されます）" htmlFor="intro" required hint="得意な作業や対応の特徴を300文字以内で" error={errors.intro}>
+        <textarea id="intro" className={`${inputClass} min-h-24`} value={intro} onChange={(e) => setIntro(e.target.value)} maxLength={300} />
+      </Field>
+
+      <Field label="創業年（西暦）" htmlFor="founded" error={errors.foundedYear}>
+        <input id="founded" inputMode="numeric" className={`${inputClass} max-w-40`} value={foundedYear} onChange={(e) => setFoundedYear(e.target.value.replace(/\D/g, "").slice(0, 4))} placeholder="例：2010" />
       </Field>
 
       <Field label="対応地域（鹿児島市内）" required error={errors.areas}>

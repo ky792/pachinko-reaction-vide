@@ -2,20 +2,12 @@
  * 入力検証スキーマ。フォーム（クライアント）とサーバー（Phase 2 の Server Action）で共用する。
  */
 import { z } from "zod";
-import { AREAS, EQUIPMENT_TYPES, SYMPTOMS } from "./config";
+import { ACTIVE_CATEGORY_IDS, AREAS, MAKERS, SYMPTOMS, getCategory } from "./config";
 import { isValidRange } from "./time";
 
-const equipmentIds = EQUIPMENT_TYPES.map((e) => e.id) as [
-  (typeof EQUIPMENT_TYPES)[number]["id"],
-  ...(typeof EQUIPMENT_TYPES)[number]["id"][],
-];
 const areaIds = AREAS.map((a) => a.id) as [
   (typeof AREAS)[number]["id"],
   ...(typeof AREAS)[number]["id"][],
-];
-const symptomIds = SYMPTOMS.map((s) => s.id) as [
-  (typeof SYMPTOMS)[number]["id"],
-  ...(typeof SYMPTOMS)[number]["id"][],
 ];
 
 const hhmm = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$|^24:00$/, "時刻を選択してください");
@@ -29,9 +21,13 @@ export const phoneSchema = z
   .string()
   .trim()
   .transform((s) => s.replace(/[‐－―ー−]/g, "-"))
-  .refine((s) => /^0\d{1,4}-?\d{1,4}-?\d{3,4}$/.test(s) && s.replace(/-/g, "").length >= 10 && s.replace(/-/g, "").length <= 11, {
-    message: "電話番号を正しく入力してください（例: 099-000-0000）",
-  });
+  .refine(
+    (s) => {
+      const digits = s.replace(/-/g, "");
+      return /^0\d{1,4}-?\d{1,4}-?\d{3,4}$/.test(s) && digits.length >= 10 && digits.length <= 11;
+    },
+    { message: "電話番号を正しく入力してください（例: 099-000-0000）" },
+  );
 
 const optionalEmail = z
   .string()
@@ -42,22 +38,35 @@ const optionalEmail = z
   })
   .optional();
 
-/* ---------- 修理依頼（3ステップ） ---------- */
+/* ---------- 修理依頼 ---------- */
 
-export const requestStep1Schema = z.object({
-  equipmentType: z.enum(equipmentIds, { message: "設備の種類を選択してください" }),
+/** 検索で決まる部分（設備・症状・依頼方法） */
+export const requestTargetSchema = z
+  .object({
+    equipmentCategory: z.enum(ACTIVE_CATEGORY_IDS, {
+      message: "受付中の設備カテゴリを選択してください",
+    }),
+    symptoms: z.array(z.string()).min(1, "症状を選択してください"),
+    mode: z.enum(["auto", "direct"]),
+    preferredVendorId: z.string().optional(),
+  })
+  .refine((v) => v.symptoms.every((s) => SYMPTOMS[v.equipmentCategory].some((d) => d.id === s)), {
+    message: "症状が設備カテゴリと一致しません",
+    path: ["symptoms"],
+  })
+  .refine((v) => v.mode === "auto" || !!v.preferredVendorId, {
+    message: "依頼する業者を選択してください",
+    path: ["preferredVendorId"],
+  });
+
+/** フォームで入力する部分 */
+export const requestDetailSchema = z.object({
+  equipmentDetail: z.string().optional(),
   manufacturer: z.string().trim().max(50, "50文字以内で入力してください").optional(),
-  symptoms: z.array(z.enum(symptomIds)).min(1, "症状を1つ以上選択してください"),
   symptomNote: z.string().trim().max(400, "400文字以内で入力してください").optional(),
-});
-
-export const requestStep2Schema = z.object({
   area: z.enum(areaIds, { message: "地域を選択してください" }),
   visitDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "日付を選択してください"),
   visitWindow: timeRangeSchema,
-});
-
-export const requestStep3Schema = z.object({
   storeName: z.string().trim().min(1, "店舗名を入力してください").max(80),
   contactName: z.string().trim().min(1, "担当者名を入力してください").max(40),
   phone: phoneSchema,
@@ -66,9 +75,14 @@ export const requestStep3Schema = z.object({
   agreeTerms: z.literal(true, { message: "利用規約と注意事項への同意が必要です" }),
 });
 
-export const repairRequestSchema = requestStep1Schema
-  .and(requestStep2Schema)
-  .and(requestStep3Schema);
+export const repairRequestSchema = requestTargetSchema
+  .and(requestDetailSchema)
+  .refine(
+    (v) =>
+      !v.equipmentDetail ||
+      !!getCategory(v.equipmentCategory)?.details.some((d) => d.id === v.equipmentDetail),
+    { message: "設備の種類が正しくありません", path: ["equipmentDetail"] },
+  );
 
 export type RepairRequestInput = z.infer<typeof repairRequestSchema>;
 
@@ -81,19 +95,24 @@ export const vendorApplicationSchema = z.object({
   representative: z.string().trim().min(1, "担当者名を入力してください").max(40),
   phone: phoneSchema,
   email: z.email("メールアドレスの形式が正しくありません").max(254),
-  equipmentTypes: z
-    .array(z.enum(equipmentIds))
+  categories: z
+    .array(z.enum(ACTIVE_CATEGORY_IDS))
     .min(1, "対応できる設備を1つ以上選択してください"),
+  makers: z.array(z.enum(MAKERS)).min(1, "対応メーカーを1つ以上選択してください"),
   areas: z.array(z.enum(areaIds)).min(1, "対応地域を1つ以上選択してください"),
   weeklyHours: z
     .partialRecord(weekdayKey, timeRangeSchema)
     .refine((r) => Object.keys(r).length > 0, "対応可能な曜日を1つ以上設定してください")
     .transform(
       (r) =>
-        Object.fromEntries(
-          Object.entries(r).map(([k, v]) => [Number(k), v]),
-        ) as Partial<Record<0 | 1 | 2 | 3 | 4 | 5 | 6, { start: string; end: string }>>,
+        Object.fromEntries(Object.entries(r).map(([k, v]) => [Number(k), v])) as Partial<
+          Record<0 | 1 | 2 | 3 | 4 | 5 | 6, { start: string; end: string }>
+        >,
     ),
+  intro: z.string().trim().min(1, "紹介文を入力してください").max(300, "300文字以内で入力してください"),
+  foundedYear: z
+    .union([z.literal(""), z.coerce.number().int().min(1900, "西暦で入力してください").max(2100)])
+    .optional(),
   licenseNote: z.string().trim().max(400).optional(),
   agreeTerms: z.literal(true, { message: "加盟規約（手数料条件を含む）への同意が必要です" }),
 });

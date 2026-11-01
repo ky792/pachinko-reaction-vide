@@ -126,7 +126,10 @@ export function createRequest(
     updatedAt: now,
     version: 1,
     status: "received",
-    equipmentType: input.equipmentType,
+    mode: input.mode,
+    preferredVendorId: input.mode === "direct" ? input.preferredVendorId : undefined,
+    equipmentCategory: input.equipmentCategory,
+    equipmentDetail: input.equipmentDetail || undefined,
     manufacturer: input.manufacturer || undefined,
     symptoms: input.symptoms,
     symptomNote: input.symptomNote || undefined,
@@ -146,7 +149,12 @@ export function createRequest(
     requests: [request, ...state.requests],
     timeline: [
       ...state.timeline,
-      event(ctx, request.id, "received", "修理依頼を受け付けました"),
+      event(
+        ctx,
+        request.id,
+        "received",
+        input.mode === "direct" ? "修理依頼（指名）を受け付けました" : "修理依頼（おまかせ）を受け付けました",
+      ),
     ],
   };
   next = dispatchOffers(next, request.id, ctx);
@@ -166,50 +174,74 @@ export function dispatchOffers(
   if (!["received", "matching", "no_match"].includes(req.status)) {
     throw new DomainError("invalid_state", "この依頼は通知できる状態ではありません");
   }
+  // 回答待ち・辞退・受諾済みの業者には再通知しない（他社決定で終了しただけの業者は再通知可）
   const already = new Set(
-    state.offers.filter((o) => o.requestId === requestId).map((o) => o.vendorId),
+    state.offers
+      .filter((o) => o.requestId === requestId && o.status !== "superseded")
+      .map((o) => o.vendorId),
   );
   const pendingCount = state.offers.filter(
     (o) => o.requestId === requestId && o.status === "pending",
   ).length;
   const room = Math.max(0, SERVICE.maxNotifiedVendors - pendingCount);
+  // 指名依頼は指名先の1社だけを対象にする（条件を満たさなければ通知しない）
+  const pool =
+    req.mode === "direct"
+      ? state.vendors.filter((v) => v.id === req.preferredVendorId)
+      : state.vendors;
   const { candidates } = findCandidates(
     req,
-    state.vendors.filter((v) => !already.has(v.id)),
+    pool.filter((v) => !already.has(v.id)),
     room,
   );
 
   const now = ctx.now().toISOString();
-  const newOffers: Offer[] = candidates.map((v) => ({
-    id: ctx.id(),
-    requestId,
-    vendorId: v.id,
-    status: "pending",
-    notifiedAt: now,
-  }));
+  const reopened = new Set<string>();
+  const newOffers: Offer[] = [];
+  for (const v of candidates) {
+    const prev = state.offers.find((o) => o.requestId === requestId && o.vendorId === v.id);
+    if (prev) reopened.add(prev.id);
+    else newOffers.push({ id: ctx.id(), requestId, vendorId: v.id, status: "pending", notifiedAt: now });
+  }
+  const offersAfter = [
+    ...state.offers.map((o) =>
+      reopened.has(o.id) ? { ...o, status: "pending" as const, notifiedAt: now, respondedAt: undefined } : o,
+    ),
+    ...newOffers,
+  ];
+  const notifiedCount = candidates.length;
 
-  const hasPending = pendingCount + newOffers.length > 0;
+  const hasPending = pendingCount + notifiedCount > 0;
   const status = hasPending ? "matching" : "no_match";
   const events: TimelineEvent[] = [];
-  if (newOffers.length > 0) {
+  if (notifiedCount > 0) {
     events.push(
-      event(ctx, requestId, "notified", `条件に合う業者${newOffers.length}社に通知しました`),
+      event(
+        ctx,
+        requestId,
+        "notified",
+        req.mode === "direct"
+          ? "ご指名の業者に依頼内容を通知しました"
+          : `条件に合う業者${notifiedCount}社に通知しました`,
+      ),
     );
   }
-  if (!hasPending) {
+  if (!hasPending && req.status !== "no_match") {
     events.push(
       event(
         ctx,
         requestId,
         "no_match",
-        "現在、条件に合う業者が見つかりません。運営から連絡します",
+        req.mode === "direct"
+          ? "ご指名の業者は、この日時・条件では対応できません。おまかせマッチングに切り替えられます"
+          : "現在、条件に合う業者が見つかりません。運営から連絡します",
       ),
     );
   }
 
   const withOffers: AppState = {
     ...state,
-    offers: [...state.offers, ...newOffers],
+    offers: offersAfter,
     timeline: [...state.timeline, ...events],
   };
   if (status === req.status) return withOffers;
@@ -433,7 +465,14 @@ export function submitVendorApplication(
     representative: input.representative,
     phone: input.phone,
     email: input.email,
-    equipmentTypes: input.equipmentTypes,
+    categories: input.categories,
+    makers: input.makers,
+    profile: {
+      intro: input.intro,
+      specialties: [],
+      foundedYear: typeof input.foundedYear === "number" ? input.foundedYear : undefined,
+      certifications: [],
+    },
     areas: input.areas,
     weeklyHours: input.weeklyHours,
     acceptingToday: false,
@@ -499,4 +538,108 @@ export function updateFeeStatus(
     ...state,
     fees: state.fees.map((f) => (f.id === feeId ? { ...f, status } : f)),
   };
+}
+
+/* ------------------------------------------------------------------ */
+/* 指名 → おまかせ切替、運営による状況変更                              */
+/* ------------------------------------------------------------------ */
+
+/** 指名依頼をおまかせマッチングに切り替え、条件に合う他社にも通知する */
+export function switchToAuto(
+  state: AppState,
+  actor: Actor,
+  requestId: string,
+  ctx: Ctx = defaultCtx,
+): AppState {
+  if (actor.role === "vendor") {
+    throw new DomainError("forbidden", "業者は依頼方法を変更できません");
+  }
+  const req = getRequest(state, requestId);
+  if (req.mode !== "direct") {
+    throw new DomainError("invalid_state", "すでにおまかせマッチングです");
+  }
+  if (!["matching", "no_match"].includes(req.status)) {
+    throw new DomainError("invalid_state", "業者決定後は依頼方法を変更できません");
+  }
+  let next: AppState = {
+    ...state,
+    timeline: [
+      ...state.timeline,
+      event(ctx, requestId, "mode_switched", "おまかせマッチングに切り替えました"),
+    ],
+  };
+  next = replaceRequest(next, { ...req, mode: "auto" }, ctx);
+  return dispatchOffers(next, requestId, ctx);
+}
+
+export type AdminAction = "redispatch" | "start" | "back_to_matched" | "release" | "cancel";
+
+export const ADMIN_ACTION_LABEL: Record<AdminAction, string> = {
+  redispatch: "候補を再検索して通知",
+  start: "対応中にする",
+  back_to_matched: "業者決定（対応前）に戻す",
+  release: "担当業者を解除して再募集",
+  cancel: "取消にする",
+};
+
+/** その状態で運営が選べる操作 */
+export function adminActionsFor(status: RepairRequest["status"]): AdminAction[] {
+  switch (status) {
+    case "received":
+    case "matching":
+    case "no_match":
+      return ["redispatch", "cancel"];
+    case "matched":
+      return ["start", "release", "cancel"];
+    case "in_progress":
+      return ["back_to_matched", "release", "cancel"];
+    default:
+      return [];
+  }
+}
+
+/** 運営による状況変更。完了は担当業者の完了報告でのみ行う（手数料の整合性のため） */
+export function adminChangeStatus(
+  state: AppState,
+  actor: Actor,
+  requestId: string,
+  action: AdminAction,
+  ctx: Ctx = defaultCtx,
+): AppState {
+  requireAdmin(actor);
+  const req = getRequest(state, requestId);
+  if (!adminActionsFor(req.status).includes(action)) {
+    throw new DomainError("invalid_state", "この状態では実行できない操作です");
+  }
+  const log = (msg: string, st: AppState): AppState => ({
+    ...st,
+    timeline: [...st.timeline, event(ctx, requestId, "admin_changed", msg)],
+  });
+
+  switch (action) {
+    case "redispatch":
+      return dispatchOffers(log("運営が候補業者を再検索しました", state), requestId, ctx);
+    case "cancel":
+      return cancelRequest(state, actor, requestId, "運営による取消", ctx);
+    case "start":
+      return replaceRequest(log("運営が状況を「対応中」に変更しました", state), { ...req, status: "in_progress" }, ctx);
+    case "back_to_matched":
+      return replaceRequest(log("運営が状況を「業者決定」に戻しました", state), { ...req, status: "matched" }, ctx);
+    case "release": {
+      const released: AppState = log("運営が担当業者を解除し、再募集しました", {
+        ...state,
+        offers: state.offers.map((o) =>
+          o.requestId === requestId && o.status === "accepted"
+            ? { ...o, status: "declined" as const }
+            : o,
+        ),
+      });
+      const next = replaceRequest(
+        released,
+        { ...req, status: "matching", assignedVendorId: undefined, mode: "auto" },
+        ctx,
+      );
+      return dispatchOffers(next, requestId, ctx);
+    }
+  }
 }

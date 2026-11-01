@@ -12,7 +12,7 @@ export function Logo() {
       </span>
       <span className="leading-tight">
         <span className="block text-[17px] font-bold tracking-wide text-navy-900">{SERVICE.name}</span>
-        <span className="block text-[10px] text-muted">鹿児島市 業務用冷蔵・冷凍設備の修理手配</span>
+        <span className="block text-[10px] text-muted">鹿児島市 業務用冷蔵設備・製氷機の修理手配</span>
       </span>
     </Link>
   );
@@ -34,20 +34,20 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4">
         <Logo />
         <nav className="flex items-center gap-4 text-sm">
-          <Link href="/#price" className="hidden text-muted hover:text-navy-700 sm:inline">
+          <Link href="/#price" className="hidden text-muted hover:text-navy-700 md:inline">
             料金
           </Link>
-          <Link href="/#scope" className="hidden text-muted hover:text-navy-700 sm:inline">
-            対応範囲
+          <Link href="/articles" className="hidden text-muted hover:text-navy-700 sm:inline">
+            お役立ち記事
           </Link>
           <Link href="/request/status" className="hidden text-muted hover:text-navy-700 sm:inline">
-            進捗確認
+            受付状況
           </Link>
           <Link
-            href="/request"
+            href="/search"
             className="inline-flex min-h-10 items-center rounded-md bg-green-600 px-3 text-sm font-bold text-white hover:bg-green-700"
           >
-            修理を依頼
+            業者を探す
           </Link>
         </nav>
       </div>
@@ -64,12 +64,13 @@ export function SiteFooter() {
           <p className="text-[13px] text-muted">
             鹿児島市内の飲食店・食品販売店向け
             <br />
-            業務用冷蔵庫・冷凍庫・コールドテーブルの修理業者紹介
+            業務用冷蔵・冷凍設備、製氷機の修理業者紹介
           </p>
         </div>
         <ul className="space-y-1.5">
-          <li><Link className="hover:underline" href="/request">修理を依頼する</Link></li>
-          <li><Link className="hover:underline" href="/request/status">依頼の進捗を確認する</Link></li>
+          <li><Link className="hover:underline" href="/search">設備から業者を探す</Link></li>
+          <li><Link className="hover:underline" href="/request/status">受付状況を確認する</Link></li>
+          <li><Link className="hover:underline" href="/articles">お役立ち記事</Link></li>
           <li><Link className="hover:underline" href="/#faq">よくある質問</Link></li>
         </ul>
         <ul className="space-y-1.5">

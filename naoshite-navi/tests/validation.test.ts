@@ -3,7 +3,6 @@ import {
   completionSchema,
   fieldErrors,
   repairRequestSchema,
-  requestStep2Schema,
   vendorApplicationSchema,
 } from "@/lib/domain/validation";
 import { requestInput } from "./helpers";
@@ -23,13 +22,14 @@ describe("修理依頼の入力検証", () => {
   });
 
   it("終了時刻が開始時刻以前ならエラー", () => {
-    const r = requestStep2Schema.safeParse({
-      area: "chuo",
-      visitDate: "2026-11-02",
-      visitWindow: { start: "14:00", end: "10:00" },
-    });
+    const r = repairRequestSchema.safeParse(requestInput({ visitWindow: { start: "14:00", end: "10:00" } }));
     expect(r.success).toBe(false);
     if (!r.success) expect(fieldErrors(r.error)["visitWindow"]).toContain("終了時刻");
+  });
+
+  it("指名依頼は業者IDが必須", () => {
+    expect(repairRequestSchema.safeParse(requestInput({ mode: "direct" })).success).toBe(false);
+    expect(repairRequestSchema.safeParse(requestInput({ mode: "direct", preferredVendorId: "A" })).success).toBe(true);
   });
 
   it("同意がなければ送信できない", () => {
@@ -37,10 +37,17 @@ describe("修理依頼の入力検証", () => {
     expect(r.success).toBe(false);
   });
 
-  it("対象外の設備・地域は拒否", () => {
+  it("準備中・対象外の設備、カテゴリに合わない症状、地域外は拒否", () => {
+    for (const c of ["hvac", "kitchen", "plumbing", "other", "aircon"]) {
+      expect(repairRequestSchema.safeParse({ ...requestInput(), equipmentCategory: c }).success).toBe(false);
+    }
+    // 冷蔵設備に製氷機の症状
+    expect(repairRequestSchema.safeParse(requestInput({ symptoms: ["no_ice"] })).success).toBe(false);
+    // 製氷機と製氷機の症状は OK
     expect(
-      repairRequestSchema.safeParse({ ...requestInput(), equipmentType: "aircon" }).success,
-    ).toBe(false);
+      repairRequestSchema.safeParse(requestInput({ equipmentCategory: "ice_machine", symptoms: ["no_ice"], equipmentDetail: "cube" })).success,
+    ).toBe(true);
+    expect(repairRequestSchema.safeParse(requestInput({ equipmentDetail: "cube" })).success).toBe(false);
     expect(repairRequestSchema.safeParse({ ...requestInput(), area: "tokyo" }).success).toBe(false);
   });
 });
@@ -51,8 +58,11 @@ describe("業者申請の入力検証", () => {
     representative: "担当",
     phone: "099-000-0000",
     email: "a@example.com",
-    equipmentTypes: ["freezer"],
+    categories: ["ice_machine"],
+    makers: ["ホシザキ"],
     areas: ["chuo"],
+    intro: "製氷機専門です",
+    foundedYear: "",
     weeklyHours: { "1": { start: "09:00", end: "18:00" } },
     licenseNote: "",
     agreeTerms: true,

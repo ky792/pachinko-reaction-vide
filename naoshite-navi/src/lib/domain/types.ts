@@ -1,4 +1,4 @@
-import type { AreaId, EquipmentType, SymptomId } from "./config";
+import type { ActiveCategory, AreaId } from "./config";
 
 /** "HH:MM" 形式（24時間） */
 export type HHMM = string;
@@ -45,9 +45,16 @@ export interface RepairRequest {
   /** 楽観的ロック用。更新のたびに +1 */
   version: number;
   status: RequestStatus;
-  equipmentType: EquipmentType;
+  /** auto = おまかせマッチング（条件に合う複数社へ通知） / direct = 指名依頼（1社のみ） */
+  mode: "auto" | "direct";
+  /** 指名依頼の相手 */
+  preferredVendorId?: string;
+  equipmentCategory: ActiveCategory;
+  /** 設備の種類（任意） */
+  equipmentDetail?: string;
   manufacturer?: string;
-  symptoms: SymptomId[];
+  /** カテゴリ別の症状ID */
+  symptoms: string[];
   symptomNote?: string;
   area: AreaId;
   /** 訪問希望日（YYYY-MM-DD、原則当日） */
@@ -68,8 +75,12 @@ export interface Vendor {
   representative: string;
   phone: string;
   email: string;
-  /** 対応設備 */
-  equipmentTypes: EquipmentType[];
+  /** 対応設備カテゴリ */
+  categories: ActiveCategory[];
+  /** 対応メーカー（自己申告） */
+  makers: string[];
+  /** プロフィール（業者の自己申告。運営が審査時に確認） */
+  profile: VendorProfile;
   /** 対応地域 */
   areas: AreaId[];
   /** 曜日ごとの対応可能時間（0=日 … 6=土）。未設定の曜日は対応不可 */
@@ -84,6 +95,21 @@ export interface Vendor {
   reviewNote?: string;
   /** 申請時の自己申告（審査で確認） */
   licenseNote?: string;
+}
+
+export interface VendorProfile {
+  /** 紹介文 */
+  intro: string;
+  /** 得意分野（自由記述の短いタグ） */
+  specialties: string[];
+  /** 創業年（西暦） */
+  foundedYear?: number;
+  /** 対応人数 */
+  staffCount?: number;
+  /** 保有資格（自己申告） */
+  certifications: string[];
+  /** 出張費の目安など（自由記述） */
+  priceNote?: string;
 }
 
 export type OfferStatus =
@@ -136,7 +162,9 @@ export interface TimelineEvent {
     | "no_match"
     | "started"
     | "completed"
-    | "cancelled";
+    | "cancelled"
+    | "mode_switched"
+    | "admin_changed";
   message: string;
 }
 

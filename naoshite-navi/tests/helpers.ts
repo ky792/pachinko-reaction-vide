@@ -18,7 +18,9 @@ export function vendor(over: Partial<Vendor> & { id: string }): Vendor {
     representative: "担当",
     phone: "099-000-0000",
     email: "x@example.invalid",
-    equipmentTypes: ["refrigerator", "freezer", "cold_table"],
+    categories: ["refrigeration", "ice_machine"],
+    makers: ["ホシザキ"],
+    profile: { intro: "", specialties: [], certifications: [] },
     areas: ["chuo"],
     weeklyHours: { 0: r, 1: r, 2: r, 3: r, 4: r, 5: r, 6: r },
     acceptingToday: true,
@@ -35,7 +37,8 @@ export function emptyState(vendors: Vendor[] = []): AppState {
 
 export function requestInput(over: Partial<RepairRequestInput> = {}): RepairRequestInput {
   return {
-    equipmentType: "refrigerator",
+    mode: "auto",
+    equipmentCategory: "refrigeration",
     manufacturer: "",
     symptoms: ["not_cooling"],
     symptomNote: "",

@@ -10,7 +10,7 @@ import type { AppState } from "../domain/types";
 import { DomainError, type Actor } from "../domain/workflow";
 import { buildSeedState } from "./seed";
 
-const STATE_KEY = "naoshite-navi:demo-state:v1";
+const STATE_KEY = "naoshite-navi:demo-state:v2";
 const ACTOR_KEY = "naoshite-navi:demo-actor:v1";
 const HISTORY_KEY = "naoshite-navi:demo-my-requests:v1";
 

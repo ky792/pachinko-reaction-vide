@@ -6,10 +6,10 @@ import { use, useState } from "react";
 import { REQUEST_STATUS, RequestStatusBadge } from "@/components/status";
 import { Button, ButtonLink, Card, DemoTag, Loading, Notice } from "@/components/ui";
 import { storeRequestView } from "@/lib/domain/access";
-import { areaLabel, equipmentLabel, symptomLabel } from "@/lib/domain/config";
+import { areaLabel, equipmentText, symptomsText } from "@/lib/domain/config";
 import { formatDateTimeJst } from "@/lib/domain/time";
 import type { RequestStatus } from "@/lib/domain/types";
-import { cancelRequest } from "@/lib/domain/workflow";
+import { cancelRequest, switchToAuto } from "@/lib/domain/workflow";
 import { useDemo } from "@/lib/demo/store";
 import { formatDateJa } from "@/lib/ui/time-options";
 
@@ -49,6 +49,14 @@ export function RequestProgress({ params }: { params: Promise<{ id: string }> })
     .sort((a, b) => b.at.localeCompare(a.at));
   const canCancel = ["received", "matching", "no_match"].includes(r.status);
 
+  const preferred = r.preferredVendorId ? snap.state.vendors.find((v) => v.id === r.preferredVendorId) : undefined;
+  const canSwitch = r.mode === "direct" && (r.status === "matching" || r.status === "no_match");
+
+  function doSwitch() {
+    const res = mutate((s) => switchToAuto(s, { role: "store" }, r.id));
+    setMsg(res.ok ? "おまかせマッチングに切り替え、条件に合う業者に連絡しました。" : res.error);
+  }
+
   function doCancel() {
     const res = mutate((s) => cancelRequest(s, { role: "store" }, r.id, "依頼者による取消"));
     setMsg(res.ok ? "依頼を取り消しました。" : res.error);
@@ -76,8 +84,24 @@ export function RequestProgress({ params }: { params: Promise<{ id: string }> })
           <RequestStatusBadge status={r.status} />
         </div>
         <p className="mt-2 text-[15px]">{status.storeMessage}</p>
+        <p className="mt-2 text-sm">
+          依頼方法：
+          {r.mode === "direct" ? <strong>指名（{preferred?.companyName ?? "指定業者"}）</strong> : <strong>おまかせマッチング</strong>}
+        </p>
         {r.status === "matching" && (
-          <p className="mt-1 text-sm text-muted">連絡中の業者：{pendingOffers}社</p>
+          <p className="mt-1 text-sm text-muted">
+            {r.mode === "direct" ? "ご指名の業者の回答を待っています。" : `連絡中の業者：${pendingOffers}社`}
+          </p>
+        )}
+        {canSwitch && (
+          <div className="mt-3 rounded-md border border-navy-200 bg-navy-50 p-3">
+            <p className="text-sm">
+              {r.status === "no_match"
+                ? "ご指名の業者は対応できませんでした。おまかせに切り替えると、条件に合う他の業者にも連絡します。"
+                : "急ぎの場合は、おまかせに切り替えて他の業者にも同時に連絡できます。"}
+            </p>
+            <Button variant="accept" className="mt-2 w-full sm:w-auto" onClick={doSwitch}>おまかせマッチングに切り替える</Button>
+          </div>
         )}
 
         {r.status !== "cancelled" && (
@@ -128,8 +152,8 @@ export function RequestProgress({ params }: { params: Promise<{ id: string }> })
           {[
             ["店舗", r.contact.storeName],
             ["電話", r.contact.phoneMasked],
-            ["設備", equipmentLabel(r.equipmentType)],
-            ["症状", r.symptoms.map(symptomLabel).join("、")],
+            ["設備", equipmentText(r.equipmentCategory, r.equipmentDetail)],
+            ["症状", symptomsText(r.equipmentCategory, r.symptoms)],
             ["詳細", r.symptomNote || "-"],
             ["地域", areaLabel(r.area)],
             ["希望日時", `${formatDateJa(r.visitDate)} ${r.visitWindow.start}〜${r.visitWindow.end}`],

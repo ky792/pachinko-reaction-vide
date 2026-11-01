@@ -10,6 +10,9 @@ import {
   setAcceptingToday,
   startWork,
   submitVendorApplication,
+  switchToAuto,
+  adminChangeStatus,
+  adminActionsFor,
 } from "@/lib/domain/workflow";
 import { emptyState, requestInput, testCtx, vendor } from "./helpers";
 import { buildSeedState } from "@/lib/demo/seed";
@@ -165,8 +168,11 @@ describe("業者審査", () => {
         representative: "担当",
         phone: "099-000-0000",
         email: "a@example.com",
-        equipmentTypes: ["freezer"],
+        categories: ["ice_machine"],
+        makers: ["ホシザキ"],
         areas: ["chuo"],
+        intro: "紹介",
+        foundedYear: 2010,
         weeklyHours: { 1: { start: "09:00", end: "18:00" } },
         licenseNote: "",
         agreeTerms: true,
@@ -186,8 +192,83 @@ describe("業者審査", () => {
 describe("デモ用シードデータ", () => {
   it("整合した状態で生成できる", () => {
     const s = buildSeedState(new Date("2026-11-01T01:00:00Z"));
-    expect(s.requests.map((r) => r.status).sort()).toEqual(["completed", "matched", "matching"]);
+    expect(s.requests.map((r) => r.status).sort()).toEqual(["completed", "matched", "matching", "matching"]);
+    const ice = s.requests.find((r) => r.equipmentCategory === "ice_machine")!;
+    expect(ice.mode).toBe("direct");
+    expect(s.offers.filter((o) => o.requestId === ice.id).map((o) => o.vendorId)).toEqual(["v-hyozan"]);
     expect(s.fees).toHaveLength(1);
     expect(s.fees[0].feeYen).toBe(3080);
+  });
+});
+
+describe("指名依頼", () => {
+  function direct(vendorId: string) {
+    const ctx = testCtx();
+    const s0 = emptyState([
+      vendor({ id: "A", avgResponseMinutes: 5 }),
+      vendor({ id: "B", avgResponseMinutes: 10 }),
+      vendor({ id: "X", areas: ["taniyama"] }),
+    ]);
+    return { ctx, ...createRequest(s0, requestInput({ mode: "direct", preferredVendorId: vendorId }), ctx) };
+  }
+
+  it("指名した1社だけに通知する", () => {
+    const { state, request } = direct("B");
+    expect(request.status).toBe("matching");
+    expect(state.offers.map((o) => o.vendorId)).toEqual(["B"]);
+  });
+
+  it("指名先が条件外なら no_match、おまかせに切り替えると他社に通知", () => {
+    const { ctx, state, request } = direct("X");
+    expect(request.status).toBe("no_match");
+    expect(state.offers).toHaveLength(0);
+    const s = switchToAuto(state, store, request.id, ctx);
+    expect(s.requests[0].mode).toBe("auto");
+    expect(s.requests[0].status).toBe("matching");
+    expect(s.offers.map((o) => o.vendorId).sort()).toEqual(["A", "B"]);
+  });
+
+  it("指名先が辞退すると他社へは自動通知せず no_match", () => {
+    const { ctx, state, request } = direct("A");
+    const s = declineOffer(state, A, request.id, ctx);
+    expect(s.requests[0].status).toBe("no_match");
+    expect(s.offers.filter((o) => o.status === "pending")).toHaveLength(0);
+    // 切替後は辞退した A を除いて通知
+    const s2 = switchToAuto(s, store, request.id, ctx);
+    expect(s2.offers.filter((o) => o.status === "pending").map((o) => o.vendorId)).toEqual(["B"]);
+  });
+
+  it("業者は依頼方法を変更できない", () => {
+    const { ctx, state, request } = direct("X");
+    expectDomainError(() => switchToAuto(state, A, request.id, ctx), "forbidden");
+  });
+});
+
+describe("運営による状況変更", () => {
+  it("状態ごとに選べる操作が決まっている（完了にはできない）", () => {
+    expect(adminActionsFor("matching")).toEqual(["redispatch", "cancel"]);
+    expect(adminActionsFor("matched")).toContain("start");
+    expect(adminActionsFor("completed")).toEqual([]);
+  });
+
+  it("対応中にする・戻す、担当解除で他社に再通知", () => {
+    const { ctx, state, request } = setup();
+    let s = acceptOffer(state, A, request.id, request.version, ctx);
+    s = adminChangeStatus(s, admin, request.id, "start", ctx);
+    expect(s.requests[0].status).toBe("in_progress");
+    s = adminChangeStatus(s, admin, request.id, "back_to_matched", ctx);
+    expect(s.requests[0].status).toBe("matched");
+    s = adminChangeStatus(s, admin, request.id, "release", ctx);
+    expect(s.requests[0].status).toBe("matching");
+    expect(s.requests[0].assignedVendorId).toBeUndefined();
+    // A は解除（辞退扱い）、他社決定で終了していた B に再通知
+    expect(s.offers.find((o) => o.vendorId === "A")?.status).toBe("declined");
+    expect(s.offers.find((o) => o.vendorId === "B")?.status).toBe("pending");
+  });
+
+  it("運営以外は実行できず、不正な遷移は拒否", () => {
+    const { ctx, state, request } = setup();
+    expectDomainError(() => adminChangeStatus(state, store, request.id, "cancel", ctx), "forbidden");
+    expectDomainError(() => adminChangeStatus(state, admin, request.id, "start", ctx), "invalid_state");
   });
 });

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { OFFER_STATUS, VENDOR_STATUS, RequestStatusBadge, FEE_STATUS } from "@/components/status";
 import { Badge, Button, ButtonLink, Card, DemoTag, Field, Loading, Notice, inputClass } from "@/components/ui";
 import { vendorRequestViews, type VendorRequestView } from "@/lib/domain/access";
-import { areaLabel, equipmentLabel, symptomLabel } from "@/lib/domain/config";
+import { areaLabel, categoryLabel, equipmentText, symptomsText } from "@/lib/domain/config";
 import { calcFee, formatYen } from "@/lib/domain/fee";
 import { formatDateTimeJst } from "@/lib/domain/time";
 import { completionSchema, fieldErrors } from "@/lib/domain/validation";
@@ -218,13 +218,16 @@ function JobCard({
         </p>
         {v.isMine ? <RequestStatusBadge status={v.status} /> : <Badge tone={OFFER_STATUS[v.offer.status].tone}>{OFFER_STATUS[v.offer.status].label}</Badge>}
       </div>
+      {v.mode === "direct" && (
+        <p className="mt-1"><Badge tone="navy">貴社への指名依頼</Badge></p>
+      )}
       <p className="mt-1 text-lg font-bold text-navy-900">
-        {equipmentLabel(v.equipmentType)}
+        {equipmentText(v.equipmentCategory, v.equipmentDetail)}
         <span className="ml-2 text-base font-normal text-ink">{areaLabel(v.area)}</span>
       </p>
       <dl className="mt-2 space-y-1 text-sm">
         <div className="flex gap-2"><dt className="w-16 shrink-0 text-muted">希望</dt><dd>{formatDateJa(v.visitDate)} {v.visitWindow.start}〜{v.visitWindow.end}</dd></div>
-        <div className="flex gap-2"><dt className="w-16 shrink-0 text-muted">症状</dt><dd>{v.symptoms.map(symptomLabel).join("、")}</dd></div>
+        <div className="flex gap-2"><dt className="w-16 shrink-0 text-muted">症状</dt><dd>{symptomsText(v.equipmentCategory, v.symptoms)}</dd></div>
         {v.symptomNote && <div className="flex gap-2"><dt className="w-16 shrink-0 text-muted">詳細</dt><dd className="break-words">{v.symptomNote}</dd></div>}
         {v.manufacturer && <div className="flex gap-2"><dt className="w-16 shrink-0 text-muted">メーカー</dt><dd>{v.manufacturer}</dd></div>}
       </dl>
@@ -257,7 +260,9 @@ function JobCard({
           >
             受諾する
           </Button>
-          <p className="col-span-2 text-[12px] text-muted">先着1社のみ決定します。他社が先に受諾した場合は受諾できません。</p>
+          <p className="col-span-2 text-[12px] text-muted">
+            {v.mode === "direct" ? "辞退すると、店舗はおまかせマッチングに切り替えられます。" : "先着1社のみ決定します。他社が先に受諾した場合は受諾できません。"}
+          </p>
         </div>
       )}
 
@@ -321,7 +326,7 @@ function VendorDemoLogin() {
               <span>
                 <span className="block font-bold">{v.companyName}</span>
                 <span className="block text-[12px] text-muted">
-                  {v.equipmentTypes.map(equipmentLabel).join("・")} ／ {v.areas.map(areaLabel).join("・")}
+                  {v.categories.map(categoryLabel).join("・")} ／ {v.areas.map(areaLabel).join("・")}
                 </span>
               </span>
               <Badge tone={VENDOR_STATUS[v.status].tone}>{VENDOR_STATUS[v.status].label}</Badge>

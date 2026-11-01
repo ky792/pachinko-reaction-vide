@@ -5,12 +5,12 @@ import { useState } from "react";
 import { FEE_STATUS, OFFER_STATUS, REQUEST_STATUS, RequestStatusBadge, VENDOR_STATUS } from "@/components/status";
 import { Badge, Button, Card, DemoTag, Loading, Notice, inputClass } from "@/components/ui";
 import { adminMaskedContact } from "@/lib/domain/access";
-import { areaLabel, equipmentLabel, symptomLabel, WEEKDAYS } from "@/lib/domain/config";
+import { areaLabel, categoryLabel, equipmentText, symptomsText, WEEKDAYS } from "@/lib/domain/config";
 import { formatYen } from "@/lib/domain/fee";
 import { EXCLUSION_LABEL, findCandidates } from "@/lib/domain/matching";
 import { formatDateTimeJst } from "@/lib/domain/time";
 import type { AppState, FeeStatus, RepairRequest, RequestStatus, Vendor } from "@/lib/domain/types";
-import { cancelRequest, dispatchOffers, reviewVendor, updateFeeStatus } from "@/lib/domain/workflow";
+import { ADMIN_ACTION_LABEL, adminActionsFor, adminChangeStatus, reviewVendor, updateFeeStatus, type AdminAction } from "@/lib/domain/workflow";
 import { resetDemo, setDemoActor, useDemo } from "@/lib/demo/store";
 import { formatDateJa } from "@/lib/ui/time-options";
 
@@ -158,7 +158,7 @@ function Requests({ s, run }: { s: AppState; run: Run }) {
             <button className="flex w-full flex-wrap items-center justify-between gap-2 p-3 text-left" onClick={() => setOpenId(openId === r.id ? null : r.id)} aria-expanded={openId === r.id}>
               <span>
                 <span className="font-bold tracking-wider">{r.receiptNo}</span>
-                <span className="ml-2 text-sm">{equipmentLabel(r.equipmentType)}・{areaLabel(r.area)}</span>
+                <span className="ml-2 text-sm">{equipmentText(r.equipmentCategory, r.equipmentDetail)}・{areaLabel(r.area)}</span>
                 <span className="block text-[12px] text-muted">受付 {formatDateTimeJst(r.createdAt)}</span>
               </span>
               <RequestStatusBadge status={r.status} />
@@ -185,7 +185,9 @@ function RequestDetail({ s, r, run }: { s: AppState; r: RepairRequest; run: Run 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <p className="mb-1 font-bold">依頼内容</p>
-          <p>症状：{r.symptoms.map(symptomLabel).join("、")}</p>
+          <p>設備：{equipmentText(r.equipmentCategory, r.equipmentDetail)}{r.manufacturer ? `（${r.manufacturer}）` : ""}</p>
+          <p>症状：{symptomsText(r.equipmentCategory, r.symptoms)}</p>
+          <p>依頼方法：{r.mode === "direct" ? `指名（${vendorName(r.preferredVendorId ?? "")}）` : "おまかせ"}</p>
           {r.symptomNote && <p>詳細：{r.symptomNote}</p>}
           <p>希望：{formatDateJa(r.visitDate)} {r.visitWindow.start}〜{r.visitWindow.end}</p>
           {r.completion && <p>完了：{r.completion.workSummary}（{formatYen(r.completion.repairAmountYen)}）</p>}
@@ -228,19 +230,42 @@ function RequestDetail({ s, r, run }: { s: AppState; r: RepairRequest; run: Run 
         </ul>
       </details>
 
+      <StatusChanger r={r} run={run} />
+
       <div className="flex flex-wrap gap-2">
-        {(r.status === "no_match" || r.status === "matching") && (
-          <Button variant="secondary" onClick={() => run((st) => dispatchOffers(st, r.id), "未通知の候補業者を再検索しました")}>
-            候補を再検索して通知
-          </Button>
-        )}
-        {!["completed", "cancelled"].includes(r.status) && (
-          <Button variant="danger" onClick={() => confirm("この依頼を取り消しますか？") && run((st) => cancelRequest(st, admin, r.id, "運営による取消"), "依頼を取り消しました")}>
-            運営として取消
-          </Button>
-        )}
         <Link href={`/request/${r.id}`} className="inline-flex min-h-11 items-center text-navy-700 underline">依頼者画面を見る</Link>
       </div>
+    </div>
+  );
+}
+
+function StatusChanger({ r, run }: { r: RepairRequest; run: Run }) {
+  const actions = adminActionsFor(r.status);
+  const [action, setAction] = useState<AdminAction | "">("");
+  if (actions.length === 0) {
+    return <p className="text-[13px] text-muted">この状態（{REQUEST_STATUS[r.status].label}）からは変更できません。</p>;
+  }
+  return (
+    <div className="rounded-md border border-line bg-surface p-3">
+      <label htmlFor={`act-${r.id}`} className="text-[13px] font-bold">状況を変更</label>
+      <div className="mt-1 flex gap-2">
+        <select id={`act-${r.id}`} className={`${inputClass} py-1.5`} value={action} onChange={(e) => setAction(e.target.value as AdminAction)}>
+          <option value="">操作を選択</option>
+          {actions.map((a) => <option key={a} value={a}>{ADMIN_ACTION_LABEL[a]}</option>)}
+        </select>
+        <Button
+          disabled={!action}
+          onClick={() => {
+            if (!action) return;
+            if (action === "cancel" && !confirm("この依頼を取り消しますか？")) return;
+            run((st) => adminChangeStatus(st, admin, r.id, action), `「${ADMIN_ACTION_LABEL[action]}」を実行しました`);
+            setAction("");
+          }}
+        >
+          実行
+        </Button>
+      </div>
+      <p className="mt-1 text-[11px] text-muted">「修理完了」は担当業者の完了報告でのみ設定されます（手数料記録のため）。</p>
     </div>
   );
 }
@@ -259,7 +284,9 @@ function Vendors({ s, run }: { s: AppState; run: Run }) {
 
   const VendorInfo = ({ v }: { v: Vendor }) => (
     <dl className="mt-2 space-y-0.5 text-[13px]">
-      <div><dt className="inline text-muted">設備：</dt><dd className="inline">{v.equipmentTypes.map(equipmentLabel).join("・")}</dd></div>
+      <div><dt className="inline text-muted">設備：</dt><dd className="inline">{v.categories.map(categoryLabel).join("・")}</dd></div>
+      <div><dt className="inline text-muted">メーカー：</dt><dd className="inline">{v.makers.join("・")}</dd></div>
+      <div><dt className="inline text-muted">紹介：</dt><dd className="inline">{v.profile.intro}</dd></div>
       <div><dt className="inline text-muted">地域：</dt><dd className="inline">{v.areas.map(areaLabel).join("・")}</dd></div>
       <div><dt className="inline text-muted">時間：</dt><dd className="inline">{hoursText(v)}</dd></div>
       <div><dt className="inline text-muted">連絡先：</dt><dd className="inline">{v.representative}／{v.phone}／{v.email}</dd></div>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { RequestStatusBadge } from "@/components/status";
 import { Button, ButtonLink, Card, DemoTag, Field, Loading, Notice, inputClass } from "@/components/ui";
-import { equipmentLabel } from "@/lib/domain/config";
+import { equipmentText } from "@/lib/domain/config";
 import { formatDateTimeJst } from "@/lib/domain/time";
 import { useDemo } from "@/lib/demo/store";
 
@@ -50,7 +50,7 @@ export function StatusLookup() {
                   <span>
                     <span className="block font-bold tracking-wider">{r.receiptNo}</span>
                     <span className="block text-[13px] text-muted">
-                      {equipmentLabel(r.equipmentType)}・{formatDateTimeJst(r.createdAt)}
+                      {equipmentText(r.equipmentCategory, r.equipmentDetail)}・{formatDateTimeJst(r.createdAt)}
                     </span>
                   </span>
                   <RequestStatusBadge status={r.status} />
