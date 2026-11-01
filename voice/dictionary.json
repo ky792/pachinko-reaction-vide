@@ -2025,6 +2025,16 @@
    "for": "nagi",
    "action": "ナギ：AivisSpeech のユーザー辞書（aivis_words）に登録。ひらがなで書くと『ちゆ』が『チュ』に縮む",
    "note": ""
+  },
+  {
+   "date": "2026-11-01",
+   "surface": "得",
+   "yomi": "トク",
+   "heard": "エ",
+   "line": "news02_cashless:01_gaiyou-010",
+   "for": "nagi",
+   "action": "台本で《得|とく》と書く（「〜にとって得なのか」が『え』と読まれる。ユーザー指摘）",
+   "note": ""
   }
  ],
  "aivis_words": [
