@@ -21,6 +21,7 @@
   （牙狼v2）hane 羽根とメーター／battle 1stバトル／shingeki 震撃／nanairo 7色／yami 闇→光／tokei 長い変動
            byousoku 秒速／kasane 初代と重なる／vlight 光の枠／count3000 カウントアップ／kyokugen 1500vs7500／burst
   （ニュース第2回・図解のアニメ）lvmeter Lv.1〜Lv.4の札とメーター／flag 通常時が3つの部屋に分かれて玉が移る／hold4 保留4つ→やめどき→？
+  （ニュース第3回・図解のアニメ）santen 三店方式で景品が一周する／jikagai 別会社の看板がはがれて中身が店とつながる／count19 2007→2026のカウントと「19年ぶり」
 """
 import colorsys
 import math
@@ -75,8 +76,12 @@ FX = {
     "lvmeter": {"span": 2, "marks": {"l1": ["Lv.1"], "l2": ["Lv.2"], "l3": ["Lv.3"], "l4": ["Lv.4"]}},
     "flag": {"span": 2, "marks": {"go": ["いくつかの状態"], "k": ["回転数", "チャンス目", "RUSHの終わり"], "move": ["状態が移る"]}},
     "hold4": {"span": 2, "marks": {"h": ["保留4つ"], "yame": ["やめられる"], "nai": ["無くなる"], "next": ["次の人"]}},
+    # ニュース第3回（石巻の自家買い）：三店方式・自家買い・19年ぶり（図解のアニメ。実機の再現ではないので注釈は出さない）
+    "santen": {"span": 3, "marks": {"hall": ["店は"], "kyaku": ["客は"], "kokan": ["交換所に"], "tonya": ["問屋に"], "back": ["店に卸す"], "loop": ["一周"]}},
+    "jikagai": {"span": 2, "marks": {"name": ["別の会社"], "naka": ["中身"], "kanban": ["看板"], "okane": ["お金"]}},
+    "count19": {"span": 2, "marks": {"y": ["2007年"], "go": ["19年ぶり"], "dai": ["何周"]}},
 }
-NO_NOTE = {"tenraku", "fukkatsu", "lvmeter"}
+NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19"}
 
 
 # ---------------------------------------------------------------- 台本 → 時刻
@@ -224,6 +229,22 @@ def finish(fx, end, scene):
             add(h + 0.15 * i, "tick", 0.16)
         add(_m(fx, "yame"), "pon", 0.18); add(_m(fx, "nai"), "shu", 0.18)
         nx = _m(fx, "next"); add(nx, "impact", 0.22)
+    elif k == "santen":
+        add(_m(fx, "hall"), "pon", 0.16)
+        for nm in ("kyaku", "kokan", "tonya", "back"):
+            add(_m(fx, nm), "shu", 0.14)
+        add(_m(fx, "kokan") + 0.5 if _m(fx, "kokan") is not None else None, "piko", 0.14)   # お金が戻る
+        lp = _m(fx, "loop"); add(lp, "piko", 0.18); add(lp + 0.25 if lp is not None else None, "pon", 0.2)
+    elif k == "jikagai":
+        add(_m(fx, "name"), "pon", 0.16)
+        nk = _m(fx, "naka"); add(nk, "shu", 0.2); add(nk + 0.45 if nk is not None else None, "don", 0.26)
+        add(_m(fx, "kanban"), "impact", 0.2)
+    elif k == "count19":
+        y = _m(fx, "y", default=s0 + 0.5); g = _m(fx, "go", default=y + 2.0)
+        n = 10
+        for i in range(n):
+            add(y + 0.3 + (g - y - 0.3) * i / n, "tick", 0.14)
+        add(g, "impact", 0.26); add(_m(fx, "dai"), "pon", 0.16)
 
     bgm = FX[k].get("bgm")
     if bgm:
@@ -2783,13 +2804,240 @@ def _hold4(cv, t, fx):
         cv.alpha_composite(fade(_edge(GOLDC), 0.4 * a * math.exp(-tl / 0.7)))
 
 
+# ---------------------------------------------------------------- ニュース第3回：三店方式・自家買い・19年ぶり（図解のアニメ）
+HALL_C = (90, 170, 255)
+KOKAN_C = (255, 190, 70)
+TONYA_C = (120, 220, 160)
+KYAKU_C = (235, 235, 245)
+
+
+def _node(label, sub, col, w=300, h=150):
+    """図の箱（名前＋小さい説明）。会社ごとに色を分ける"""
+    key = ("node", label, sub, col, w, h)
+    if key not in _C:
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.rounded_rectangle((3, 3, w - 4, h - 4), 26, fill=(18, 22, 32, 238), outline=col + (255,), width=5)
+        d.text((w / 2, h / 2 - (18 if sub else 0)), label, font=ui.font("black", 58), fill=col + (255,), anchor="mm")
+        if sub:
+            d.text((w / 2, h / 2 + 40), sub, font=ui.font("bold", 26), fill=(220, 225, 235, 255), anchor="mm")
+        _C[key] = im
+    return _C[key]
+
+
+def _keihin(size=64, col=(250, 214, 110)):
+    """特殊景品のアイコン（小さいケース。実在の景品の絵柄は描かない）"""
+    key = ("keihin", size, col)
+    if key not in _C:
+        im = Image.new("RGBA", (size, int(size * 0.72)), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        w, h = im.size
+        d.rounded_rectangle((2, 2, w - 3, h - 3), 8, fill=col + (255,), outline=(120, 80, 10, 255), width=3)
+        d.rectangle((w * 0.38, 4, w * 0.62, h - 5), fill=(255, 245, 210, 200))
+        _C[key] = im
+    return _C[key]
+
+
+def _coin(size=54):
+    key = ("coin", size)
+    if key not in _C:
+        im = Image.new("RGBA", (size, size), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.ellipse((2, 2, size - 3, size - 3), fill=(255, 225, 120, 255), outline=(150, 100, 20, 255), width=3)
+        d.text((size / 2, size / 2 + 1), "円", font=ui.font("black", int(size * 0.5)), fill=(120, 70, 0, 255), anchor="mm")
+        _C[key] = im
+    return _C[key]
+
+
+def _arrow(d, p0, p1, col, al, width=6, frac=1.0, dash=False):
+    x0, y0 = p0; x1, y1 = p1
+    xe, ye = x0 + (x1 - x0) * frac, y0 + (y1 - y0) * frac
+    if dash:
+        n = 14
+        for i in range(n):
+            f0, f1 = i / n, (i + 0.55) / n
+            if f0 > frac:
+                break
+            f1 = min(f1, frac)
+            d.line((x0 + (x1 - x0) * f0, y0 + (y1 - y0) * f0, x0 + (x1 - x0) * f1, y0 + (y1 - y0) * f1), fill=col + (int(255 * al),), width=width)
+    else:
+        d.line((x0, y0, xe, ye), fill=col + (int(255 * al),), width=width)
+    if frac > 0.95:
+        an = math.atan2(y1 - y0, x1 - x0)
+        pts = [(xe, ye), (xe - 26 * math.cos(an - 0.45), ye - 26 * math.sin(an - 0.45)), (xe - 26 * math.cos(an + 0.45), ye - 26 * math.sin(an + 0.45))]
+        d.polygon(pts, fill=col + (int(255 * al),))
+
+
+def _santen(cv, t, fx):
+    """三店方式：ホール→客→交換所→問屋→ホール。景品が言葉に合わせて一周し、交換所から客へお金が渡る。会社ごとに枠の色を分ける"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.6 * a)
+    s0 = fx["start"]
+    m_hall = _m(fx, "hall", default=s0 + 0.2)
+    m_kyaku = _m(fx, "kyaku", default=m_hall + 1.2)
+    m_kokan = _m(fx, "kokan", default=m_kyaku + 1.0)
+    m_tonya = _m(fx, "tonya", default=m_kokan + 1.5)
+    m_back = _m(fx, "back", default=m_tonya + 1.2)
+    m_loop = _m(fx, "loop")
+    cy = 410
+    P = {"hall": (W / 2 - 520, cy), "kyaku": (W / 2, cy - 230), "kokan": (W / 2 + 520, cy), "tonya": (W / 2, cy + 230)}
+    order = [("hall", "ホール", "パチンコ店", HALL_C, m_hall - 0.1), ("kyaku", "客", "", KYAKU_C, m_hall + 0.3),
+             ("kokan", "交換所", "別の会社", KOKAN_C, m_kokan - 0.3), ("tonya", "問屋", "別の会社", TONYA_C, m_tonya - 0.3)]
+    # 矢印（景品の道）
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    legs = [("hall", "kyaku", m_hall), ("kyaku", "kokan", m_kokan), ("kokan", "tonya", m_tonya), ("tonya", "hall", m_back)]
+    def edge_pts(p, q, cut=135):
+        (x0, y0), (x1, y1) = P[p], P[q]; L = math.hypot(x1 - x0, y1 - y0)
+        ux, uy = (x1 - x0) / L, (y1 - y0) / L
+        return (x0 + ux * cut, y0 + uy * cut * 0.75), (x1 - ux * cut, y1 - uy * cut * 0.75)
+    lp = 0 if m_loop is None else ease_out(prog(t, m_loop, 0.5))
+    for p, q, mt in legs:
+        k = ease_out(prog(t, mt, 0.45))
+        if k > 0:
+            p0, p1 = edge_pts(p, q)
+            col = tuple(int(c * (1 - lp) + KOKAN_C[i] * lp) for i, c in enumerate((200, 205, 220)))
+            _arrow(d, p0, p1, col, 0.9, int(6 + 3 * lp), k)
+    cv.alpha_composite(fade(lay, a))
+    for key, lab, sub, col, mt in order:
+        k = ease_out_back(min(1, max(0, (t - mt) / 0.4)))
+        if t < mt:
+            continue
+        x, y = P[key]
+        _pput(cv, _node(lab, sub, col, 300 if key != "kyaku" else 220, 150 if sub else 120), x, y + 20 * (1 - k), a * min(1, (t - mt) / 0.25), 0.85 + 0.15 * k)
+    # 景品がたどる（今の区間）
+    for i, (p, q, mt) in enumerate(legs):
+        nxt = legs[i + 1][2] if i + 1 < len(legs) else (m_loop if m_loop else fx["end"])
+        if mt <= t < nxt + 0.4:
+            kk = ease_in_out(prog(t, mt, 0.7))
+            (x0, y0), (x1, y1) = P[p], P[q]
+            bx, by = x0 + (x1 - x0) * kk, y0 + (y1 - y0) * kk - 60 * math.sin(math.pi * kk) - 105   # 箱の上に乗せて名前を隠さない
+            _pput(cv, _keihin(70), bx, by, a)
+            break
+    # 交換所 → 客：お金（ここで換金される）
+    if t >= m_kokan + 0.5:
+        kk = ease_in_out(prog(t, m_kokan + 0.5, 0.7))
+        (x0, y0), (x1, y1) = P["kokan"], P["kyaku"]
+        bx, by = x0 + (x1 - x0) * kk + 40, y0 + (y1 - y0) * kk + 50 * math.sin(math.pi * kk) + 95
+        fa = 1 - prog(t, m_kokan + 1.6, 0.4)
+        _pput(cv, _coin(58), bx, by, a * fa)
+    # ぐるっと一周：中央に「別々の会社が3つ」
+    if m_loop is not None and t >= m_loop:
+        tl = t - m_loop
+        _ring(cv, W / 2, cy, 300 + 60 * ease_out(prog(tl, 0, 0.6)), 6, KOKAN_C, a * (1 - prog(tl, 0, 0.8)), 0.62)
+        _mput(cv, "一周", 110, W / 2, cy, a * ease_out(prog(tl, 0, 0.3)), 1.2 - 0.2 * ease_out(prog(tl, 0, 0.3)), base=KOKAN_C, glow_a=0.6)
+
+
+def _jikagai(cv, t, fx):
+    """自家買い：左にホール、右に「別会社」の看板の交換所。間に壁（点線）。「中身」で看板の板がはがれて、中が店と同じ色になり、壁を越えてつながる"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.6 * a)
+    s0 = fx["start"]
+    m_name = _m(fx, "name", default=s0 + 0.3)
+    m_naka = _m(fx, "naka", default=m_name + 1.2)
+    m_kan = _m(fx, "kanban")
+    m_okane = _m(fx, "okane")
+    cy = 420
+    hx, kx = W / 2 - 380, W / 2 + 380
+    reveal = ease_in_out(prog(t, m_naka, 0.6))
+    # 建物
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    for x, col, wd in ((hx, HALL_C, 420), (kx, KOKAN_C, 300)):
+        top = cy - 170
+        d.rounded_rectangle((x - wd / 2, top, x + wd / 2, cy + 180), 20, fill=(20, 26, 38, 240), outline=col + (255,), width=5)
+    # 交換所の中身：店の色がにじみ出る
+    if reveal > 0:
+        d.rounded_rectangle((kx - 130, cy - 100, kx + 130, cy + 160), 14, fill=HALL_C + (int(150 * reveal),))
+    # 間の壁（別会社の線）→ 中身が見えたら、店と交換所をつなぐ太い帯
+    wall_a = 1 - reveal
+    for i in range(10):
+        y0 = cy - 180 + i * 38
+        d.line((W / 2, y0, W / 2, y0 + 22), fill=(230, 230, 240, int(220 * wall_a)), width=6)
+    if reveal > 0:
+        d.rounded_rectangle((hx + 200, cy + 40, hx + 200 + (kx - 140 - hx - 200) * reveal, cy + 90), 20, fill=HALL_C + (230,))
+    cv.alpha_composite(fade(lay, a))
+    _mput(cv, "ホール", 76, hx, cy - 110, a, base=HALL_C, glow_a=0.4)
+    d2 = ImageDraw.Draw(cv)
+    # 看板「別会社」（中身が見えると傾いて落ちる）
+    if t >= m_name - 0.2:
+        k = ease_out_back(min(1, max(0, (t - m_name + 0.2) / 0.4)))
+        fall = prog(t, m_kan, 0.6) ** 2 if m_kan is not None else 0
+        sign = Image.new("RGBA", (300, 120), (0, 0, 0, 0)); sd = ImageDraw.Draw(sign)
+        sd.rounded_rectangle((2, 2, 297, 117), 16, fill=(250, 240, 220, 255), outline=(150, 100, 30, 255), width=5)
+        sd.text((150, 60), "別会社", font=ui.font("black", 64), fill=(90, 50, 10, 255), anchor="mm")
+        sign = sign.rotate(-28 * fall, expand=True, resample=Image.BICUBIC)
+        _pput(cv, sign, kx + 40 * fall, cy - 230 + 380 * fall * fall, a * min(1, (t - m_name + 0.2) / 0.2) * (1 - prog(t, (m_kan or 99) + 0.4, 0.3)), 0.8 + 0.2 * k)
+    _mput(cv, "交換所", 64, kx, cy - 130 if reveal < 0.5 else cy - 130, a * (1 - 0.0 * reveal), base=KOKAN_C, glow_a=0.4)
+    if reveal > 0:
+        tl = t - m_naka
+        _mput(cv, "中身は店の側", 74, W / 2, cy + 250, a * ease_out(prog(tl, 0.2, 0.3)), 1.15 - 0.15 * ease_out(prog(tl, 0.2, 0.3)), base=HALL_C, glow_a=0.6)
+        _ring(cv, kx, cy + 30, 160 + 140 * ease_out(prog(tl, 0.3, 0.6)), 5, HALL_C, a * (1 - prog(tl, 0.3, 0.6)), 1.0)
+    # お金の出どころは一緒：交換所のお金が店から来る
+    if m_okane is not None and t >= m_okane:
+        for j in range(3):
+            kk = ease_in_out(prog(t, m_okane + 0.18 * j, 0.7))
+            if 0 < kk < 1:
+                bx = hx + 120 + (kx - hx - 200) * kk; by = cy + 65 - 50 * math.sin(math.pi * kk)
+                _pput(cv, _coin(52), bx, by, a)
+
+
+def _count19(cv, t, fx):
+    """19年ぶり：2007 から 2026 まで年がめくれ、「19年ぶり」の判が押される。下に年の目盛りが伸びる"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.62 * a)
+    y = _m(fx, "y", default=fx["start"] + 0.4)
+    g = _m(fx, "go", default=y + 2.2)
+    dai = _m(fx, "dai")
+    k = ease_in_out(prog(t, y + 0.3, max(0.4, g - y - 0.4)))
+    yr = 2007 + int(round(19 * k)) if t >= y else 2007
+    ap = ease_out(prog(t, y - 0.15, 0.3))
+    _mnum(cv, f"{yr}", 190, W / 2 - 40, 300, a * ap, base=(235, 240, 255) if t < g else GOLDC)
+    _mput(cv, "年", 90, W / 2 + 230, 330, a * ap, base=(235, 240, 255) if t < g else GOLDC, glow_a=0.3)
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    x0, x1, gy = 330, W - 330, 500
+    d.rounded_rectangle((x0, gy - 8, x1, gy + 8), 8, fill=(255, 255, 255, 50))
+    d.rounded_rectangle((x0, gy - 8, x0 + (x1 - x0) * k, gy + 8), 8, fill=GOLDC + (255,))
+    for i in range(20):
+        xx = x0 + (x1 - x0) * i / 19
+        on = i <= 19 * k
+        d.line((xx, gy - (22 if i % 5 == 4 or i in (0, 19) else 12), xx, gy + (22 if i % 5 == 4 or i in (0, 19) else 12)), fill=(255, 255, 255, 220 if on else 70), width=3)
+    f = ui.font("bold", 34)
+    d.text((x0, gy + 50), "2007年", font=f, fill=(255, 255, 255, int(230 * ap)), anchor="mm")
+    d.text((x1, gy + 50), "2026年", font=f, fill=(255, 255, 255, int(230 * min(1, k * 2))), anchor="mm")
+    d.text((W / 2, gy + 50), "宮城県の店での同じ種類の摘発", font=ui.font("medium", 30), fill=(220, 225, 235, int(220 * ap)), anchor="mm")
+    cv.alpha_composite(fade(lay, a))
+    if t >= g:
+        tl = t - g
+        kk = ease_out(prog(tl, 0, 0.18))
+        st = Image.new("RGBA", (560, 170), (0, 0, 0, 0)); sd = ImageDraw.Draw(st)
+        sd.rounded_rectangle((4, 4, 555, 165), 22, outline=(230, 60, 50, 255), width=10)
+        sd.text((280, 86), "19年ぶり", font=ui.font("black", 104), fill=(230, 60, 50, 255), anchor="mm")
+        st = st.rotate(-8, expand=True, resample=Image.BICUBIC)
+        _pput(cv, st, W / 2 + 420, 170, a * kk, 1.5 - 0.5 * kk)
+        cv.alpha_composite(fade(_edge((230, 60, 50)), 0.3 * a * math.exp(-tl / 0.6)))
+    if dai is not None and t >= dai:
+        # 台が何周も入れ替わる：小さな台の列が右へ流れる
+        tl = t - dai
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        fa = ease_out(prog(tl, 0, 0.3))
+        for i in range(14):
+            xx = (i * 150 + tl * 520) % (W + 150) - 150
+            col = LV_COL[i % 4]
+            d.rounded_rectangle((xx, 600, xx + 100, 700), 12, fill=(24, 28, 40, int(230 * fa)), outline=col + (int(255 * fa),), width=4)
+            d.ellipse((xx + 27, 625, xx + 73, 671), outline=col + (int(200 * fa),), width=4)
+        cv.alpha_composite(fade(lay, a))
+
+
 DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _inazuma3, "door": _door3,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
         "beat": _beat, "hane": _hane3, "battle": _battle3, "shingeki": _shingeki3, "nanairo": _nanairo2, "yami": _yami3,
         "tokei": _tokei3, "byousoku": _byousoku3, "kasane": _kasane3, "vlight": _vlight3, "count3000": _count3000_3,
         "kyokugen": _kyokugen3, "burst": _burst3, "tenraku": _tenraku, "fukkatsu": _fukkatsu,
-        "lvmeter": _lvmeter, "flag": _flag, "hold4": _hold4}
+        "lvmeter": _lvmeter, "flag": _flag, "hold4": _hold4,
+        "santen": _santen, "jikagai": _jikagai, "count19": _count19}
 
 
 NOTE = "※演出はイメージです。実機の演出ではありません"

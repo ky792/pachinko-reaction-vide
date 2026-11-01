@@ -1064,6 +1064,27 @@
    "to": "あまデジ",
    "why": "ニュース第2回（2026-10-25）",
    "status": "ok"
+  },
+  {
+   "re": "交換所",
+   "to": "こうかんじょ",
+   "why": "ニュース第3回（2026-11-01）：景品交換所",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "風営法",
+   "to": "ふうえいほう",
+   "why": "ニュース第3回（2026-11-01）",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "書類送検",
+   "to": "しょるいそうけん",
+   "why": "ニュース第3回（2026-11-01）",
+   "status": "ok",
+   "engine": "irodori"
   }
  ],
  "kana_fix": [
@@ -1924,6 +1945,66 @@
    "yomi": "レベルイチ",
    "cat": "用語",
    "status": "ok"
+  },
+  {
+   "surface": "元社長",
+   "yomi": "モトシャチョウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "問屋",
+   "yomi": "トンヤ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "交換所",
+   "yomi": "コウカンジョ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "風営法",
+   "yomi": "フウエイホウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "石巻",
+   "yomi": "イシノマキ",
+   "cat": "地名",
+   "status": "ok"
+  },
+  {
+   "surface": "自家買い",
+   "yomi": "ジカガイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "三店方式",
+   "yomi": "サンテンホウシキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "書類送検",
+   "yomi": "ショルイソウケン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "特殊景品",
+   "yomi": "トクシュケイヒン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "答弁書",
+   "yomi": "トウベンショ",
+   "cat": "用語",
+   "status": "ok"
   }
  ],
  "history": [
@@ -2164,6 +2245,24 @@
    "priority": 8,
    "status": "ok",
    "accent_status": "確認済み"
+  },
+  {
+   "surface": "元社長",
+   "pronunciation": "モトシャチョウ",
+   "accent_type": 3,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
+  },
+  {
+   "surface": "問屋",
+   "pronunciation": "トンヤ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "推定"
   }
  ]
 }
