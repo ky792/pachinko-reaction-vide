@@ -1,0 +1,9 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.22,
+ "_note": "歴史回：牙狼 パチンコ18年（2008–2026）。章立て docs/proposals/garo_history_structure_v1.md、資料 docs/research/garo_pachinko_series_2026-10-21.md。声は eva_history と同じ設定。実機画像は images/（権利未確認）",
+ "background": "history_room.png"
+}

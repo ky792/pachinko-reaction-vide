@@ -1,0 +1,45 @@
+name: Import GARO history machine photos
+
+on:
+  push:
+    branches: [ccr-1cb93ed1-4ogg48]
+    paths:
+      - "episodes/garo_history/fetch_machine_images.py"
+      - ".github/workflows/import-eva-history-images.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-machine-photos:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Pillow and requests
+        run: python -m pip install --disable-pip-version-check Pillow requests
+      - name: Import exact model photos with provenance and missing report
+        run: python episodes/garo_history/fetch_machine_images.py
+      - name: Save source report, missing list, and downloaded photos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: garo-history-photo-review
+          path: episodes/garo_history/images/
+          retention-days: 7
+          if-no-files-found: warn
+      - name: Commit imported photos to the episode branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add episodes/garo_history/images
+          if git diff --cached --quiet; then
+            echo "No new image files"
+            exit 0
+          fi
+          git commit -m "garo_history: add verified-model photo files and source report"
+          git push origin "HEAD:$GITHUB_REF_NAME"

@@ -1,0 +1,8 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.22,
+ "_note": "ニュース解説 第2回：日工組の4カテゴリ（Lv.1〜Lv.4）と通常時フラグ（2026年9月8日発表）。ネタ帳 docs/research/weekly/2026-10-25.md、提案 docs/proposals/news02_script.md。声は garo_history と同じ設定。実機画像は使わない（図解カードのみ）"
+}
