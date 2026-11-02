@@ -1,9 +1,6 @@
 {
- "episode": "episodes/news01",
+ "episode": "episodes/news03",
  "model": "large-v3-turbo",
- "only": [
-  "01_eva319red-052"
- ],
- "_run": "news02-fix-2",
- "_try": 2
+ "_run": "news03-full-1",
+ "_try": 1
 }

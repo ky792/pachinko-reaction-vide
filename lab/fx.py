@@ -2878,8 +2878,8 @@ def _santen(cv, t, fx):
     m_tonya = _m(fx, "tonya", default=m_kokan + 1.5)
     m_back = _m(fx, "back", default=m_tonya + 1.2)
     m_loop = _m(fx, "loop")
-    cy = 410
-    P = {"hall": (W / 2 - 520, cy), "kyaku": (W / 2, cy - 230), "kokan": (W / 2 + 520, cy), "tonya": (W / 2, cy + 230)}
+    cy = 450
+    P = {"hall": (W / 2 - 520, cy), "kyaku": (W / 2, cy - 215), "kokan": (W / 2 + 520, cy), "tonya": (W / 2, cy + 205)}
     order = [("hall", "ホール", "パチンコ店", HALL_C, m_hall - 0.1), ("kyaku", "客", "", KYAKU_C, m_hall + 0.3),
              ("kokan", "交換所", "別の会社", KOKAN_C, m_kokan - 0.3), ("tonya", "問屋", "別の会社", TONYA_C, m_tonya - 0.3)]
     # 矢印（景品の道）
