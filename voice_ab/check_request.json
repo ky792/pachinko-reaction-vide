@@ -2,10 +2,8 @@
  "episode": "episodes/news03",
  "model": "large-v3-turbo",
  "only": [
-  "02_keii-009",
-  "04_kawaru-011",
-  "04_kawaru-004"
+  "02_keii-009"
  ],
- "_run": "news03-fix-1",
- "_try": 2
+ "_run": "news03-fix-2",
+ "_try": 3
 }
