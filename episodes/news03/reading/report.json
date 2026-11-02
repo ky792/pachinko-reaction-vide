@@ -1,0 +1,67 @@
+[
+ {
+  "kind": "誤読",
+  "where": "デドコロ",
+  "expect": "デドコロ",
+  "reason": "台本は「デドコロ」、聞こえたのは「シュッショ」",
+  "level": "中",
+  "id": "02_keii-009",
+  "who": "baku",
+  "text": "看板だけ別で、お金の出どころは一緒やったってことか。",
+  "asr": "看板だけ別でお金の出所は一緒やったってことか",
+  "ratio": 0.852,
+  "audio": "episodes/news03/voices/02_keii-009.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ミセ",
+  "expect": "ミセ",
+  "reason": "台本は「ミセ」、聞こえたのは「テンシュ」",
+  "level": "中",
+  "id": "04_kawaru-011",
+  "who": "baku",
+  "text": "交換所が店の裏にある景色、当たり前すぎて気にしたことなかったわ。",
+  "asr": "交換所が店主の裏にある景色当たり前すぎて気にしたことなかったわ",
+  "ratio": 0.921,
+  "audio": "episodes/news03/voices/04_kawaru-011.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ガー",
+  "expect": "ガー",
+  "reason": "台本は「ガー」、聞こえたのは「ノア」",
+  "level": "低",
+  "id": "03_shikumi-011",
+  "who": "nagi",
+  "text": "ただ、国の答弁書には、続きがある。",
+  "asr": "ただ国の答弁書には続きのある",
+  "ratio": 0.895,
+  "audio": "episodes/news03/voices/03_shikumi-011.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ルカ",
+  "expect": "ルカ",
+  "reason": "台本は「ルカ」、聞こえたのは「リガ」",
+  "level": "低",
+  "id": "03_shikumi-012",
+  "who": "nagi",
+  "text": "2017年の答弁書。買い取る会社が店と実質的に同じなら、違反になることがある、って。",
+  "asr": "2017年の答弁書買取会社が店と実質的に同じなら違反になることがあるって",
+  "ratio": 0.963,
+  "audio": "episodes/news03/voices/03_shikumi-012.wav"
+ },
+ {
+  "kind": "余分な音",
+  "where": "ホナー",
+  "expect": "",
+  "reason": "台本にない「ホナー」が聞こえる",
+  "level": "低",
+  "id": "04_kawaru-004",
+  "who": "baku",
+  "text": "ほな、変わるのはホールのほうか。",
+  "asr": "ほな、変わるのはホールの方かほなー!",
+  "ratio": 0.903,
+  "audio": "episodes/news03/voices/04_kawaru-004.wav"
+ }
+]

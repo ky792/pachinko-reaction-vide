@@ -1,0 +1,332 @@
+{
+ "01_hairi-001": {
+  "sha1": "5fffb8d9352f0da57c994591a394a3990329ad4e",
+  "model": "large-v3-turbo",
+  "text": "視聴者の皆さんこんばんは"
+ },
+ "01_hairi-002": {
+  "sha1": "2ab8e37fba1357b43af93024649c2dd0044e3ddd",
+  "model": "large-v3-turbo",
+  "text": "パチンコ店が客から景品を買い取った疑いで書類送件されたで"
+ },
+ "01_hairi-003": {
+  "sha1": "f7369ef833db6a927f81e738214efc0deb63755f",
+  "model": "large-v3-turbo",
+  "text": "2026年10月30日に報じられた宮城県石巻市の店の話"
+ },
+ "01_hairi-004": {
+  "sha1": "b193d3f03711798cdf14f3ea5756baf85fd08157",
+  "model": "large-v3-turbo",
+  "text": "送検されたのは店の経営会社と元社長の男性"
+ },
+ "01_hairi-005": {
+  "sha1": "7173b2e5d7f1ef26ef25747a1827138d8368c59b",
+  "model": "large-v3-turbo",
+  "text": "しかも買い取った額、3500円らしいで!"
+ },
+ "01_hairi-006": {
+  "sha1": "0bae53cece9dd0ad6f95cfadb0f5a78d1b3e0b10",
+  "model": "large-v3-turbo",
+  "text": "金額は小さいけど、パチンコの換金の仕組みのど真ん中の話。"
+ },
+ "01_hairi-007": {
+  "sha1": "321102b2ea676b2ac5e6e458e6fa9043ffc27df9",
+  "model": "large-v3-turbo",
+  "text": "問いは2つ、なんで3500円で書類送検まで行くんか?"
+ },
+ "01_hairi-008": {
+  "sha1": "8855f2d0efa91f98823cfaadaee61e57eed5caf7",
+  "model": "large-v3-turbo",
+  "text": "ほんで、交換所が別の会社やないとあかん理由"
+ },
+ "01_hairi-009": {
+  "sha1": "8428250c9671081bc977d7407f3ec0536cecc717",
+  "model": "large-v3-turbo",
+  "text": "報道と公立の条文、国の答弁書をもとに整理していく。"
+ },
+ "02_keii-001": {
+  "sha1": "f5fe8835f8a472e32082e68808e2aa65912afa73",
+  "model": "large-v3-turbo",
+  "text": "疑いがかかってるのは2026年1月20日"
+ },
+ "02_keii-002": {
+  "sha1": "a994a7db3076eb0143250368915e94d52695eb49",
+  "model": "large-v3-turbo",
+  "text": "石巻市の店で客から特殊景品を4枚、合わせて3500円で買い取った疑い。"
+ },
+ "02_keii-003": {
+  "sha1": "aedfcd09365043e72ccc592dfde25ffa02e6d8e5",
+  "model": "large-v3-turbo",
+  "text": "特殊景品って玉を交換したらもらえるあの小さいケースのやつやな"
+ },
+ "02_keii-004": {
+  "sha1": "7af98d54c2592690c7a7a12de5ed8e202aff7feb",
+  "model": "large-v3-turbo",
+  "text": "そう普通はそれを店の外の交換所に持っていく"
+ },
+ "02_keii-005": {
+  "sha1": "77bb65a61de1728b3aed6f97d4c5030dff7436b4",
+  "model": "large-v3-turbo",
+  "text": "店出て裏の小さい窓口に出すやつな"
+ },
+ "02_keii-006": {
+  "sha1": "35ae36915009f16c9bee887e1b911d3f21b21c76",
+  "model": "large-v3-turbo",
+  "text": "この店でも景品は別の会社の交換所に持ち込まれてた"
+ },
+ "02_keii-007": {
+  "sha1": "39230bfae79f6b1dee1e7b49f48eff9672f1ee4d",
+  "model": "large-v3-turbo",
+  "text": "ほな、ちゃんとしてるやん。何があかんの?"
+ },
+ "02_keii-008": {
+  "sha1": "ef6a106b232f49ad2ecff030cdda63cd67b895ff",
+  "model": "large-v3-turbo",
+  "text": "名前は別の会社でも、中身は店の側が運営してたとみられてる。"
+ },
+ "02_keii-009": {
+  "sha1": "56652d3b347e9fd9351eed8647eb9504e66d5b3b",
+  "model": "large-v3-turbo",
+  "text": "看板だけ別でお金の出所は一緒やったってことか"
+ },
+ "02_keii-010": {
+  "sha1": "63c266fc39d4efa90fd5acc9919e5c90bba74002",
+  "model": "large-v3-turbo",
+  "text": "懲戒ではこういうのを自家街って呼ぶ"
+ },
+ "02_keii-011": {
+  "sha1": "dc6461a33e4d012e714498ae7994ea01ef720137",
+  "model": "large-v3-turbo",
+  "text": "元社長は容疑を認めてて、責任は自分にあると話してるって。"
+ },
+ "02_keii-012": {
+  "sha1": "13328140e1ad30f95b93e75a13dc22d9db820dfd",
+  "model": "large-v3-turbo",
+  "text": "店はどうなったん?"
+ },
+ "02_keii-013": {
+  "sha1": "fa1dd40bde9b964fe670001c7ef093568eda047e",
+  "model": "large-v3-turbo",
+  "text": "もう閉店してる"
+ },
+ "02_keii-014": {
+  "sha1": "c72386a9b5881326d83b7c13d3143925f91975bb",
+  "model": "large-v3-turbo",
+  "text": "宮城県の店でこの種の摘発は2007年以来って報じられてる19年無理"
+ },
+ "02_keii-015": {
+  "sha1": "7eb218b6c01d5af8fbf4394f1177b5b154f210de",
+  "model": "large-v3-turbo",
+  "text": "19年ってその間に店の代何種入れ替わってんねん"
+ },
+ "03_shikumi-001": {
+  "sha1": "5fbb8570e26fec83066fe7c5eb4ff2572dfc0ce4",
+  "model": "large-v3-turbo",
+  "text": "まず3点公式のおさらい"
+ },
+ "03_shikumi-002": {
+  "sha1": "c9ebef7bf49825c358b41d4f2df0de3eed70a823",
+  "model": "large-v3-turbo",
+  "text": "店は玉を特殊景品に買える 客はそれを交換所に売る"
+ },
+ "03_shikumi-003": {
+  "sha1": "6e21d6dcdc6a907bccf8048582c804600b76f779",
+  "model": "large-v3-turbo",
+  "text": "交換所は景品をトン屋に売って、トン屋がまた店に下ろす。"
+ },
+ "03_shikumi-004": {
+  "sha1": "f2fb6accfd0d97774213cc1cf6222156e561c6c1",
+  "model": "large-v3-turbo",
+  "text": "景品がぐるっと一周して店に戻ってくるんや"
+ },
+ "03_shikumi-005": {
+  "sha1": "cbf18e2c1717654b7a18aa17cb8fb1044abb46c1",
+  "model": "large-v3-turbo",
+  "text": "ポイントは3つが別々の会社ってこと"
+ },
+ "03_shikumi-006": {
+  "sha1": "a5f424677f6d16bfa24745d82a4118d2ecdaa641",
+  "model": "large-v3-turbo",
+  "text": "なんでそんな周りくどいことすんの?"
+ },
+ "03_shikumi-007": {
+  "sha1": "73890bd91fca46eacb8ebc52e20a9a0a678c27cf",
+  "model": "large-v3-turbo",
+  "text": "風営法の23条で店が客に現金を出すことと景品を買い取ることが禁止されてる。"
+ },
+ "03_shikumi-008": {
+  "sha1": "040cea8c8f066e9444c8a509bf5e06a80aaa3d80",
+  "model": "large-v3-turbo",
+  "text": "店が買い取ったら玉がそのまま現金になるもんな"
+ },
+ "03_shikumi-009": {
+  "sha1": "ba0ee9a0fd3ff2618698812d1e18929f95d39713",
+  "model": "large-v3-turbo",
+  "text": "店以外の会社が買い取るならこの条文には当たらないって解説されてる"
+ },
+ "03_shikumi-010": {
+  "sha1": "b76e4a633f6a3b14cd7780354a09019c08a84b97",
+  "model": "large-v3-turbo",
+  "text": "せやから交換所はわざわざ店の外にあるんか"
+ },
+ "03_shikumi-011": {
+  "sha1": "2c0a9ffa64c871232c4e6aac68b91ed7ef5760e8",
+  "model": "large-v3-turbo",
+  "text": "ただ国の答弁書には続きのある"
+ },
+ "03_shikumi-012": {
+  "sha1": "337933198606242c5a7e821095460e4b10b93587",
+  "model": "large-v3-turbo",
+  "text": "2017年の答弁書買取会社が店と実質的に同じなら違反になることがあるって"
+ },
+ "03_shikumi-013": {
+  "sha1": "e2d1d8b4f3c4faad1b0025fdbd861f5778c75bba",
+  "model": "large-v3-turbo",
+  "text": "今回の話まさにそれやん"
+ },
+ "03_shikumi-014": {
+  "sha1": "299cba78edfd7ec2a9700955108f7b6c5e9f8f0b",
+  "model": "large-v3-turbo",
+  "text": "名前を分けても中身が同じならダメ?見られてるのは看板じゃなくて中身"
+ },
+ "03_shikumi-015": {
+  "sha1": "abc471b6fff21f478f169026af5b351848d2b740",
+  "model": "large-v3-turbo",
+  "text": "ほな、3500円ポッチでも関係ないんか!"
+ },
+ "03_shikumi-016": {
+  "sha1": "07e179464a9650f43a9ed699cbfcdf46a94f20e0",
+  "model": "large-v3-turbo",
+  "text": "上軍に何円以上って線はないからね"
+ },
+ "03_shikumi-017": {
+  "sha1": "b66d4c6c5548f773ed0796ab43bf2803464701b7",
+  "model": "large-v3-turbo",
+  "text": "景品4枚でもアウトかい"
+ },
+ "03_shikumi-018": {
+  "sha1": "04e31d2d90aa077976ef220fe13032062bed4cb0",
+  "model": "large-v3-turbo",
+  "text": "同じ答弁書には景品の買取の違反が増えてたから処分の基準を改めたとも書いてある"
+ },
+ "03_shikumi-019": {
+  "sha1": "f62fb2a2ed60fc3c3355570187f3b75a025b6e70",
+  "model": "large-v3-turbo",
+  "text": "国の方も前から目つけてたってことやな"
+ },
+ "04_kawaru-001": {
+  "sha1": "7bb469d28f29b75d25446f5d25ae17a8daebc7d7",
+  "model": "large-v3-turbo",
+  "text": "で、うちらうつ側は何か変わるん?"
+ },
+ "04_kawaru-002": {
+  "sha1": "ed174a5ba92d590cca4e5c91607606a1ed14d247",
+  "model": "large-v3-turbo",
+  "text": "交換のやり方は今まで通り、内側の手順が変わる話じゃない。"
+ },
+ "04_kawaru-003": {
+  "sha1": "d25e663cadcb5a192b4eb04eb2fdd3bd2ca59f79",
+  "model": "large-v3-turbo",
+  "text": "行動で送検されたのは経営会社と元社長。"
+ },
+ "04_kawaru-004": {
+  "sha1": "de7af15788e86d1ab1488e0dcb15ad0573248627",
+  "model": "large-v3-turbo",
+  "text": "ほな、変わるのはホールの方かほなー!"
+ },
+ "04_kawaru-005": {
+  "sha1": "2cefdda8ba578d00d80be302d5c490f9a04c3095",
+  "model": "large-v3-turbo",
+  "text": "そう、交換所が別の会社なのは書類の上だけじゃ足りないってことがはっきりした"
+ },
+ "04_kawaru-006": {
+  "sha1": "fda686818f0be1b14b2a1d9064a7f0df0d006a46",
+  "model": "large-v3-turbo",
+  "text": "名義だけ分けといても中身見られたら終わりってことやな"
+ },
+ "04_kawaru-007": {
+  "sha1": "59f9cf3bd68cf5d302e3c3af42cb9433afa907e3",
+  "model": "large-v3-turbo",
+  "text": "ちなみに教会の中でもルールの見回りは進んでる"
+ },
+ "04_kawaru-008": {
+  "sha1": "1e67969b5508ead719f615a7caeffe399725f7c6",
+  "model": "large-v3-turbo",
+  "text": "健全化推進機構は、2026年4月から広告のガイドラインを守ってるか、店を回って確かめてる。"
+ },
+ "04_kawaru-009": {
+  "sha1": "cd81ac0714aa62ec197371719d910bca9388fe6d",
+  "model": "large-v3-turbo",
+  "text": "2026年8月までに確かめた店のうち、違反があった29店舗に直してほしいという署名を送ったって教会士は報じてる。"
+ },
+ "04_kawaru-010": {
+  "sha1": "80d0a87e47f8477461e6ef56e13c3a8c6af9af6c",
+  "model": "large-v3-turbo",
+  "text": "監禁も広告も業界の中で見張りがきつなってるんやな"
+ },
+ "04_kawaru-011": {
+  "sha1": "f0d66738a5746f7ec86dcfe12c920b6cad1d267e",
+  "model": "large-v3-turbo",
+  "text": "交換所が店主の裏にある景色当たり前すぎて気にしたことなかったわ"
+ },
+ "04_kawaru-012": {
+  "sha1": "513aa6b124fab6a75fcc4f742eed158ca00f983f",
+  "model": "large-v3-turbo",
+  "text": "あの距離が法律の上では一番大事な距離"
+ },
+ "05_matome-001": {
+  "sha1": "af7c2bf8b030f247b7fc9cd2f83ab00906222670",
+  "model": "large-v3-turbo",
+  "text": "まとめ宮城県の店が客から特殊景品を買い取った疑いで書類送検された"
+ },
+ "05_matome-002": {
+  "sha1": "b3e65ab47b48c180487864723d7ab1ded173510a",
+  "model": "large-v3-turbo",
+  "text": "交換所は別の会社の名前でも、中身は店の川が運営してたとみられてる。"
+ },
+ "05_matome-003": {
+  "sha1": "22ab94616631d6e784a02d19af7a2d25517d3ed6",
+  "model": "large-v3-turbo",
+  "text": "一つ目の答え風営法は店が景品を買い取ること自体を禁止してるせやから3500円でも送件や"
+ },
+ "05_matome-004": {
+  "sha1": "f84f50dac7761b20158c1191fe41e23b7471c84a",
+  "model": "large-v3-turbo",
+  "text": "2つ目の答え交換所が別の会社やから店が買い取ったことにならへん中身が同じならその前提が崩れる"
+ },
+ "05_matome-005": {
+  "sha1": "26a3d4488aa56efb04a5cea716e84dce00ba310e",
+  "model": "large-v3-turbo",
+  "text": "ちなみに書類送検は有罪が決まったって意味じゃない"
+ },
+ "05_matome-006": {
+  "sha1": "f93dc4a94fda19d79d8c9c4faf7bcd33fd62aedf",
+  "model": "large-v3-turbo",
+  "text": "最後にめっちゃ真面目なこと言うやん"
+ },
+ "99_ed-001": {
+  "sha1": "105f975aed55c65b82f8c816bf795b09d2b16ce0",
+  "model": "large-v3-turbo",
+  "text": "ここまで見てくれてありがとう"
+ },
+ "99_ed-002": {
+  "sha1": "40bf41739c179b898cd2787d5d53c92801c8cd79",
+  "model": "large-v3-turbo",
+  "text": "交換所の場所、気にしたことある?コメントで教えてや!"
+ },
+ "99_ed-003": {
+  "sha1": "0cd89fa584f1cbbd325363892dceaac01a18282a",
+  "model": "large-v3-turbo",
+  "text": "よかったら高評価とチャンネル登録お願いします"
+ },
+ "99_ed-004": {
+  "sha1": "6ffa9567442a5a1e8dcf3007bb232cafac23d7c7",
+  "model": "large-v3-turbo",
+  "text": "ほな、またな。"
+ },
+ "99_ed-005": {
+  "sha1": "c36d30f3feb6836e249ee46feaa9e0ab3065f1ec",
+  "model": "large-v3-turbo",
+  "text": "また次回。おやすみ。"
+ }
+}
