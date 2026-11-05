@@ -848,7 +848,7 @@ const VersusPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
     return (
       <div
         style={{
-          width: 420,
+          width: 450,
           height: 330,
           borderRadius: 22,
           background: 'white',
@@ -867,11 +867,12 @@ const VersusPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
         <div style={{fontSize: 88, fontWeight: 900, color: c}}>{d.v}</div>
         <div
           style={{
-            fontSize: 30,
+            fontSize: 25,
             fontWeight: 900,
             color: 'white',
             background: c,
-            padding: '6px 20px',
+            whiteSpace: 'nowrap',
+            padding: '6px 18px',
             borderRadius: 10,
           }}
         >
@@ -884,7 +885,7 @@ const VersusPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
   const vs = spring({frame: frame - seg.from - 16, fps, config: {damping: 9, stiffness: 220}});
   return (
     <PanelFrame seg={seg} tag={`VS｜${data.heading}`}>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 50, display: 'flex', justifyContent: 'center', gap: 120}}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 50, display: 'flex', justifyContent: 'center', gap: 100}}>
         <Side d={data.left} delay={4} bad={false} />
         <Side d={data.right} delay={12} bad />
       </div>
