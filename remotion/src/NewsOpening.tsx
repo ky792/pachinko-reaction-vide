@@ -183,7 +183,7 @@ const Caster: React.FC<{
       style={{
         position: 'absolute',
         left,
-        top: 905 - height + breathe,
+        top: 1100 - height + breathe,
         height,
         translate: `${dx}px 0px`,
         rotate: `${(1 - s) * (from === 'left' ? -8 : 8)}deg`,
@@ -217,9 +217,10 @@ const Studio: React.FC = () => {
       }}
     >
       <Img src={staticFile('studio.png')} style={{width: 1920, height: 1080}} />
-      <Caster src="nagi.png" enter={beat(6)} from="left" left={300} height={560} />
-      <Caster src="baku.png" enter={beat(7)} from="right" left={1040} height={540} />
+      {/* 報道台の手前に立つ */}
       <Img src={staticFile('desk.png')} style={{position: 'absolute', width: 1920, height: 1080}} />
+      <Caster src="nagi.png" enter={beat(6)} from="left" left={250} height={740} />
+      <Caster src="baku.png" enter={beat(7)} from="right" left={1060} height={720} />
     </AbsoluteFill>
   );
 };
