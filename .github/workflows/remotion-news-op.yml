@@ -1,4 +1,4 @@
-name: Remotion news OP (trial)
+name: Remotion news (trial)
 
 on:
   push:
@@ -36,13 +36,14 @@ jobs:
       - name: Render still previews
         run: |
           mkdir -p out
-          for f in 40 120 150 230 290 318 350 420; do
-            npx remotion still NewsOpening "out/frame_${f}.png" --frame=$f
+          for f in 520 790 1160 1720 2000 2200; do
+            npx remotion still News02Intro "out/frame_${f}.png" --frame=$f
           done
       - name: Render MP4
         run: |
           npx remotion render NewsOpening out/news_op.mp4 --codec=h264 --crf=18
-          ffprobe -v error -show_entries format=duration -of csv=p=0 out/news_op.mp4
+          npx remotion render News02Intro out/news02_intro.mp4 --codec=h264 --crf=20
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/news02_intro.mp4
       - uses: actions/upload-artifact@v4
         with:
           name: remotion-news-op
