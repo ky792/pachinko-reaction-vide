@@ -1,0 +1,17 @@
+{
+  "name": "nagibaku-remotion",
+  "private": true,
+  "version": "0.1.0",
+  "description": "ナギバク Remotion 試作（ニュース回OP）",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render NewsOpening out/news_op.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.541",
+    "@remotion/media": "4.0.541",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.541"
+  }
+}
