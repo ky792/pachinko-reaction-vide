@@ -260,6 +260,7 @@ const Telop: React.FC = () => {
           textAlign: 'center',
           maxWidth: 1120,
           textWrap: 'balance',
+          wordBreak: 'auto-phrase' as React.CSSProperties['wordBreak'],
           opacity: p,
           translate: `0px ${(1 - p) * 14}px`,
           boxShadow: '0 12px 30px rgba(0,20,80,0.3)',
@@ -430,7 +431,7 @@ const HeadlinePanel: React.FC = () => {
         <div
           style={{
             position: 'relative',
-            fontSize: 92,
+            fontSize: 76,
             letterSpacing: 4,
             whiteSpace: 'nowrap',
             marginTop: 18,
@@ -689,7 +690,7 @@ const Flash: React.FC<{at: number; len?: number}> = ({at: a, len = 10}) => {
 export const NewsEpisode: React.FC = () => {
   const {fps, durationInFrames} = useVideoConfig();
   return (
-    <AbsoluteFill style={{background: '#020816'}}>
+    <AbsoluteFill lang="ja" style={{background: '#020816'}}>
       <Sequence durationInFrames={OP_FRAMES} name="OP">
         <NewsOpening />
       </Sequence>
