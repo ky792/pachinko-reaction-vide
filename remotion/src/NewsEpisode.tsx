@@ -259,6 +259,7 @@ const Telop: React.FC = () => {
           color: BLUE_DEEP,
           textAlign: 'center',
           maxWidth: 1120,
+          textWrap: 'balance',
           opacity: p,
           translate: `0px ${(1 - p) * 14}px`,
           boxShadow: '0 12px 30px rgba(0,20,80,0.3)',
@@ -307,7 +308,7 @@ const PanelFrame: React.FC<{from: number; to: number; tag: string; children: Rea
         width: 1120,
         height: 560,
         borderRadius: 26,
-        background: 'linear-gradient(160deg, rgba(255,255,255,0.97), rgba(232,241,255,0.95))',
+        background: 'linear-gradient(160deg, #ffffff, #e8f1ff)',
         boxShadow: '0 30px 60px rgba(0,20,80,0.45), inset 0 0 0 3px rgba(255,255,255,0.8)',
         overflow: 'hidden',
         scale: interpolate(s, [0, 1], [0.86, 1]) * interpolate(out, [0, 1], [1, 0.94]),
@@ -429,8 +430,9 @@ const HeadlinePanel: React.FC = () => {
         <div
           style={{
             position: 'relative',
-            fontSize: 104,
-            letterSpacing: 6,
+            fontSize: 92,
+            letterSpacing: 4,
+            whiteSpace: 'nowrap',
             marginTop: 18,
             translate: `0px ${(1 - p) * 30}px`,
             opacity: p,
@@ -455,17 +457,17 @@ const HeadlinePanel: React.FC = () => {
 // 2) 年表（セリフに合わせて1つずつ点灯）
 const STEPS = [
   {t: '2025年秋', s: 'PPPAYが話題に', on: () => at(2)},
-  {t: '2026年3月13日', s: '日遊協「2027年度内」', on: () => at(3, 0.05)},
-  {t: '2026年6月15日', s: 'GMOグループが協力', on: () => at(6, 0.05)},
-  {t: '2027年12月末', s: 'システム完成の目標', on: () => at(7, 0.55), key: true},
+  {t: '2026年3月13日', s: '日遊協が\n「2027年度内」', on: () => at(3, 0.05)},
+  {t: '2026年6月15日', s: 'GMOグループが\n協力', on: () => at(6, 0.05)},
+  {t: '2027年12月末', s: 'システム\n完成の目標', on: () => at(7, 0.55), key: true},
 ];
 
 const FlowPanel: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
   const from = at(2);
-  const X0 = 110;
-  const STEP_W = 300;
+  const X0 = 175;
+  const STEP_W = 257;
   // 線が今の点まで伸びる
   const lineP = interpolate(
     frame,
@@ -515,12 +517,13 @@ const FlowPanel: React.FC = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: x - 140,
-                  width: 280,
+                  left: x - 130,
+                  width: 260,
                   top: 90,
+                  whiteSpace: 'nowrap',
                   textAlign: 'center',
                   fontWeight: 900,
-                  fontSize: st.key ? 40 : 32,
+                  fontSize: st.key ? 36 : 31,
                   color: on ? (st.key ? RED : BLUE_DEEP) : '#a9b4cc',
                   translate: `0px ${on ? (1 - s) * 16 : 0}px`,
                 }}
@@ -530,9 +533,10 @@ const FlowPanel: React.FC = () => {
               <div
                 style={{
                   position: 'absolute',
-                  left: x - 140,
-                  width: 280,
+                  left: x - 130,
+                  width: 260,
                   top: 250,
+                  whiteSpace: 'pre-line',
                   textAlign: 'center',
                   fontWeight: 700,
                   fontSize: 30,
@@ -547,7 +551,7 @@ const FlowPanel: React.FC = () => {
           );
         })}
         {/* 最後の目標にマル */}
-        <HandCircle at={STEPS[3].on() + 6} x={X0 + 3 * STEP_W - 150} y={78} w={300} h={84} />
+        <HandCircle at={STEPS[3].on() + 6} x={X0 + 3 * STEP_W - 135} y={78} w={270} h={80} />
         {/* 補足：日遊協とは（5本目のセリフ） */}
         <Note from={at(4)} to={at(5)} text="日遊協 ＝ ホールやメーカーが入っている業界団体" />
         <Note from={at(7, 0.05)} to={at(9)} text="決済の仕組み：GMOペイメントゲートウェイ" />
@@ -569,7 +573,7 @@ const Note: React.FC<{from: number; to: number; text: string}> = ({from, to, tex
         position: 'absolute',
         left: 0,
         right: 0,
-        top: 370,
+        top: 385,
         display: 'flex',
         justifyContent: 'center',
         opacity: p,
