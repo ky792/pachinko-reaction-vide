@@ -9,9 +9,12 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 36,
+ "_try": 37,
  "kana_only": false,
  "only": [
-  "01_gaiyou-010"
+  "02_zure-007",
+  "06_tomeru-005",
+  "06_tomeru-017",
+  "07_matome-005"
  ]
 }
