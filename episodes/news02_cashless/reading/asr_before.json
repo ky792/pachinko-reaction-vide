@@ -1,0 +1,42 @@
+{
+ "01_gaiyou-004": {
+  "sha1": "6b0ef822d99b35972719a6423754b1660f7e9143",
+  "model": "large-v3-turbo",
+  "text": "2026年3月13日、日中共の西村会長が2027年度内に投入したいと話した。"
+ },
+ "01_gaiyou-005": {
+  "sha1": "3522fce55580b04e558292c61994b336415156de",
+  "model": "large-v3-turbo",
+  "text": "日中協はホールやメーカーが入ってる協会団体"
+ },
+ "04_kawaru-001": {
+  "sha1": "74091fbb01a2df4fe9295ceb888dea336af6785a",
+  "model": "large-v3-turbo",
+  "text": "日中今日が上げてる目的は大きく4つ"
+ },
+ "05_honne-003": {
+  "sha1": "ef46c1459514e16dec2235a15db7198df74d517c",
+  "model": "large-v3-turbo",
+  "text": "コールの団体の全日売れは、2026年3月にクレカで弾は貸さないと言ってる。"
+ },
+ "05_honne-004": {
+  "sha1": "c85da4b2bb1d16e72f5b2537c9e44e957da2ab84",
+  "model": "large-v3-turbo",
+  "text": "日中共の西村会長もクレカには慎重?"
+ },
+ "07_matome-001": {
+  "sha1": "304f1131a298deaaabad08c9667ecc8846a3b133",
+  "model": "large-v3-turbo",
+  "text": "まとめ?日中今日は2027年12月末までのシステム完成を目指してる。"
+ },
+ "01_gaiyou-001": {
+  "sha1": "d905b2beca3e75d62f5e3eb436a47bf21a9c16d7",
+  "model": "large-v3-turbo",
+  "text": "なぎ爆ニュース、最初のニュースはパチンコのキャッシュレスか"
+ },
+ "01_gaiyou-010": {
+  "sha1": "87a18be6fc726efcdca8368bb67a190aaec2170f",
+  "model": "large-v3-turbo",
+  "text": "今回見るのは2つ。何が変わるのか、それと打ち手にとって理なのか。"
+ }
+}
