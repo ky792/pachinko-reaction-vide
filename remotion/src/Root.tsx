@@ -13,9 +13,9 @@ export const RemotionRoot: React.FC = () => {
         width={1920}
         height={1080}
       />
-      {/* ニュース回 第2回（キャッシュレス）：OP＋概要パート。尺は音声から自動で決まる */}
+      {/* ニュース回 第2回（キャッシュレス）完成版。尺は音声から自動で決まる */}
       <Composition
-        id="News02Intro"
+        id="News02"
         component={NewsEpisode}
         durationInFrames={2400}
         fps={30}

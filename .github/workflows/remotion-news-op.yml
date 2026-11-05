@@ -15,10 +15,48 @@ concurrency:
   group: remotion-news-op
   cancel-in-progress: true
 
+env:
+  COMP: News02
+  STILLS: "2345 2409 3002 4118 5288 7361 8874 10039 10746 13037 14316 14382 14672"
+
 jobs:
-  render:
+  stills:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render still previews
+        run: |
+          mkdir -p out
+          for f in $STILLS; do
+            npx remotion still "$COMP" "out/frame_${f}.png" --frame=$f --scale=0.5
+          done
+      - name: Save to outputs-remotion-stills branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-remotion-stills
+          git add -A
+          git commit -q -m "Stills ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-remotion-stills
+
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
     defaults:
       run:
         working-directory: remotion
@@ -33,25 +71,27 @@ jobs:
           sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra ffmpeg
       - name: Install Remotion
         run: npm install --no-audit --no-fund
-      - name: Render still previews
-        run: |
-          mkdir -p out
-          for f in 520 790 1160 1720 2000 2200; do
-            npx remotion still News02Intro "out/frame_${f}.png" --frame=$f
-          done
       - name: Render MP4
         run: |
-          npx remotion render NewsOpening out/news_op.mp4 --codec=h264 --crf=18
-          npx remotion render News02Intro out/news02_intro.mp4 --codec=h264 --crf=20
-          ffprobe -v error -show_entries format=duration -of csv=p=0 out/news02_intro.mp4
-      - uses: actions/upload-artifact@v4
-        with:
-          name: remotion-news-op
-          path: remotion/out/
-          retention-days: 7
+          mkdir -p out
+          npx remotion render "$COMP" out/news02.mp4 --codec=h264 --crf=20 --concurrency=4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/news02.mp4
+          ls -la out
+      - name: Publish full video as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete news02-remotion -y --cleanup-tag || true
+          gh release create news02-remotion out/news02.mp4 --target "$GITHUB_SHA" --prerelease \
+            --title "ナギバクニュース 第2回（Remotion版）" --notes "feat/remotion-news-op で自動書き出し（1080p）"
+      - name: Make phone preview (720p)
+        run: |
+          mkdir -p preview
+          ffmpeg -v error -y -i out/news02.mp4 -vf scale=1280:-2 -c:v libx264 -preset veryfast -crf 27 -c:a aac -b:a 128k preview/news02_preview.mp4
+          ls -la preview
       - name: Save to outputs-remotion branch
         run: |
-          cd out
+          cd preview
           git init -q
           git config user.name "github-actions[bot]"
           git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
