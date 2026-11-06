@@ -24,7 +24,7 @@ env:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     defaults:
       run:
         working-directory: remotion
@@ -44,6 +44,8 @@ jobs:
           mkdir -p out
           npx remotion render "$COMP" out/labui_preview.mp4 --codec=h264 --crf=18 --concurrency=4
           for f in $STILLS; do npx remotion still "$COMP" "out/still_${f}.png" --frame=$f --scale=0.5; done
+          npx remotion render LabUIPatterns out/labui_patterns.mp4 --codec=h264 --crf=18 --concurrency=4
+          for i in $(seq 0 15); do npx remotion still LabUIPatterns "out/pattern_$(printf %02d $((i+1))).png" --frame=$((i*105+80)) --scale=0.5; done
           ffprobe -v error -show_entries format=duration -of csv=p=0 out/labui_preview.mp4
           ls -la out
       - name: Save to outputs-lab-ui branch

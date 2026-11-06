@@ -25,3 +25,25 @@
 数字はUI確認用のサンプル（73%＋27%×30% ≒ 81%）。声は未収録で、字幕の長さで仮の尺を取っている。
 
 書き出し：このブランチで `remotion/src/labui/` を変えて push すると Actions「Remotion lab UI preview」が動き、`outputs-lab-ui` ブランチに mp4 と静止画が入る。
+
+## パターン見本帳（`LabUIPatterns.tsx`、16種×3.5秒）
+| No | 分類 | パターン | ファイル |
+| --- | --- | --- | --- |
+| 01 | 通常解説 | 字幕 | Subtitle |
+| 02 | 通常解説 | キーワード（四隅カギ括弧） | Interrupts › KeywordPop |
+| 03 | 数値データ | 表（分解） | DataPanel |
+| 04 | 数値データ | VS比較 | Charts › VersusPanel |
+| 05 | 数値データ | 横棒グラフ | Charts › BarPanel |
+| 06 | 数値データ | 円グラフ（中に文字） | Charts › DonutPanel |
+| 07 | 解析結果発表 | 大数字＋内訳バー | ResultReveal |
+| 08 | 解析結果発表 | リール停止（1桁ずつ止まる） | Reveals › ReelReveal |
+| 09 | 解析結果発表 | 判定スタンプ（ひと言） | Reveals › VerdictStamp |
+| 10 | 警告・ツッコミ | 軽いツッコミ（橙の帯だけ） | AlertCut mode=tsukkomi |
+| 11 | 警告・ツッコミ | 警告割り込み | AlertCut mode=alert |
+| 12 | 警告・ツッコミ | 画面ジャック（ひと言特大） | Interrupts › BakuJack |
+| 13 | ナギの補足 | ノート | Interrupts › NagiNote |
+| 14 | 場面転換 | 斜め帯 | LabTransition |
+| 15 | 場面転換 | 章カード（年＋タイトル） | Transitions › ChapterCard |
+| 16 | 場面転換 | シャッター（話題替え） | Transitions › Shutter |
+
+使い分けの目安：通常解説・ノート・表は毎回OK。ツッコミは軽い方が基本で、警告割り込み・画面ジャックは1本に1〜2回。結果発表（07〜09）は章の山場だけ。
