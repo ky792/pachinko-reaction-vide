@@ -2,12 +2,6 @@ name: Remotion lab UI preview
 
 # 研究所UI（LAB OS）の18秒プレビューだけを書き出す。本編・ニュース回には影響しない
 on:
-  push:
-    branches: [feat/lab-ui-redesign]
-    paths:
-      - "remotion/src/labui/**"
-      - "remotion/public/labui/**"
-      - ".github/workflows/remotion-lab-ui.yml"
   workflow_dispatch:
 
 permissions:

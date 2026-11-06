@@ -3,13 +3,20 @@ import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {C, IN, JP, Rich, WHO, Who, cham, ramp} from './tokens';
 
-export const Subtitle: React.FC<{who: Who; text: string; from: number; to: number}> = ({who, text, from, to}) => {
+export const Subtitle: React.FC<{who: Who; text: string; from: number; to: number; cont?: boolean; last?: boolean}> = ({
+  who,
+  text,
+  from,
+  to,
+  cont = false,
+  last = true,
+}) => {
   const f = useCurrentFrame();
-  if (f < from || f >= to + 6) return null;
+  if (f < from || f >= (last ? to + 6 : to)) return null;
   const w = WHO[who];
-  const p = ramp(f, from, from + 9);
-  const out = ramp(f, to, to + 6, IN);
-  const line = ramp(f, from + 3, from + 16);
+  const p = cont ? 1 : ramp(f, from, from + 9);
+  const out = last ? ramp(f, to, to + 6, IN) : 0;
+  const line = cont ? 1 : ramp(f, from + 3, from + 16);
   return (
     <div
       style={{
@@ -50,7 +57,7 @@ export const Subtitle: React.FC<{who: Who; text: string; from: number; to: numbe
           padding: '24px 40px 28px 34px',
           fontFamily: JP,
           fontWeight: 800,
-          fontSize: 50,
+          fontSize: Math.min(48, Math.floor(820 / Math.max(...text.split('\n').map((r) => r.replace(/[{}]/g, '').length)))),
           lineHeight: 1.35,
           color: C.white,
           letterSpacing: 1,

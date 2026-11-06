@@ -13,7 +13,7 @@ export type RenSpec = {
 };
 
 // ── 場面のタイミング（from からのフレーム）。WORLD.md の「発明品の場面のタメ」に合わせる
-export const RA = {
+export const RA_SMOKE = {
   land: 14,
   boot: 44,
   think: 58,
@@ -27,6 +27,16 @@ export const RA = {
   total: 294,
   end: 390,
 };
+/** 煙のギャグを出さないときは、そのぶん（32フレーム）前に詰める */
+export const raTimes = (smoke: boolean) => {
+  if (smoke) return RA_SMOKE;
+  const s = 32;
+  const r = {...RA_SMOKE};
+  (['load', 'wait', 'calc', 'stDone', 'jitanDone', 'sum', 'total', 'end'] as const).forEach((k) => (r[k] -= s));
+  r.smoke = 99999;
+  return r;
+};
+export const RA = RA_SMOKE;
 
 const hitRate = (prob: number, n: number) => 1 - Math.pow(1 - 1 / prob, n);
 const pct = (x: number) => Math.round(x * 100);
@@ -60,6 +70,7 @@ const Puff: React.FC<{t: number; seed: number}> = ({t, seed}) => {
 export const RenAnalysis: React.FC<{from: number; spec: RenSpec; smoke?: boolean}> = ({from, spec, smoke = true}) => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
+  const RA = raTimes(smoke);
   const f = frame - from;
   if (f < 0) return null;
 
@@ -251,8 +262,8 @@ export const RenAnalysis: React.FC<{from: number; spec: RenSpec; smoke?: boolean
             <div
               style={{
                 position: 'absolute',
-                left: gx(spec.st.spins) - 250,
-                top: gy(a) - 92,
+                left: gx(spec.st.spins) - (j ? 250 : 330),
+                top: j ? gy(a) - 92 : gy(a) + 40,
                 padding: '6px 18px 8px',
                 background: C.cyan,
                 clipPath: cham(10),

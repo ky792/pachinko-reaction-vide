@@ -1,0 +1,59 @@
+name: Remotion shanfro episode
+
+# 新台解説・シャンフロ回（研究所UI版）を書き出す。src/labui/ep/shanfro.json（台本＋声から作ったタイムライン）が変わったら動く
+on:
+  push:
+    branches: [feat/lab-ui-redesign]
+    paths:
+      - "remotion/src/labui/ep/shanfro.json"
+      - ".github/workflows/remotion-shanfro.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: remotion-shanfro
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra fonts-dejavu-core ffmpeg
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render
+        run: |
+          mkdir -p out
+          npx remotion render ShanfroEpisode out/shanfro.mp4 --codec=h264 --crf=20 --concurrency=4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/shanfro.mp4
+          python3 - <<'PY'
+          import json
+          d = json.load(open('src/labui/ep/shanfro.json'))
+          fr = sorted({e['from'] + 40 for e in d['events'] if e['type'] in ('show', 'fx', 'chapter', 'intro', 'logotitle')})
+          open('out/frames.txt', 'w').write(' '.join(map(str, fr)))
+          PY
+          for f in $(cat out/frames.txt); do ffmpeg -v error -y -ss $(python3 -c "print($f/30)") -i out/shanfro.mp4 -frames:v 1 -vf scale=960:-2 "out/still_$(printf %05d $f).jpg"; done
+          ls -la out | head -50
+      - name: Save to outputs-shanfro branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-shanfro
+          git add -A
+          git commit -q -m "shanfro ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-shanfro

@@ -1,0 +1,45 @@
+{
+ "_note": "シャンフロ回（新台解説・研究所UI版）の画面の中身。数字は episodes/shanfro/SOURCES.md（feat/shanfro-episode）と同じ。ナギバク計算のものは画面にも『計算』と出す",
+ "voice_tempo": 1.1,
+ "gap": 0.12,
+ "chapter_dur": 2.6,
+ "bgm": "ep/shanfro/newmachine_matsuri.wav",
+ "bgm_gain": 0.16,
+ "op": {"song": "ep/shanfro/op_brass.wav", "song_gain": 0.6, "intro": 2.2, "logo": 2.4, "title": 3.4},
+ "title": {"machine": "eシャングリラ・フロンティア", "title": "超神ゲーBOOST、何回続く？", "date": "2026.12 SAMMY"},
+ "intro": {
+  "nagi": {"name": "ナギ", "role": "ナギバク研究所 解析担当", "profile": ["数字しか信じない。", "だいたい眠い。"]},
+  "baku": {"name": "バク", "role": "ナギバク研究所 メカニック（自称エース）", "profile": ["打った台の話は止まらない。", "発明品は、たまに煙が出る。"]}
+ },
+ "ui": {
+  "data:spec": {"title": "eシャングリラ・フロンティア", "rows": [
+   {"label": "大当たり確率", "value": "1/399.9"},
+   {"label": "RUSH突入率", "value": "約54%"},
+   {"label": "RUSH継続率", "value": "約75%"}]},
+  "donut:hatsu": {"title": "通常時の当たり", "center": ["RUSH突入", "約54%"], "items": [
+   {"label": "1500個＋RUSH", "pct": 53, "key": true},
+   {"label": "1500個のみ", "pct": 46},
+   {"label": "300個＋RUSH", "pct": 1}]},
+  "ren:rush": {"spec": {"title": "RUSH継続率の解析", "st": {"prob": 98.5, "spins": 134}}, "smoke": false},
+  "bar:rushhit": {"title": "RUSH中の当たり", "items": [
+   {"label": "1500個", "pct": 50},
+   {"label": "4500個", "pct": 48, "key": true},
+   {"label": "BOOST付", "pct": 2}]},
+  "reel:rushavg": {"label": "RUSH1回の平均出玉", "digits": "8900", "unit": "個", "note": "入ってから（ナギバク計算）"},
+  "donut:boost": {"title": "超神ゲーBOOSTの上乗せ", "center": ["もう1回", "約16%"], "items": [
+   {"label": "1500個", "pct": 50, "key": true},
+   {"label": "3000個", "pct": 34},
+   {"label": "3000個＋もう1回", "pct": 7},
+   {"label": "4500個＋もう1回", "pct": 9}]},
+  "sim:boost": {"title": "BOOSTに100回入ったら", "counts": [84, 14, 2], "labels": ["まわした回数", "2回目の上乗せまで", "3回目の上乗せまで"]},
+  "verdict:boostavg": {"label": "BOOST1回の平均", "word": "約7300個", "sub": "4500個＋上乗せ平均 約2800個"},
+  "data:uchite": {"title": "RUSH1回の出玉（ナギバク計算）", "rows": [
+   {"label": "平均", "value": "約8900個"},
+   {"label": "真ん中の人", "value": "約6000個"},
+   {"label": "1万個を超える", "value": "3回に1回"}]},
+  "data:matome": {"title": "まとめ", "rows": [
+   {"label": "大当たり確率", "value": "1/399.9"},
+   {"label": "RUSH継続率", "value": "約75%"},
+   {"label": "BOOST1回の平均", "value": "約7300個"}]}
+ }
+}
