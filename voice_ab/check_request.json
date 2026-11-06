@@ -1,19 +1,5 @@
 {
- "episode": "episodes/news02_cashless",
+ "episode": "episodes/shanfro",
  "model": "large-v3-turbo",
- "_run": "news02-audit-fix",
- "_try": 30,
- "only": [
-  "02_zure-007",
-  "06_tomeru-005",
-  "06_tomeru-017",
-  "07_matome-005",
-  "01_gaiyou-011",
-  "02_zure-006",
-  "02_zure-008",
-  "04_kawaru-008",
-  "05_honne-013",
-  "05_honne-015",
-  "07_matome-004"
- ]
+ "_run": "shanfro-full"
 }
