@@ -1,6 +1,6 @@
 {
  "action": "lines",
- "episode": "episodes/news02_cashless",
+ "episode": "episodes/shanfro",
  "who": "baku",
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
@@ -15,15 +15,5 @@
     "53"
    ]
   }
- ],
- "_try": 36,
- "only": [
-  "01_gaiyou-011",
-  "02_zure-006",
-  "02_zure-008",
-  "04_kawaru-008",
-  "05_honne-013",
-  "05_honne-015",
-  "07_matome-004"
  ]
 }

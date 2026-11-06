@@ -1,0 +1,6 @@
+{
+ "_note": "新台解説：eシャングリラ・フロンティア（サミー・2026年12月導入）。研究所UI（LAB OS・Remotion）版の最初の回。声は news02_cashless と同じ設定（ナギ＝AivisSpeech コハク『ねむたい』shift -1.5、バク＝Irodori garo2_fix_s53 squeeze）。テンポ1.1倍・間詰め（新台解説の決まり）",
+ "engine": "remotion-labui",
+ "voice_tempo": 1.1,
+ "gap": 0.12
+}
