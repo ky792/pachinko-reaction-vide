@@ -142,7 +142,7 @@ export const LabEpisode: React.FC<{data: EpisodeData}> = ({data}) => {
       {data.lines.map((l) =>
         l.src ? (
           <Sequence key={`v${l.id}`} from={l.from} durationInFrames={l.to - l.from + 6}>
-            <Audio src={staticFile(l.src)} />
+            <Audio src={staticFile(l.src)} volume={0.85} />
           </Sequence>
         ) : null,
       )}
@@ -150,7 +150,7 @@ export const LabEpisode: React.FC<{data: EpisodeData}> = ({data}) => {
         .filter((e) => e.se)
         .map((e, i) => (
           <Sequence key={`se${i}`} from={e.from + (e.seAt ?? 0)} durationInFrames={75}>
-            <Audio src={staticFile(`labui/se/${e.se}.wav`)} volume={e.seVol ?? 0.6} />
+            <Audio src={staticFile(`labui/se/${e.se}.wav`)} volume={(e.seVol ?? 0.6) * 0.65} />
           </Sequence>
         ))}
     </AbsoluteFill>
