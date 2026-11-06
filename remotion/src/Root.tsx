@@ -3,6 +3,7 @@ import {NewsOpening} from './NewsOpening';
 import {NewsEpisode, calculateEpisodeMetadata} from './NewsEpisode';
 import {LabUIPreview, LAB_UI_FRAMES} from './labui/LabUIPreview';
 import {LabUIPatterns, LAB_UI_PATTERN_FRAMES} from './labui/LabUIPatterns';
+import {RenAnalysisDemo, REN_DEMO_FRAMES} from './labui/RenAnalysisDemo';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -39,6 +40,15 @@ export const RemotionRoot: React.FC = () => {
         id="LabUIPatterns"
         component={LabUIPatterns}
         durationInFrames={LAB_UI_PATTERN_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      {/* RNC-01（レン）の解析シーン */}
+      <Composition
+        id="RenAnalysisDemo"
+        component={RenAnalysisDemo}
+        durationInFrames={REN_DEMO_FRAMES}
         fps={30}
         width={1920}
         height={1080}
