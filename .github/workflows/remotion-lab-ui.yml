@@ -1,0 +1,58 @@
+name: Remotion lab UI preview
+
+# 研究所UI（LAB OS）の18秒プレビューだけを書き出す。本編・ニュース回には影響しない
+on:
+  push:
+    branches: [feat/lab-ui-redesign]
+    paths:
+      - "remotion/src/labui/**"
+      - "remotion/public/labui/**"
+      - ".github/workflows/remotion-lab-ui.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: remotion-lab-ui
+  cancel-in-progress: true
+
+env:
+  COMP: LabUIPreview
+  STILLS: "50 200 300 360 490"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra fonts-dejavu-core ffmpeg
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render
+        run: |
+          mkdir -p out
+          npx remotion render "$COMP" out/labui_preview.mp4 --codec=h264 --crf=18 --concurrency=4
+          for f in $STILLS; do npx remotion still "$COMP" "out/still_${f}.png" --frame=$f --scale=0.5; done
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/labui_preview.mp4
+          ls -la out
+      - name: Save to outputs-lab-ui branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-lab-ui
+          git add -A
+          git commit -q -m "Lab UI preview ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-lab-ui

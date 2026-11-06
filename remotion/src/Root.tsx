@@ -1,6 +1,7 @@
 import {Composition} from 'remotion';
 import {NewsOpening} from './NewsOpening';
 import {NewsEpisode, calculateEpisodeMetadata} from './NewsEpisode';
+import {LabUIPreview, LAB_UI_FRAMES} from './labui/LabUIPreview';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -22,6 +23,15 @@ export const RemotionRoot: React.FC = () => {
         width={1920}
         height={1080}
         calculateMetadata={calculateEpisodeMetadata}
+      />
+      {/* 研究所UI（LAB OS）のプレビュー。本編には未適用 */}
+      <Composition
+        id="LabUIPreview"
+        component={LabUIPreview}
+        durationInFrames={LAB_UI_FRAMES}
+        fps={30}
+        width={1920}
+        height={1080}
       />
     </>
   );
