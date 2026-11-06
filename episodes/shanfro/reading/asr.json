@@ -1,0 +1,337 @@
+{
+ "00_op-001": {
+  "sha1": "50b93289c63b1c66ad1fdd56d2d42032e1476dbd",
+  "model": "large-v3-turbo",
+  "text": "なぎ、シャンフロうつで?超神ゲーブースト入ったら終わらんらしいやん!"
+ },
+ "00_op-002": {
+  "sha1": "62ec31fca9bbdedc7cf65d5ba48d9e6f85741b94",
+  "model": "large-v3-turbo",
+  "text": "誰が言ってたの?それ"
+ },
+ "00_op-003": {
+  "sha1": "507fc8a11d86d1c6ec6b9eaad306f7d9a2cc62bb",
+  "model": "large-v3-turbo",
+  "text": "うちが言うてる名前に蝶とカミが両方入ってる台はだいたいやばいねん"
+ },
+ "00_op-004": {
+  "sha1": "3002bd02783abf7678d8370b4bc5369560f9dae9",
+  "model": "large-v3-turbo",
+  "text": "名前で決めないで。何回続くか、数字で見よう。"
+ },
+ "01_kihon-001": {
+  "sha1": "7b54816c42c6e6a6975ddafcaa4469e27580093a",
+  "model": "large-v3-turbo",
+  "text": "い、シャングリラフロンティア、サミーのスマパチで2026年12月に出る"
+ },
+ "01_kihon-002": {
+  "sha1": "9f315f90ea5a52112341438556e4b2544406a9b7",
+  "model": "large-v3-turbo",
+  "text": "クソゲー好きの主人公が神ゲーに挑む話元はネット小説でマガジンで漫画になって谷目にもなってる"
+ },
+ "01_kihon-003": {
+  "sha1": "fc71aae9f735c7ffa00299cb97e37e14d8923d22",
+  "model": "large-v3-turbo",
+  "text": "神ゲーに挑むんか!うちらも毎日神台探してホール回っとるからな一緒や!"
+ },
+ "01_kihon-004": {
+  "sha1": "eb432f5baab3c9f9f98ac54846a4230eb33873ed",
+  "model": "large-v3-turbo",
+  "text": "ダイはサミーの新しいアクセル枠で最初に出る機種。"
+ },
+ "01_kihon-005": {
+  "sha1": "186cc27ac2630bb935df71a522ce63bcc6f9a51c",
+  "model": "large-v3-turbo",
+  "text": "ハンドルが真ん中で押したり引いたりできるアクセルギアがついてるイヤホンジャックもある"
+ },
+ "01_kihon-006": {
+  "sha1": "ae7cc3551cd40ea41945e7cd5b07da5afd343ccf",
+  "model": "large-v3-turbo",
+  "text": "新しい枠の1代目はなメーカーが一番気合い入れてくる演出は期待してええで"
+ },
+ "01_kihon-007": {
+  "sha1": "60215029f469b51b267aaa862124a88ae8477148",
+  "model": "large-v3-turbo",
+  "text": "ステックは大当たり確率約399.9分の位置、ナッシュ突入約54%、ナッシュ継続約75%。"
+ },
+ "01_kihon-008": {
+  "sha1": "bfbaea9f115ad8e4072034927530cdec889be21d",
+  "model": "large-v3-turbo",
+  "text": "399か今時普通やけど軽くはないで"
+ },
+ "01_kihon-009": {
+  "sha1": "b6f5dbb818fdee8a9e097d0cac78b97eecb42ade",
+  "model": "large-v3-turbo",
+  "text": "その代わり、当たればほぼ1500"
+ },
+ "02_hatsuatari-001": {
+  "sha1": "3b28522ec8e47c11a0c2f83cef131b3c5fcc615c",
+  "model": "large-v3-turbo",
+  "text": "通常時の当たりは1500個でラッシュに入るのが約53%"
+ },
+ "02_hatsuatari-002": {
+  "sha1": "53534303e1811fd8d4ae663abae84eb2cae2422c",
+  "model": "large-v3-turbo",
+  "text": "1500個だけで終わるのは約46%残りの約1%は300個でラッシュ"
+ },
+ "02_hatsuatari-003": {
+  "sha1": "05c95eed6a37f51dc002ca3b8062c05f7dc57ed4",
+  "model": "large-v3-turbo",
+  "text": "入らんでも1500個は持って帰れるんやろこれはでかいで"
+ },
+ "02_hatsuatari-004": {
+  "sha1": "f58cbecf41a61132213a3d22542b4a871465e011",
+  "model": "large-v3-turbo",
+  "text": "最近の代はラッシュ入らんかったら300個とかザラやからな1500はありがたいで"
+ },
+ "02_hatsuatari-005": {
+  "sha1": "df9678b1660a3947aec7e4f18d666185a7067a13",
+  "model": "large-v3-turbo",
+  "text": "何年で揃えばその場でラッシュ 基地以外で揃ったら木琳チャレンジ"
+ },
+ "02_hatsuatari-006": {
+  "sha1": "1669eec88a0dc8c56c134f40721c0d89596478b9",
+  "model": "large-v3-turbo",
+  "text": "成功すればらしい。失敗したら1500個で通常に戻る。"
+ },
+ "02_hatsuatari-007": {
+  "sha1": "f32627cd95df8241df1b6af17d6a102765952281",
+  "model": "large-v3-turbo",
+  "text": "チャレンジ系はな熱い演出が出えへんかったらまず負けや"
+ },
+ "03_rush-001": {
+  "sha1": "5696b406555eb62ed66b83ede285de9487b052da",
+  "model": "large-v3-turbo",
+  "text": "ダッシュは98.5分の1を134回転のSTで抽選。"
+ },
+ "03_rush-002": {
+  "sha1": "e05d2923d8757c0c7e3fe6d1bfe67857a93f7f1a",
+  "model": "large-v3-turbo",
+  "text": "エスティで75%なほんまかいなよっしゃRNC01起動"
+ },
+ "03_rush-003": {
+  "sha1": "fa11e29e056aa7c3523be3cec436a8d0f58733f8",
+  "model": "large-v3-turbo",
+  "text": "134回のうちに当たる確率は約75%ステック賞通りだね"
+ },
+ "03_rush-004": {
+  "sha1": "73babe73219c08f4b27150325fc26abdd0deb63e",
+  "model": "large-v3-turbo",
+  "text": "ダッシュに入ってからの当たりは平均で3回くらい。"
+ },
+ "03_rush-005": {
+  "sha1": "fa1b58d3986c7536f3b0fd9a811d9de59f51262d",
+  "model": "large-v3-turbo",
+  "text": "ただ1回も当たらずに終わるのも4回に1回ある"
+ },
+ "03_rush-006": {
+  "sha1": "411269262dbe394bcd155e238b8a1c060942e809",
+  "model": "large-v3-turbo",
+  "text": "4回に1回はスルーか!"
+ },
+ "03_rush-007": {
+  "sha1": "dac7a732156937600455b60027808b3fc2e30e7b",
+  "model": "large-v3-turbo",
+  "text": "いや、体感はもっと多いでスルーはな、来る日は3回続けてこんねん"
+ },
+ "03_rush-008": {
+  "sha1": "5a1550ce5050a6fa38a4098a87cc18a5ed11a321",
+  "model": "large-v3-turbo",
+  "text": "体幹はデータに入れられないから"
+ },
+ "04_dedama-001": {
+  "sha1": "962bfbe93dd860e6603d6d7813eb1fa17e39c5e9",
+  "model": "large-v3-turbo",
+  "text": "ダッシュ中のあたりは1500個か4500個、ほぼ半々。"
+ },
+ "04_dedama-002": {
+  "sha1": "5713c1ee8d81504d49e597369a762f41e26f7da9",
+  "model": "large-v3-turbo",
+  "text": "4500個は1500個の当たりが3回続く形"
+ },
+ "04_dedama-003": {
+  "sha1": "83ebf88d5ca075f77ee4728bed1a8e0bd504ee6b",
+  "model": "large-v3-turbo",
+  "text": "真ん中ないんやな4500引いたらなその日はもう勝ったようなもんや"
+ },
+ "04_dedama-004": {
+  "sha1": "e4212e536c7700510e4959d570509d405870e150",
+  "model": "large-v3-turbo",
+  "text": "あたり1回の平均は約3000個"
+ },
+ "04_dedama-005": {
+  "sha1": "028933d515a850a5018dff8639c66f1f5e62087f",
+  "model": "large-v3-turbo",
+  "text": "ダッシュに入ってから出る量は平均すると約8900個"
+ },
+ "04_dedama-006": {
+  "sha1": "85ee6d52c473874a450f03cf73412e4d252d2f29",
+  "model": "large-v3-turbo",
+  "text": "急戦近いんか"
+ },
+ "04_dedama-007": {
+  "sha1": "8cc8b4778b9cfa6df79b0b7e2ba48c67760d72de",
+  "model": "large-v3-turbo",
+  "text": "でも真ん中くらいの人は6000個平均は大きく出た人に引っ張られてる"
+ },
+ "04_dedama-008": {
+  "sha1": "e22da443accd0ae7ee81f7df8fe85f587d614278",
+  "model": "large-v3-turbo",
+  "text": "平均見て座ったらあかんでうちそれで何回も痛い目見てきた"
+ },
+ "05_boost-001": {
+  "sha1": "0c3d6f09ece917bb517864320d3cf367201d6d7f",
+  "model": "large-v3-turbo",
+  "text": "で超神ゲーブーストラッシュ中の当たりの約2%でつく"
+ },
+ "05_boost-002": {
+  "sha1": "857930d06945bdde1a2a0115cddfa0afddb697cb",
+  "model": "large-v3-turbo",
+  "text": "2パーセント"
+ },
+ "05_boost-003": {
+  "sha1": "82d05c22d4947b0c5034d1bb830af3637976a963",
+  "model": "large-v3-turbo",
+  "text": "4500個のあたりにさらに上乗せがつく仕組み"
+ },
+ "05_boost-004": {
+  "sha1": "346a5330565b90e73ff04c498b46a716ca7947e4",
+  "model": "large-v3-turbo",
+  "text": "上乗せは1500個が半分、3000個が約34%"
+ },
+ "05_boost-005": {
+  "sha1": "b411dd6d9422633f783ef14aaebbe84d197e88b8",
+  "model": "large-v3-turbo",
+  "text": "残りの約16%は上乗せの後にもう一回上乗せ"
+ },
+ "05_boost-006": {
+  "sha1": "3db5f40cf2f092c39db38951a5c243ef2f882da0",
+  "model": "large-v3-turbo",
+  "text": "そこや!それが何回も続くんやろ?"
+ },
+ "05_boost-007": {
+  "sha1": "9e0e547895857d4e2b33a0c368b677a9f9ae43b0",
+  "model": "large-v3-turbo",
+  "text": "じゃあ年に100回回してもらおう"
+ },
+ "05_boost-008": {
+  "sha1": "4630dca986ec24b5562d405fb1d402277c292f31",
+  "model": "large-v3-turbo",
+  "text": "100回ブーストに入って、2回目のお話まで行ったのは16回。"
+ },
+ "05_boost-009": {
+  "sha1": "2ea3673f63be9593bfee9e6cfae236a3b683710f",
+  "model": "large-v3-turbo",
+  "text": "3回目まで行ったのは2回だけ"
+ },
+ "05_boost-010": {
+  "sha1": "4e34914feba9da6b33b9dde386764435f20b5153",
+  "model": "large-v3-turbo",
+  "text": "ほぼ一回で終わりやん!"
+ },
+ "05_boost-011": {
+  "sha1": "05e2bd5a9ccb32676463b1fc58e68516c37adfdd",
+  "model": "large-v3-turbo",
+  "text": "何回続くかで言うとほぼ一回"
+ },
+ "05_boost-012": {
+  "sha1": "d0eef995b49e2cb492562f1f318b867136cefcdd",
+  "model": "large-v3-turbo",
+  "text": "でもその1回で平均約7300個"
+ },
+ "05_boost-013": {
+  "sha1": "80778effa0c8f777f1e59b1c1309e4de2ba8935c",
+  "model": "large-v3-turbo",
+  "text": "続かんでも1回で7000超えるんかそれはそれでええな"
+ },
+ "05_boost-014": {
+  "sha1": "82701a5408ea1bc1fe6638e39c768e5e0e3e8352",
+  "model": "large-v3-turbo",
+  "text": "そもそもグーストに入るのはナッシュジュを破壊に1回くらい"
+ },
+ "05_boost-015": {
+  "sha1": "0335ca77243f3c6b5fab304e9507feb821b08e53",
+  "model": "large-v3-turbo",
+  "text": "初当たりで言うと33回に1回くらい"
+ },
+ "05_boost-016": {
+  "sha1": "b87f6743ae323517a449ac9fb3189bbc2af6ef61",
+  "model": "large-v3-turbo",
+  "text": "宝くじ枠やな本命は4500の半々の方や"
+ },
+ "06_uchite-001": {
+  "sha1": "b590f3114480775ca2ed9e7474a2950ec8826acf",
+  "model": "large-v3-turbo",
+  "text": "うちの結論言うでこの台は1500個の安心感で打つ台や"
+ },
+ "06_uchite-002": {
+  "sha1": "634ff8055069dfb53223448b34b72f392cf5d035",
+  "model": "large-v3-turbo",
+  "text": "根拠は?"
+ },
+ "06_uchite-003": {
+  "sha1": "31411f29d5bb253750a580a2ef197a51034d5750",
+  "model": "large-v3-turbo",
+  "text": "当たったらほぼ1500個ラッシュも半々で4500ハマっても取り返す絵が見えるねん"
+ },
+ "06_uchite-004": {
+  "sha1": "54e9871ded7e8c8fefda4f99a0452a3d290c1cef",
+  "model": "large-v3-turbo",
+  "text": "数字で言うとラッシュ1回で1万個を超えるのは3回に1回くらい"
+ },
+ "06_uchite-005": {
+  "sha1": "09ed6796479be243a2fd732ed1f6ebaccf2f8096",
+  "model": "large-v3-turbo",
+  "text": "3回に1回、1万発、それ聞いたら座るやろ!"
+ },
+ "06_uchite-006": {
+  "sha1": "e5866c020f31d6fed519d35926d940c37e7a0f78",
+  "model": "large-v3-turbo",
+  "text": "その代わり、399.9分の1は軽くない。当たるまでの投資は覚悟しといた方がいい。"
+ },
+ "06_uchite-007": {
+  "sha1": "fcab2ab766571f7144edef8af3c1b6f48c0a9ea3",
+  "model": "large-v3-turbo",
+  "text": "そこは予算決めて打つしかない熱くなって追うのが一番負けるねん"
+ },
+ "07_matome-001": {
+  "sha1": "9f68a214c83bc4ec9c04b9c7e5f58f3d38314bf8",
+  "model": "large-v3-turbo",
+  "text": "まとめ。大当たりは約399.9分の1で、当たればほぼ1500個。"
+ },
+ "07_matome-002": {
+  "sha1": "9abe58a13d36fe73b3ab2b892abebad30a1e3281",
+  "model": "large-v3-turbo",
+  "text": "ダッシュは約75%継続で、当たりは1500個か4500個の半々。"
+ },
+ "07_matome-003": {
+  "sha1": "65731647a7d7ddbf56e400f68754d947287bb39f",
+  "model": "large-v3-turbo",
+  "text": "超神ゲーブーストはほぼ1回で終わるでもその1回で平均約7300個"
+ },
+ "07_matome-004": {
+  "sha1": "256ecc9f4e3df0781b1f316e8d0854a2c4ddf04c",
+  "model": "large-v3-turbo",
+  "text": "何回続くかやなくて1回でどんだけ乗るかの台やな"
+ },
+ "07_matome-005": {
+  "sha1": "1d5db07eaf686d26c6cfa3bf7c37737247281194",
+  "model": "large-v3-turbo",
+  "text": "名前にチョウとクミが入ってても続くとは限らないね"
+ },
+ "07_matome-006": {
+  "sha1": "c560e3374164bc9183c4bdab07c42c0f1aca6dc0",
+  "model": "large-v3-turbo",
+  "text": "せやけど一回がでかいんや名前負けはしてへん"
+ },
+ "07_matome-007": {
+  "sha1": "b8034435b97070607c90ee52376602d15e9e59bf",
+  "model": "large-v3-turbo",
+  "text": "打ったらブーストで何個乗ったかコメントで教えてや"
+ },
+ "07_matome-008": {
+  "sha1": "5ed1d98463ca537a487ed4da4a7f8148331391c0",
+  "model": "large-v3-turbo",
+  "text": "2回目の大乗せを見た人も待ってるね"
+ }
+}
