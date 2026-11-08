@@ -312,6 +312,62 @@
  ],
  "rules": [
   {
+   "re": "損害",
+   "to": "そんがい",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "数え方",
+   "to": "かぞえかた",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "打つ側",
+   "to": "うつがわ",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "7100円",
+   "to": "ななせんひゃくえん",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "1億7500万",
+   "to": "いちおくななせんごひゃくまん",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "部品代",
+   "to": "ぶひんだい",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "水増し",
+   "to": "みずまし",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "特別背任",
+   "to": "とくべつはいにん",
+   "why": "ニュース第4回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
    "re": "Lv\\.1",
    "to": "レベルいち",
    "why": "ニュース第2回（2026-10-25）：Lv.1〜Lv.4はレベルいち〜よん",
@@ -2005,6 +2061,72 @@
    "yomi": "トウベンショ",
    "cat": "用語",
    "status": "ok"
+  },
+  {
+   "surface": "元代表理事",
+   "yomi": "モトダイヒョウリジ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "貸玉",
+   "yomi": "カシダマ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "名目",
+   "yomi": "メイモク",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "特別背任",
+   "yomi": "とくべつはいにん",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "水増し",
+   "yomi": "みずまし",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "部品代",
+   "yomi": "ぶひんだい",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "1億7500万",
+   "yomi": "いちおくななせんごひゃくまん",
+   "cat": "数字",
+   "status": "ok"
+  },
+  {
+   "surface": "7100円",
+   "yomi": "ななせんひゃくえん",
+   "cat": "数字",
+   "status": "ok"
+  },
+  {
+   "surface": "打つ側",
+   "yomi": "うつがわ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "数え方",
+   "yomi": "かぞえかた",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "損害",
+   "yomi": "そんがい",
+   "cat": "用語",
+   "status": "ok"
   }
  ],
  "history": [
@@ -2153,6 +2275,116 @@
    "for": "baku",
    "action": "バク：送る前に 軽な → かるな",
    "note": ""
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "元代表理事",
+   "yomi": "モトダイヒョウリジ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 元代表理事 → モトダイヒョウリジ（アクセント 5）",
+   "note": "ニュース第4回（2026-11-08）"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "貸玉",
+   "yomi": "カシダマ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 貸玉 → カシダマ（アクセント 0）",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "名目",
+   "yomi": "メイモク",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 名目 → メイモク（アクセント 0）",
+   "note": "ニュース第4回：ミョウモクと読まれないように"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "特別背任",
+   "yomi": "とくべつはいにん",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 特別背任 → とくべつはいにん",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "水増し",
+   "yomi": "みずまし",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 水増し → みずまし",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "部品代",
+   "yomi": "ぶひんだい",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 部品代 → ぶひんだい",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "1億7500万",
+   "yomi": "いちおくななせんごひゃくまん",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 1億7500万 → いちおくななせんごひゃくまん",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "7100円",
+   "yomi": "ななせんひゃくえん",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 7100円 → ななせんひゃくえん",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "打つ側",
+   "yomi": "うつがわ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 打つ側 → うつがわ",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "数え方",
+   "yomi": "かぞえかた",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 数え方 → かぞえかた",
+   "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "surface": "損害",
+   "yomi": "そんがい",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 損害 → そんがい",
+   "note": "ニュース第4回"
   }
  ],
  "aivis_words": [
@@ -2263,6 +2495,33 @@
    "priority": 8,
    "status": "ok",
    "accent_status": "推定"
+  },
+  {
+   "surface": "元代表理事",
+   "pronunciation": "モトダイヒョウリジ",
+   "accent_type": 5,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "貸玉",
+   "pronunciation": "カシダマ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "名目",
+   "pronunciation": "メイモク",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
   }
  ]
 }

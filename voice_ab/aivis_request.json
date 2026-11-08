@@ -1,6 +1,6 @@
 {
  "action": "lines",
- "episode": "episodes/news03",
+ "episode": "episodes/news04",
  "who": "nagi",
  "model": {
   "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
@@ -9,9 +9,6 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 2,
- "kana_only": false,
- "only": [
-  "04_kawaru-009"
- ]
+ "_try": 1,
+ "kana_only": false
 }

@@ -1,0 +1,5 @@
+# OP：キャラ紹介 → 番組ロゴ → タイトル（docs/NAGIBAKU_FORMAT_TEMPLATES.md の A 型）
+@intro nagi
+@intro baku
+@logo news.png 3.6
+@title 4.0

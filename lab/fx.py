@@ -80,8 +80,14 @@ FX = {
     "santen": {"span": 3, "marks": {"hall": ["店は"], "kyaku": ["客は"], "kokan": ["交換所に"], "tonya": ["問屋に"], "back": ["店に卸す"], "loop": ["一周"]}},
     "jikagai": {"span": 2, "marks": {"name": ["別の会社"], "naka": ["中身"], "kanban": ["看板"], "okane": ["お金"]}},
     "count19": {"span": 2, "marks": {"y": ["2007年"], "go": ["19年ぶり"], "dai": ["何周"]}},
+    # ニュース第4回：認証協の元代表理事の逮捕（お金の流れの図解。実機の再現ではないので注釈は出さない）
+    "okane": {"span": 7, "marks": {"shop": ["店が払う"], "kyo": ["認証協を通って"], "maker": ["製造会社に"], "ikkai": ["一回通る"],
+                                   "buhin": ["部品の業者から"], "takai": ["高い部品代"], "noru": ["上に乗っかって"], "harau": ["認証協が払う"],
+                                   "sagaku": ["差額"], "consul": ["コンサル料"], "modoru": ["本人の側"], "loop": ["ぐるっと"]}},
+    "wari": {"span": 3, "marks": {"total": ["1億7500万円"], "div": ["割ると"], "per": ["7100円"], "toke": ["溶かす"], "oku": ["億になる"]}},
+    "busoku": {"span": 3, "marks": {"dai": ["96万台"], "unit": ["45万台"], "han": ["半分もなかった"], "shima": ["島に並べられへん"]}},
 }
-NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19"}
+NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19", "okane", "wari", "busoku"}
 
 
 # ---------------------------------------------------------------- 台本 → 時刻
@@ -245,6 +251,29 @@ def finish(fx, end, scene):
         for i in range(n):
             add(y + 0.3 + (g - y - 0.3) * i / n, "tick", 0.14)
         add(g, "impact", 0.26); add(_m(fx, "dai"), "pon", 0.16)
+    elif k == "okane":
+        for nm in ("shop", "kyo", "maker", "buhin"):
+            add(_m(fx, nm), "pon", 0.14)
+        tk = _m(fx, "takai")
+        for i in range(4):
+            add(tk + 0.25 + 0.12 * i if tk is not None else None, "tick", 0.15)
+        add(_m(fx, "noru"), "shu", 0.16); add(_m(fx, "harau"), "piko", 0.16)
+        add(_m(fx, "sagaku"), "shu", 0.18); add(_m(fx, "consul"), "pon", 0.18); add(_m(fx, "modoru"), "don", 0.24)
+        lp = _m(fx, "loop"); add(lp, "shu", 0.2); add(lp + 0.6 if lp is not None else None, "impact", 0.24)
+    elif k == "wari":
+        tt = _m(fx, "total", default=s0 + 0.3); add(tt, "don", 0.22)
+        dv = _m(fx, "div", default=tt + 1.2); add(dv, "shu", 0.2)
+        for i in range(12):
+            add(dv + 0.25 + 0.06 * i, "tick", 0.12)
+        add(_m(fx, "per"), "impact", 0.24); add(_m(fx, "oku"), "don", 0.24)
+    elif k == "busoku":
+        d0 = _m(fx, "dai", default=s0 + 1)
+        for i in range(6):
+            add(d0 + 0.1 * i, "tick", 0.13)
+        u0 = _m(fx, "unit")
+        for i in range(3):
+            add(u0 + 0.1 * i if u0 is not None else None, "tick", 0.13)
+        add(_m(fx, "han"), "impact", 0.22); add(_m(fx, "shima"), "pon", 0.16)
 
     bgm = FX[k].get("bgm")
     if bgm:
@@ -3030,6 +3059,267 @@ def _count19(cv, t, fx):
         cv.alpha_composite(fade(lay, a))
 
 
+# ---------------------------------------------------------------- ニュース第4回：認証協・スマートユニットの代金（図解のアニメ）
+KYO_C = (255, 190, 70)       # 認証協
+MAKER_C = (120, 220, 160)    # 製造会社
+BUHIN_C = (200, 160, 255)    # 部品の業者
+RED_C = (240, 80, 70)
+
+
+def _bill(w, frac, extra, col, a):
+    """請求書（白い紙に金額の棒）。extra は赤い上乗せ分（棒の長さの割合）"""
+    h = 92
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.rounded_rectangle((2, 2, w - 3, h - 3), 12, fill=(246, 244, 238, 250), outline=(150, 150, 160, 255), width=3)
+    d.text((16, 22), "請求", font=ui.font("bold", 24), fill=(80, 80, 90, 255), anchor="lm")
+    bx0, bx1, by = 16, w - 16, 60
+    full = bx1 - bx0
+    base = full * 0.62 * frac
+    d.rounded_rectangle((bx0, by - 12, bx0 + base, by + 12), 6, fill=col + (255,))
+    if extra > 0:
+        d.rounded_rectangle((bx0 + base - 6, by - 12, bx0 + base + full * 0.34 * extra, by + 12), 6, fill=RED_C + (255,))
+    return im
+
+
+def _okane(cv, t, fx):
+    """スマートユニットの代金の流れ：店→認証協→製造会社→部品の業者。部品代の上乗せ（赤）が上へ伝わり、認証協が払う。
+    差額は「コンサル料（名目）」の箱を通って「元代表理事の側」へ。最後は認証協から出たお金がぐるっと戻る線が光る"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.62 * a)
+    s0 = fx["start"]
+    m_shop = _m(fx, "shop", default=s0 + 0.2)
+    m_kyo = _m(fx, "kyo", default=m_shop + 1.0)
+    m_maker = _m(fx, "maker", default=m_kyo + 1.0)
+    m_buhin = _m(fx, "buhin", default=m_maker + 3.0)
+    m_takai = _m(fx, "takai", default=m_buhin + 2.0)
+    m_noru = _m(fx, "noru", default=m_takai + 2.0)
+    m_harau = _m(fx, "harau", default=m_noru + 1.0)
+    m_sagaku = _m(fx, "sagaku", default=m_harau + 2.0)
+    m_consul = _m(fx, "consul", default=m_sagaku + 0.8)
+    m_modoru = _m(fx, "modoru", default=m_consul + 0.8)
+    m_loop = _m(fx, "loop")
+    cy = 330
+    xs = [W / 2 - 660, W / 2 - 220, W / 2 + 220, W / 2 + 660]
+    nodes = [("店", "代金を払う", HALL_C, m_shop - 0.1), ("認証協", "団体", KYO_C, m_kyo - 0.1),
+             ("製造会社", "ユニットを作る", MAKER_C, m_maker - 0.1), ("部品の業者", "部品を納める", BUHIN_C, m_buhin - 0.1)]
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    # 代金の矢印（左→右）
+    for i, mt in enumerate((m_kyo, m_maker, m_buhin)):
+        k = ease_out(prog(t, mt, 0.45))
+        if k > 0:
+            hot = ease_out(prog(t, m_noru + 0.35 * (2 - i), 0.4)) if i >= 1 else 0
+            col = tuple(int(c * (1 - hot) + RED_C[j] * hot) for j, c in enumerate((210, 215, 230)))
+            _arrow(d, (xs[i] + 160, cy), (xs[i + 1] - 160, cy), col, 0.9, 6 + int(4 * hot), k)
+    # ぐるっと：元代表理事の側 → 認証協へ戻る線
+    pcx, pcy = W / 2 + 220, cy + 330          # 元代表理事の側の箱
+    ccx, ccy = W / 2 + 660, cy + 330          # コンサル料（名目）の箱
+    if t >= m_consul:
+        k = ease_out(prog(t, m_consul, 0.45))
+        _arrow(d, (xs[3], cy + 85), (ccx, ccy - 70), RED_C, 0.9, 6, k, dash=True)
+    if t >= m_modoru:
+        k = ease_out(prog(t, m_modoru, 0.45))
+        _arrow(d, (ccx - 165, ccy), (pcx + 175, pcy), RED_C, 0.9, 6, k, dash=True)
+    if m_loop is not None and t >= m_loop:
+        k = ease_in_out(prog(t, m_loop, 0.6))
+        _arrow(d, (pcx - 175, pcy), (xs[1] + 40, cy + 95), RED_C, 1.0, 9, k)
+    cv.alpha_composite(fade(lay, a))
+    for i, (lab, sub, col, mt) in enumerate(nodes):
+        if t < mt:
+            continue
+        k = ease_out_back(min(1, max(0, (t - mt) / 0.4)))
+        _pput(cv, _node(lab, sub, col, 320 if i == 3 else 290, 150), xs[i], cy + 20 * (1 - k), a * min(1, (t - mt) / 0.25), 0.85 + 0.15 * k)
+    # 「一回通る」：認証協の箱に輪
+    m_ik = _m(fx, "ikkai")
+    if m_ik is not None and t >= m_ik:
+        tl = t - m_ik
+        _ring(cv, xs[1], cy, 150 + 120 * ease_out(prog(tl, 0, 0.6)), 5, KYO_C, a * (1 - prog(tl, 0, 0.7)), 0.62)
+    # お金が流れる（店→認証協→製造会社）
+    for i, mt in enumerate((m_kyo, m_maker)):
+        if mt <= t < mt + 1.2:
+            kk = ease_in_out(prog(t, mt, 0.8))
+            bx = xs[i] + 150 + (xs[i + 1] - xs[i] - 300) * kk
+            _pput(cv, _coin(54), bx, cy - 50 * math.sin(math.pi * kk) - 20, a)
+    # 請求書：部品の業者 → 製造会社 → 認証協（上乗せの赤が左へ伝わる）
+    if t >= m_buhin + 0.3:
+        bw = 250
+        for i, (x, col, mt) in enumerate(((xs[3], BUHIN_C, m_buhin + 0.3), (xs[2], MAKER_C, m_buhin + 0.6), (xs[1], KYO_C, m_buhin + 0.9))):
+            k = ease_out(prog(t, mt, 0.35))
+            if k <= 0:
+                continue
+            ex = ease_out(prog(t, m_takai + 0.2, 0.6)) if i == 0 else ease_out(prog(t, m_noru + 0.35 * i, 0.5))
+            if i == 2:
+                ex = max(ex, ease_out(prog(t, m_harau, 0.4)))
+            _pput(cv, _bill(bw, 1.0, ex, col, a), x, cy - 165 - 12 * (1 - k), a * k)
+        if t >= m_takai + 0.2:
+            tl = t - m_takai - 0.2
+            _mput(cv, "上乗せ", 46, xs[3] + 60, cy - 245, a * ease_out(prog(tl, 0, 0.3)) * (1 - prog(t, m_sagaku, 0.4)), base=RED_C, glow_a=0.5)
+        if t >= m_harau:
+            tl = t - m_harau
+            _mput(cv, "多めに払う", 46, xs[1], cy - 245, a * ease_out(prog(tl, 0, 0.3)), base=RED_C, glow_a=0.5)
+    # 差額：部品の業者から赤い硬貨が下へ。コンサル料（名目）→ 元代表理事の側
+    if t >= m_consul - 0.1:
+        k = ease_out_back(min(1, max(0, (t - m_consul + 0.1) / 0.4)))
+        _pput(cv, _node("コンサル料", "という名目（報道）", RED_C, 330, 140), ccx, ccy, a * min(1, (t - m_consul + 0.1) / 0.25), 0.85 + 0.15 * k)
+    if t >= m_modoru - 0.1:
+        k = ease_out_back(min(1, max(0, (t - m_modoru + 0.1) / 0.4)))
+        _pput(cv, _node("元代表理事の側", "戻ったとみられる", RED_C, 350, 140), pcx, pcy, a * min(1, (t - m_modoru + 0.1) / 0.25), 0.85 + 0.15 * k)
+    if t >= m_sagaku:
+        for j in range(4):
+            st = m_sagaku + 0.2 * j
+            # 区間ごとに：業者→コンサル料→本人の側
+            if t < st:
+                continue
+            tl = t - st
+            if tl < 0.9:
+                kk = ease_in_out(tl / 0.9); x0, y0, x1, y1 = xs[3], cy + 90, ccx, ccy - 40
+            elif tl < 1.9 and t >= m_modoru:
+                kk = ease_in_out((tl - 0.9) / 1.0); x0, y0, x1, y1 = ccx, ccy, pcx, pcy - 30
+            else:
+                continue
+            _pput(cv, _coin(46), x0 + (x1 - x0) * kk, y0 + (y1 - y0) * kk - 40 * math.sin(math.pi * kk), a * 0.95)
+        _mput(cv, "差額", 56, xs[3] + 190, cy + 190, a * ease_out(prog(t, m_sagaku, 0.3)), base=RED_C, glow_a=0.5)
+    if m_loop is not None and t >= m_loop:
+        tl = t - m_loop
+        _ring(cv, xs[1], cy, 150 + 120 * ease_out(prog(tl - 0.6, 0, 0.6)), 6, RED_C, a * (1 - prog(tl - 0.6, 0, 0.8)) * (tl > 0.6), 0.62)
+        _mput(cv, "ぐるっと戻る", 72, W / 2 - 330, cy + 300, a * ease_out(prog(tl, 0.3, 0.3)), 1.15 - 0.15 * ease_out(prog(tl, 0.3, 0.3)), base=RED_C, glow_a=0.6)
+        cv.alpha_composite(fade(_edge(RED_C), 0.25 * a * math.exp(-max(0, tl - 0.6) / 0.6) * (tl > 0.6)))
+
+
+def _money_s(v):
+    """円の額を「1億7500万」のように"""
+    oku, man = int(v // 100000000), int(round((v % 100000000) / 10000))
+    if man >= 10000:
+        oku += 1; man -= 10000
+    return (f"{oku}億" if oku else "") + (f"{man}万" if man else "")
+
+
+def _wari(cv, t, fx):
+    """1億7500万円 ÷ 2万4500台：大きな札束の塊が、小さな台の格子に割れて、1台あたりの額が数え下がる。「億になる」で逆にまとまる"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.62 * a)
+    s0 = fx["start"]
+    m_tot = _m(fx, "total", default=s0 + 0.2)
+    m_div = _m(fx, "div", default=m_tot + 1.4)
+    m_per = _m(fx, "per", default=m_div + 1.2)
+    m_oku = _m(fx, "oku")
+    split = ease_in_out(prog(t, m_div, 0.9))
+    merge = ease_in_out(prog(t, m_oku, 0.8)) if m_oku is not None else 0
+    sp = split * (1 - merge)
+    # 上：割り算の式
+    ap = ease_out(prog(t, m_tot - 0.1, 0.35))
+    _mput(cv, "1億7500万円", 96, W / 2 - 330, 220, a * ap, 1.0 + 0.08 * (1 - ap))
+    if t >= m_div - 0.1:
+        k = ease_out(prog(t, m_div - 0.1, 0.3))
+        _mput(cv, "÷", 90, W / 2 + 40, 220, a * k, base=(235, 240, 255), glow_a=0.3)
+        _mput(cv, "2万4500台", 80, W / 2 + 330, 220, a * k, base=(235, 240, 255), glow_a=0.3)
+    # 真ん中：台の格子（14×5=70個で2万4500台を表す絵）
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    cols, rows = 14, 5
+    gw, gh = 74, 62
+    gx0 = W / 2 - cols * gw / 2 + gw / 2
+    gy0 = 330
+    for r in range(rows):
+        for c in range(cols):
+            tx, ty = gx0 + c * gw, gy0 + r * gh
+            cx0, cy0 = W / 2, gy0 + rows * gh / 2 - gh / 2
+            x = cx0 + (tx - cx0) * sp; y = cy0 + (ty - cy0) * sp
+            delay = ((c * 7 + r * 3) % 10) / 10
+            kk = min(1, max(0, (sp - 0.4 * delay) / 0.6)) if sp > 0 else 0
+            if t < m_tot:
+                continue
+            col = LV_COL[(c + r) % 4]
+            sz = 22 + 6 * kk
+            d.rounded_rectangle((x - sz, y - sz * 0.8, x + sz, y + sz * 0.8), 8, fill=(24, 28, 40, 230), outline=col + (int(120 + 135 * kk),), width=3)
+            d.ellipse((x - sz * 0.45, y - sz * 0.45, x + sz * 0.45, y + sz * 0.45), outline=col + (int(100 + 120 * kk),), width=3)
+    cv.alpha_composite(fade(lay, a * ease_out(prog(t, m_tot, 0.4))))
+    # 束（割る前の大きな塊）
+    if sp < 0.6 and t >= m_tot:
+        k = 1 - sp / 0.6
+        _pput(cv, _coin(150), W / 2, gy0 + rows * gh / 2 - gh / 2, a * k * ease_out(prog(t, m_tot, 0.3)), 1.0 + 0.1 * math.sin(6 * (t - m_tot)) * (t < m_div))
+    # 下：1台あたりの額（数え下がって 7143 → 約7100）
+    if t >= m_div + 0.2:
+        k = ease_in_out(prog(t, m_div + 0.2, max(0.4, m_per - m_div - 0.2)))
+        v = 175000000 * (1 - k) + 7143 * k
+        if t < m_per:
+            s = f"{int(v):,}円"
+            _mnum(cv, s, 84, W / 2, 720, a * (1 - merge), base=(235, 240, 255))
+        else:
+            tl = t - m_per
+            kk = ease_out_back(min(1, tl / 0.35))
+            _mput(cv, "1台あたり 約7100円", 92, W / 2, 720, a * (1 - merge), 0.8 + 0.2 * kk, base=GOLDC, glow_a=0.7)
+            _ring(cv, W / 2, 720, 260 + 160 * ease_out(prog(tl, 0, 0.6)), 5, GOLDC, a * (1 - prog(tl, 0, 0.7)) * (1 - merge), 0.4)
+    if m_oku is not None and t >= m_oku:
+        tl = t - m_oku
+        kk = ease_out_back(min(1, max(0, (tl - 0.6) / 0.35)))
+        _mput(cv, "2万台を超えると 億", 96, W / 2, 720, a * min(1, max(0, (tl - 0.5) / 0.2)), 0.8 + 0.2 * kk, base=RED_C, glow_a=0.7)
+
+
+def _busoku(cv, t, fx):
+    """2023年3月の業界紙の見込み（2023年9月まで）：スマート遊技機 96万台 と 専用ユニット 45万台 の棒。足りない分が赤く点滅し、
+    「島に並べられへん」でユニットの無い台が暗くなる"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.62 * a)
+    s0 = fx["start"]
+    m_dai = _m(fx, "dai", default=s0 + 2.0)
+    m_unit = _m(fx, "unit", default=m_dai + 2.0)
+    m_han = _m(fx, "han", default=m_unit + 1.0)
+    m_shima = _m(fx, "shima")
+    hd = ease_out(prog(t, s0, 0.4))
+    f = ui.font("bold", 30)
+    d = ImageDraw.Draw(cv)
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.text((W / 2, 170), "2023年9月までの見込み（2023年3月の業界紙）", font=f, fill=(220, 225, 235, int(230 * hd)), anchor="mm")
+    x0, x1 = 520, W - 260
+    full = x1 - x0
+    rows = [("スマート遊技機", 96.1415, HALL_C, m_dai, 290), ("専用ユニット", 45.4609, KYO_C, m_unit, 450)]
+    for lab, v, col, mt, y in rows:
+        k = ease_out(prog(t, mt - 0.1, 0.9))
+        if t < mt - 0.3:
+            continue
+        al = min(1, (t - mt + 0.3) / 0.3)
+        d.text((x0 - 30, y), lab, font=ui.font("black", 48), fill=col + (int(255 * al),), anchor="rm")
+        d.rounded_rectangle((x0, y - 42, x0 + full, y + 42), 16, fill=(255, 255, 255, int(28 * al)))
+        d.rounded_rectangle((x0, y - 42, x0 + full * (v / 100) * k, y + 42), 16, fill=col + (int(240 * al),))
+    # 足りない分（赤い枠が点滅）
+    if t >= m_han - 0.2:
+        tl = t - m_han + 0.2
+        bl = 0.55 + 0.45 * math.cos(tl * 7) if tl < 2.5 else 0.8
+        xa, xb, y = x0 + full * 0.454609, x0 + full * 0.961415, 450
+        d.rounded_rectangle((xa, y - 42, xb, y + 42), 16, outline=RED_C + (int(255 * bl * min(1, tl / 0.2)),), width=6)
+    cv.alpha_composite(fade(lay, a))
+    for lab, v, col, mt, y in rows:
+        if t >= mt + 0.3:
+            k = ease_out(prog(t, mt + 0.3, 0.3))
+            _mput(cv, f"{int(round(v))}万台", 70, x0 + full * (v / 100) - 110, y, a * k, base=(255, 255, 255), glow_a=0.4)
+    if t >= m_han - 0.2:
+        tl = t - m_han + 0.2
+        k = ease_out_back(min(1, tl / 0.35))
+        _mput(cv, "半分もない", 84, x0 + full * 0.71, 560, a * min(1, tl / 0.2), 0.8 + 0.2 * k, base=RED_C, glow_a=0.7)
+    # 島：台の列。ユニットのある台（約半分）だけ明るい
+    if m_shima is not None and t >= m_shima - 0.2:
+        tl = t - m_shima + 0.2
+        fa = ease_out(prog(tl, 0, 0.4))
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        n = 16
+        for i in range(n):
+            x = W / 2 - (n - 1) * 92 / 2 + i * 92
+            on = (i % 2 == 0)
+            dark = ease_out(prog(tl, 0.4 + 0.04 * i, 0.3))
+            col = LV_COL[i % 4] if on else tuple(int(c * (1 - 0.7 * dark)) for c in LV_COL[i % 4])
+            d.rounded_rectangle((x - 34, 640, x + 34, 730), 10, fill=(24, 28, 40, int(235 * fa)), outline=col + (int(255 * fa),), width=4)
+            d.ellipse((x - 18, 660, x + 18, 696), outline=col + (int(220 * fa),), width=3)
+            # ユニット（台の横の小さい箱）
+            if on:
+                d.rounded_rectangle((x + 36, 655, x + 50, 715), 4, fill=KYO_C + (int(230 * fa),))
+        cv.alpha_composite(fade(lay, a))
+
+
 DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _inazuma3, "door": _door3,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
@@ -3037,7 +3327,8 @@ DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _
         "tokei": _tokei3, "byousoku": _byousoku3, "kasane": _kasane3, "vlight": _vlight3, "count3000": _count3000_3,
         "kyokugen": _kyokugen3, "burst": _burst3, "tenraku": _tenraku, "fukkatsu": _fukkatsu,
         "lvmeter": _lvmeter, "flag": _flag, "hold4": _hold4,
-        "santen": _santen, "jikagai": _jikagai, "count19": _count19}
+        "santen": _santen, "jikagai": _jikagai, "count19": _count19,
+        "okane": _okane, "wari": _wari, "busoku": _busoku}
 
 
 NOTE = "※演出はイメージです。実機の演出ではありません"
