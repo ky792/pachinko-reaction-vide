@@ -84,7 +84,7 @@ FX = {
     "okane": {"span": 7, "marks": {"shop": ["店が払う"], "kyo": ["認証協を通って"], "maker": ["製造会社に"], "ikkai": ["一回通る"],
                                    "buhin": ["部品の業者から"], "takai": ["高い部品代"], "noru": ["上に乗っかって"], "harau": ["認証協が払う"],
                                    "sagaku": ["差額"], "consul": ["コンサル料"], "modoru": ["本人の側"], "loop": ["ぐるっと"]}},
-    "wari": {"span": 3, "marks": {"total": ["1億7500万円"], "div": ["割ると"], "per": ["7100円"], "toke": ["溶かす"], "oku": ["億になる"]}},
+    "wari": {"span": 3, "marks": {"total": ["1億7500万円"], "div": ["台数で割る"], "per": ["7100円"], "toke": ["溶かす"], "oku": ["億になる"]}},
     "busoku": {"span": 3, "marks": {"dai": ["96万台"], "unit": ["45万台"], "han": ["半分もなかった"], "shima": ["島に並べられへん"]}},
 }
 NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19", "okane", "wari", "busoku"}
@@ -3100,7 +3100,7 @@ def _okane(cv, t, fx):
     m_consul = _m(fx, "consul", default=m_sagaku + 0.8)
     m_modoru = _m(fx, "modoru", default=m_consul + 0.8)
     m_loop = _m(fx, "loop")
-    cy = 330
+    cy = 400
     xs = [W / 2 - 660, W / 2 - 220, W / 2 + 220, W / 2 + 660]
     nodes = [("店", "代金を払う", HALL_C, m_shop - 0.1), ("認証協", "団体", KYO_C, m_kyo - 0.1),
              ("製造会社", "ユニットを作る", MAKER_C, m_maker - 0.1), ("部品の業者", "部品を納める", BUHIN_C, m_buhin - 0.1)]
@@ -3113,17 +3113,17 @@ def _okane(cv, t, fx):
             col = tuple(int(c * (1 - hot) + RED_C[j] * hot) for j, c in enumerate((210, 215, 230)))
             _arrow(d, (xs[i] + 160, cy), (xs[i + 1] - 160, cy), col, 0.9, 6 + int(4 * hot), k)
     # ぐるっと：元代表理事の側 → 認証協へ戻る線
-    pcx, pcy = W / 2 + 220, cy + 330          # 元代表理事の側の箱
-    ccx, ccy = W / 2 + 660, cy + 330          # コンサル料（名目）の箱
+    pcx, pcy = W / 2 + 160, cy + 290          # 元代表理事の側の箱
+    ccx, ccy = W / 2 + 660, cy + 290          # コンサル料（名目）の箱
     if t >= m_consul:
         k = ease_out(prog(t, m_consul, 0.45))
         _arrow(d, (xs[3], cy + 85), (ccx, ccy - 70), RED_C, 0.9, 6, k, dash=True)
     if t >= m_modoru:
         k = ease_out(prog(t, m_modoru, 0.45))
-        _arrow(d, (ccx - 165, ccy), (pcx + 175, pcy), RED_C, 0.9, 6, k, dash=True)
+        _arrow(d, (ccx - 170, ccy), (pcx + 235, pcy), RED_C, 0.9, 6, k, dash=True)
     if m_loop is not None and t >= m_loop:
         k = ease_in_out(prog(t, m_loop, 0.6))
-        _arrow(d, (pcx - 175, pcy), (xs[1] + 40, cy + 95), RED_C, 1.0, 9, k)
+        _arrow(d, (pcx - 235, pcy - 20), (xs[1] + 40, cy + 95), RED_C, 1.0, 9, k)
     cv.alpha_composite(fade(lay, a))
     for i, (lab, sub, col, mt) in enumerate(nodes):
         if t < mt:
@@ -3164,7 +3164,7 @@ def _okane(cv, t, fx):
         _pput(cv, _node("コンサル料", "という名目（報道）", RED_C, 330, 140), ccx, ccy, a * min(1, (t - m_consul + 0.1) / 0.25), 0.85 + 0.15 * k)
     if t >= m_modoru - 0.1:
         k = ease_out_back(min(1, max(0, (t - m_modoru + 0.1) / 0.4)))
-        _pput(cv, _node("元代表理事の側", "戻ったとみられる", RED_C, 350, 140), pcx, pcy, a * min(1, (t - m_modoru + 0.1) / 0.25), 0.85 + 0.15 * k)
+        _pput(cv, _node("元代表理事の側", "戻ったとみられる", RED_C, 460, 140), pcx, pcy, a * min(1, (t - m_modoru + 0.1) / 0.25), 0.85 + 0.15 * k)
     if t >= m_sagaku:
         for j in range(4):
             st = m_sagaku + 0.2 * j
@@ -3183,7 +3183,7 @@ def _okane(cv, t, fx):
     if m_loop is not None and t >= m_loop:
         tl = t - m_loop
         _ring(cv, xs[1], cy, 150 + 120 * ease_out(prog(tl - 0.6, 0, 0.6)), 6, RED_C, a * (1 - prog(tl - 0.6, 0, 0.8)) * (tl > 0.6), 0.62)
-        _mput(cv, "ぐるっと戻る", 72, W / 2 - 330, cy + 300, a * ease_out(prog(tl, 0.3, 0.3)), 1.15 - 0.15 * ease_out(prog(tl, 0.3, 0.3)), base=RED_C, glow_a=0.6)
+        _mput(cv, "ぐるっと戻る", 72, W / 2 - 420, cy + 250, a * ease_out(prog(tl, 0.3, 0.3)), 1.15 - 0.15 * ease_out(prog(tl, 0.3, 0.3)), base=RED_C, glow_a=0.6)
         cv.alpha_composite(fade(_edge(RED_C), 0.25 * a * math.exp(-max(0, tl - 0.6) / 0.6) * (tl > 0.6)))
 
 
@@ -3245,8 +3245,9 @@ def _wari(cv, t, fx):
         k = ease_in_out(prog(t, m_div + 0.2, max(0.4, m_per - m_div - 0.2)))
         v = 175000000 * (1 - k) + 7143 * k
         if t < m_per:
-            s = f"{int(v):,}円"
-            _mnum(cv, s, 84, W / 2, 720, a * (1 - merge), base=(235, 240, 255))
+            s = f"{int(v):,}"
+            _mnum(cv, s, 84, W / 2 - 40, 720, a * (1 - merge), base=(235, 240, 255))
+            _mput(cv, "円", 70, W / 2 + 20 + len(s) * 84 * 0.27, 724, a * (1 - merge), base=(235, 240, 255), glow_a=0.3)
         else:
             tl = t - m_per
             kk = ease_out_back(min(1, tl / 0.35))
@@ -3255,7 +3256,7 @@ def _wari(cv, t, fx):
     if m_oku is not None and t >= m_oku:
         tl = t - m_oku
         kk = ease_out_back(min(1, max(0, (tl - 0.6) / 0.35)))
-        _mput(cv, "2万台を超えると 億", 96, W / 2, 720, a * min(1, max(0, (tl - 0.5) / 0.2)), 0.8 + 0.2 * kk, base=RED_C, glow_a=0.7)
+        _mput(cv, "2万台を超えると 億単位", 96, W / 2, 720, a * min(1, max(0, (tl - 0.5) / 0.2)), 0.8 + 0.2 * kk, base=RED_C, glow_a=0.7)
 
 
 def _busoku(cv, t, fx):
