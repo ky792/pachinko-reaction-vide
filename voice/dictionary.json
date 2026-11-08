@@ -362,8 +362,8 @@
   },
   {
    "re": "特別背任",
-   "to": "とくべつはいにん",
-   "why": "ニュース第4回",
+   "to": "トクベツハイニン",
+   "why": "ニュース第4回：かなの「はいにん」を渡すと「は」を助詞のワで読んだ（02_keii-012、Whisper で「特別は移任」）→ カタカナで渡す",
    "status": "ok",
    "engine": "irodori"
   },
@@ -2082,49 +2082,49 @@
   },
   {
    "surface": "特別背任",
-   "yomi": "とくべつはいにん",
+   "yomi": "トクベツハイニン",
    "cat": "用語",
    "status": "ok"
   },
   {
    "surface": "水増し",
-   "yomi": "みずまし",
+   "yomi": "ミズマシ",
    "cat": "用語",
    "status": "ok"
   },
   {
    "surface": "部品代",
-   "yomi": "ぶひんだい",
+   "yomi": "ブヒンダイ",
    "cat": "用語",
    "status": "ok"
   },
   {
    "surface": "1億7500万",
-   "yomi": "いちおくななせんごひゃくまん",
+   "yomi": "イチオクナナセンゴヒャクマン",
    "cat": "数字",
    "status": "ok"
   },
   {
    "surface": "7100円",
-   "yomi": "ななせんひゃくえん",
+   "yomi": "ナナセンヒャクエン",
    "cat": "数字",
    "status": "ok"
   },
   {
    "surface": "打つ側",
-   "yomi": "うつがわ",
+   "yomi": "ウツガワ",
    "cat": "用語",
    "status": "ok"
   },
   {
    "surface": "数え方",
-   "yomi": "かぞえかた",
+   "yomi": "カゾエカタ",
    "cat": "用語",
    "status": "ok"
   },
   {
    "surface": "損害",
-   "yomi": "そんがい",
+   "yomi": "ソンガイ",
    "cat": "用語",
    "status": "ok"
   }
@@ -2385,6 +2385,14 @@
    "for": "baku",
    "action": "バク：送る前に 損害 → そんがい",
    "note": "ニュース第4回"
+  },
+  {
+   "date": "2026-11-08",
+   "word": "特別背任",
+   "heard": "トクベツワイニン",
+   "line": "news04:02_keii-012",
+   "engine": "irodori",
+   "fix": "rules をカタカナ トクベツハイニン に"
   }
  ],
  "aivis_words": [
