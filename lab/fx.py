@@ -85,7 +85,7 @@ FX = {
                                    "buhin": ["部品の業者から"], "takai": ["高い部品代"], "noru": ["上に乗っかって"], "harau": ["認証協が払う"],
                                    "sagaku": ["差額"], "consul": ["コンサル料"], "modoru": ["本人の側"], "loop": ["ぐるっと"]}},
     "wari": {"span": 3, "marks": {"total": ["1億7500万円"], "div": ["台数で割る"], "per": ["7100円"], "toke": ["溶かす"], "oku": ["億になる"]}},
-    "busoku": {"span": 3, "marks": {"dai": ["96万台"], "unit": ["45万台"], "han": ["半分もなかった"], "shima": ["島に並べられへん"]}},
+    "busoku": {"span": 3, "marks": {"dai": ["スマート遊技機"], "unit": ["45万台"], "han": ["半分もなかった"], "shima": ["島に並べられへん"]}},
 }
 NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19", "okane", "wari", "busoku"}
 
