@@ -3281,9 +3281,7 @@ def _busoku(cv, t, fx):
     rows = [("スマート遊技機", 96.1415, HALL_C, m_dai, 290), ("専用ユニット", 45.4609, KYO_C, m_unit, 450)]
     for lab, v, col, mt, y in rows:
         k = ease_out(prog(t, mt - 0.1, 0.9))
-        if t < mt - 0.3:
-            continue
-        al = min(1, (t - mt + 0.3) / 0.3)
+        al = hd                                   # 名前と空の棒は最初から出しておき、言葉に合わせて伸ばす
         d.text((x0 - 30, y), lab, font=ui.font("black", 48), fill=col + (int(255 * al),), anchor="rm")
         d.rounded_rectangle((x0, y - 42, x0 + full, y + 42), 16, fill=(255, 255, 255, int(28 * al)))
         d.rounded_rectangle((x0, y - 42, x0 + full * (v / 100) * k, y + 42), 16, fill=col + (int(240 * al),))
