@@ -55,9 +55,9 @@
   "text": "団体の名前は電子認証システム協議会。協会では認証協って呼ばれてる。"
  },
  "02_keii-002": {
-  "sha1": "d40679d3458bc618a0cee75b3fe6f95bc3cc2d4d",
+  "sha1": "771c37a3bd3861cf79a08b628c48aa83bf3edaed",
   "model": "large-v3-turbo",
-  "text": "ぬまいかったいななにしてる団体なん?"
+  "text": "名前かったいな、何してる団体なん?"
  },
  "02_keii-003": {
   "sha1": "d1f9ed3855b64e4ac88324e9ec224ed44651619e",
@@ -105,9 +105,9 @@
   "text": "容疑は特別配任"
  },
  "02_keii-012": {
-  "sha1": "c4b42d9fd8b297fb54df424e857cc4c1c37e2c39",
+  "sha1": "5918d57742089866eacd6cda695b4e4403396a53",
   "model": "large-v3-turbo",
-  "text": "特別は移任って何が当特別なん?"
+  "text": "特別配任って何がどう特別なの?"
  },
  "02_keii-013": {
   "sha1": "af7aa9f96c86fc8dd9f9e5a45edcdba8e5cc6143",
