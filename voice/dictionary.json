@@ -2388,11 +2388,14 @@
   },
   {
    "date": "2026-11-08",
-   "word": "特別背任",
+   "surface": "特別背任",
+   "yomi": "トクベツハイニン",
    "heard": "トクベツワイニン",
    "line": "news04:02_keii-012",
-   "engine": "irodori",
-   "fix": "rules をカタカナ トクベツハイニン に"
+   "for": "baku",
+   "action": "バク：送る前に 特別背任 → トクベツハイニン（かなの「は」を助詞で読んだため）",
+   "note": "ニュース第4回",
+   "engine": "irodori"
   }
  ],
  "aivis_words": [
