@@ -1,0 +1,7 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm_gain": 0.14,
+ "_note": "ニュース解説パイロット第1回（エヴァ -319 RED-）。画面用の data_patch.json は動画を作るときに追加する。声は voice/casting_c.json（ナギ＝AivisSpeech コハク『ねむたい』、バク＝Gemini Zephyr）",
+ "bgm": "bright_pop.wav"
+}

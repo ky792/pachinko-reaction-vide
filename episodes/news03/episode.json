@@ -1,0 +1,8 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.22,
+ "_note": "ニュース解説 第3回：宮城・石巻のパチンコ店の特殊景品『自家買い』で経営会社と元社長を書類送検（2026年10月30日報道）。三店方式と風営法23条。ネタ帳 docs/research/weekly/2026-11-01.md、提案 docs/proposals/news03_script.md。声は garo_history と同じ設定。画像は使わない（図解カードと演出のみ）"
+}

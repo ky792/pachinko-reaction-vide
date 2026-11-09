@@ -47,7 +47,7 @@ jobs:
           [[ "$EP" =~ ^[a-zA-Z0-9_-]+$ ]] || { echo "::error::Unsafe episode name"; exit 1; }
           [[ "$CHAPTER" =~ ^[a-zA-Z0-9_-]+$ ]] || { echo "::error::Unsafe chapter"; exit 1; }
           if [ "$MODE" != "demo" ]; then
-            test -f "episodes/$EP/data.json" || { echo "::error::Missing episode data.json"; exit 1; }
+            test -f "episodes/$EP/data.json" || test -f "episodes/$EP/episode.json" || { echo "::error::Missing episode data.json / episode.json"; exit 1; }
             test -d "episodes/$EP/script" || { echo "::error::Missing episode scripts"; exit 1; }
           fi
       - name: Render selected mode

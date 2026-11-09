@@ -1,0 +1,65 @@
+{
+ "_note": "B2用（聞き比べ）。casting_b.json からの変更：ナギ pitch 0.03→0.05（少し高く）、強調語の上げ幅 emph_rise 0.12→0.2、バクは参考動画2本目の男性（低め・抑揚の幅が狭い・ゆっくり）に寄せて pitch -0.02→-0.05 / speed 1.1→1.05 / intonation 1.2→1.0、聞き返し(ask)の抑揚 1.3→1.15。ナギは約400Hzを超えるとかすれるので pitch_max_hz=390 で高い音を、200Hz未満ではガラガラしやすいので pitch_min_hz=200 で低い音を抑える",
+ "nagi": {
+  "speaker": 14,
+  "name": "冥鳴ひまり",
+  "speed": 1.08,
+  "pitch": 0.05,
+  "intonation": 1.25,
+  "drawl": {
+   "comma": 1.1,
+   "end": 1.25,
+   "fall": 0.0,
+   "pause": 1.0,
+   "punch": 0.08
+  },
+  "moods": {
+   "explain": {
+    "speed": 1.12,
+    "intonation": 1.2,
+    "drawl": {
+     "end": 1.15,
+     "punch": 0.1
+    }
+   },
+   "joke": {
+    "pitch": 0.05,
+    "intonation": 1.4,
+    "drawl": {
+     "end": 1.6,
+     "fall": 0.04
+    }
+   }
+  },
+  "emph_rise": 0.2,
+  "pitch_max_hz": 390,
+  "pitch_min_hz": 200
+ },
+ "baku": {
+  "speaker": 12,
+  "name": "白上虎太郎",
+  "speed": 1.05,
+  "pitch": -0.05,
+  "intonation": 1.0,
+  "exclaim_mood": "excited",
+  "moods": {
+   "excited": {
+    "speaker": 32,
+    "speed": 1.18,
+    "pitch": 0.0,
+    "intonation": 1.35,
+    "volume": 1.1
+   },
+   "ask": {
+    "speed": 1.08,
+    "intonation": 1.15
+   },
+   "serious": {
+    "speed": 1.0,
+    "pitch": -0.04,
+    "intonation": 1.05
+   }
+  },
+  "emph_rise": 0.2
+ }
+}

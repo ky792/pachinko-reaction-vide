@@ -1,0 +1,20 @@
+{
+ "action": "lines",
+ "episode": "episodes/news04",
+ "who": "nagi",
+ "model": {
+  "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
+  "name": "コハク"
+ },
+ "style": "ねむたい",
+ "speed": 0.95,
+ "intonation": 0.65,
+ "_try": 2,
+ "kana_only": false,
+ "only": [
+  "02_keii-004",
+  "03_shikumi-009",
+  "04_kawaru-008",
+  "04_kawaru-011"
+ ]
+}

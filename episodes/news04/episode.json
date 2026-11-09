@@ -1,0 +1,8 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.22,
+ "_note": "ニュース解説 第4回：パチンコ機器の業界団体『電子認証システム協議会（認証協）』の元代表理事を特別背任の疑いで逮捕（2026年11月4日発表）。スマートユニットの代金の流れ。ネタ帳 docs/research/weekly/2026-11-08.md、提案 docs/proposals/news04_script.md。声は garo_history と同じ設定。画像は使わない（図解カードと演出のみ）"
+}
