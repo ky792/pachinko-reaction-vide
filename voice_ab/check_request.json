@@ -1,12 +1,6 @@
 {
- "episode": "episodes/news04",
+ "episode": "episodes/news05",
  "model": "large-v3-turbo",
- "only": [
-  "02_keii-012",
-  "02_keii-002",
-  "02_keii-011",
-  "05_matome-001"
- ],
- "_run": "news04-fix-1",
- "_try": 3
+ "_run": "news05-all-1",
+ "_try": 1
 }
