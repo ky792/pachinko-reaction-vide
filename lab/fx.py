@@ -3409,7 +3409,7 @@ def _nana(cv, t, fx):
     cv.alpha_composite(fade(lay, a))
     # 上の段：同じ台（3台のうち真ん中）
     yA = 330
-    _put(cv, "OK", 54, x0 - 150, yA, a * hd, color=OK_C, glow=OK_C, glow_a=0.4)
+    _put(cv, "OK", 54, x0 - 190, yA, a * hd, color=OK_C, glow=OK_C, glow_a=0.4)
     for i in range(7):
         x = x0 + i * step
         for j in range(3):
@@ -3431,7 +3431,7 @@ def _nana(cv, t, fx):
         return
     yB = 660
     hb = ease_out(prog(t, m_hi - 0.1, 0.3))
-    _put(cv, "日替わり", 46, x0 - 150, yB, a * hb, color=(255, 255, 255), glow=RED_C, glow_a=0.3)
+    _put(cv, "日替わり", 40, x0 - 215, yB, a * hb, color=(255, 255, 255), glow=RED_C, glow_a=0.3)
     pick = [0, 2, 1, 2, 0, 1, 2]
     for i in range(7):
         x = x0 + i * step
