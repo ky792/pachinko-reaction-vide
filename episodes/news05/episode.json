@@ -1,0 +1,8 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.22,
+ "_note": "ニュース解説 第5回：警察庁の講話（2026年11月10日）で指摘された「分かる人には分かる」広告と、推進機構の広告ガイドライン遵守確認（是正要望書29店舗）。ネタ帳 docs/research/weekly/2026-11-15.md、提案 docs/proposals/news05_script.md。声は garo_history と同じ設定。画像は使わない（図解カードと演出のみ）"
+}

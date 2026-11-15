@@ -86,8 +86,13 @@ FX = {
                                    "sagaku": ["差額"], "consul": ["コンサル料"], "modoru": ["本人の側"], "loop": ["ぐるっと"]}},
     "wari": {"span": 3, "marks": {"total": ["1億7500万円"], "div": ["台数で割る"], "per": ["7100円"], "toke": ["溶かす"], "oku": ["億になる"]}},
     "busoku": {"span": 3, "marks": {"dai": ["スマート遊技機"], "unit": ["45万台"], "han": ["半分もなかった"], "shima": ["島に並べられへん"]}},
+    # ニュース第5回：広告宣伝ガイドライン（おすすめは7日以上・分かる人には分かる広告・是正要望書の流れ。図解のアニメなので注釈は出さない）
+    "nana": {"span": 3, "marks": {"go": ["以上続けて"], "hi": ["日替わり"], "nioi": ["匂わせ"]}},
+    "wakaru": {"span": 3, "marks": {"go": ["分かる人だけ"], "kaeru": ["普通に打って"], "nai": ["何の情報もない"], "aiko": ["合言葉"]}},
+    "youbou": {"span": 8, "marks": {"n611": ["611店舗"], "tori": ["撮って"], "kentou": ["検討会"], "sho": ["是正要望書"], "n29": ["29店舗"],
+                                    "again": ["もう一回"], "bare": ["バレる"], "betto": ["別途の対応"], "mada": ["示されてない"]}},
 }
-NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19", "okane", "wari", "busoku"}
+NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19", "okane", "wari", "busoku", "nana", "wakaru", "youbou"}
 
 
 # ---------------------------------------------------------------- 台本 → 時刻
@@ -274,6 +279,28 @@ def finish(fx, end, scene):
         for i in range(3):
             add(u0 + 0.1 * i if u0 is not None else None, "tick", 0.13)
         add(_m(fx, "han"), "impact", 0.22); add(_m(fx, "shima"), "pon", 0.16)
+    elif k == "nana":
+        g = _m(fx, "go", default=s0 + 0.4)
+        for i in range(7):
+            add(g + 0.12 * i, "tick", 0.13)
+        add(g + 0.95, "piko", 0.16)
+        h = _m(fx, "hi")
+        for i in range(7):
+            add(h + 0.15 * i if h is not None else None, "pon", 0.08)
+        add(_m(fx, "nioi"), "impact", 0.22)
+    elif k == "wakaru":
+        add(_m(fx, "go"), "piko", 0.18)
+        nt = _m(fx, "nai")
+        for i in range(5):
+            add(nt + 0.12 * i if nt is not None else None, "tick", 0.12)
+        add(_m(fx, "aiko"), "impact", 0.26)
+    elif k == "youbou":
+        n6 = _m(fx, "n611", default=s0 + 0.3)
+        for i in range(10):
+            add(n6 + 0.08 * i, "tick", 0.12)
+        add(_m(fx, "tori"), "shu", 0.16); add(_m(fx, "kentou"), "pon", 0.14)
+        add(_m(fx, "sho"), "don", 0.26); add(_m(fx, "n29"), "impact", 0.22)
+        add(_m(fx, "again"), "shu", 0.16); add(_m(fx, "bare"), "piko", 0.16); add(_m(fx, "betto"), "don", 0.2)
 
     bgm = FX[k].get("bgm")
     if bgm:
@@ -3319,6 +3346,322 @@ def _busoku(cv, t, fx):
         cv.alpha_composite(fade(lay, a))
 
 
+# ---------------------------------------------------------------- ニュース第5回：広告宣伝ガイドライン（図解のアニメ。実在の店・広告・機種は描かない）
+OK_C = (110, 220, 150)
+POSTER_C = (255, 150, 200)
+DAYS = "月火水木金土日"
+
+
+def _dai(w=58, col=(90, 190, 255), lit=1.0):
+    """台のアイコン（四角い枠と丸い盤面だけ。実機の絵柄は描かない）"""
+    key = ("dai", w, col, round(lit, 2))
+    if key not in _C:
+        h = int(w * 1.25)
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        c = tuple(int(v * lit) for v in col)
+        d.rounded_rectangle((2, 2, w - 3, h - 3), 9, fill=(24, 28, 40, 235), outline=c + (255,), width=4)
+        d.ellipse((w * 0.2, h * 0.14, w * 0.8, h * 0.62), outline=c + (230,), width=3)
+        d.rectangle((w * 0.3, h * 0.74, w * 0.7, h * 0.84), fill=c + (200,))
+        _C[key] = im
+    return _C[key]
+
+
+def _ribbon(w, text, col, a=1.0):
+    key = ("ribbon", w, text, col)
+    if key not in _C:
+        im = Image.new("RGBA", (w, 46), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.rounded_rectangle((0, 0, w - 1, 45), 12, fill=col + (245,))
+        d.text((w / 2, 23), text, font=ui.font("black", 28), fill=(30, 20, 10, 255), anchor="mm")
+        _C[key] = im
+    return _C[key]
+
+
+def _stamp(text, col=RED_C, size=120):
+    """はんこ（四角い枠＋太い文字）"""
+    key = ("stamp", text, col, size)
+    if key not in _C:
+        f = ui.font("black", size)
+        w = int(ui.text_w(text, f)) + 70; h = int(size * 1.5)
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.rounded_rectangle((6, 6, w - 7, h - 7), 18, outline=col + (255,), width=10)
+        d.text((w / 2, h / 2), text, font=f, fill=col + (255,), anchor="mm")
+        _C[key] = im
+    return _C[key]
+
+
+def _nana(cv, t, fx):
+    """おすすめは7日以上：上の段は同じ台に7日続けて帯が伸びる（OK）。下の段は毎日違う台に帯が跳ぶ（日替わり）→「匂わせ」で ？ が付き、赤い ✕"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.62 * a)
+    s0 = fx["start"]
+    m_go = _m(fx, "go", default=s0 + 0.5)
+    m_hi = _m(fx, "hi")
+    m_ni = _m(fx, "nioi")
+    hd = ease_out(prog(t, s0, 0.4))
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    x0, step = W / 2 - 540, 180
+    f = ui.font("bold", 30)
+    d.text((W / 2, 128), "「おすすめ」の出し方（広告宣伝ガイドライン 第3版）", font=f, fill=(225, 230, 240, int(235 * hd)), anchor="mm")
+    for i, ch in enumerate(DAYS):
+        d.text((x0 + i * step, 186), ch, font=ui.font("black", 40), fill=(225, 230, 240, int(235 * hd)), anchor="mm")
+    cv.alpha_composite(fade(lay, a))
+    # 上の段：同じ台（3台のうち真ん中）
+    yA = 330
+    _put(cv, "OK", 54, x0 - 150, yA, a * hd, color=OK_C, glow=OK_C, glow_a=0.4)
+    for i in range(7):
+        x = x0 + i * step
+        for j in range(3):
+            lit = 1.0 if j == 1 else 0.55
+            _pput(cv, _dai(46, LV_COL[j], lit), x - 50 + 50 * j, yA, a * hd)
+    if t >= m_go:
+        k = ease_in_out(prog(t, m_go, 0.9))
+        bw = int((6 * step + 120) * k)
+        if bw > 20:
+            lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+            d.rounded_rectangle((x0 - 60, yA + 48, x0 - 60 + bw, yA + 86), 12, fill=GOLDC + (240,))
+            cv.alpha_composite(fade(lay, a))
+        tl = t - m_go - 0.9
+        if tl > 0:
+            kk = ease_out_back(min(1, tl / 0.35))
+            _mput(cv, "同じ台を 7日以上 続けて", 60, W / 2, yA + 140, a * min(1, tl / 0.2), 0.8 + 0.2 * kk)
+    # 下の段：日替わり（毎日違う台に帯）
+    if m_hi is None or t < m_hi - 0.1:
+        return
+    yB = 660
+    hb = ease_out(prog(t, m_hi - 0.1, 0.3))
+    _put(cv, "日替わり", 46, x0 - 150, yB, a * hb, color=(255, 255, 255), glow=RED_C, glow_a=0.3)
+    pick = [0, 2, 1, 2, 0, 1, 2]
+    for i in range(7):
+        x = x0 + i * step
+        ti = m_hi + 0.15 * i
+        on = t >= ti
+        for j in range(3):
+            lit = 1.0 if (on and j == pick[i]) else 0.5
+            _pput(cv, _dai(46, LV_COL[j], lit), x - 50 + 50 * j, yB, a * hb)
+        if on:
+            k = ease_out_back(min(1, (t - ti) / 0.25))
+            _pput(cv, _ribbon(70, "推", GOLDC), x - 50 + 50 * pick[i], yB - 66, a * min(1, (t - ti) / 0.15), 0.6 + 0.4 * k)
+            if m_ni is not None and t >= m_ni + 0.08 * i:
+                tq = t - m_ni - 0.08 * i
+                _put(cv, "？", 50, x - 50 + 50 * pick[i] + 34, yB - 112 - 10 * math.sin(tq * 6), a * min(1, tq / 0.2), color=(255, 255, 255), glow=RED_C, glow_a=0.6)
+    if m_ni is not None and t >= m_ni + 0.5:
+        tl = t - m_ni - 0.5
+        k = ease_out(min(1, tl / 0.25))
+        sc = 1.6 - 0.6 * k
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        cx, cy, r = W / 2 + 40, yB, 120 * sc
+        d.line((cx - r, cy - r * 0.7, cx + r, cy + r * 0.7), fill=RED_C + (int(235 * k),), width=22)
+        d.line((cx - r, cy + r * 0.7, cx + r, cy - r * 0.7), fill=RED_C + (int(235 * k),), width=22)
+        cv.alpha_composite(fade(lay, a))
+        _mput(cv, "今日はこの台？ と匂わせ → NG", 54, W / 2, yB + 150, a * k, base=RED_C, glow_a=0.6)
+        cv.alpha_composite(fade(_edge(RED_C), 0.22 * a * math.exp(-tl / 0.5)))
+
+
+def _person(col, lit=1.0, w=56):
+    key = ("person", col, round(lit, 2), w)
+    if key not in _C:
+        h = int(w * 1.5)
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        c = tuple(int(v * lit) for v in col)
+        d.ellipse((w * 0.27, 2, w * 0.73, w * 0.48), fill=c + (255,))
+        d.rounded_rectangle((w * 0.08, w * 0.55, w * 0.92, h - 2), int(w * 0.3), fill=c + (255,))
+        _C[key] = im
+    return _C[key]
+
+
+def _poster(w=560, h=300):
+    """店の告知のイメージ（文字の代わりに形と色の帯だけ。実在の告知・隠語は描かない）"""
+    key = ("poster", w, h)
+    if key not in _C:
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.rounded_rectangle((3, 3, w - 4, h - 4), 22, fill=(32, 26, 44, 245), outline=POSTER_C + (255,), width=5)
+        rng = np.random.default_rng(11)
+        cols = [(255, 120, 120), (255, 210, 90), (120, 220, 160), (110, 170, 255), (220, 140, 255)]
+        for r in range(4):
+            y = 50 + r * 62
+            x = 34
+            while x < w - 60:
+                ln = int(rng.uniform(40, 120))
+                c = cols[int(rng.integers(0, len(cols)))]
+                if rng.uniform() < 0.3:
+                    d.ellipse((x, y - 18, x + 36, y + 18), fill=c + (230,)); ln = 36
+                elif rng.uniform() < 0.2:
+                    d.regular_polygon((x + 18, y, 20), 5, fill=c + (230,)); ln = 36
+                else:
+                    d.rounded_rectangle((x, y - 10, x + ln, y + 10), 8, fill=c + (200,))
+                x += ln + 16
+        _C[key] = im
+    return _C[key]
+
+
+def _wakaru(cv, t, fx):
+    """分かる人には分かる広告：告知（形と色だけのイメージ）を見て、ひと握りの人だけ「！」で光る。ほかの人には「？」。
+    「合言葉」で告知に鍵がかかり、赤いはんこ"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.62 * a)
+    s0 = fx["start"]
+    m_go = _m(fx, "go", default=s0 + 0.6)
+    m_kaeru = _m(fx, "kaeru")
+    m_nai = _m(fx, "nai")
+    m_ai = _m(fx, "aiko")
+    hd = ease_out(prog(t, s0, 0.4))
+    pcx, pcy = W / 2, 250
+    _put(cv, "店の告知（イメージ）", 30, pcx, pcy - 185, a * hd, color=(230, 235, 245), glow=POSTER_C, glow_a=0.2, weight="bold")
+    _pput(cv, _poster(), pcx, pcy, a * hd)
+    know = {3, 10, 17}
+    n = 21
+    pos = []
+    for i in range(n):
+        r = i // 11; c = i % 11
+        x = W / 2 - 5 * 120 + c * 120 + (60 if r else 0)
+        y = 610 + r * 150
+        if r and c >= 10:
+            continue
+        pos.append((i, x, y))
+    # 光の線（告知 → 分かる人）
+    if t >= m_go:
+        k = ease_out(prog(t, m_go, 0.5))
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        for i, x, y in pos:
+            if i in know:
+                _arrow(d, (pcx, pcy + 150), (x, y - 70), GOLDC, 0.85, 5, k, dash=True)
+        cv.alpha_composite(fade(lay, a))
+    for i, x, y in pos:
+        sel = i in know
+        lit = 1.0
+        if t >= m_go and not sel:
+            lit = 1 - 0.55 * ease_out(prog(t, m_go, 0.4))
+        col = GOLDC if (sel and t >= m_go) else (200, 205, 220)
+        dx = 0
+        if m_kaeru is not None and not sel and t >= m_kaeru:
+            dx = 0
+        _pput(cv, _person(col, lit), x + dx, y, a * hd)
+        if sel and t >= m_go:
+            tl = t - m_go
+            k = ease_out_back(min(1, tl / 0.3))
+            _put(cv, "！", 56, x, y - 82, a * min(1, tl / 0.15), 0.7 + 0.3 * k, color=(255, 255, 255), glow=GOLDC, glow_a=0.7)
+            _ring(cv, x, y, 50 + 40 * ease_out(prog(tl, 0, 0.5)), 4, GOLDC, a * (1 - prog(tl, 0, 0.6)), 1.0)
+        if not sel and m_nai is not None and t >= m_nai + 0.03 * (i % 11):
+            tq = t - m_nai - 0.03 * (i % 11)
+            _put(cv, "？", 44, x, y - 80 - 6 * math.sin(tq * 5 + i), a * min(1, tq / 0.2) * 0.9, color=(210, 215, 230), glow=(120, 130, 160), glow_a=0.3)
+    if t >= m_go + 0.6:
+        k = ease_out(prog(t, m_go + 0.6, 0.3))
+        _put(cv, "分かる人", 40, W / 2 + 470, pcy - 40, a * k, color=GOLDC, glow=GOLDC, glow_a=0.3)
+        _put(cv, "ほんの一部", 30, W / 2 + 470, pcy + 10, a * k, color=(230, 235, 245), glow=GOLDC, glow_a=0.1, weight="bold")
+    if m_nai is not None and t >= m_nai + 0.4:
+        k = ease_out(prog(t, m_nai + 0.4, 0.3))
+        _put(cv, "それ以外", 40, W / 2 - 470, pcy - 40, a * k, color=(210, 215, 230), glow=(120, 130, 160), glow_a=0.2)
+        _put(cv, "何の情報もない", 30, W / 2 - 470, pcy + 10, a * k, color=(230, 235, 245), glow=(120, 130, 160), glow_a=0.1, weight="bold")
+    if m_ai is not None and t >= m_ai:
+        tl = t - m_ai
+        # 鍵（告知の上に）
+        k = ease_out_back(min(1, tl / 0.3))
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        lx, ly, s = pcx, pcy + 10, 1.0 * k
+        d.rounded_rectangle((lx - 70 * s, ly - 20 * s, lx + 70 * s, ly + 90 * s), int(16 * s) + 1, fill=(30, 30, 40, 240), outline=GOLDC + (255,), width=6)
+        d.arc((lx - 48 * s, ly - 100 * s, lx + 48 * s, ly + 0 * s), 180, 360, fill=GOLDC + (255,), width=12)
+        d.line((lx - 48 * s, ly - 50 * s, lx - 48 * s, ly - 20 * s), fill=GOLDC + (255,), width=12)
+        d.line((lx + 48 * s, ly - 50 * s, lx + 48 * s, ly - 20 * s), fill=GOLDC + (255,), width=12)
+        d.ellipse((lx - 12 * s, ly + 20 * s, lx + 12 * s, ly + 44 * s), fill=GOLDC + (255,))
+        cv.alpha_composite(fade(lay, a * min(1, tl / 0.15)))
+        if tl > 0.25:
+            tk = tl - 0.25
+            kk = ease_out(min(1, tk / 0.22))
+            st = _stamp("合言葉", RED_C, 110).rotate(-8, resample=Image.BICUBIC, expand=True)
+            _pput(cv, st, pcx + 230, pcy + 95, a * kk, 1.7 - 0.7 * kk)
+            cv.alpha_composite(fade(_edge(RED_C), 0.3 * a * math.exp(-tk / 0.5)))
+
+
+def _youbou(cv, t, fx):
+    """推進機構の遵守確認の流れ：店（掲示物を撮る）→ 検討会 → 是正要望書（はんこ）→ 1年以内に再確認（店へ戻る線）→ 別途の対応（中身は未公表）。
+    上に「611店舗で確認」「29店舗に送付」の数字"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.62 * a)
+    s0 = fx["start"]
+    m6 = _m(fx, "n611", default=s0 + 0.3)
+    m_tori = _m(fx, "tori", default=m6 + 2.0)
+    m_ken = _m(fx, "kentou", default=m_tori + 1.0)
+    m_sho = _m(fx, "sho", default=m_ken + 1.5)
+    m29 = _m(fx, "n29", default=m_sho + 2.0)
+    m_ag = _m(fx, "again")
+    m_bare = _m(fx, "bare")
+    m_bt = _m(fx, "betto")
+    m_mada = _m(fx, "mada")
+    cy = 470
+    xs = [W / 2 - 700, W / 2 - 350, W / 2, W / 2 + 350, W / 2 + 700]
+    nodes = [("店", "掲示物を撮る", HALL_C, m_tori - 0.1), ("検討会", "業界が判断", KYO_C, m_ken - 0.1),
+             ("要望書", "是正要望書が届く", RED_C, m_sho - 0.05), ("再確認", "1年以内に", OK_C, m_ag - 0.1 if m_ag else None),
+             ("別途の対応", "中身は未公表", (230, 120, 255), m_bt - 0.1 if m_bt else None)]
+    # 数字
+    k6 = ease_in_out(prog(t, m6, 0.9))
+    if t >= m6 - 0.1:
+        _put(cv, "遵守確認（2026年4〜9月）", 30, W / 2 - 430, 140, a, color=(225, 230, 240), glow=HALL_C, glow_a=0.1, weight="bold")
+        _mnum(cv, f"{int(round(611 * k6))}", 96, W / 2 - 470, 225, a, base=(235, 240, 255))
+        _put(cv, "店舗", 48, W / 2 - 300, 232, a * ease_out(prog(t, m6, 0.3)), color=(235, 240, 255), glow=HALL_C, glow_a=0.2)
+    if t >= m29 - 0.1:
+        tl = t - m29 + 0.1
+        k = ease_out_back(min(1, tl / 0.35))
+        _put(cv, "是正要望書（8月23日までの分）", 30, W / 2 + 430, 140, a * min(1, tl / 0.2), color=(225, 230, 240), glow=RED_C, glow_a=0.1, weight="bold")
+        _mput(cv, "29店舗", 96, W / 2 + 430, 228, a * min(1, tl / 0.2), 0.75 + 0.25 * k, base=RED_C, glow_a=0.7)
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    for i in range(4):
+        mt = nodes[i + 1][3]
+        if mt is None or t < mt - 0.2:
+            continue
+        k = ease_out(prog(t, mt - 0.2, 0.4))
+        _arrow(d, (xs[i] + 150, cy), (xs[i + 1] - 150, cy), (210, 215, 230), 0.9, 6, k)
+    # 1年以内にまた来る：再確認 → 店へ戻る線（下を回る）
+    if m_ag is not None and t >= m_ag + 0.3:
+        k = ease_in_out(prog(t, m_ag + 0.3, 0.9))
+        pts = [(xs[3], cy + 80), (xs[3], cy + 190), (xs[0], cy + 190), (xs[0], cy + 80)]
+        segs = [math.dist(pts[j], pts[j + 1]) for j in range(3)]
+        L = sum(segs) * k
+        for j in range(3):
+            if L <= 0:
+                break
+            f = min(1, L / segs[j])
+            _arrow(d, pts[j], pts[j + 1], OK_C, 0.9, 6, f if j < 2 else f, dash=True)
+            L -= segs[j]
+    cv.alpha_composite(fade(lay, a))
+    if m_ag is not None and t >= m_ag + 0.9:
+        k = ease_out(prog(t, m_ag + 0.9, 0.3))
+        _put(cv, "1年以内に、もう一度", 40, (xs[0] + xs[3]) / 2, cy + 238, a * k, color=OK_C, glow=OK_C, glow_a=0.3)
+    for i, (lab, sub, col, mt) in enumerate(nodes):
+        if mt is None or t < mt:
+            continue
+        k = ease_out_back(min(1, max(0, (t - mt) / 0.4)))
+        _pput(cv, _node(lab, sub, col, 300 if i != 4 else 330, 150), xs[i], cy + 20 * (1 - k), a * min(1, (t - mt) / 0.25), 0.85 + 0.15 * k)
+    # 撮る：店の箱にフラッシュ
+    if t >= m_tori:
+        tl = t - m_tori
+        _ring(cv, xs[0], cy, 160 + 120 * ease_out(prog(tl, 0, 0.5)), 6, (255, 255, 255), a * (1 - prog(tl, 0, 0.6)), 0.6)
+        _flash(cv, t, m_tori, 0.12, amt=70)
+    # はんこ
+    if t >= m_sho:
+        tl = t - m_sho
+        kk = ease_out(min(1, tl / 0.2))
+        st = _stamp("是正要望", RED_C, 70).rotate(-10, resample=Image.BICUBIC, expand=True)
+        _pput(cv, st, xs[2] + 20, cy - 150, a * kk, 1.8 - 0.8 * kk)
+        if tl > 0.2:
+            cv.alpha_composite(fade(_edge(RED_C), 0.25 * a * math.exp(-(tl - 0.2) / 0.45)))
+    if m_bare is not None and t >= m_bare:
+        tl = t - m_bare
+        _ring(cv, xs[3], cy, 150 + 140 * ease_out(prog(tl, 0, 0.6)), 6, OK_C, a * (1 - prog(tl, 0, 0.7)), 0.62)
+        _ring(cv, xs[0], cy, 150 + 140 * ease_out(prog(tl - 0.2, 0, 0.6)), 6, OK_C, a * (1 - prog(tl - 0.2, 0, 0.7)) * (tl > 0.2), 0.62)
+    if m_bt is not None and t >= m_bt:
+        tl = t - m_bt
+        _put(cv, "？", 70, xs[4] + 130, cy - 100 - 8 * math.sin(tl * 4), a * min(1, tl / 0.25), color=(255, 255, 255), glow=(230, 120, 255), glow_a=0.6)
+    if m_mada is not None and t >= m_mada:
+        k = ease_out(prog(t, m_mada, 0.3))
+        _put(cv, "どんな対応かは、まだ示されていない", 32, xs[4] - 120, cy + 120, a * k, color=(235, 220, 250), glow=(230, 120, 255), glow_a=0.2, weight="bold")
+
+
 DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _inazuma3, "door": _door3,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
@@ -3327,7 +3670,8 @@ DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _
         "kyokugen": _kyokugen3, "burst": _burst3, "tenraku": _tenraku, "fukkatsu": _fukkatsu,
         "lvmeter": _lvmeter, "flag": _flag, "hold4": _hold4,
         "santen": _santen, "jikagai": _jikagai, "count19": _count19,
-        "okane": _okane, "wari": _wari, "busoku": _busoku}
+        "okane": _okane, "wari": _wari, "busoku": _busoku,
+        "nana": _nana, "wakaru": _wakaru, "youbou": _youbou}
 
 
 NOTE = "※演出はイメージです。実機の演出ではありません"

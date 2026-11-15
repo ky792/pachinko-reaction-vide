@@ -312,6 +312,89 @@
  ],
  "rules": [
   {
+   "re": "(?<![A-Za-z])AI(?![A-Za-z])",
+   "to": "エーアイ",
+   "why": "ニュース第5回",
+   "status": "ok"
+  },
+  {
+   "re": "暗号",
+   "to": "アンゴウ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "察する",
+   "to": "サッスル",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "告知",
+   "to": "コクチ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "29店舗",
+   "to": "ニジュウキュウテンポ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "警察庁",
+   "to": "ケイサツチョウ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "抜き打ち",
+   "to": "ヌキウチ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "合言葉",
+   "to": "アイコトバ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "演者",
+   "to": "エンジャ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "匂わせ",
+   "to": "ニオワセ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "立入",
+   "to": "タチイリ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "遊技産業健全化推進機構",
+   "to": "ユウギサンギョウケンゼンカスイシンキコウ",
+   "why": "ニュース第5回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
    "re": "損害",
    "to": "そんがい",
    "why": "ニュース第4回",
@@ -2127,6 +2210,126 @@
    "yomi": "ソンガイ",
    "cat": "用語",
    "status": "ok"
+  },
+  {
+   "surface": "遊技産業健全化推進機構",
+   "yomi": "ユウギサンギョウケンゼンカスイシンキコウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "是正要望書",
+   "yomi": "ゼセイヨウボウショ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "是正勧告",
+   "yomi": "ゼセイカンコク",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "確約書",
+   "yomi": "カクヤクショ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "課長補佐",
+   "yomi": "カチョウホサ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "保安課",
+   "yomi": "ホアンカ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "掲示物",
+   "yomi": "ケイジブツ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "立入",
+   "yomi": "タチイリ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "講話",
+   "yomi": "コウワ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "憂慮",
+   "yomi": "ユウリョ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "匂わせ",
+   "yomi": "ニオワセ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "日替わり",
+   "yomi": "ヒガワリ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "演者",
+   "yomi": "エンジャ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "合言葉",
+   "yomi": "アイコトバ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "抜き打ち",
+   "yomi": "ヌキウチ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "警察庁",
+   "yomi": "ケイサツチョウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "29店舗",
+   "yomi": "ニジュウキュウテンポ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "告知",
+   "yomi": "コクチ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "察する",
+   "yomi": "サッスル",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "暗号",
+   "yomi": "アンゴウ",
+   "cat": "用語",
+   "status": "ok"
   }
  ],
  "history": [
@@ -2396,6 +2599,206 @@
    "action": "バク：送る前に 特別背任 → トクベツハイニン（かなの「は」を助詞で読んだため）",
    "note": "ニュース第4回",
    "engine": "irodori"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "遊技産業健全化推進機構",
+   "yomi": "ユウギサンギョウケンゼンカスイシンキコウ",
+   "heard": "",
+   "line": "",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 遊技産業健全化推進機構 → ユウギサンギョウケンゼンカスイシンキコウ（アクセント 0） / バク：送る前に 遊技産業健全化推進機構 → ユウギサンギョウケンゼンカスイシンキコウ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "是正要望書",
+   "yomi": "ゼセイヨウボウショ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 是正要望書 → ゼセイヨウボウショ（アクセント 5）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "是正勧告",
+   "yomi": "ゼセイカンコク",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 是正勧告 → ゼセイカンコク（アクセント 3）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "確約書",
+   "yomi": "カクヤクショ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 確約書 → カクヤクショ（アクセント 4）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "課長補佐",
+   "yomi": "カチョウホサ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 課長補佐 → カチョウホサ（アクセント 3）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "保安課",
+   "yomi": "ホアンカ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 保安課 → ホアンカ（アクセント 0）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "掲示物",
+   "yomi": "ケイジブツ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 掲示物 → ケイジブツ（アクセント 3）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "立入",
+   "yomi": "タチイリ",
+   "heard": "",
+   "line": "",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 立入 → タチイリ（アクセント 0） / バク：送る前に 立入 → タチイリ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "講話",
+   "yomi": "コウワ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 講話 → コウワ（アクセント 0）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "憂慮",
+   "yomi": "ユウリョ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 憂慮 → ユウリョ（アクセント 1）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "匂わせ",
+   "yomi": "ニオワセ",
+   "heard": "",
+   "line": "",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 匂わせ → ニオワセ（アクセント 0） / バク：送る前に 匂わせ → ニオワセ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "日替わり",
+   "yomi": "ヒガワリ",
+   "heard": "",
+   "line": "",
+   "for": "nagi",
+   "action": "ナギ：ユーザー辞書 日替わり → ヒガワリ（アクセント 0）",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "演者",
+   "yomi": "エンジャ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 演者 → エンジャ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "合言葉",
+   "yomi": "アイコトバ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 合言葉 → アイコトバ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "抜き打ち",
+   "yomi": "ヌキウチ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 抜き打ち → ヌキウチ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "警察庁",
+   "yomi": "ケイサツチョウ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 警察庁 → ケイサツチョウ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "29店舗",
+   "yomi": "ニジュウキュウテンポ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 29店舗 → ニジュウキュウテンポ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "告知",
+   "yomi": "コクチ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 告知 → コクチ",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "察する",
+   "yomi": "サッスル",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 察する → サッスル",
+   "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-15",
+   "surface": "暗号",
+   "yomi": "アンゴウ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 暗号 → アンゴウ",
+   "note": "ニュース第5回"
   }
  ],
  "aivis_words": [
@@ -2528,6 +2931,114 @@
   {
    "surface": "名目",
    "pronunciation": "メイモク",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "遊技産業健全化推進機構",
+   "pronunciation": "ユウギサンギョウケンゼンカスイシンキコウ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "是正要望書",
+   "pronunciation": "ゼセイヨウボウショ",
+   "accent_type": 5,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "是正勧告",
+   "pronunciation": "ゼセイカンコク",
+   "accent_type": 3,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "確約書",
+   "pronunciation": "カクヤクショ",
+   "accent_type": 4,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "課長補佐",
+   "pronunciation": "カチョウホサ",
+   "accent_type": 3,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "保安課",
+   "pronunciation": "ホアンカ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "掲示物",
+   "pronunciation": "ケイジブツ",
+   "accent_type": 3,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "立入",
+   "pronunciation": "タチイリ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "講話",
+   "pronunciation": "コウワ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "憂慮",
+   "pronunciation": "ユウリョ",
+   "accent_type": 1,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "匂わせ",
+   "pronunciation": "ニオワセ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "日替わり",
+   "pronunciation": "ヒガワリ",
    "accent_type": 0,
    "word_type": "COMMON_NOUN",
    "priority": 8,
