@@ -1,0 +1,337 @@
+{
+ "01_hairi-001": {
+  "sha1": "c40fa0dbf583d8be814e23ff8178c8c92df0800a",
+  "model": "large-v3-turbo",
+  "text": "視聴者の皆さん、こんばんは。"
+ },
+ "01_hairi-002": {
+  "sha1": "188d122083ac5608edcea3b44ab042a48536ccf3",
+  "model": "large-v3-turbo",
+  "text": "パチンコ業界の団体の元トップが逮捕されたで"
+ },
+ "01_hairi-003": {
+  "sha1": "407561742883fcc565ddb17be612ec51aedc4d32",
+  "model": "large-v3-turbo",
+  "text": "2026年11月4日に警視庁が逮捕を発表した"
+ },
+ "01_hairi-004": {
+  "sha1": "f130eec8b9d1ced1f66b8cb391de85b9242da650",
+  "model": "large-v3-turbo",
+  "text": "捕まったのはパチンコ店の機会に関わる団体の元代表理事"
+ },
+ "01_hairi-005": {
+  "sha1": "7c61bbda7e9b20962acec96b2694287a221a80f8",
+  "model": "large-v3-turbo",
+  "text": "団体が受けた損害1億7500万円らしいで"
+ },
+ "01_hairi-006": {
+  "sha1": "479d5061d0fadce1a73014a849e8bdf2d08d23c2",
+  "model": "large-v3-turbo",
+  "text": "店に入る機械の代金を水増しさせた疑い"
+ },
+ "01_hairi-007": {
+  "sha1": "7b1ee002421faf4c50788cb40eb41055271ad97a",
+  "model": "large-v3-turbo",
+  "text": "1億7100万てうちの負けを全部足しても届かへんわ"
+ },
+ "01_hairi-008": {
+  "sha1": "e3d9f320181547196ba532daa8d813e22e9508d2",
+  "model": "large-v3-turbo",
+  "text": "問いは2つ団体のお金がどうやって抜かれたんか"
+ },
+ "01_hairi-009": {
+  "sha1": "a1063b8eaba3db597acad37dc8bb701585e3384f",
+  "model": "large-v3-turbo",
+  "text": "ほんで店やうちらうつ側に関係あるんか"
+ },
+ "01_hairi-010": {
+  "sha1": "93b726b9f3260614f88a2256117f18ae810ddd92",
+  "model": "large-v3-turbo",
+  "text": "報道元にお金の流れを図にして整理していく"
+ },
+ "02_keii-001": {
+  "sha1": "8d83e7b957b2cbdf981bae8ed8b421b18a4d83ef",
+  "model": "large-v3-turbo",
+  "text": "団体の名前は電子認証システム協議会。協会では認証協って呼ばれてる。"
+ },
+ "02_keii-002": {
+  "sha1": "771c37a3bd3861cf79a08b628c48aa83bf3edaed",
+  "model": "large-v3-turbo",
+  "text": "名前かったいな、何してる団体なん?"
+ },
+ "02_keii-003": {
+  "sha1": "d1f9ed3855b64e4ac88324e9ec224ed44651619e",
+  "model": "large-v3-turbo",
+  "text": "2003年にできた団体で、貸玉や貸メダルの売上データを透明にするのが目的らしい。"
+ },
+ "02_keii-004": {
+  "sha1": "4b801b9a79611657283d6580de04548d76669db5",
+  "model": "large-v3-turbo",
+  "text": "疑われてるのは、2022年4月から2023年2月に店に納められた機械。"
+ },
+ "02_keii-005": {
+  "sha1": "045f13f1dfae17d0f7cc76be823251f666f63be0",
+  "model": "large-v3-turbo",
+  "text": "スマートユニット24,500台分の代金って報じられてる"
+ },
+ "02_keii-006": {
+  "sha1": "beb2ab8be12c6b3b4be8493e0e78a3f2ad2c24ef",
+  "model": "large-v3-turbo",
+  "text": "スマートユニットて、弾の数を管理する機械やろ?"
+ },
+ "02_keii-007": {
+  "sha1": "0978e330c26e91d806a4b81a7fde560834d04214",
+  "model": "large-v3-turbo",
+  "text": "そう店で使う玉の数なんかを管理する機会"
+ },
+ "02_keii-008": {
+  "sha1": "c3eb736ac702c6db2b649a382e3a8aa8a888fd3d",
+  "model": "large-v3-turbo",
+  "text": "疑いの中身は取引先に実際より高い代金を請求させたこと"
+ },
+ "02_keii-009": {
+  "sha1": "7ac98745a7b316a3f0d721e0b138644031561869",
+  "model": "large-v3-turbo",
+  "text": "高く請求させてどないすんの?"
+ },
+ "02_keii-010": {
+  "sha1": "51ec20029da7275f462a41f3d41000a6298d395b",
+  "model": "large-v3-turbo",
+  "text": "余分に払われた差額はコンサル料などの名目で本人の顔に戻ってたとみられてる"
+ },
+ "02_keii-011": {
+  "sha1": "9f73ed1e7effeeedf75b3b69c953c2bd8e0e9aad",
+  "model": "large-v3-turbo",
+  "text": "容疑は特別配任"
+ },
+ "02_keii-012": {
+  "sha1": "5918d57742089866eacd6cda695b4e4403396a53",
+  "model": "large-v3-turbo",
+  "text": "特別配任って何がどう特別なの?"
+ },
+ "02_keii-013": {
+  "sha1": "af7aa9f96c86fc8dd9f9e5a45edcdba8e5cc6143",
+  "model": "large-v3-turbo",
+  "text": "単体のために働く立場の人は自分の徳のために単体に損をさせる罪"
+ },
+ "02_keii-014": {
+  "sha1": "357b69927e964156d9e36c833c6e830f751c85bc",
+  "model": "large-v3-turbo",
+  "text": "同じようなやり方で合わせて数億円ほど得てたと見て調べてるって報じられてる"
+ },
+ "02_keii-015": {
+  "sha1": "fe2f2e98523fcb834465468f17591c89a76b6d2b",
+  "model": "large-v3-turbo",
+  "text": "数億手、島丸ごと寝台に入れ替えてもお釣り来るやん!"
+ },
+ "02_keii-016": {
+  "sha1": "a0297600d4d4c7396f66a21f085ae63f59cf18f4",
+  "model": "large-v3-turbo",
+  "text": "本人が認めてるかどうかは行動には出てない"
+ },
+ "03_shikumi-001": {
+  "sha1": "301cf93c8ccdfbc139bcaad60064183636c20cbc",
+  "model": "large-v3-turbo",
+  "text": "お金の流れを順番に見ていく"
+ },
+ "03_shikumi-002": {
+  "sha1": "420fa3e70996327a0d594aae40c67f583af7d288",
+  "model": "large-v3-turbo",
+  "text": "店が払うユニットの代金は認証協を通って製造会社に払われる仕組み"
+ },
+ "03_shikumi-003": {
+  "sha1": "65e463c0276f5a3339d64861806c3b05b10b4b5c",
+  "model": "large-v3-turbo",
+  "text": "店からメーカーに直接やなくて団体を一回通るんや"
+ },
+ "03_shikumi-004": {
+  "sha1": "6947e5a3d69208cdba6f182e260ef1f90c94cb15",
+  "model": "large-v3-turbo",
+  "text": "そう、ね、製造会社は部品の業者から部品を買ってる"
+ },
+ "03_shikumi-005": {
+  "sha1": "5b095525b34b7c19adaa971adb1da731a0534d58",
+  "model": "large-v3-turbo",
+  "text": "その部品の業者に実際より高い部品代を請求させた疑い"
+ },
+ "03_shikumi-006": {
+  "sha1": "06639a1dd7bac2af22657e8893ddf7952f2b45a8",
+  "model": "large-v3-turbo",
+  "text": "高鳴った分は上に乗っかって最後は認証卿が払うわけか"
+ },
+ "03_shikumi-007": {
+  "sha1": "b1a728aac03125aada39690d27761f5b97980f81",
+  "model": "large-v3-turbo",
+  "text": "で、その差額がコンサル寮の名目で本人の川に戻ってたとみられてる。"
+ },
+ "03_shikumi-008": {
+  "sha1": "c90c671e163bf0ede67e7b3181b4f884497b6ecc",
+  "model": "large-v3-turbo",
+  "text": "団体が多めに払った分ぐるっと回って自分に戻っとるやん"
+ },
+ "03_shikumi-009": {
+  "sha1": "76d5ae5eb828c84d9592fef2d687ea66d829f901",
+  "model": "large-v3-turbo",
+  "text": "1億7500万円を台数で割ると、1台あたり約7100円。"
+ },
+ "03_shikumi-010": {
+  "sha1": "ff2731db347ac32290b6ebe3d9d2d52a3f0826b8",
+  "model": "large-v3-turbo",
+  "text": "7100円ってうちが1回の負けでとかす額と変わらんやん"
+ },
+ "03_shikumi-011": {
+  "sha1": "a9b99a5200fd83612e42f7d26714bb7de67b60d9",
+  "model": "large-v3-turbo",
+  "text": "1台分は小さくても2万台を超えると多くになる"
+ },
+ "03_shikumi-012": {
+  "sha1": "3ddb7a29674fe8168d2ec5c7f053ca3e110bfdde",
+  "model": "large-v3-turbo",
+  "text": "そもそもなんでそのユニットそんな数がいるん?"
+ },
+ "03_shikumi-013": {
+  "sha1": "97a5b862b7408308eb4d41e541249b66e2011a98",
+  "model": "large-v3-turbo",
+  "text": "スマスロやスマパッチは専用のユニットとセットで使う機械"
+ },
+ "03_shikumi-014": {
+  "sha1": "d288b59ec9803ee08723ee5e40d5eaf1e6a018b0",
+  "model": "large-v3-turbo",
+  "text": "2023年3月の境界下と、2023年9月までの見込みで、スマート有利機が96万台。"
+ },
+ "03_shikumi-015": {
+  "sha1": "1a0683554614b9625de79d25a7245e64aa3d73be",
+  "model": "large-v3-turbo",
+  "text": "専用ユニットは45万台台の半分もなかった"
+ },
+ "03_shikumi-016": {
+  "sha1": "f9cf91598aeaf7e09f93c353c638814bfb951335",
+  "model": "large-v3-turbo",
+  "text": "台が届いてもユニットがなかったら島に並べられへんやん"
+ },
+ "03_shikumi-017": {
+  "sha1": "d94131ca28f755ab7305e62eb295f5243ec22b95",
+  "model": "large-v3-turbo",
+  "text": "その記事で認証協はユニットを出す側として88,600台の見込みって書かれてた。"
+ },
+ "03_shikumi-018": {
+  "sha1": "93a334fe05d891579df2969fe825990b581eaa7f",
+  "model": "large-v3-turbo",
+  "text": "ほな、ほんまにお金の通り道のど真ん中なんや。"
+ },
+ "04_kawaru-001": {
+  "sha1": "99083ce286990a913d574a43fe2f94249d936a07",
+  "model": "large-v3-turbo",
+  "text": "で、店とか、うちら宇都側に関係あるん?"
+ },
+ "04_kawaru-002": {
+  "sha1": "f5485654cfda94b17ade0259819893bf2df2a174",
+  "model": "large-v3-turbo",
+  "text": "報道で損害を受けたとされてるのは認証拠"
+ },
+ "04_kawaru-003": {
+  "sha1": "6a13fcf24c7d800e479198539bfbd80dbe10e822",
+  "model": "large-v3-turbo",
+  "text": "店が払う値段が上がってたかどうかは行動には出てない"
+ },
+ "04_kawaru-004": {
+  "sha1": "e246a431970f62f72e3f52e6f31b6860ac3f7d2f",
+  "model": "large-v3-turbo",
+  "text": "ほな、うちの財布から抜かれたわけやないんか!"
+ },
+ "04_kawaru-005": {
+  "sha1": "4d51dd40029dee6ad1a9b90f3ce2ab51d3a8f96d",
+  "model": "large-v3-turbo",
+  "text": "そう決めつけるのも早い分かってないことは分かってないまま"
+ },
+ "04_kawaru-006": {
+  "sha1": "a8b890c4335da7d3d7c2f1521822ddc8027d5526",
+  "model": "large-v3-turbo",
+  "text": "玉の数え方をいじったって話でもないんやな"
+ },
+ "04_kawaru-007": {
+  "sha1": "809304fac9ec2ce39727292033844413981a73c6",
+  "model": "large-v3-turbo",
+  "text": "報道に出てるのは大金の水増しの疑いだけ。機械の中身の話じゃない。"
+ },
+ "04_kawaru-008": {
+  "sha1": "ef132ecc5ae85749ea13256dc7bb4685fc820e0b",
+  "model": "large-v3-turbo",
+  "text": "ただ、店の機械のお金が団体を通る仕組みなら、その団体の中のチェックが大事になる。"
+ },
+ "04_kawaru-009": {
+  "sha1": "6ce73784d46cbc6e0525003030cfb937ab08ff5a",
+  "model": "large-v3-turbo",
+  "text": "真ん中の人が数字をいじれる仕組みやったら外からは気づかれへんもんな"
+ },
+ "04_kawaru-010": {
+  "sha1": "3789ee00ab0b45d73401054b233f1dee69eeb506",
+  "model": "large-v3-turbo",
+  "text": "ユニットとか打ってるときは気にもしてへんかったわ"
+ },
+ "04_kawaru-011": {
+  "sha1": "6ea6167c5191423bc22d46d58da9445a7ea1bcb4",
+  "model": "large-v3-turbo",
+  "text": "台の横の小さい機械の後ろで奥のお金が動いてた。"
+ },
+ "05_matome-001": {
+  "sha1": "d1cb7045051856b6734cde442eeef43b2dddb0fc",
+  "model": "large-v3-turbo",
+  "text": "まとめ、タチンコ店の機会に関わる団体の元代表理事が特別背任の疑いで逮捕された。"
+ },
+ "05_matome-002": {
+  "sha1": "428871e1f946900a5084af784d582415eaccb71a",
+  "model": "large-v3-turbo",
+  "text": "スマートユニットの代金で取引先に高い代金を請求させて差額を本人の側に戻させた疑い"
+ },
+ "05_matome-003": {
+  "sha1": "a7dd42aa6c5a736ef71d98a5af4350e683383026",
+  "model": "large-v3-turbo",
+  "text": "一つ目の答え店が払う代金が団体を通るその真ん中で水増しされたとみられてる"
+ },
+ "05_matome-004": {
+  "sha1": "10f0b28e12b362b12e5d7e57b16ebeea3ab97dde",
+  "model": "large-v3-turbo",
+  "text": "2つ目の答え損害を受けたのは団体?ニセやウツガワへの影響は報道では分かってへん"
+ },
+ "05_matome-005": {
+  "sha1": "4e3fd5ab587971b3c9aa56ee15929e3b869806b1",
+  "model": "large-v3-turbo",
+  "text": "あと逮捕は有罪が決まったって意味じゃない"
+ },
+ "05_matome-006": {
+  "sha1": "60e68efcefa667dd23b206d2eaee4d855db029af",
+  "model": "large-v3-turbo",
+  "text": "それ、前の回も言うてたやん"
+ },
+ "05_matome-007": {
+  "sha1": "47bdfb548222d9ccfa2c393d5c35a8537046e79f",
+  "model": "large-v3-turbo",
+  "text": "大事なこと何回でも言う"
+ },
+ "99_ed-001": {
+  "sha1": "49c3fb2a4eaea5208c2853e6fe7029768fa3b50c",
+  "model": "large-v3-turbo",
+  "text": "ここまで見てくれてありがとう"
+ },
+ "99_ed-002": {
+  "sha1": "856245b9956ee0b153b6ced4b6f9a2813c170313",
+  "model": "large-v3-turbo",
+  "text": "スマスロのユニット気にしたことある?コメントで教えてや!"
+ },
+ "99_ed-003": {
+  "sha1": "92b30c3ec1c05fec5a72562877c9baf26d4318bb",
+  "model": "large-v3-turbo",
+  "text": "よかったら高評価とチャンネル登録お願いします"
+ },
+ "99_ed-004": {
+  "sha1": "a1fba841a651f972f270bc66cc92556691b4b3ee",
+  "model": "large-v3-turbo",
+  "text": "ほな、またな。"
+ },
+ "99_ed-005": {
+  "sha1": "5345d94382b0202b3118732e50cc7e59284207c7",
+  "model": "large-v3-turbo",
+  "text": "また次回おやすみ"
+ }
+}

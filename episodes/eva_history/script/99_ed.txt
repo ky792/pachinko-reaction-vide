@@ -1,0 +1,17 @@
+# ED：寸劇の形でしめる → ED曲＋ロゴ
+@chapter ed
+@bgm track bright_pop.wav
+@skit on
+@dir act=jump
+バク: 今日は、エヴァの20年ぜんぶ見たな！
+ナギ: 暴走モードから、ALL1500まで。
+@dir act=lean
+バク: REDも、もちろん打ちに行くで！
+ナギ: よかったら、高評価とチャンネル登録、お願いします。
+@dir act=hop
+バク: コメントで、みんなの思い出のエヴァも教えてや！
+@dir act=none
+ナギ: また次回。おやすみ。
+@skit off
+@song ending.wav gain=0.55 len=6
+@logo history.png 5.5

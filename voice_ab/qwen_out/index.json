@@ -1,0 +1,30 @@
+[
+ {
+  "file": "m_nekketsu_ja.m4a",
+  "name": "m_nekketsu_ja",
+  "instruct": "30代前半の男性。中低音でよく通る、張りのある声で、少しハスキー。熱血で豪快な兄貴分。テンションが上がると力強く声を張る。自然な日本語のイントネーションとアクセントで話す。",
+  "sec": 12.5,
+  "gen_sec": 80
+ },
+ {
+  "file": "m_nekketsu_en.m4a",
+  "name": "m_nekketsu_en",
+  "instruct": "Japanese man in his early 30s. Warm mid-low baritone with a slight rasp, resonant and powerful. Hot-blooded, charismatic big-brother type who shouts with real power when excited. Fully natural native Japanese intonation and pitch accent.",
+  "sec": 12.6,
+  "gen_sec": 82
+ },
+ {
+  "file": "m_wild.m4a",
+  "name": "m_wild",
+  "instruct": "ワイルドで色気のある、低めの男性の声。余裕があって軽口をたたくが、ツッコミは豪快に声を張る。自然な日本語のイントネーションとアクセントで話す。",
+  "sec": 15.8,
+  "gen_sec": 101
+ },
+ {
+  "file": "m_shonen_hero.m4a",
+  "name": "m_shonen_hero",
+  "instruct": "少年漫画の熱血主人公を演じる男性声優のような、力強く少しハスキーな中音域の声。勢いのあるリアクション。自然な日本語のイントネーションとアクセントで話す。",
+  "sec": 13.5,
+  "gen_sec": 90
+ }
+]

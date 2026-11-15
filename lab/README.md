@@ -83,3 +83,25 @@ python lab/episode.py episodes/ken_full --manifest      # MANIFEST.md（セリ�
 - 読み上げ音声：AivisSpeech（ナギ＝るな／バク＝らせつん）で `voices/` を作る処理。置き場所と仕組みはできている。
 - GitHub Actions：`lab/episode.py` を回すワークフロー。
 - キャラの表情差分：今は各1枚（`generator/assets/characters/v2/`）。
+
+## 5. 90秒品質検証（episodes/ken_test90_A / ken_test90_B）
+
+65%規制×北斗無双の場面を、A＝本編どおりの台本、B＝改善版台本（伏線→回収→オチ）で比べる。
+声・画面・BGMは同じ条件で、違いは台本と声の演出だけ。
+
+```
+VOICEVOX_DIR=$PWD/cache/voicevox-engine bash scripts/setup_voicevox.sh   # PR #3 の起動スクリプト（無料・ローカル）
+python lab/tts.py episodes/ken_test90_B          # 声を作る（voices/<ID>.wav と _kana.txt）
+python lab/episode.py episodes/ken_test90_B      # 書き出し → episodes/ken_test90_B/build/ken_test90_B.mp4
+```
+
+- 声：`voice/casting_b.json`（改善版B：ナギ＝冥鳴ひまり、バク＝白上虎太郎）。読みは `voice/dictionary.json`。
+- `episode.json` で ken_full の `data.json` を土台にし、`data_patch.json` だけ上書きする（本編のデータは変えない）。
+
+台本の追加命令（@dir が1つも無い台本は、従来どおり行間0.40秒で同じタイミングになる）：
+
+| 命令 | 例 | 意味 |
+| --- | --- | --- |
+| `@dir` | `@dir pre=0.55 post=0.8 speed=0.92 int=0.8 vol=0.85 emph=一番乗り mood=serious focus=baku` | 直後の1セリフだけ。前後の無音、話速・抑揚・音量の倍率、強調語、声の種類、オチの寄り（背景を暗く・相手を薄く） |
+| | `mark=同じ条件` | 字幕に橙の下線（伏線と回収をそろえる） |
+| `@bgm` | `@bgm cut 0.3` ／ `@bgm resume 0.6` | BGMをその場でフェードアウト／イン |

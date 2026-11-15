@@ -155,12 +155,12 @@ def corner_ticks(d, box, col, n=16, w=2):
 
 
 # ---------------------------------------------------------------- 背景
-@lru_cache(maxsize=1)
-def background():
-    """研究室の背景画像（generator/assets/backgrounds/lab_room.png）を暗く・ぼかして敷く。
-    無ければ #101827 の無地＋方眼。文字が主役になる明るさに抑える"""
+@lru_cache(maxsize=4)
+def background(name="lab_room.png"):
+    """背景画像（generator/assets/backgrounds/<name>。既定は研究室）を暗く・ぼかして敷く。
+    無ければ #101827 の無地＋方眼。文字が主役になる明るさに抑える。回ごとに episode.json の "background" で変えられる"""
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
-    p = ASSETS / "backgrounds" / "lab_room.png"
+    p = ASSETS / "backgrounds" / (name or "lab_room.png")
     if p.exists():
         src = Image.open(p).convert("RGB")
         s = max(W / src.width, H / src.height)
@@ -229,7 +229,8 @@ def chapter_card(canvas, tl, dur, data):
     cy = H / 2 - 30
     st = {k: ease_out(prog(tl, s, 0.45)) for k, s in (("year", 0.0), ("title", 0.15), ("no", 0.3), ("rule", 0.3))}
     tmp = Image.new("RGBA", (W, 180), (0, 0, 0, 0))
-    ImageDraw.Draw(tmp).text((W / 2, 90), data["year"], font=font("black", 140), fill=KEY, anchor="mm")
+    accent = {"blue": (130, 170, 235, 255), "goldred": (255, 96, 64, 255)}.get(data.get("grade"), KEY)   # 章の色味に合わせる
+    ImageDraw.Draw(tmp).text((W / 2, 90), data["year"], font=font("black", 140), fill=accent, anchor="mm")
     paste(lay, tmp, (0, cy - 250 + 20 * (1 - st["year"])), st["year"])
     tmp = Image.new("RGBA", (W, 190), (0, 0, 0, 0))
     ImageDraw.Draw(tmp).text((W / 2, 95), data["title"], font=font("black", 140), fill=TEXT, anchor="mm")
@@ -243,6 +244,72 @@ def chapter_card(canvas, tl, dur, data):
 
 
 # ---------------------------------------------------------------- A 機種紹介カード
+MACHINE_ZOOM = 0.06            # 表示中にゆっくり寄る量（1.00 → 1.06）
+MACHINE_PAN = (0.5, 0.40)      # 寄っていく先（画像内の比率。既定は盤面〜液晶のあたり）
+MACHINE_MOVE = (0.3, 8.0)      # 寄り始め・寄り終わるまでの秒数。そのあとは止める（静止中は描画を使い回せる）
+
+
+_FIT_CACHE = {}
+
+
+def _machine_fit(image, iw, ih):
+    """実機画像を枠に収まる最大サイズへ（小さい画像は拡大。縦横比はそのまま）"""
+    key = (id(image), iw, ih)
+    if key not in _FIT_CACHE:
+        _FIT_CACHE[key] = (image, _fit(image, iw, ih))   # image も持って id の使い回しを防ぐ
+    return _FIT_CACHE[key][1]
+
+
+def _drop_white_bg(image, tol=28):
+    """四隅が白い画像（白背景の実機写真）だけ、隅からつながった白い背景を透明にする。台の中の白は残す"""
+    rgb = np.asarray(image.convert("RGB")).astype(np.int16)
+    h, w = rgb.shape[:2]
+    near = (255 - rgb).max(axis=2) <= tol
+    corners = [near[0, 0], near[0, w - 1], near[h - 1, 0], near[h - 1, w - 1]]
+    if sum(corners) < 3:
+        return image
+    from scipy import ndimage
+    lab, _ = ndimage.label(near)
+    edge = set(np.unique(np.concatenate([lab[0], lab[-1], lab[:, 0], lab[:, -1]]))) - {0}
+    bg = np.isin(lab, list(edge))
+    alpha = np.asarray(image.convert("RGBA"))[..., 3].copy()
+    soft = ndimage.gaussian_filter(bg.astype(np.float32), 0.8)   # 輪郭のギザギザを少しなじませる
+    alpha = (alpha * (1 - soft)).clip(0, 255).astype(np.uint8)
+    out = image.convert("RGBA"); out.putalpha(Image.fromarray(alpha))
+    return out
+
+
+def _fit(image, iw, ih):
+    image = _drop_white_bg(image)
+    bb = image.convert("RGBA").getchannel("A").point(lambda v: 255 if v > 8 else 0).getbbox()
+    if bb and (bb[2] - bb[0]) * (bb[3] - bb[1]) < image.width * image.height * 0.9:
+        image = image.crop(bb)            # 透明な余白（公式画像の上半分など）を切り落としてから枠に合わせる
+    k = min(iw / image.width, ih / image.height)
+    fw, fh = max(1, round(image.width * k)), max(1, round(image.height * k))
+    out = image.convert("RGBA").resize((fw, fh), Image.LANCZOS)
+    if k > 1.2:   # 拡大したぶんの甘さを少しだけ締める
+        out = out.filter(ImageFilter.UnsharpMask(radius=1.6, percent=60, threshold=2))
+    return out
+
+
+def _machine_photo(image, iw, ih, tl, dur, pan=None):
+    """枠（iw×ih）の中央に実機を置き、枠の中だけでゆっくりズーム＆パン（はみ出さない）"""
+    base = _machine_fit(image, iw, ih)
+    fw, fh = base.size
+    p = ease_in_out(prog(tl, MACHINE_MOVE[0], min(MACHINE_MOVE[1], max((dur or 0) - 1.0, 0.5))))
+    z = 1 + MACHINE_ZOOM * p
+    px, py = pan or MACHINE_PAN
+    cx = fw / 2 + (px * fw - fw / 2) * p
+    cy = fh / 2 + (py * fh - fh / 2) * p
+    vw, vh = fw / z, fh / z
+    x0 = min(max(cx - vw / 2, 0), fw - vw)
+    y0 = min(max(cy - vh / 2, 0), fh - vh)
+    frame = base.transform((fw, fh), Image.AFFINE, (1 / z, 0, x0, 0, 1 / z, y0), Image.BICUBIC)
+    box = Image.new("RGBA", (iw, ih), (0, 0, 0, 0))
+    box.alpha_composite(frame, ((iw - fw) // 2, (ih - fh) // 2))
+    return box
+
+
 def machine_card(canvas, tl, dur, data, image=None):
     """左：実機（無ければ差し替え用の仮パネル）／右：スペック。行は順番に出る"""
     a_in = ease_out(prog(tl, 0, 0.45))
@@ -256,8 +323,7 @@ def machine_card(canvas, tl, dur, data, image=None):
     box = Image.new("RGBA", (iw, ih), (0, 0, 0, 0))
     bd = ImageDraw.Draw(box)
     if image is not None:
-        src = image.copy(); src.thumbnail((iw, ih))
-        box.alpha_composite(src.convert("RGBA"), ((iw - src.width) // 2, (ih - src.height) // 2))
+        box.alpha_composite(_machine_photo(image, iw, ih, tl, dur, data.get("pan")), (0, 0))
     else:
         bd.rounded_rectangle((0, 0, iw - 1, ih - 1), RADIUS, fill=PANEL)
         for k in range(0, iw + ih, 28):   # 斜線＝「ここは仮」の目印
@@ -610,14 +676,67 @@ def title_card(canvas, tl, dur, data):
     paste(canvas, lay, (0, 0), out)
 
 
+@lru_cache(maxsize=8)
+def load_logo(name):
+    return Image.open(ASSETS / "logos" / name).convert("RGBA")
+
+
+def logo_card(canvas, tl, dur, data):
+    """番組ロゴ（generator/assets/logos/）を全画面で。ポンと弾んで出て、ゆっくり寄る"""
+    out = 1 - ease_in_out(prog(tl, dur - 0.35, 0.35))
+    if out <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    ImageDraw.Draw(lay).rectangle((0, 0, W, H), fill=(BG[0], BG[1], BG[2], int(215 * ease_out(prog(tl, 0, 0.3)))))
+    logo = load_logo(data["file"])
+    k = ease_out_back(prog(tl, 0.05, 0.5), 1.8)
+    s = (0.55 + 0.45 * k) * (1 + 0.04 * prog(tl, 0.6, max(0.1, dur - 0.6)))
+    base = min(1400 / logo.width, 760 / logo.height)
+    im = logo.resize((max(1, int(logo.width * base * s)), max(1, int(logo.height * base * s))), Image.LANCZOS)
+    paste(lay, im, ((W - im.width) / 2, (H - im.height) / 2 - 20), min(1.0, prog(tl, 0.05, 0.2)))
+    paste(canvas, lay, (0, 0), out)
+
+
+def intro_card(canvas, tl, dur, data):
+    """キャラ紹介（ニュース解説のOP）：左に大きな立ち絵、右に肩書き・名前・ひとことプロフィール"""
+    out = 1 - ease_in_out(prog(tl, dur - 0.35, 0.35))
+    if out <= 0:
+        return
+    who = data["who"]
+    col = SPEAKER[who]
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    k0, k1, k2, k3 = (ease_out(prog(tl, s, 0.45)) for s in (0.0, 0.12, 0.25, 0.4))
+    d.rectangle((0, 0, W, H), fill=(BG[0], BG[1], BG[2], int(200 * k0)))
+    ch = load_char(who)
+    hh = 900
+    ch = ch.resize((int(ch.width * hh / ch.height), hh))
+    paste(lay, ch, (int(140 - 80 * (1 - k1)), H - hh - 40), k1)
+    x = 980
+    tmp = Image.new("RGBA", (900, 70), (0, 0, 0, 0))
+    lab_label(ImageDraw.Draw(tmp), (0, 35), data.get("tag", ""), col, 26)
+    paste(lay, tmp, (x, 300), k2)
+    tmp = Image.new("RGBA", (900, 200), (0, 0, 0, 0))
+    ImageDraw.Draw(tmp).text((0, 100), data["name"], font=font("black", 170), fill=col, anchor="lm")
+    paste(lay, tmp, (x + int(40 * (1 - k2)), 360), k2)
+    tmp = Image.new("RGBA", (900, 70), (0, 0, 0, 0))
+    ImageDraw.Draw(tmp).text((0, 35), data.get("role", ""), font=font("bold", 46), fill=TEXT, anchor="lm")
+    paste(lay, tmp, (x, 570), k3)
+    for i, line in enumerate(data.get("profile", [])):
+        tmp = Image.new("RGBA", (900, 60), (0, 0, 0, 0))
+        ImageDraw.Draw(tmp).text((0, 30), line, font=font("medium", 38), fill=SUB, anchor="lm")
+        paste(lay, tmp, (x, 650 + 58 * i), k3)
+    paste(canvas, lay, (0, 0), out)
+
+
 SETTLE = {   # 各部品の「動きが止まる」までの秒数（静止中は描画を使い回して高速化）
-    "chapter": lambda d: 0.8, "title": lambda d: 1.0, "keyword": lambda d: 0.5,
-    "machine": lambda d: 0.45 + 0.28 * len(d["rows"]) + 0.95,
+    "chapter": lambda d: 0.8, "title": lambda d: 1.0, "intro": lambda d: 0.9, "logo": lambda d: 1e9, "keyword": lambda d: 0.5,
+    "machine": lambda d: max(0.45 + 0.28 * len(d["rows"]) + 0.95, sum(MACHINE_MOVE) + 0.05),
     "analysis": lambda d: 3.4, "timeline": lambda d: 0.6 + 0.6 * len(d["events"]) + 0.6,
     "flow": lambda d: 0.35 + 0.45 * len(d["steps"]) + 0.4,
     "lineup": lambda d: 0.3 + (0.32 if d.get("fast") else 0.55) * len(d["items"]) + 0.35,
 }
-OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45}
+OUTRO = {"analysis": 1.0, "chapter": 0.45, "title": 0.45, "intro": 0.35, "logo": 0.35}
 
 
 # ---------------------------------------------------------------- 字幕
@@ -654,13 +773,53 @@ def subtitle(canvas, tl, dur, who, text, accent=False):
 
 
 # ---------------------------------------------------------------- キャラクター
-def load_char(who):
-    return Image.open(ASSETS / "characters" / "v2" / who / "normal.png").convert("RGBA")
+FACES = ("normal", "happy", "surprised", "sad", "angry", "confused", "smug", "sweat", "excited", "despair")
+
+
+@lru_cache(maxsize=None)
+def load_char(who, face="normal"):
+    """表情差分 characters/v2/<who>/<face>.png。無ければ normal.png を使う"""
+    p = ASSETS / "characters" / "v2" / who / f"{face}.png"
+    if not p.exists():
+        p = ASSETS / "characters" / "v2" / who / "normal.png"
+    return Image.open(p).convert("RGBA")
+
+
+@lru_cache(maxsize=None)
+def load_bust(who, face="normal"):
+    """寸劇用のバストアップ表情 characters/v2/<who>/face/<face>.png（scripts/cut_faces.py で切り出し）。
+    無い表情は face/normal.png、それも無ければ全身の normal.png"""
+    d = ASSETS / "characters" / "v2" / who / "face"
+    for p in (d / f"{face}.png", d / "normal.png"):
+        if p.exists():
+            return Image.open(p).convert("RGBA")
+    return load_char(who)
+
+
+def has_busts(who):
+    return (ASSETS / "characters" / "v2" / who / "face" / "normal.png").exists()
+
+
+@lru_cache(maxsize=96)
+def scaled_bust(who, h, bright, face="normal", fade_px=0):
+    """バストアップを高さ h に。fade_px を付けると下端をその幅でフェードアウト（切れ目を見せない）"""
+    src = load_bust(who, face)
+    s = h / src.height
+    im = src.resize((max(1, int(src.width * s)), int(h)), Image.LANCZOS)
+    if bright < 0.999:
+        rgb = Image.eval(im.convert("RGB"), lambda v: int(v * bright))
+        im = Image.merge("RGBA", (*rgb.split(), im.split()[3]))
+    if fade_px:
+        a = np.asarray(im.split()[3]).astype(np.float32)
+        ramp = np.ones(im.height, np.float32)
+        ramp[-fade_px:] = np.linspace(1, 0, fade_px)
+        im.putalpha(Image.fromarray((a * ramp[:, None]).astype(np.uint8)))
+    return im, s
 
 
 @lru_cache(maxsize=64)
-def _scaled(who, h, bright):
-    src = load_char(who)
+def _scaled(who, h, bright, face="normal"):
+    src = load_char(who, face)
     s = h / src.height
     im = src.resize((max(1, int(src.width * s)), int(h)), Image.LANCZOS)
     if bright < 0.999:
@@ -678,14 +837,28 @@ def _scaled(who, h, bright):
 CHAR_FOOT = {"nagi": (190, H - 24), "baku": (W - 200, H - 24)}
 
 
-def draw_char(canvas, who, h, t, talking, extra_scale=1.0):
+def draw_char(canvas, who, h, t, talking, extra_scale=1.0, face="normal"):
     """呼吸程度のわずかな上下だけ。話している方を明るく。戻り値：素材上の座標→画面座標の変換"""
     bright = 1.0 if talking else 0.78
     hq = int(round(h * extra_scale / 4) * 4)
-    img, s = _scaled(who, hq, bright)
+    img, s = _scaled(who, hq, bright, face)
     fx, fy = CHAR_FOOT[who]
     bob = 3 * math.sin(2 * math.pi * 0.4 * t + (0 if who == "nagi" else 1.9))
     x = fx - img.width / 2
     y = fy - (img.height - 30) + bob
     canvas.alpha_composite(img, (int(x), int(y)))
     return lambda px, py: (x + 20 + px * s, y + py * s)
+
+
+# ---------------------------------------------------------------- 明朝（再現演出の文字。lab/fx.py）
+_SERIF = ("NotoSerifCJK-Black.ttc", "NotoSerifCJK-Bold.ttc")
+_FX = {}
+FX_RED = (214, 28, 36)
+
+
+def serif(size):
+    for d in _FONT_DIRS:
+        for name in _SERIF:
+            if (d / name).exists():
+                return ImageFont.truetype(str(d / name), size, index=0)
+    return font("black", size)

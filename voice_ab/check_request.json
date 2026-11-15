@@ -1,0 +1,9 @@
+{
+ "episode": "episodes/news05",
+ "model": "large-v3-turbo",
+ "_run": "news05-fix-1",
+ "_try": 2,
+ "only": [
+  "03_shikumi-003"
+ ]
+}

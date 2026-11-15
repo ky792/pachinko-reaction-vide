@@ -1,0 +1,60 @@
+name: Voice check (Whisper)
+
+# 作業ブランチの voice_ab/check_request.json を書き換えて push すると動く。
+#   {"episode": "episodes/eva_history", "model": "large-v3-turbo", "only": ["02_bousou-006", …]}   … only を省くと全行
+#   {"episode": …, "probe": ["行ID", …]}   … 数行だけでモデル・設定を比べる（scripts/reading/asr_probe.py）
+# faster-whisper（無料・CPU）で文字起こしして台本と照合し、episodes/<回>/reading/ に report.md・report.json・asr.json を戻す
+on:
+  push:
+    paths:
+      - voice_ab/check_request.json
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: python -m pip install -q faster-whisper pyopenjtalk-plus numpy scipy pillow
+      - name: Cache model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-${{ hashFiles('voice_ab/check_request.json') }}
+          restore-keys: whisper-
+      - name: Check
+        run: |
+          EP=$(python -c "import json;print(json.load(open('voice_ab/check_request.json'))['episode'])")
+          MODEL=$(python -c "import json;print(json.load(open('voice_ab/check_request.json')).get('model','large-v3-turbo'))")
+          ONLY=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('only',[])))")
+          echo "EP=$EP" >> $GITHUB_ENV
+          PROBE=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('probe',[])))")
+          if [ -n "$PROBE" ]; then python scripts/reading/asr_probe.py "$EP" "$PROBE"; exit 0; fi
+          python scripts/reading/precheck.py "$EP"
+          python scripts/reading/asr_check.py "$EP" --model "$MODEL" ${ONLY:+--only "$ONLY"}
+          # 作り直した行があれば、修正前後も文字起こしして比べる
+          if [ -f "$EP/reading/before/info.json" ]; then python scripts/reading/compare.py "$EP" --whisper --model "$MODEL"; fi
+      - name: Commit results
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$EP/reading"
+          git diff --cached --quiet && { echo "変更なし"; exit 0; }
+          git commit -m "reading: Whisper check results"
+          # 同じファイルを手元でも直していたら、ここで作った結果を優先する
+          for i in 1 2 3; do git pull --no-rebase -q -X ours origin "${GITHUB_REF_NAME}" && git push && break; sleep 5; done
+      - name: Keep results as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reading-results
+          path: ${{ env.EP }}/reading/*.json
