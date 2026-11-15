@@ -1,0 +1,342 @@
+{
+ "01_hairi-001": {
+  "sha1": "155c5071cf4dacbfc7dd954226abc15b141fd42f",
+  "model": "large-v3-turbo",
+  "text": "視聴者の皆さんこんばんは"
+ },
+ "01_hairi-002": {
+  "sha1": "9e6c5779ab1dc80b3744212a1dc76c8a05dcb7af",
+  "model": "large-v3-turbo",
+  "text": "警察庁がパチンコ店の広告にダメ出ししたらしいで"
+ },
+ "01_hairi-003": {
+  "sha1": "ef72fd6374df9b6c9391980fd8d11433504a338d",
+  "model": "large-v3-turbo",
+  "text": "2026年11月10日、協会団体のセミナーで警察庁の担当者が講和をした。"
+ },
+ "01_hairi-004": {
+  "sha1": "c2bdd8a5bc5a7e9ecf8863aaca7da1c33d3926f6",
+  "model": "large-v3-turbo",
+  "text": "一部の広告が分かる人には分かるものになってるって指摘したと報じられてる"
+ },
+ "01_hairi-005": {
+  "sha1": "814e2134780f8589d09ce4f24ec03cc053411695",
+  "model": "large-v3-turbo",
+  "text": "店の告知見て、あ、今日はあれやなって察するやつやろ?"
+ },
+ "01_hairi-006": {
+  "sha1": "d09cb1feee5762eed5c26d3c41028f081cf3e325",
+  "model": "large-v3-turbo",
+  "text": "そうそれが教会として望ましいか考え直すべきだって"
+ },
+ "01_hairi-007": {
+  "sha1": "0a60b4c1c4a3ad5c70b8222c5e0619092418acd6",
+  "model": "large-v3-turbo",
+  "text": "問いは2つ。なんで店の広告は暗号みたいになったんか。"
+ },
+ "01_hairi-008": {
+  "sha1": "559f46bb367d036b0ccd0250be09e5e324e02073",
+  "model": "large-v3-turbo",
+  "text": "ほんでうちら宇都川にとって何が変わるんか"
+ },
+ "01_hairi-009": {
+  "sha1": "b0b35cba58375bb152da21f30e67a4580566cd3a",
+  "model": "large-v3-turbo",
+  "text": "教会のルールとチェックする顔の発表をもとに整理していく"
+ },
+ "02_keii-001": {
+  "sha1": "4b18d12820d60d907ecb386e3af0da96fa3b3778",
+  "model": "large-v3-turbo",
+  "text": "講話をしたのは警察庁の保安課の課長補佐"
+ },
+ "02_keii-002": {
+  "sha1": "74e5a60a668b2e481ede1306f97bc37a361f8af1",
+  "model": "large-v3-turbo",
+  "text": "広告ではガイドラインをすり抜けるやり方が横行してるって指摘した"
+ },
+ "02_keii-003": {
+  "sha1": "e25291ba6cc006ce3759b2a158e6f01c851865c6",
+  "model": "large-v3-turbo",
+  "text": "ガイドラインって法律とは別もんなん?"
+ },
+ "02_keii-004": {
+  "sha1": "31d65c9b579135b1d774f7a43d91ccb1b36e2b08",
+  "model": "large-v3-turbo",
+  "text": "ホールの4つの団体が作った教会の自主ルール。"
+ },
+ "02_keii-005": {
+  "sha1": "583c67f6e95ed7c1af425cbc9582ec8f2da5079c",
+  "model": "large-v3-turbo",
+  "text": "今の第3版は、2025年5月29日に発表されて、2025年7月からの広告が是正勧告の対象になった。"
+ },
+ "02_keii-006": {
+  "sha1": "99d60279fbc77b368366cdb30cb6b9841ec817d2",
+  "model": "large-v3-turbo",
+  "text": "中身、どんなこと決めてんの?"
+ },
+ "02_keii-007": {
+  "sha1": "0a89d87e6d90420c474666a53eda16592c44b945",
+  "model": "large-v3-turbo",
+  "text": "例えばおすすめの台は7日以上続けて出さないといけない"
+ },
+ "02_keii-008": {
+  "sha1": "3ad06a142b0479b90bb6228d31019eace43ac9e3",
+  "model": "large-v3-turbo",
+  "text": "日替わりのおすすめはあかんのか"
+ },
+ "02_keii-009": {
+  "sha1": "68a81cb2b805cc0e1e5f13e818ae86a4849c9299",
+  "model": "large-v3-turbo",
+  "text": "そう日替わりだと今日はこの台って匂わせに使えるからだろうね"
+ },
+ "02_keii-010": {
+  "sha1": "bb87b1af5420bb6b91bb4fef01bf21cc96aefc70",
+  "model": "large-v3-turbo",
+  "text": "機種に関係する景品の告知も同じ週に1回まで"
+ },
+ "02_keii-011": {
+  "sha1": "cb063e7487ca799e702893d835109d1fa8959890",
+  "model": "large-v3-turbo",
+  "text": "取材の告知とかは?"
+ },
+ "02_keii-012": {
+  "sha1": "d40f814f504f584fa0b2c83057420fee9351402f",
+  "model": "large-v3-turbo",
+  "text": "取材の人が来ない取材の告知はダメ?AIのキャラを使うならAIで作ったって書く"
+ },
+ "02_keii-013": {
+  "sha1": "0b7ab1b6a0f97dc29cd857ad2922285ee6770ece",
+  "model": "large-v3-turbo",
+  "text": "AIの演者までルールに乗ってるんや"
+ },
+ "02_keii-014": {
+  "sha1": "08ca0dbdc99af28b26f8715ec40d8ebf7ee492b2",
+  "model": "large-v3-turbo",
+  "text": "講話では違反には教会として厳しく対処するようにとも求めたらしい"
+ },
+ "03_shikumi-001": {
+  "sha1": "96a73a41e05b82d31d62a15303b032273794b03a",
+  "model": "large-v3-turbo",
+  "text": "で、なんで暗号みたいになるん?"
+ },
+ "03_shikumi-002": {
+  "sha1": "ef868b2799605434eb4d74ac6bc56e65e42b2648",
+  "model": "large-v3-turbo",
+  "text": "出玉や設定を広告でほのめかすのはカイドラインで止められてる"
+ },
+ "03_shikumi-003": {
+  "sha1": "7e767a8e6712dad48d5e4ec89abcfec2f2a9bbf3",
+  "model": "large-v3-turbo",
+  "text": "はっきり言えないから今は試合で匂わせる それは吊り抜け"
+ },
+ "03_shikumi-004": {
+  "sha1": "2b85d1791f273b58358aebe9bd5d8ddcdaa1527c",
+  "model": "large-v3-turbo",
+  "text": "ほな、わかる人だけ集まって、わからん人は普通に打て帰るわけか。"
+ },
+ "03_shikumi-005": {
+  "sha1": "0ef22ce1a73a1b8a00bdefa262838e4727555611",
+  "model": "large-v3-turbo",
+  "text": "わかる人にはわかる広告は、わからない人にはなんの情報もない。"
+ },
+ "03_shikumi-006": {
+  "sha1": "dac946fd43f32b9c41e7be158f9e366870c8c8c6",
+  "model": "large-v3-turbo",
+  "text": "それ、広告やなくて合言葉やん!"
+ },
+ "03_shikumi-007": {
+  "sha1": "aae4f93be05841636a40d732e2ae79c3a1002d0e",
+  "model": "large-v3-turbo",
+  "text": "チェックする側も動いてる有利産業健全化推進機構っていう協会の機関"
+ },
+ "03_shikumi-008": {
+  "sha1": "a20ec3f2a0d346204ad2edf7c35b39dc516c6b8c",
+  "model": "large-v3-turbo",
+  "text": "2026年4月から未成の立ち入りのついでに、ガイドラインを守ってるか確かめ始めた。"
+ },
+ "03_shikumi-009": {
+  "sha1": "241cd545a4cad35c74e691f211d77bd71394ec5f",
+  "model": "large-v3-turbo",
+  "text": "立ち入れて抜き打ちで来るやつ?"
+ },
+ "03_shikumi-010": {
+  "sha1": "814df9b4b33b110c2930d480811b6f47bc3f69c4",
+  "model": "large-v3-turbo",
+  "text": "通知なしの立ち寮、これからも随時やるって発表してる"
+ },
+ "03_shikumi-011": {
+  "sha1": "6e50c3fe786a6327dd7cea9c1cdaf3eb71b59ea8",
+  "model": "large-v3-turbo",
+  "text": "2026年4月から9月までに611店舗で確かめた"
+ },
+ "03_shikumi-012": {
+  "sha1": "07b18b5de5604fe2ab54ecbef3b2cbf0a5652c5c",
+  "model": "large-v3-turbo",
+  "text": "店の刑事物を取って、違反の疑いがあれば、業界の検討会に回す。"
+ },
+ "03_shikumi-013": {
+  "sha1": "72bc903ef377f3ab577b5de333eef17e21402d8b",
+  "model": "large-v3-turbo",
+  "text": "是正勧告に当たると判断されたら是正要望書が届く"
+ },
+ "03_shikumi-014": {
+  "sha1": "c35e1916dca482d43ff094cf917c0b2e14fa0899",
+  "model": "large-v3-turbo",
+  "text": "2026年8月23日までの分で29店舗に送られた"
+ },
+ "03_shikumi-015": {
+  "sha1": "e1ca75e40355b30641de22b7d0a7ad566a2166de",
+  "model": "large-v3-turbo",
+  "text": "29店舗って前の回でもちょっと出てきたな"
+ },
+ "03_shikumi-016": {
+  "sha1": "e9ecf42adb71f14c408836949f0166ff67edf476",
+  "model": "large-v3-turbo",
+  "text": "今回はその先、届いてから1年以内にもう一回確かめに来る。"
+ },
+ "03_shikumi-017": {
+  "sha1": "345e50451097756f0ab3dbf03a47a304863cad53",
+  "model": "large-v3-turbo",
+  "text": "直したふりしてすぐ戻したらバレるやつや"
+ },
+ "03_shikumi-018": {
+  "sha1": "908f33e82e4c20d325f9ae7a95903621d8cb63a9",
+  "model": "large-v3-turbo",
+  "text": "マタイハンなら気候の理事会でベッドの対応を考える。中身はまだ示されてない。"
+ },
+ "03_shikumi-019": {
+  "sha1": "a4e9d70c56f1e058149c518d53d6de0b5fc96a45",
+  "model": "large-v3-turbo",
+  "text": "他に情報が寄せられた31店舗には閣役所が送られて全部帰ってきた。"
+ },
+ "04_kawaru-001": {
+  "sha1": "c05e28b14ceae14a502334b2e7b0d371095d7304",
+  "model": "large-v3-turbo",
+  "text": "で、うちら宇都川には何が変わるん?"
+ },
+ "04_kawaru-002": {
+  "sha1": "0e028d57613c443ef7bfa921c709a5ad1c50bab6",
+  "model": "large-v3-turbo",
+  "text": "広告を読み解いて台を選ぶやり方は通じにくくなる方向だと思う"
+ },
+ "04_kawaru-003": {
+  "sha1": "af915f7f3f40d7f8e3b31c85a8410ec8e23ed31b",
+  "model": "large-v3-turbo",
+  "text": "暗号解いてる時点でもう客やなくて探偵やもんな"
+ },
+ "04_kawaru-004": {
+  "sha1": "b351893fb0ceffd165d66dfa82e8723201e55e07",
+  "model": "large-v3-turbo",
+  "text": "それに見られてるのは広告だけじゃない"
+ },
+ "04_kawaru-005": {
+  "sha1": "cca4be583fd543771d9eaa64a43b4440c157e357",
+  "model": "large-v3-turbo",
+  "text": "のめり込みを防ぐ対策の立ち入りは2巡目で2631店舗1巡目より悪くなった店もあるらしい"
+ },
+ "04_kawaru-006": {
+  "sha1": "cd9e903661e60203bab033acae8697f02dd9932b",
+  "model": "large-v3-turbo",
+  "text": "そっちも警察庁は何か言うてたん?"
+ },
+ "04_kawaru-007": {
+  "sha1": "5beb747a53c2d4193093fb95f7bfebcfee01fc2d",
+  "model": "large-v3-turbo",
+  "text": "大変憂慮してるって言ったと報じられてる"
+ },
+ "04_kawaru-008": {
+  "sha1": "ca33420cc975c0baa54482b83d61c183d35e5c84",
+  "model": "large-v3-turbo",
+  "text": "で、その29店舗ってどこの店なん?"
+ },
+ "04_kawaru-009": {
+  "sha1": "c829b449421daffa82447529c8c209f02c9efc69",
+  "model": "large-v3-turbo",
+  "text": "店の名前は公表されてない。探して叩くための仕組みじゃない。"
+ },
+ "04_kawaru-010": {
+  "sha1": "cd06ac8f724fb9517ca1f4358bd51b0f889bb921",
+  "model": "large-v3-turbo",
+  "text": "広告を直させるための仕組みってことか"
+ },
+ "04_kawaru-011": {
+  "sha1": "257b98bfecde0808a4d01f9c68e188530f9750b8",
+  "model": "large-v3-turbo",
+  "text": "ほんならうちは告知より自分の財布と相談するわ"
+ },
+ "04_kawaru-012": {
+  "sha1": "a1ef3dac23b6253c8eef5e36b5c33b71e0a102f7",
+  "model": "large-v3-turbo",
+  "text": "それが一番外れない読み方"
+ },
+ "05_matome-001": {
+  "sha1": "b968b3fc71c242f6bced8726faf190995c8ef916",
+  "model": "large-v3-turbo",
+  "text": "まとめ。2026年11月10日、警察庁の担当者がわかる人にはわかる広告を考え直すよう協会に求めた。"
+ },
+ "05_matome-002": {
+  "sha1": "825247202f88113ed93b2e9f774e81a5899feb56",
+  "model": "large-v3-turbo",
+  "text": "一つ目の答え出玉や設定をはっきり言われへんから匂わせて暗号みたいになった"
+ },
+ "05_matome-003": {
+  "sha1": "a70e6eae85b913af2a6cc5ce17d6ba48dc0c33e1",
+  "model": "large-v3-turbo",
+  "text": "2つ目の答え変わることは3つや"
+ },
+ "05_matome-004": {
+  "sha1": "1170cdd8f4b1d2a40bc96760d992d33336449d54",
+  "model": "large-v3-turbo",
+  "text": "一つ、外の機関は店に来て、広告を取って確かめる。"
+ },
+ "05_matome-005": {
+  "sha1": "b5a753550fd7168a6d276c7c18f4f6278fdf9129",
+  "model": "large-v3-turbo",
+  "text": "二つ、違反なら是正応募書が届いて、一年以内にまた来る。"
+ },
+ "05_matome-006": {
+  "sha1": "2a754692254998ff8a39d6fc85f94699b0c4c815",
+  "model": "large-v3-turbo",
+  "text": "3つ、それでも治らなければ医師会でデッドの対応"
+ },
+ "05_matome-007": {
+  "sha1": "d77c09894064535f4eee82706807a5d983ae0bdb",
+  "model": "large-v3-turbo",
+  "text": "広告は本来誰が読んでもわかるのが普通の形"
+ },
+ "05_matome-008": {
+  "sha1": "bcaffcd2e768612dee71a99b4a4daa0fae5cf14d",
+  "model": "large-v3-turbo",
+  "text": "ほなこの動画のタイトルも誰でもわかるようにしといてや"
+ },
+ "05_matome-009": {
+  "sha1": "42b97d672ebbbfd4c5d033f44dfc55608a30ea5f",
+  "model": "large-v3-turbo",
+  "text": "それはちゃんとしてる"
+ },
+ "99_ed-001": {
+  "sha1": "28493d82e8c4dfc17fc290f2ff013f8e3c3e103b",
+  "model": "large-v3-turbo",
+  "text": "ここまで見てくれてありがとう"
+ },
+ "99_ed-002": {
+  "sha1": "569d82d2ad8575e28331e2b183ca466f3d8f1cd8",
+  "model": "large-v3-turbo",
+  "text": "店の広告分かりにくいって思ったことある?コメントで教えてや!"
+ },
+ "99_ed-003": {
+  "sha1": "463aba79cd6d2ccf82ec30ab67a76b0dc7c10752",
+  "model": "large-v3-turbo",
+  "text": "よかったら高評価とチャンネル登録お願いします"
+ },
+ "99_ed-004": {
+  "sha1": "4e7b9001d3bcb0ce32e5470238b25d8b33883e3d",
+  "model": "large-v3-turbo",
+  "text": "ほな、またな。"
+ },
+ "99_ed-005": {
+  "sha1": "56324bb563ecc93840c06a8d3b4a05439abe8e8d",
+  "model": "large-v3-turbo",
+  "text": "また次回おやすみ"
+ }
+}
