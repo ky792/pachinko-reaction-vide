@@ -253,7 +253,7 @@ def make_voice(items, ep, cache_dir):
             v = board_cycle[bi % len(board_cycle)]; bi += 1
         else:
             v = voices[who]
-        if it.get("corner"):
+        if it.get("corner") or it.get("silent"):   # silent: 読み上げなしの「……」や無言タイトル
             it["_voice"] = np.zeros(int(SR * it.get("min", 1.0)), np.float32)
             continue
         if it.get("voice"):
@@ -708,7 +708,7 @@ def main():
     if args.no_voice:
         for it in items:
             n = len(it["text"].replace("\n", ""))
-            it["_voice"] = np.zeros(int(SR * (it.get("min", 1.0) if it.get("corner") else max(1.1, n / 6.3))), np.float32)
+            it["_voice"] = np.zeros(int(SR * (it.get("min", 1.0) if (it.get("corner") or it.get("silent")) else max(1.1, n / 6.3))), np.float32)
     else:
         make_voice(items, ep, Path(args.cache))
 
@@ -721,7 +721,7 @@ def main():
         hb = it.get("hold_before")
         if hb:
             t += hb if (isinstance(hb, (int, float)) and not isinstance(hb, bool)) else OCHI_HOLD
-        dur = len(it["_voice"]) / SR + GAP
+        dur = len(it["_voice"]) / SR + ep.get("gap", GAP)   # gap: セリフ間（会話回は少し長め）
         dur = max(dur, it.get("min", 1.2))
         it["_start"], it["_dur"] = t, dur
         timeline.append({"start": round(t, 3), "dur": round(dur, 3), "text": it["text"],
