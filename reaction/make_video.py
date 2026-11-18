@@ -236,14 +236,14 @@ def register_dictionary(words):
         print(f"  辞書 {ok}/{len(words)} 語 → {base}")
 
 
-def make_voice(items, ep, cache_dir):
+def make_voice(items, ep, cache_dir, ep_dir=Path(".")):
     """各コメントの読み上げ音声（edge-tts）を作る。キャッシュあり。"""
     if ep.get("dictionary"):
         register_dictionary(ep["dictionary"])
     cache_dir.mkdir(parents=True, exist_ok=True)
     voices = ep["voices"]
     rep = ep.get("reading", {})
-    if any("candidates" in v for v in voices["board"]):
+    if any("candidates" in v for v in voices["board"]) and any(norm_who(it.get("who", "board")) == "board" and not (it.get("wav") or it.get("corner") or it.get("silent") or it.get("title")) for it in items):
         voices["board"] = [resolve_speaker(v) for v in voices["board"]]
     board_cycle = voices["board"]
     bi = 0
@@ -255,6 +255,19 @@ def make_voice(items, ep, cache_dir):
             v = voices[who]
         if it.get("corner") or it.get("silent"):   # silent: 読み上げなしの「……」や無言タイトル
             it["_voice"] = np.zeros(int(SR * it.get("min", 1.0)), np.float32)
+            continue
+        if it.get("wav"):   # 別の仕組み（AivisSpeech／Irodori の action=lines）で作った音声をそのまま使う
+            tempo = ep.get("voice_tempo", 1.0)
+            raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(ep_dir / it["wav"]),
+                                  *(["-af", f"atempo={tempo}"] if tempo != 1.0 else []),
+                                  "-f", "f32le", "-ac", "1", "-ar", str(SR), "-"], capture_output=True, check=True).stdout
+            x = np.frombuffer(raw, dtype=np.float32).copy()
+            x = trim_silence(x)
+            rms = np.sqrt(np.mean(x ** 2)) + 1e-9
+            x = x / rms * 0.22
+            x = np.tanh(x * 1.1) / np.tanh(1.1)
+            it["_voice"] = x.astype(np.float32)
+            print(f"  声(ファイル) {len(x)/SR:4.2f}s {who:5s} {it['wav']}")
             continue
         if it.get("voice"):
             v = it["voice"] = resolve_speaker(it["voice"]) if "candidates" in it["voice"] else it["voice"]
@@ -710,7 +723,7 @@ def main():
             n = len(it["text"].replace("\n", ""))
             it["_voice"] = np.zeros(int(SR * (it.get("min", 1.0) if (it.get("corner") or it.get("silent")) else max(1.1, n / 6.3))), np.float32)
     else:
-        make_voice(items, ep, Path(args.cache))
+        make_voice(items, ep, Path(args.cache), ep_path.parent)
 
     # タイムライン：声の長さ＋0.04秒。大オチ前だけBGMカット→溜め
     t = 0.0
@@ -821,6 +834,8 @@ def main():
         str(out)], check=True)
     (work / "kana.txt").write_text("\n".join(KANA_LOG), encoding="utf-8")
     names = sorted(n for n in USED_VOICES if n)
+    if ep.get("voice_credits"):   # ファイル音声の回は、episode に書いたクレジットを使う
+        names = [ep["voice_credits"]]
     if names:
         (out.parent / (out.stem + "_credits.txt")).write_text(" / ".join(names), encoding="utf-8")
     print(f"完成: {out}")

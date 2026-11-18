@@ -62,162 +62,7 @@
    "shift": 3
   }
  },
- "aivis_models": [
-  "4f281e78-eba6-495a-8e50-5c322d02b5b1",
-  "9f36ec0d-8dac-42dc-aff4-149c5f99faad"
- ],
- "dictionary": [
-  {
-   "surface": "残保留",
-   "pronunciation": "ザンホリュウ",
-   "accent_type": 3
-  },
-  {
-   "surface": "電サポ",
-   "pronunciation": "デンサポ",
-   "accent_type": 0
-  },
-  {
-   "surface": "連チャン",
-   "pronunciation": "レンチャン",
-   "accent_type": 0
-  },
-  {
-   "surface": "出玉",
-   "pronunciation": "デダマ",
-   "accent_type": 0
-  },
-  {
-   "surface": "出玉感",
-   "pronunciation": "デダマカン",
-   "accent_type": 0
-  },
-  {
-   "surface": "小当たり",
-   "pronunciation": "コアタリ",
-   "accent_type": 0
-  },
-  {
-   "surface": "大当たり",
-   "pronunciation": "オオアタリ",
-   "accent_type": 3
-  },
-  {
-   "surface": "上出来",
-   "pronunciation": "ジョウデキ",
-   "accent_type": 0
-  },
-  {
-   "surface": "脳筋",
-   "pronunciation": "ノウキン",
-   "accent_type": 0
-  },
-  {
-   "surface": "北斗無双",
-   "pronunciation": "ホクトムソウ",
-   "accent_type": 3
-  },
-  {
-   "surface": "シンフォギア",
-   "pronunciation": "シンフォギア",
-   "accent_type": 3
-  },
-  {
-   "surface": "慶次",
-   "pronunciation": "ケイジ",
-   "accent_type": 1
-  },
-  {
-   "surface": "16R",
-   "pronunciation": "ジュウロクアール",
-   "accent_type": 5
-  },
-  {
-   "surface": "ラムクリ",
-   "pronunciation": "ラムクリ",
-   "accent_type": 0
-  },
-  {
-   "surface": "据え置き",
-   "pronunciation": "スエオキ",
-   "accent_type": 0
-  },
-  {
-   "surface": "轟音",
-   "pronunciation": "ゴウオン",
-   "accent_type": 0
-  },
-  {
-   "surface": "ハイエナ",
-   "pronunciation": "ハイエナ",
-   "accent_type": 0
-  },
-  {
-   "surface": "天井",
-   "pronunciation": "テンジョウ",
-   "accent_type": 0
-  },
-  {
-   "surface": "ロクジュウロクテンロクパーセント",
-   "pronunciation": "ロクジュウロクテンロクパーセント",
-   "accent_type": 9
-  },
-  {
-   "surface": "キュウジュウハチパーセント",
-   "pronunciation": "キュウジュウハチパーセント",
-   "accent_type": 7
-  },
-  {
-   "surface": "ゴパーセント",
-   "pronunciation": "ゴパーセント",
-   "accent_type": 2
-  },
-  {
-   "surface": "脳汁",
-   "pronunciation": "ノウジル",
-   "accent_type": 0
-  },
-  {
-   "surface": "ガロ",
-   "pronunciation": "ガロ",
-   "accent_type": 1
-  },
-  {
-   "surface": "マカイ",
-   "pronunciation": "マカイ",
-   "accent_type": 0
-  },
-  {
-   "surface": "羽根モノ",
-   "pronunciation": "ハネモノ",
-   "accent_type": 0
-  },
-  {
-   "surface": "デジパチ",
-   "pronunciation": "デジパチ",
-   "accent_type": 0
-  },
-  {
-   "surface": "ハチジュウニパーセント",
-   "pronunciation": "ハチジュウニパーセント",
-   "accent_type": 7
-  },
-  {
-   "surface": "ゴジュッパーセント",
-   "pronunciation": "ゴジュッパーセント",
-   "accent_type": 5
-  },
-  {
-   "surface": "ゴジュウイチパーセント",
-   "pronunciation": "ゴジュウイチパーセント",
-   "accent_type": 7
-  },
-  {
-   "surface": "ロクジュウゴパーセント",
-   "pronunciation": "ロクジュウゴパーセント",
-   "accent_type": 7
-  }
- ],
+ "aivis_models": [],
  "reading": {
   "超高確": "ちょうこうかく",
   "高確": "こうかく",
@@ -263,20 +108,23 @@
      "text": "……なぁナギ",
      "say": "……なぁナギ",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-001.m4a"
     },
     {
      "who": "nagi",
      "text": "ん？",
      "say": "ん？",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-002.m4a"
     },
     {
      "who": "baku",
      "text": "スロットってさ\n冷静に考えたら難しすぎへん？",
      "say": "スロットってさ、冷静に考えたら難しすぎへん？",
      "se": "none",
-     "face": "think"
+     "face": "think",
+     "wav": "voices/k01-003.m4a"
     },
     {
      "title": true,
@@ -293,68 +141,78 @@
      "say": "何、負けたの？",
      "se": "none",
      "face": "think",
-     "hold_before": 0.25
+     "hold_before": 0.25,
+     "wav": "voices/k01-004.m4a"
     },
     {
      "who": "baku",
      "text": "ちゃうわ！",
      "say": "ちゃうわ！",
      "se": "piko",
-     "face": "tsukkomi"
+     "face": "tsukkomi",
+     "wav": "voices/k01-005.m4a"
     },
     {
      "who": "baku",
      "text": "いや、負けたけど",
      "say": " いや、負けたけど",
      "se": "none",
-     "face": "tsukkomi"
+     "face": "tsukkomi",
+     "wav": "voices/k01-006.m4a"
     },
     {
      "who": "nagi",
      "text": "負けたんだ",
      "say": "負けたんだ",
      "se": "none",
-     "hold_before": 0.35
+     "hold_before": 0.35,
+     "wav": "voices/k01-007.m4a"
     },
     {
      "who": "baku",
      "text": "それはええねん",
      "say": "それはええねん。",
      "se": "none",
-     "face": "mutto"
+     "face": "mutto",
+     "wav": "voices/k01-008.m4a"
     },
     {
      "who": "baku",
      "text": "新台の解析見とったんやけどな\nこれ初心者が見ても\n意味分からんやろ",
      "say": "新台の解析見とったんやけどな、これ初心者が見ても意味分からんやろ",
      "se": "none",
-     "face": "mutto"
+     "face": "mutto",
+     "wav": "voices/k01-009.m4a"
     },
     {
      "who": "nagi",
      "text": "まあ、専門用語が多いからね",
      "say": "まあ、専門用語が多いからね",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-010.m4a"
     },
     {
      "who": "baku",
      "text": "ウチら当たり前みたいに\n打っとるけど",
      "say": "ウチら当たり前みたいに打っとるけど、",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-011.m4a"
     },
     {
      "who": "baku",
      "text": "よう考えたらスロットって\n相当複雑な遊びやと思うねん",
      "say": "よう考えたらスロットって相当複雑な遊びやと思うねん",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-012.m4a"
     },
     {
      "who": "nagi",
      "text": "パチンコと比べると\n特にそう感じるかもね",
      "say": "パチンコと比べると、特にそう感じるかもね",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-013.m4a"
     }
    ]
   },
@@ -372,14 +230,16 @@
      "text": "そう！",
      "say": "そう！",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-014.m4a"
     },
     {
      "who": "baku",
      "text": "パチンコって基本的にはめっちゃ\n分かりやすいやん",
      "say": " パチンコって基本的にはめっちゃ分かりやすいやん",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-015.m4a"
     },
     {
      "who": "nagi",
@@ -409,7 +269,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-016.m4a"
     },
     {
      "who": "nagi",
@@ -439,7 +300,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-017.m4a"
     },
     {
      "who": "nagi",
@@ -469,7 +331,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-018.m4a"
     },
     {
      "who": "baku",
@@ -499,7 +362,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-019.m4a"
     },
     {
      "who": "baku",
@@ -529,7 +393,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-020.m4a"
     },
     {
      "who": "baku",
@@ -559,7 +424,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-021.m4a"
     },
     {
      "who": "baku",
@@ -589,7 +455,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-022.m4a"
     },
     {
      "who": "nagi",
@@ -619,7 +486,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-023.m4a"
     },
     {
      "who": "baku",
@@ -649,7 +517,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-024.m4a"
     },
     {
      "who": "baku",
@@ -679,7 +548,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-025.m4a"
     },
     {
      "who": "nagi",
@@ -708,7 +578,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-026.m4a"
     },
     {
      "who": "nagi",
@@ -737,7 +608,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-027.m4a"
     },
     {
      "who": "nagi",
@@ -766,7 +638,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-028.m4a"
     },
     {
      "who": "baku",
@@ -796,7 +669,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-029.m4a"
     },
     {
      "who": "baku",
@@ -826,7 +700,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-030.m4a"
     },
     {
      "who": "nagi",
@@ -861,7 +736,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-031.m4a"
     },
     {
      "who": "nagi",
@@ -896,7 +772,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-032.m4a"
     },
     {
      "who": "baku",
@@ -931,7 +808,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-033.m4a"
     },
     {
      "who": "nagi",
@@ -965,7 +843,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-034.m4a"
     },
     {
      "who": "baku",
@@ -973,7 +852,8 @@
      "say": "ほんで問題はスロットや",
      "se": "piko",
      "face": "tsukkomi",
-     "bg": {}
+     "bg": {},
+     "wav": "voices/k01-035.m4a"
     }
    ]
   },
@@ -991,7 +871,8 @@
      "text": "まずパチンコと違って\n自分でレバー叩いて\nリール止めるやろ？",
      "say": "まずパチンコと違って、自分でレバー叩いてリール止めるやろ？",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-036.m4a"
     },
     {
      "who": "nagi",
@@ -1011,7 +892,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-037.m4a"
     },
     {
      "who": "nagi",
@@ -1031,7 +913,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-038.m4a"
     },
     {
      "who": "baku",
@@ -1056,7 +939,8 @@
        ]
       }
      },
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-039.m4a"
     },
     {
      "who": "nagi",
@@ -1091,7 +975,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-040.m4a"
     },
     {
      "who": "nagi",
@@ -1126,7 +1011,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-041.m4a"
     },
     {
      "who": "nagi",
@@ -1161,7 +1047,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-042.m4a"
     },
     {
      "who": "baku",
@@ -1196,7 +1083,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-043.m4a"
     },
     {
      "who": "nagi",
@@ -1221,7 +1109,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-044.m4a"
     },
     {
      "who": "nagi",
@@ -1246,7 +1135,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-045.m4a"
     },
     {
      "who": "nagi",
@@ -1271,7 +1161,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-046.m4a"
     },
     {
      "who": "baku",
@@ -1296,7 +1187,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-047.m4a"
     },
     {
      "who": "nagi",
@@ -1320,7 +1212,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-048.m4a"
     },
     {
      "who": "nagi",
@@ -1344,7 +1237,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-049.m4a"
     },
     {
      "who": "baku",
@@ -1369,7 +1263,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-050.m4a"
     }
    ]
   },
@@ -1400,7 +1295,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-051.m4a"
     },
     {
      "who": "baku",
@@ -1420,7 +1316,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-052.m4a"
     },
     {
      "who": "nagi",
@@ -1439,7 +1336,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-053.m4a"
     },
     {
      "who": "baku",
@@ -1459,7 +1357,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-054.m4a"
     },
     {
      "who": "baku",
@@ -1479,7 +1378,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-055.m4a"
     },
     {
      "who": "baku",
@@ -1499,7 +1399,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-056.m4a"
     },
     {
      "who": "nagi",
@@ -1524,7 +1425,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-057.m4a"
     },
     {
      "who": "nagi",
@@ -1549,7 +1451,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-058.m4a"
     },
     {
      "who": "baku",
@@ -1574,7 +1477,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-059.m4a"
     },
     {
      "who": "nagi",
@@ -1604,7 +1508,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-060.m4a"
     },
     {
      "who": "baku",
@@ -1634,7 +1539,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-061.m4a"
     },
     {
      "who": "baku",
@@ -1664,7 +1570,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-062.m4a"
     },
     {
      "who": "nagi",
@@ -1693,7 +1600,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-063.m4a"
     },
     {
      "who": "nagi",
@@ -1722,7 +1630,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-064.m4a"
     },
     {
      "who": "nagi",
@@ -1751,7 +1660,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-065.m4a"
     },
     {
      "who": "baku",
@@ -1786,7 +1696,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-066.m4a"
     },
     {
      "who": "baku",
@@ -1821,7 +1732,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-067.m4a"
     },
     {
      "who": "nagi",
@@ -1855,7 +1767,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-068.m4a"
     },
     {
      "who": "nagi",
@@ -1889,7 +1802,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-069.m4a"
     },
     {
      "who": "baku",
@@ -1929,7 +1843,8 @@
        ]
       }
      },
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-070.m4a"
     },
     {
      "who": "baku",
@@ -1969,7 +1884,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-071.m4a"
     },
     {
      "who": "nagi",
@@ -2008,7 +1924,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-072.m4a"
     },
     {
      "who": "nagi",
@@ -2047,7 +1964,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-073.m4a"
     },
     {
      "who": "baku",
@@ -2057,7 +1975,8 @@
      "face": "max",
      "bg": {
       "label": "規定ゲーム数　規定ポイント\n周期抽選　前兆\nフェイク前兆　本前兆"
-     }
+     },
+     "wav": "voices/k01-074.m4a"
     },
     {
      "who": "baku",
@@ -2067,7 +1986,8 @@
      "face": "max",
      "bg": {
       "label": "規定ゲーム数　規定ポイント\n周期抽選　前兆\nフェイク前兆　本前兆"
-     }
+     },
+     "wav": "voices/k01-075.m4a"
     },
     {
      "who": "baku",
@@ -2077,7 +1997,8 @@
      "face": "max",
      "bg": {
       "label": "規定ゲーム数　規定ポイント\n周期抽選　前兆\nフェイク前兆　本前兆"
-     }
+     },
+     "wav": "voices/k01-076.m4a"
     },
     {
      "who": "nagi",
@@ -2102,7 +2023,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-077.m4a"
     },
     {
      "who": "nagi",
@@ -2127,7 +2049,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-078.m4a"
     },
     {
      "who": "nagi",
@@ -2152,7 +2075,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-079.m4a"
     },
     {
      "who": "baku",
@@ -2182,7 +2106,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-080.m4a"
     },
     {
      "who": "baku",
@@ -2212,7 +2137,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-081.m4a"
     },
     {
      "who": "nagi",
@@ -2242,7 +2168,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-082.m4a"
     },
     {
      "who": "baku",
@@ -2272,7 +2199,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-083.m4a"
     },
     {
      "who": "nagi",
@@ -2301,7 +2229,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-084.m4a"
     }
    ]
   },
@@ -2319,14 +2248,16 @@
      "text": "じゃあ\nやっとATに入ったとしようか",
      "say": "じゃあ、やっとATに入ったとしようか",
      "se": "none",
-     "bg": {}
+     "bg": {},
+     "wav": "voices/k01-085.m4a"
     },
     {
      "who": "baku",
      "text": "ようやくや！",
      "say": "ようやくや！",
      "se": "none",
-     "face": "max"
+     "face": "max",
+     "wav": "voices/k01-086.m4a"
     },
     {
      "who": "nagi",
@@ -2346,7 +2277,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-087.m4a"
     },
     {
      "who": "nagi",
@@ -2366,7 +2298,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-088.m4a"
     },
     {
      "who": "nagi",
@@ -2386,7 +2319,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-089.m4a"
     },
     {
      "who": "baku",
@@ -2406,7 +2340,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-090.m4a"
     },
     {
      "who": "nagi",
@@ -2431,7 +2366,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-091.m4a"
     },
     {
      "who": "nagi",
@@ -2456,7 +2392,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-092.m4a"
     },
     {
      "who": "baku",
@@ -2481,7 +2418,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-093.m4a"
     },
     {
      "who": "baku",
@@ -2506,7 +2444,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-094.m4a"
     },
     {
      "who": "baku",
@@ -2531,7 +2470,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-095.m4a"
     },
     {
      "who": "nagi",
@@ -2555,7 +2495,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-096.m4a"
     },
     {
      "who": "nagi",
@@ -2579,7 +2520,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-097.m4a"
     },
     {
      "who": "baku",
@@ -2609,7 +2551,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-098.m4a"
     },
     {
      "who": "baku",
@@ -2639,7 +2582,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-099.m4a"
     },
     {
      "who": "nagi",
@@ -2668,7 +2612,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-100.m4a"
     },
     {
      "who": "baku",
@@ -2703,7 +2648,8 @@
        ]
       }
      },
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-101.m4a"
     },
     {
      "who": "nagi",
@@ -2737,7 +2683,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-102.m4a"
     },
     {
      "who": "nagi",
@@ -2771,7 +2718,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-103.m4a"
     },
     {
      "who": "baku",
@@ -2806,7 +2754,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-104.m4a"
     },
     {
      "who": "baku",
@@ -2841,7 +2790,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-105.m4a"
     },
     {
      "who": "nagi",
@@ -2881,7 +2831,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-106.m4a"
     },
     {
      "who": "nagi",
@@ -2921,7 +2872,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-107.m4a"
     },
     {
      "who": "baku",
@@ -2961,7 +2913,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-108.m4a"
     },
     {
      "who": "baku",
@@ -3001,7 +2954,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-109.m4a"
     },
     {
      "who": "nagi",
@@ -3040,7 +2994,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-110.m4a"
     }
    ]
   },
@@ -3058,13 +3013,15 @@
      "text": "ほんでスロットって\n勝とうと思ったらさらに\n覚えること増えるやん",
      "say": "ほんでスロットって、勝とうと思ったらさらに覚えること増えるやん",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-111.m4a"
     },
     {
      "who": "nagi",
      "text": "設定判別とか？",
      "say": "設定判別とか？",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-112.m4a"
     },
     {
      "who": "baku",
@@ -3074,7 +3031,8 @@
      "face": "max",
      "bg": {
       "label": "設定差　機械割\n初当たり確率　終了画面\nトロフィー　ボイス示唆"
-     }
+     },
+     "wav": "voices/k01-113.m4a"
     },
     {
      "who": "baku",
@@ -3084,7 +3042,8 @@
      "face": "max",
      "bg": {
       "label": "設定差　機械割\n初当たり確率　終了画面\nトロフィー　ボイス示唆"
-     }
+     },
+     "wav": "voices/k01-114.m4a"
     },
     {
      "who": "baku",
@@ -3094,7 +3053,8 @@
      "face": "max",
      "bg": {
       "label": "設定差　機械割\n初当たり確率　終了画面\nトロフィー　ボイス示唆"
-     }
+     },
+     "wav": "voices/k01-115.m4a"
     },
     {
      "who": "nagi",
@@ -3103,7 +3063,8 @@
      "se": "none",
      "bg": {
       "label": "設定差　機械割\n初当たり確率　終了画面\nトロフィー　ボイス示唆"
-     }
+     },
+     "wav": "voices/k01-116.m4a"
     },
     {
      "who": "nagi",
@@ -3112,7 +3073,8 @@
      "se": "none",
      "bg": {
       "label": "設定差　機械割\n初当たり確率　終了画面\nトロフィー　ボイス示唆"
-     }
+     },
+     "wav": "voices/k01-117.m4a"
     },
     {
      "who": "baku",
@@ -3122,7 +3084,8 @@
      "face": "max",
      "bg": {
       "label": "リセット恩恵　据え置き判別\n天井狙い　ゾーン狙い\nやめどき　穢れ（一部機種）"
-     }
+     },
+     "wav": "voices/k01-118.m4a"
     },
     {
      "who": "baku",
@@ -3132,7 +3095,8 @@
      "face": "max",
      "bg": {
       "label": "リセット恩恵　据え置き判別\n天井狙い　ゾーン狙い\nやめどき　穢れ（一部機種）"
-     }
+     },
+     "wav": "voices/k01-119.m4a"
     },
     {
      "who": "nagi",
@@ -3141,7 +3105,8 @@
      "se": "none",
      "bg": {
       "label": "リセット恩恵　据え置き判別\n天井狙い　ゾーン狙い\nやめどき　穢れ（一部機種）"
-     }
+     },
+     "wav": "voices/k01-120.m4a"
     },
     {
      "who": "nagi",
@@ -3150,7 +3115,8 @@
      "se": "none",
      "bg": {
       "label": "リセット恩恵　据え置き判別\n天井狙い　ゾーン狙い\nやめどき　穢れ（一部機種）"
-     }
+     },
+     "wav": "voices/k01-121.m4a"
     },
     {
      "who": "baku",
@@ -3160,7 +3126,8 @@
      "face": "tsukkomi",
      "bg": {
       "label": "機種が変われば\nぜんぶ覚え直し"
-     }
+     },
+     "wav": "voices/k01-122.m4a"
     },
     {
      "who": "nagi",
@@ -3168,28 +3135,32 @@
      "say": "大変だね",
      "se": "none",
      "bg": {},
-     "hold_before": 0.3
+     "hold_before": 0.3,
+     "wav": "voices/k01-123.m4a"
     },
     {
      "who": "baku",
      "text": "新台打つ前に解析サイト何十分も\n読んでることあるで",
      "say": "新台打つ前に解析サイト何十分も読んでることあるで",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-124.m4a"
     },
     {
      "who": "nagi",
      "text": "学校の勉強も\nそれくらいやってたらね",
      "say": "学校の勉強もそれくらいやってたらね",
      "se": "none",
-     "hold_before": 0.35
+     "hold_before": 0.35,
+     "wav": "voices/k01-125.m4a"
     },
     {
      "who": "baku",
      "text": "やめろ、その話は",
      "say": "やめろ、その話は",
      "se": "piko",
-     "face": "mutto"
+     "face": "mutto",
+     "wav": "voices/k01-126.m4a"
     }
    ]
   },
@@ -3206,27 +3177,31 @@
      "who": "nagi",
      "text": "でもさ、バク",
      "say": "でもさ、バク",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-127.m4a"
     },
     {
      "who": "baku",
      "text": "なんや？",
      "say": "なんや？",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-128.m4a"
     },
     {
      "who": "nagi",
      "text": "さっきから文句ばっかり\n言ってるけど、そういう複雑な台",
      "say": "さっきから文句ばっかり言ってるけど、そういう複雑な台、",
      "se": "none",
-     "hold_before": 0.2
+     "hold_before": 0.2,
+     "wav": "voices/k01-129.m4a"
     },
     {
      "who": "nagi",
      "text": "好きでしょ？",
      "say": "好きでしょ？",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-130.m4a"
     },
     {
      "who": "baku",
@@ -3234,34 +3209,39 @@
      "say": "……まあ、めっちゃ好きやな",
      "se": "none",
      "face": "mutto",
-     "hold_before": 0.3
+     "hold_before": 0.3,
+     "wav": "voices/k01-131.m4a"
     },
     {
      "who": "nagi",
      "text": "やっぱり",
      "say": "やっぱり",
      "se": "none",
-     "hold_before": 0.25
+     "hold_before": 0.25,
+     "wav": "voices/k01-132.m4a"
     },
     {
      "who": "baku",
      "text": "いや、そこが難しいねん",
      "say": "いや、そこが難しいねん。",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-133.m4a"
     },
     {
      "who": "baku",
      "text": "スロットって\nその複雑さ自体が\nおもろいところでもあるやろ？",
      "say": "スロットって、その複雑さ自体がおもろいところでもあるやろ？",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-134.m4a"
     },
     {
      "who": "nagi",
      "text": "そうだね\n例えばモード推測なんかもそうかな",
      "say": "そうだね。例えばモード推測なんかもそうかな",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-135.m4a"
     },
     {
      "who": "baku",
@@ -3281,7 +3261,8 @@
        ]
       }
      },
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-136.m4a"
     },
     {
      "who": "baku",
@@ -3301,7 +3282,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-137.m4a"
     },
     {
      "who": "baku",
@@ -3321,7 +3303,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-138.m4a"
     },
     {
      "who": "nagi",
@@ -3340,7 +3323,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-139.m4a"
     },
     {
      "who": "baku",
@@ -3365,7 +3349,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-140.m4a"
     },
     {
      "who": "baku",
@@ -3390,7 +3375,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-141.m4a"
     },
     {
      "who": "baku",
@@ -3415,7 +3401,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-142.m4a"
     },
     {
      "who": "nagi",
@@ -3439,7 +3426,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-143.m4a"
     },
     {
      "who": "baku",
@@ -3474,7 +3462,8 @@
        ]
       }
      },
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-144.m4a"
     },
     {
      "who": "baku",
@@ -3509,7 +3498,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-145.m4a"
     },
     {
      "who": "baku",
@@ -3544,7 +3534,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-146.m4a"
     },
     {
      "who": "baku",
@@ -3579,7 +3570,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-147.m4a"
     },
     {
      "who": "nagi",
@@ -3613,7 +3605,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-148.m4a"
     },
     {
      "who": "baku",
@@ -3653,7 +3646,8 @@
        ]
       }
      },
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-149.m4a"
     },
     {
      "who": "baku",
@@ -3693,7 +3687,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-150.m4a"
     },
     {
      "who": "baku",
@@ -3733,7 +3728,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-151.m4a"
     },
     {
      "who": "nagi",
@@ -3772,7 +3768,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-152.m4a"
     },
     {
      "who": "baku",
@@ -3812,7 +3809,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-153.m4a"
     },
     {
      "who": "baku",
@@ -3852,7 +3850,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-154.m4a"
     },
     {
      "who": "baku",
@@ -3892,7 +3891,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-155.m4a"
     },
     {
      "who": "nagi",
@@ -3917,7 +3917,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-156.m4a"
     },
     {
      "who": "baku",
@@ -3925,28 +3926,32 @@
      "say": "ほんまそれ！",
      "se": "none",
      "face": "max",
-     "bg": {}
+     "bg": {},
+     "wav": "voices/k01-157.m4a"
     },
     {
      "who": "baku",
      "text": "なんなら解析サイト読んでる\n時間すら楽しいからな！",
      "say": " なんなら解析サイト読んでる時間すら楽しいからな！",
      "se": "none",
-     "face": "max"
+     "face": "max",
+     "wav": "voices/k01-158.m4a"
     },
     {
      "who": "nagi",
      "text": "さっきまで\n難しすぎるって怒ってたのに",
      "say": "さっきまで難しすぎるって怒ってたのに",
      "se": "none",
-     "hold_before": 0.3
+     "hold_before": 0.3,
+     "wav": "voices/k01-159.m4a"
     },
     {
      "who": "baku",
      "text": "それとこれとは別や！",
      "say": "それとこれとは別や！",
      "se": "piko",
-     "face": "tsukkomi"
+     "face": "tsukkomi",
+     "wav": "voices/k01-160.m4a"
     }
    ]
   },
@@ -3963,42 +3968,48 @@
      "who": "nagi",
      "text": "ただ、そう考えると\n少し難しい問題でもあるね",
      "say": "ただ、そう考えると少し難しい問題でもあるね",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-161.m4a"
     },
     {
      "who": "baku",
      "text": "何がや？",
      "say": "何がや？",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-162.m4a"
     },
     {
      "who": "nagi",
      "text": "知識があるから面白いってことは",
      "say": "知識があるから面白いってことは、",
      "se": "none",
-     "face": "think"
+     "face": "think",
+     "wav": "voices/k01-163.m4a"
     },
     {
      "who": "nagi",
      "text": "知識がない人には面白さが\n伝わりにくい\n場合もあるってことでしょ？",
      "say": "知識がない人には面白さが伝わりにくい場合もあるってことでしょ？",
      "se": "none",
-     "face": "think"
+     "face": "think",
+     "wav": "voices/k01-164.m4a"
     },
     {
      "who": "baku",
      "text": "そう！",
      "say": "そう！",
      "se": "piko",
-     "face": "max"
+     "face": "max",
+     "wav": "voices/k01-165.m4a"
     },
     {
      "who": "baku",
      "text": "ウチが言いたかったんはそこや！",
      "say": " ウチが言いたかったんはそこや！",
      "se": "none",
-     "face": "max"
+     "face": "max",
+     "wav": "voices/k01-166.m4a"
     },
     {
      "who": "nagi",
@@ -4023,7 +4034,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-167.m4a"
     },
     {
      "who": "nagi",
@@ -4048,7 +4060,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-168.m4a"
     },
     {
      "who": "baku",
@@ -4073,7 +4086,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-169.m4a"
     },
     {
      "who": "baku",
@@ -4098,7 +4112,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-170.m4a"
     },
     {
      "who": "baku",
@@ -4123,47 +4138,54 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-171.m4a"
     },
     {
      "who": "nagi",
      "text": "知識があるほど楽しめるけど\n楽しさを理解するまでの\nハードルも高い",
      "say": "知識があるほど楽しめるけど、楽しさを理解するまでのハードルも高い",
      "se": "none",
-     "bg": {}
+     "bg": {},
+     "wav": "voices/k01-172.m4a"
     },
     {
      "who": "baku",
      "text": "しかも知識がないと\nやめどきを間違えて\n損することもあるからな",
      "say": "しかも知識がないと、やめどきを間違えて損することもあるからな",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-173.m4a"
     },
     {
      "who": "nagi",
      "text": "もちろん全部覚えてから\n打つ必要はないけど",
      "say": "もちろん全部覚えてから打つ必要はないけど、",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-174.m4a"
     },
     {
      "who": "nagi",
      "text": "最低限の打ち方や注意点は\n知っておきたいね",
      "say": "最低限の打ち方や注意点は知っておきたいね",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-175.m4a"
     },
     {
      "who": "baku",
      "text": "そうやな\nでも最初に面白いと思えんかったら",
      "say": "そうやな。でも最初に面白いと思えんかったら、",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-176.m4a"
     },
     {
      "who": "baku",
      "text": "そこまで勉強しようとも\n思わへんやろ？",
      "say": "そこまで勉強しようとも思わへんやろ？",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-177.m4a"
     },
     {
      "who": "nagi",
@@ -4188,7 +4210,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-178.m4a"
     },
     {
      "who": "nagi",
@@ -4213,7 +4236,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-179.m4a"
     },
     {
      "who": "baku",
@@ -4238,7 +4262,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-180.m4a"
     },
     {
      "who": "baku",
@@ -4263,7 +4288,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-181.m4a"
     },
     {
      "who": "nagi",
@@ -4287,7 +4313,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-182.m4a"
     },
     {
      "who": "nagi",
@@ -4311,7 +4338,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-183.m4a"
     },
     {
      "who": "baku",
@@ -4320,21 +4348,24 @@
      "se": "none",
      "face": "mutto",
      "bg": {},
-     "hold_before": 0.25
+     "hold_before": 0.25,
+     "wav": "voices/k01-184.m4a"
     },
     {
      "who": "nagi",
      "text": "違った？",
      "say": "違った？",
      "se": "none",
-     "hold_before": 0.2
+     "hold_before": 0.2,
+     "wav": "voices/k01-185.m4a"
     },
     {
      "who": "baku",
      "text": "いや、合っとるけど",
      "say": "いや、合っとるけど",
      "se": "none",
-     "face": "mutto"
+     "face": "mutto",
+     "wav": "voices/k01-186.m4a"
     }
    ]
   },
@@ -4345,13 +4376,15 @@
      "who": "nagi",
      "text": "結局、パチンコにもスロットにも",
      "say": "結局、パチンコにもスロットにも、",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-187.m4a"
     },
     {
      "who": "nagi",
      "text": "それぞれ違った\n面白さがあるんだよね",
      "say": "それぞれ違った面白さがあるんだよね",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-188.m4a"
     },
     {
      "who": "baku",
@@ -4376,7 +4409,8 @@
        ]
       }
      },
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-189.m4a"
     },
     {
      "who": "baku",
@@ -4401,7 +4435,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-190.m4a"
     },
     {
      "who": "nagi",
@@ -4425,7 +4460,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-191.m4a"
     },
     {
      "who": "nagi",
@@ -4449,7 +4485,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-192.m4a"
     },
     {
      "who": "baku",
@@ -4474,7 +4511,8 @@
         ]
        ]
       }
-     }
+     },
+     "wav": "voices/k01-193.m4a"
     },
     {
      "who": "nagi",
@@ -4483,21 +4521,24 @@
      "se": "none",
      "face": "think",
      "bg": {},
-     "hold_before": 0.3
+     "hold_before": 0.3,
+     "wav": "voices/k01-194.m4a"
     },
     {
      "who": "baku",
      "text": "いや、朝イチからモード推測して\n設定差見て",
      "say": "いや、朝イチからモード推測して、設定差見て、",
      "se": "none",
-     "face": "max"
+     "face": "max",
+     "wav": "voices/k01-195.m4a"
     },
     {
      "who": "baku",
      "text": "前兆ゲーム数も確認して\n天井まで連れてかれて\nAT駆け抜けた",
      "say": "前兆ゲーム数も確認して、天井まで連れてかれてAT駆け抜けた",
      "se": "none",
-     "face": "max"
+     "face": "max",
+     "wav": "voices/k01-196.m4a"
     },
     {
      "who": "nagi",
@@ -4520,7 +4561,8 @@
      "who": "nagi",
      "text": "難しいこと考えたね",
      "say": "難しいこと考えたね",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-197.m4a"
     },
     {
      "who": "baku",
@@ -4528,7 +4570,8 @@
      "say": "結果だけ見たら何も考えんでよかったわ！",
      "se": "none",
      "face": "tsukkomi",
-     "color": "blue"
+     "color": "blue",
+     "wav": "voices/k01-198.m4a"
     },
     {
      "who": "nagi",
@@ -4536,42 +4579,51 @@
      "say": "みんなはどう思う？",
      "se": "shu",
      "bgm_resume": true,
-     "hold_before": 0.4
+     "hold_before": 0.4,
+     "wav": "voices/k01-199.m4a"
     },
     {
      "who": "nagi",
      "text": "スロットって複雑すぎる？",
      "say": " スロットって複雑すぎる？",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-200.m4a"
     },
     {
      "who": "nagi",
      "text": "それとも複雑だからこそ面白い？",
      "say": " それとも複雑だからこそ面白い？",
-     "se": "none"
+     "se": "none",
+     "wav": "voices/k01-201.m4a"
     },
     {
      "who": "baku",
      "text": "コメントで教えてな！",
      "say": "コメントで教えてな！",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-202.m4a"
     },
     {
      "who": "baku",
      "text": "ほな、また！",
      "say": " ほな、また！",
      "se": "none",
-     "face": "normal"
+     "face": "normal",
+     "wav": "voices/k01-203.m4a"
     },
     {
      "who": "nagi",
      "text": "またね",
      "say": "またね",
      "se": "none",
-     "min": 2.5
+     "min": 2.5,
+     "wav": "voices/k01-204.m4a"
     }
    ]
   }
- ]
+ ],
+ "voice_tempo": 1.1,
+ "voice_credits": "AivisSpeech: コハク / Irodori-TTS（見本音声 AivisSpeech: まお）",
+ "_note": "声はナギ＝AivisSpeech コハク『ねむたい』速さ0.95・抑揚0.65・-1.5半音、バク＝Irodori-TTS garo2_fix_s53（duration-scale 0.88・squeeze）。音声は feat/kyu001-voice ブランチの action=lines で生成（台本 script/k01.txt の行ID＝wav名）。テンポ1.1倍"
 }
