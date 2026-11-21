@@ -1,4 +1,19 @@
 {
- "episode": "episodes/kyu001v2",
- "model": "large-v3-turbo"
+ "episode": "episodes/kyu001v2_s7",
+ "model": "large-v3-turbo",
+ "only": [
+  "k01-001",
+  "k01-008",
+  "k01-012",
+  "k01-020",
+  "k01-037",
+  "k01-042",
+  "k01-047",
+  "k01-049",
+  "k01-062",
+  "k01-069",
+  "k01-073",
+  "k01-080",
+  "k01-099"
+ ]
 }
