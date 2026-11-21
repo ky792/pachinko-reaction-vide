@@ -28,7 +28,7 @@ FACE = """1 happy;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 e
 57 happy;58 excited;59 happy;60 excited;61 excited;62 normal;63 normal;64 excited;65 smug;66 normal;67 happy;
 68 confused;69 smug;70 excited;71 normal;72 happy;73 happy;74 excited;75 excited;76 happy;77 smug;78 normal;79 confused;80 happy;81 angry;82 angry;83 happy;84 smug;85 happy;
 86 surprised;87 smug;88 surprised;89 confused;90 normal;91 smug;
-92 happy;93 excited;94 happy;95 sweat;96 confused;97 excited;98 confused;99 despair;100 sad;101 angry;102 normal;103 excited;104 happy;105 excited"""
+92 happy;93 excited;94 happy;95 sweat;96 confused;97 excited;98 confused;99 sweat;100 sad;101 angry;102 normal;103 excited;104 happy;105 excited"""
 FACE = {int(a): b for a, b in (p.split() for p in FACE.replace('\n', '').split(';'))}
 # 強調（赤枠・揺れ）
 PUNCH = {2, 5, 15, 18, 27, 32, 35, 42, 49, 86, 88}
