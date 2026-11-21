@@ -6,3 +6,8 @@ generator/temp/
 generator/output/
 generator/audio/generated/
 episodes/*/build/
+
+# 共有記憶：未反映の候補は submit で PR にする（直接コミットしない）
+memory/inbox/*.json
+.nbmem-wt/
+__pycache__/

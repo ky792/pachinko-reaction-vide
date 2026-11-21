@@ -1,0 +1,83 @@
+name: Shared memory (nbmem)
+# ナギバク共有記憶。正本は main の memory/store.json（AI が読むのは memory/MEMORY.md）。追加・変更は必ず PR（マージ＝確定）。
+#  - Issue に「memory」ラベル（またはタイトル「記憶:」）→ 本文から候補を抜き出して PR
+#  - memory-inbox/** ブランチに memory/inbox/ のファイルを push → PR
+#    （*.json＝候補そのもの。*.md / *.txt＝ChatGPT・Claude などが書いたメモ。nbmem ブロック／JSON Lines／本文から抜き出す）
+#  - main への反映時・毎日1回・手動実行（text 空）→ まだ処理していない memory-inbox/** をまとめて処理（取りこぼし対策）
+#  - memory/ か scripts/memory/ を変える PR → テストと正本の点検（個人情報・形・MEMORY.md が最新か）
+# main には直接書かない。課金なし（GitHub Actions の無料枠のみ）。
+on:
+  issues:
+    types: [opened, edited, labeled]
+  push:
+    branches: ['memory-inbox/**', main]
+    paths: ['memory/inbox/**', '.github/workflows/memory.yml', 'scripts/memory/**']
+  pull_request:
+    paths: ['memory/**', 'scripts/memory/**']
+  schedule:
+    - cron: '17 20 * * *'      # 毎日 5:17（日本時間）
+  workflow_dispatch:
+    inputs:
+      text:
+        description: '記憶に追加したい内容（空なら、未処理の memory-inbox ブランチをまとめて処理）'
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: nbmem-${{ github.event.issue.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: python -m unittest scripts/memory/test_nbmem.py -v
+      - run: python scripts/memory/nbmem.py check
+
+  propose:
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'issues' ||
+       contains(github.event.issue.labels.*.name, 'memory') || startsWith(github.event.issue.title, '記憶'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - name: Tests
+        run: python -m unittest scripts/memory/test_nbmem.py
+      - name: Propose
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          INPUT_TEXT: ${{ github.event.inputs.text }}
+          EV: ${{ github.event_name }}
+          REF: ${{ github.ref_name }}
+          ISSUE_NO: ${{ github.event.issue.number }}
+        run: |
+          set -e
+          cp scripts/memory/ci_propose.sh /tmp/ci_propose.sh   # 土台のブランチを切り替えても同じ手順で動くように
+          if [ "$EV" = issues ]; then
+            bash /tmp/ci_propose.sh issue "$ISSUE_NO"
+          elif [ "$EV" = workflow_dispatch ] && [ -n "$INPUT_TEXT" ]; then
+            bash /tmp/ci_propose.sh text "${{ github.run_id }}"
+          elif [ "$EV" = push ] && [ "$REF" != main ]; then
+            bash /tmp/ci_propose.sh inbox "$REF"
+          else
+            # まだ処理していない memory-inbox/** をまとめて（memory/from-<名前> ブランチがないもの）
+            DONE=$(git ls-remote --heads origin 'memory/from-*' | sed 's#.*refs/heads/memory/from-##')
+            for b in $(git ls-remote --heads origin 'memory-inbox/*' | sed 's#.*refs/heads/##'); do
+              n=${b#memory-inbox/}
+              if echo "$DONE" | grep -qx "$n"; then echo "処理済み：$b"; continue; fi
+              bash /tmp/ci_propose.sh inbox "$b" || echo "::warning::$b の処理に失敗"
+            done
+          fi
