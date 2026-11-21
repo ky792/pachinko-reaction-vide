@@ -249,7 +249,7 @@ const Coins: React.FC = () => {
           if (f < a + i * 9) return null;
           return <div key={i} style={{position: 'absolute', left: 395, top: -40 + t * 200, width: 34, height: 34, borderRadius: '50%', background: YELLOW, border: '4px solid #b8860b', opacity: t < 0.9 ? 1 : 0}} />;
         })}
-        <div style={{position: 'absolute', right: 20, top: 120, fontSize: 70, color: RED}}>-{(n * 1000).toLocaleString()}円</div>
+        <div style={{position: 'absolute', left: 560, top: 140, fontSize: 64, color: RED}}>-{(n * 1000).toLocaleString()}円</div>
         <Stamp at={S(15) + 4} text="言い方！" color={ORANGE} x={40} y={140} size={70} rot={-8} />
       </div>
     </Card>
@@ -292,7 +292,7 @@ const Versus: React.FC<{from: number; to: number; title: string; left: [string, 
         {side(left[0], left[1], ORANGE, from + 6, chosen === 'left')}
         <div style={{alignSelf: 'center', fontSize: 80, color: RED, scale: `${pop(f, from + 14, fps)}`}}>VS</div>
         {side(right[0], right[1], BLUE, from + 10, chosen === 'right')}
-        {pick ? <Stamp at={pick.at} text={pick.text} x={pick.side === 'left' ? 60 : 640} y={200} size={56} rot={-6} /> : null}
+        {pick ? <Stamp at={pick.at} text={pick.text} x={pick.side === 'left' ? 30 : 620} y={70} size={50} rot={-6} /> : null}
       </div>
       {banner && f >= banner.at ? (
         <div style={{marginTop: 16, textAlign: 'center', fontSize: 50, color: RED, scale: `${pop(f, banner.at, fps)}`}}>{banner.text}</div>
@@ -420,7 +420,7 @@ const Hint: React.FC = () => {
           <Pop at={S(77)} style={{background: 'white', color: BLUE_DEEP, borderRadius: 30, padding: '24px 30px', fontSize: 44}}>
             「今日はなんだか、いい感じかも…」
           </Pop>
-          {f >= M(77, 0.45) ? <Stamp at={M(77, 0.45)} text="モード示唆！" color={RED} x={260} y={110} size={56} /> : null}
+          {f >= M(77, 0.45) ? <Stamp at={M(77, 0.45)} text="モード示唆！" color={RED} x={80} y={150} size={52} /> : null}
         </div>
         {f >= S(78) ? (
           <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 16}}>
@@ -543,7 +543,7 @@ const Comments: React.FC = () => {
   const {fps} = useVideoConfig();
   return (
     <Card from={S(103) - 4} to={E(104) + 6} look="board" title="コメントで教えてね" width={1000}>
-      <div style={{fontSize: 46, marginBottom: 16}}>パチンコとスロット、どっちのどこが好き？</div>
+      <div style={{fontSize: 42, marginBottom: 16}}>パチンコとスロット、どっちのどこが好き？</div>
       {['パチンコ派：', 'スロット派：', '両方派：'].map((t, i) => (
         <div key={t} style={{display: 'flex', alignItems: 'center', gap: 14, marginTop: 12, scale: `${pop(f, S(103) + 10 + i * 8, fps)}`}}>
           <div style={{width: 54, height: 54, borderRadius: '50%', background: [ORANGE, BLUE, GREEN][i]}} />
@@ -596,7 +596,7 @@ const PachiBoard: React.FC = () => {
   const yakuY = f >= crash ? interpolate(f, [crash, crash + 6], [-160, 0], clamp) : f >= yaku59 ? interpolate(f, [yaku59, yaku59 + 6], [-160, 0], clamp) : -160;
   const yakuShown = (f >= yaku59 && f < S(60) + 20) || (f >= crash && f < S(63));
   return (
-    <div style={{position: 'absolute', left: 960 - 380, top: 50, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -800}px`, zIndex: 3}}>
+    <div style={{position: 'absolute', left: 960 - 380, top: 40, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -800}px`, scale: '0.84', transformOrigin: '50% 0', zIndex: 3}}>
       {/* 筐体 */}
       <div style={{position: 'absolute', inset: 0, borderRadius: 60, background: 'linear-gradient(160deg,#dfe6f5,#8d9bc0)', border: '10px solid #3a4470', boxShadow: '0 30px 60px rgba(0,0,0,0.5)'}} />
       {/* 盤面 */}
@@ -611,8 +611,8 @@ const PachiBoard: React.FC = () => {
             <span key={i}>{r}</span>
           ))}
         </div>
-        {f >= reach && f < crash ? <div style={{position: 'absolute', left: 150, top: 330, width: 360, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 56, color: 'white', background: RED, borderRadius: 10}}>激アツ</div> : null}
-        {f >= rush58 && f < S(59) ? <div style={{position: 'absolute', left: 150, top: 330, width: 360, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 56, color: BLUE_DEEP, background: YELLOW, borderRadius: 10}}>RUSH突入！</div> : null}
+        {f >= reach && f < crash ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: 'white', background: RED, borderRadius: 10}}>激アツ</div> : null}
+        {f >= rush58 && f < S(59) ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: BLUE_DEEP, background: YELLOW, borderRadius: 10}}>RUSH突入！</div> : null}
         {/* 保留 */}
         <div style={{position: 'absolute', left: 230, top: 350, display: 'flex', gap: 18, opacity: f >= reach && f < crash ? 0 : 1}}>
           {[0, 1, 2, 3].map((i) => (
