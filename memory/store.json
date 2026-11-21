@@ -1,0 +1,865 @@
+{
+ "version": 1,
+ "updated": "2026-11-22T03:50:43+09:00",
+ "entries": {
+  "nagi.base": {
+   "key": "nagi.base",
+   "category": "character",
+   "subject": "ナギの基本",
+   "value": "ナギ＝白うさぎ。片耳折れ、背中の培養液タンクの脳が本体、紺のハーネス＋青いタブレット。冷静・知的・標準語",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-25",
+    "quote": "ナギ＝白うさぎ。片耳折れ、背中の培養液タンクの脳が本体、紺のハーネス＋青いタブレット。冷静・知的・標準語"
+   },
+   "history": [
+    {
+     "date": "2026-10-25",
+     "value": "ナギ＝白うさぎ。片耳折れ、背中の培養液タンクの脳が本体、紺のハーネス＋青いタブレット。冷静・知的・標準語",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-25",
+      "quote": "ナギ＝白うさぎ。片耳折れ、背中の培養液タンクの脳が本体、紺のハーネス＋青いタブレット。冷静・知的・標準語"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "nagi.eyes": {
+   "key": "nagi.eyes",
+   "category": "character",
+   "subject": "ナギの目",
+   "value": "ナギの肉体は常に眠り目で、目を開けさせない",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-25",
+    "quote": "肉体は常に眠り目を閉じたまま（目を開けさせない）"
+   },
+   "history": [
+    {
+     "date": "2026-10-25",
+     "value": "ナギの肉体は常に眠り目で、目を開けさせない",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-25",
+      "quote": "肉体は常に眠り目を閉じたまま（目を開けさせない）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "nagi.speech": {
+   "key": "nagi.speech",
+   "category": "character",
+   "subject": "ナギの喋り方",
+   "value": "ナギの喋り方は、語尾を少し伸ばすふわふわ系のJKっぽい感じ（イントネーションのメリハリは欲しい）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-20",
+    "quote": "ナギの喋り方は、語尾を少し伸ばすふわふわ系のJKっぽい感じ（イントネーションのメリハリは欲しい）"
+   },
+   "history": [
+    {
+     "date": "2026-10-20",
+     "value": "ナギの喋り方は、語尾を少し伸ばすふわふわ系のJKっぽい感じ（イントネーションのメリハリは欲しい）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-20",
+      "quote": "ナギの喋り方は、語尾を少し伸ばすふわふわ系のJKっぽい感じ（イントネーションのメリハリは欲しい）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "baku.base": {
+   "key": "baku.base",
+   "category": "character",
+   "subject": "バクの基本",
+   "value": "バク＝橙の猫。頭にゴーグル、白×橙の作業服。研究施設のメカニック。明るく少し生意気、自然な関西弁。パチンコ経験豊富なプレイヤー目線（無知キャラにしない）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-25",
+    "quote": "バク＝橙の猫。頭にゴーグル、白×橙の作業服。研究施設のメカニック。明るく少し生意気、自然な関西弁。パチンコ経験豊富なプレイヤー目線（無知キャラにしない）"
+   },
+   "history": [
+    {
+     "date": "2026-10-25",
+     "value": "バク＝橙の猫。頭にゴーグル、白×橙の作業服。研究施設のメカニック。明るく少し生意気、自然な関西弁。パチンコ経験豊富なプレイヤー目線（無知キャラにしない）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-25",
+      "quote": "バク＝橙の猫。頭にゴーグル、白×橙の作業服。研究施設のメカニック。明るく少し生意気、自然な関西弁。パチンコ経験豊富なプレイヤー目線（無知キャラにしない）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "baku.gender": {
+   "key": "baku.gender",
+   "category": "character",
+   "subject": "バクの性別",
+   "value": "バクは女の子",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-26",
+    "quote": "バクは女の子"
+   },
+   "history": [
+    {
+     "date": "2026-10-26",
+     "value": "バクは女の子",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-26",
+      "quote": "バクは女の子"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "baku.first_person": {
+   "key": "baku.first_person",
+   "category": "character",
+   "subject": "バクの一人称",
+   "value": "バクの一人称は「ウチ」（俺・オレは使わない）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-26",
+    "quote": "バクの一人称は「ウチ」（俺・オレは使わない）"
+   },
+   "history": [
+    {
+     "date": "2026-10-26",
+     "value": "バクの一人称は「ウチ」（俺・オレは使わない）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-26",
+      "quote": "バクの一人称は「ウチ」（俺・オレは使わない）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "baku.senpai": {
+   "key": "baku.senpai",
+   "category": "character",
+   "subject": "バクの先輩らしさ",
+   "value": "バクの先輩らしさは「経験から言い切る」。打ち手の実感で断言し、濁さない。数字・仕様の断言はナギの役",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+    "date": "2026-11-07",
+    "quote": "バクの先輩らしさは「経験から言い切る」。打ち手の実感で断言し、濁さない。数字・仕様の断言はナギの役"
+   },
+   "history": [
+    {
+     "date": "2026-11-07",
+     "value": "バクの先輩らしさは「経験から言い切る」。打ち手の実感で断言し、濁さない。数字・仕様の断言はナギの役",
+     "source": {
+      "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+      "date": "2026-11-07",
+      "quote": "バクの先輩らしさは「経験から言い切る」。打ち手の実感で断言し、濁さない。数字・仕様の断言はナギの役"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "character.policy": {
+   "key": "character.policy",
+   "category": "character",
+   "subject": "キャラの扱い",
+   "value": "ナギを中立の説明機械にしない。バクに無理な逆張りをさせない。説明の都合で不自然な発言や分かったふりをさせない",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-05",
+    "quote": "ナギを中立の説明機械にしない。バクに無理な逆張りをさせない。説明の都合で不自然な発言や分かったふりをさせない"
+   },
+   "history": [
+    {
+     "date": "2026-11-05",
+     "value": "ナギを中立の説明機械にしない。バクに無理な逆張りをさせない。説明の都合で不自然な発言や分かったふりをさせない",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-05",
+      "quote": "ナギを中立の説明機械にしない。バクに無理な逆張りをさせない。説明の都合で不自然な発言や分かったふりをさせない"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "character.design_ref": {
+   "key": "character.design_ref",
+   "category": "character",
+   "subject": "キャラの基準画像",
+   "value": "ナギとバクの表情集（各8表情のステッカー風シート）を画像生成の基準にする",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-21",
+    "quote": "ナギとバクの表情集（各8表情のステッカー風シート）を画像生成の基準にする"
+   },
+   "history": [
+    {
+     "date": "2026-11-21",
+     "value": "ナギとバクの表情集（各8表情のステッカー風シート）を画像生成の基準にする",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-21",
+      "quote": "ナギとバクの表情集（各8表情のステッカー風シート）を画像生成の基準にする"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "ren.name": {
+   "key": "ren.name",
+   "category": "character",
+   "subject": "RNC-01",
+   "value": "継続率解析ロボの正式名は「RNC-01」。バクは正式名称で呼び、ナギは「レン」と呼ぶ",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-27",
+    "quote": "継続率解析ロボの正式名は「RNC-01」。バクは正式名称で呼び、ナギは「レン」と呼ぶ"
+   },
+   "history": [
+    {
+     "date": "2026-10-27",
+     "value": "継続率解析ロボの正式名は「RNC-01」。バクは正式名称で呼び、ナギは「レン」と呼ぶ",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-27",
+      "quote": "継続率解析ロボの正式名は「RNC-01」。バクは正式名称で呼び、ナギは「レン」と呼ぶ"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "world.lab": {
+   "key": "world.lab",
+   "category": "character",
+   "subject": "世界観",
+   "value": "舞台は「ナギバク研究所」（2人が住んでスペック・歴史・業界ニュースを研究）。研究費の足りない貧乏研究所で、バクは実戦で負けることがある",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-29",
+    "quote": "舞台は「ナギバク研究所」（2人が住んでスペック・歴史・業界ニュースを研究）。研究費の足りない貧乏研究所で、バクは実戦で負けることがある"
+   },
+   "history": [
+    {
+     "date": "2026-10-29",
+     "value": "舞台は「ナギバク研究所」（2人が住んでスペック・歴史・業界ニュースを研究）。研究費の足りない貧乏研究所で、バクは実戦で負けることがある",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-29",
+      "quote": "舞台は「ナギバク研究所」（2人が住んでスペック・歴史・業界ニュースを研究）。研究費の足りない貧乏研究所で、バクは実戦で負けることがある"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "script.natural_talk": {
+   "key": "script.natural_talk",
+   "category": "correction",
+   "subject": "会話の自然さ",
+   "value": "打ち手らしい会話にする（俗っぽくてよい）。作り物っぽい台詞はNG",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-23",
+    "quote": "パチンコやる奴がする会話じゃない"
+   },
+   "history": [
+    {
+     "date": "2026-10-23",
+     "value": "打ち手らしい会話にする（俗っぽくてよい）。作り物っぽい台詞はNG",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-23",
+      "quote": "パチンコやる奴がする会話じゃない"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "script.hall_reality": {
+   "key": "script.hall_reality",
+   "category": "correction",
+   "subject": "ホールの描写",
+   "value": "ホールの設備と打ち手の動きは、今のホールで実際にどうなっているかから書く。もっともらしい便利さ・不便さを想像で作らない",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+    "date": "2026-11-05",
+    "quote": "両替機に並ばなくて済む"
+   },
+   "history": [
+    {
+     "date": "2026-11-05",
+     "value": "ホールの設備と打ち手の動きは、今のホールで実際にどうなっているかから書く。もっともらしい便利さ・不便さを想像で作らない",
+     "source": {
+      "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+      "date": "2026-11-05",
+      "quote": "両替機に並ばなくて済む"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "script.real_questions": {
+   "key": "script.real_questions",
+   "category": "correction",
+   "subject": "企画の問い",
+   "value": "整理できる疑問と視聴者が知りたい疑問は別。打っている人が気にしているかで企画を選ぶ。タイトルは口に出して気持ちいい言葉にする",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+    "date": "2026-11-05",
+    "quote": "整理できる疑問と視聴者が知りたい疑問は別。打っている人が気にしているかで企画を選ぶ。タイトルは口に出して気持ちいい言葉にする"
+   },
+   "history": [
+    {
+     "date": "2026-11-05",
+     "value": "整理できる疑問と視聴者が知りたい疑問は別。打っている人が気にしているかで企画を選ぶ。タイトルは口に出して気持ちいい言葉にする",
+     "source": {
+      "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+      "date": "2026-11-05",
+      "quote": "整理できる疑問と視聴者が知りたい疑問は別。打っている人が気にしているかで企画を選ぶ。タイトルは口に出して気持ちいい言葉にする"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "script.money_words": {
+   "key": "script.money_words",
+   "category": "correction",
+   "subject": "お金の言葉",
+   "value": "お金・決済・換金の言葉は正確に。章をキャラの教訓で締めない",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+    "date": "2026-11-05",
+    "quote": "お金・決済・換金の言葉は正確に。章をキャラの教訓で締めない"
+   },
+   "history": [
+    {
+     "date": "2026-11-05",
+     "value": "お金・決済・換金の言葉は正確に。章をキャラの教訓で締めない",
+     "source": {
+      "surface": "docs/NAGIBAKU_LESSONS.md（feat/kyu001-voice）",
+      "date": "2026-11-05",
+      "quote": "お金・決済・換金の言葉は正確に。章をキャラの教訓で締めない"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "script.no_timely_phrases": {
+   "key": "script.no_timely_phrases",
+   "category": "production",
+   "subject": "時期の言い回し",
+   "value": "公開時期で古くなる言い回し（初日取れるかな・導入予定・今の新台など）は使わない",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "CLAUDE.md（feat/kyu001-voice）",
+    "date": "2026-10-21",
+    "quote": "公開時期で古くなる言い回し（初日取れるかな・導入予定・今の新台など）は使わない"
+   },
+   "history": [
+    {
+     "date": "2026-10-21",
+     "value": "公開時期で古くなる言い回し（初日取れるかな・導入予定・今の新台など）は使わない",
+     "source": {
+      "surface": "CLAUDE.md（feat/kyu001-voice）",
+      "date": "2026-10-21",
+      "quote": "公開時期で古くなる言い回し（初日取れるかな・導入予定・今の新台など）は使わない"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "script.history_context": {
+   "key": "script.history_context",
+   "category": "production",
+   "subject": "昔の台の語り方",
+   "value": "昔の台は今の基準と照らし合わせて語る（今は1/399が普通なので初代の1/397を「重い」と言わない）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "CLAUDE.md（feat/kyu001-voice）",
+    "date": "2026-10-21",
+    "quote": "昔の台は今の基準と照らし合わせて語る（今は1/399が普通なので初代の1/397を「重い」と言わない）"
+   },
+   "history": [
+    {
+     "date": "2026-10-21",
+     "value": "昔の台は今の基準と照らし合わせて語る（今は1/399が普通なので初代の1/397を「重い」と言わない）",
+     "source": {
+      "surface": "CLAUDE.md（feat/kyu001-voice）",
+      "date": "2026-10-21",
+      "quote": "昔の台は今の基準と照らし合わせて語る（今は1/399が普通なので初代の1/397を「重い」と言わない）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "script.no_enemies": {
+   "key": "script.no_enemies",
+   "category": "production",
+   "subject": "メーカーへの姿勢",
+   "value": "企業案件も狙うので、台本でメーカー等をあまり下げず敵を作らない",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-26",
+    "quote": "企業案件も狙うので、台本でメーカー等をあまり下げず敵を作らない"
+   },
+   "history": [
+    {
+     "date": "2026-10-26",
+     "value": "企業案件も狙うので、台本でメーカー等をあまり下げず敵を作らない",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-26",
+      "quote": "企業案件も狙うので、台本でメーカー等をあまり下げず敵を作らない"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "render.engine": {
+   "key": "render.engine",
+   "category": "decision",
+   "subject": "映像エンジン",
+   "value": "ナギバクの動画はRemotionで作る",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-05",
+    "quote": "ナギバクの動画はRemotionで作る"
+   },
+   "history": [
+    {
+     "date": "2026-11-05",
+     "value": "ナギバクの動画はRemotionで作る",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-05",
+      "quote": "ナギバクの動画はRemotionで作る"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "voice.hallucination": {
+   "key": "voice.hallucination",
+   "category": "production",
+   "subject": "音声",
+   "value": "キャラの声は台本どおりのTTS音声だけを使い、台本にない声（叫び・笑い・相づち等）は入れない。書き出し前に全行を文字起こしで照合し、合格した声だけを使う",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-22",
+    "quote": "音声ハルシネーションの完全排除"
+   },
+   "history": [
+    {
+     "date": "2026-11-22",
+     "value": "キャラの声は台本どおりのTTS音声だけを使い、台本にない声（叫び・笑い・相づち等）は入れない。書き出し前に全行を文字起こしで照合し、合格した声だけを使う",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-22",
+      "quote": "音声ハルシネーションの完全排除"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "voice.speed": {
+   "key": "voice.speed",
+   "category": "style",
+   "subject": "話速",
+   "value": "ナギバクの声は少し早口（1.1倍）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-24",
+    "quote": "ナギバクの声は少し早口（1.1倍）"
+   },
+   "history": [
+    {
+     "date": "2026-10-24",
+     "value": "ナギバクの声は少し早口（1.1倍）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-24",
+      "quote": "ナギバクの声は少し早口（1.1倍）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "bgm.volume": {
+   "key": "bgm.volume",
+   "category": "style",
+   "subject": "BGMの音量",
+   "value": "BGMは控えめすぎず大きめが好み（オチで無音になるのが分かるように）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-20",
+    "quote": "BGMは控えめすぎず大きめが好み（オチで無音になるのが分かるように）"
+   },
+   "history": [
+    {
+     "date": "2026-10-20",
+     "value": "BGMは控えめすぎず大きめが好み（オチで無音になるのが分かるように）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-20",
+      "quote": "BGMは控えめすぎず大きめが好み（オチで無音になるのが分かるように）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "spec.charts": {
+   "key": "spec.charts",
+   "category": "style",
+   "subject": "スペックの見せ方",
+   "value": "スペック・振り分けはカードではなく、円グラフ（中に文字あり）か読みやすい表で見せる",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-24",
+    "quote": "スペック・振り分けはカードではなく、円グラフ（中に文字あり）か読みやすい表で見せる"
+   },
+   "history": [
+    {
+     "date": "2026-10-24",
+     "value": "スペック・振り分けはカードではなく、円グラフ（中に文字あり）か読みやすい表で見せる",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-24",
+      "quote": "スペック・振り分けはカードではなく、円グラフ（中に文字あり）か読みやすい表で見せる"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "description": {
+   "key": "description",
+   "category": "decision",
+   "subject": "概要欄",
+   "value": "YouTubeの概要欄はナギバクとチャンネルの紹介だけ（スペック・目次は不要）。サムネ案も不要",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-25",
+    "quote": "YouTubeの概要欄はナギバクとチャンネルの紹介だけ（スペック・目次は不要）。サムネ案も不要"
+   },
+   "history": [
+    {
+     "date": "2026-10-25",
+     "value": "YouTubeの概要欄はナギバクとチャンネルの紹介だけ（スペック・目次は不要）。サムネ案も不要",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-25",
+      "quote": "YouTubeの概要欄はナギバクとチャンネルの紹介だけ（スペック・目次は不要）。サムネ案も不要"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "series.shinsai.look": {
+   "key": "series.shinsai.look",
+   "category": "decision",
+   "subject": "新台解説の見た目",
+   "value": "新台解説シリーズは歴史回と一目で違う見た目にする（号外風：紙地×黄×太い墨線）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-25",
+    "quote": "新台解説シリーズは歴史回と一目で違う見た目にする（号外風：紙地×黄×太い墨線）"
+   },
+   "history": [
+    {
+     "date": "2026-10-25",
+     "value": "新台解説シリーズは歴史回と一目で違う見た目にする（号外風：紙地×黄×太い墨線）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-25",
+      "quote": "新台解説シリーズは歴史回と一目で違う見た目にする（号外風：紙地×黄×太い墨線）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "series.news.look": {
+   "key": "series.news.look",
+   "category": "decision",
+   "subject": "ニュース回",
+   "value": "ニュース回は普通のニュース番組風（冒頭は寸劇なし、専用OPアニメとBGM、約10分、立ち絵で報道台の手前に立ち指し棒を使う）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-29",
+    "quote": "ニュース回は普通のニュース番組風（冒頭は寸劇なし、専用OPアニメとBGM、約10分、立ち絵で報道台の手前に立ち指し棒を使う）"
+   },
+   "history": [
+    {
+     "date": "2026-10-29",
+     "value": "ニュース回は普通のニュース番組風（冒頭は寸劇なし、専用OPアニメとBGM、約10分、立ち絵で報道台の手前に立ち指し棒を使う）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-29",
+      "quote": "ニュース回は普通のニュース番組風（冒頭は寸劇なし、専用OPアニメとBGM、約10分、立ち絵で報道台の手前に立ち指し棒を使う）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "series.kyukeishitsu": {
+   "key": "series.kyukeishitsu",
+   "category": "decision",
+   "subject": "休憩室シリーズ",
+   "value": "「ナギバクの休憩室」は研究所の休憩中に2人がパチンコ・パチスロの疑問や不満を自由に語る会話中心のシリーズ（ニュース読み上げや授業形式にしない）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-17",
+    "quote": "「ナギバクの休憩室」は研究所の休憩中に2人がパチンコ・パチスロの疑問や不満を自由に語る会話中心のシリーズ（ニュース読み上げや授業形式にしない）"
+   },
+   "history": [
+    {
+     "date": "2026-11-17",
+     "value": "「ナギバクの休憩室」は研究所の休憩中に2人がパチンコ・パチスロの疑問や不満を自由に語る会話中心のシリーズ（ニュース読み上げや授業形式にしない）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-17",
+      "quote": "「ナギバクの休憩室」は研究所の休憩中に2人がパチンコ・パチスロの疑問や不満を自由に語る会話中心のシリーズ（ニュース読み上げや授業形式にしない）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "lab.ui": {
+   "key": "lab.ui",
+   "category": "style",
+   "subject": "研究所UI",
+   "value": "研究所動画のUIはペルソナ5Rの思想だけ取り入れた独自UI（濃紺ベース・シアン主・オレンジ副・赤は警告。派手な演出は重要場面だけ）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-06",
+    "quote": "研究所動画のUIはペルソナ5Rの思想だけ取り入れた独自UI（濃紺ベース・シアン主・オレンジ副・赤は警告。派手な演出は重要場面だけ）"
+   },
+   "history": [
+    {
+     "date": "2026-11-06",
+     "value": "研究所動画のUIはペルソナ5Rの思想だけ取り入れた独自UI（濃紺ベース・シアン主・オレンジ副・赤は警告。派手な演出は重要場面だけ）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-06",
+      "quote": "研究所動画のUIはペルソナ5Rの思想だけ取り入れた独自UI（濃紺ベース・シアン主・オレンジ副・赤は警告。派手な演出は重要場面だけ）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "kyu.visuals": {
+   "key": "kyu.visuals",
+   "category": "style",
+   "subject": "休憩室の演出",
+   "value": "休憩室回は資料をホワイトボード風カードで出し、スロットの流れはフロー図アニメ、就活のたとえはドット絵のレトロゲーム風で見せる",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-21",
+    "quote": "就活のとこなんかドット絵の感じでアニメーション欲しいな"
+   },
+   "history": [
+    {
+     "date": "2026-11-21",
+     "value": "休憩室回は資料をホワイトボード風カードで出し、スロットの流れはフロー図アニメ、就活のたとえはドット絵のレトロゲーム風で見せる",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-21",
+      "quote": "就活のとこなんかドット絵の感じでアニメーション欲しいな"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "kyu.ochi_face": {
+   "key": "kyu.ochi_face",
+   "category": "correction",
+   "subject": "オチの表情",
+   "value": "「負けた」場面でバクを笑っているように見せない（号泣・笑いすぎの絵は使わず、あたふた・涙目）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-22",
+    "quote": "負けたわのとこバク笑わせる必要なくね"
+   },
+   "history": [
+    {
+     "date": "2026-11-22",
+     "value": "「負けた」場面でバクを笑っているように見せない（号泣・笑いすぎの絵は使わず、あたふた・涙目）",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-22",
+      "quote": "負けたわのとこバク笑わせる必要なくね"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "assets.no_reask": {
+   "key": "assets.no_reask",
+   "category": "production",
+   "subject": "素材の頼み方",
+   "value": "キャラの表情素材など過去に渡した素材を、再度用意するよう頼まない",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-11-21",
+    "quote": "前の動画の時に渡したやろ何回も"
+   },
+   "history": [
+    {
+     "date": "2026-11-21",
+     "value": "キャラの表情素材など過去に渡した素材を、再度用意するよう頼まない",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-11-21",
+      "quote": "前の動画の時に渡したやろ何回も"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "workflow.less_confirm": {
+   "key": "workflow.less_confirm",
+   "category": "production",
+   "subject": "進め方",
+   "value": "台本の書き直し・声の作り直し・演出・書き出しは承認を待たずに最後まで進め、できたものを見せる（公開・削除などはしない）",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "CLAUDE.md（feat/kyu001-voice）",
+    "date": "2026-10-22",
+    "quote": "台本の書き直し・声の作り直し・演出・書き出しは承認を待たずに最後まで進め、できたものを見せる（公開・削除などはしない）"
+   },
+   "history": [
+    {
+     "date": "2026-10-22",
+     "value": "台本の書き直し・声の作り直し・演出・書き出しは承認を待たずに最後まで進め、できたものを見せる（公開・削除などはしない）",
+     "source": {
+      "surface": "CLAUDE.md（feat/kyu001-voice）",
+      "date": "2026-10-22",
+      "quote": "台本の書き直し・声の作り直し・演出・書き出しは承認を待たずに最後まで進め、できたものを見せる（公開・削除などはしない）"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "workflow.volume": {
+   "key": "workflow.volume",
+   "category": "production",
+   "subject": "本数",
+   "value": "1本に時間をかけすぎず、やりながら改善する本数重視",
+   "status": "confirmed",
+   "created": "2026-11-22T03:50:43+09:00",
+   "updated": "2026-11-22T03:50:43+09:00",
+   "source": {
+    "surface": "claude-chat",
+    "date": "2026-10-29",
+    "quote": "1本に時間をかけすぎず、やりながら改善する本数重視"
+   },
+   "history": [
+    {
+     "date": "2026-10-29",
+     "value": "1本に時間をかけすぎず、やりながら改善する本数重視",
+     "source": {
+      "surface": "claude-chat",
+      "date": "2026-10-29",
+      "quote": "1本に時間をかけすぎず、やりながら改善する本数重視"
+     },
+     "change": "created"
+    }
+   ]
+  }
+ },
+ "conflicts": []
+}
