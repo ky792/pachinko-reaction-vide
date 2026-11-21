@@ -28,6 +28,11 @@
 | Claude（claude.ai）・ChatGPT | `memory/WEB_AI.md` の文を貼る（リポジトリが読める連携があれば URL を読ませる。なければ MEMORY.md の中身を貼る） | 「この内容を共有記憶に追加して」→ AI が ```nbmem ブロックを出す → **GitHub の Issue に貼って `memory` ラベル**（スマホの GitHub アプリで可）→ Actions が照合して PR を作る |
 | GitHub Actions など一時的な環境 | `nbmem.py context` | `memory-inbox/<名前>` ブランチに `memory/inbox/*.json` を push → Actions が PR を作る（環境が消えても残る） |
 
+## 一度だけ必要な設定
+
+- Actions に PR を作らせるには、リポジトリの Settings → Actions → General → 「Allow GitHub Actions to create and approve pull requests」をオンにする。オフのままでも動くが、PR の代わりに「ここから PR を作って」というリンクが Issue に書かれる。
+- Issue からの追加は、この仕組みが main にマージされてから動く（GitHub の仕様で、Issue のワークフローは main にあるものだけが動く）。
+
 ## コマンド
 
 ```
