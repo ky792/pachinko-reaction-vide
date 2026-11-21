@@ -1,14 +1,4 @@
 {
- "episode": "episodes/kyu001v2_s88",
- "model": "large-v3-turbo",
- "only": [
-  "k01-001",
-  "k01-012",
-  "k01-042",
-  "k01-049",
-  "k01-062",
-  "k01-073",
-  "k01-080",
-  "k01-099"
- ]
+ "episode": "episodes/kyu001v2",
+ "model": "large-v3-turbo"
 }
