@@ -38,7 +38,11 @@ def expected_kana(it, d, terms):
     return reading.canon(sp, d, terms, rules=False)
 
 
-def find_cut(words, exp, d, terms):
+def surf_norm(t):
+    return re.sub(r"[\s、。，．,.!！?？…「」『』（）()ー〜~]", "", re.sub(r"《([^|》]+)\|[^》]+》", r"\1", t or ""))
+
+
+def find_cut(words, exp, d, terms, script_surface=""):
     """words=[(text,start,end)] → (後ろを切る秒 or None, 台本の後ろに聞こえた文字, 前を切る秒 or None)"""
     got, owner = "", []
     for wi, (w, _, _) in enumerate(words):
@@ -64,6 +68,11 @@ def find_cut(words, exp, d, terms):
     b = end_blocks[-1]
     gi = b.b + b.size - 1
     wi = owner[gi]
+    # かなの照合で拾えなかった最後の字（「有利区間」の「間」が単独だと別の読みになる等）を切らないように、
+    # 次の単語の字面が台本の終わりの字面に含まれていれば、台詞の一部として残す
+    tail_surface = surf_norm(script_surface)[-8:]
+    while wi + 1 < len(words) and surf_norm(words[wi + 1][0]) and surf_norm(words[wi + 1][0]) in tail_surface:
+        wi += 1
     extra = "".join(w for w, _, _ in words[wi + 1:]).strip()
     return words[wi][2], extra, head
 
@@ -112,7 +121,7 @@ def main():
                                    condition_on_previous_text=False, vad_filter=False, word_timestamps=True)
         words = [(wd.word, wd.start, wd.end) for s in segs for wd in (s.words or [])]
         exp = expected_kana(it, d, terms)
-        t, extra, head = find_cut(words, exp, d, terms)
+        t, extra, head = find_cut(words, exp, d, terms, it.get("text") or it["say"])
         dur = len(x) / sr
         rec = {"orig": round(dur, 3), "asr": "".join(w for w, _, _ in words).strip()}
         cut = dur
