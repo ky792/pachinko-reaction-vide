@@ -1,6 +1,7 @@
 {
- "episode": "episodes/kyu001v2_s88",
+ "episode": "episodes/kyu001v2",
  "model": "large-v3-turbo",
+ "trim": true,
  "only": [
   "k01-001"
  ]
