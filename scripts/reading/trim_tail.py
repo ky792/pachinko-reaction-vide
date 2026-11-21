@@ -12,6 +12,7 @@ Whisper（faster-whisper）で単語ごとの時刻つきで書き起こし、�
 """
 import argparse
 import json
+import re
 import sys
 import wave
 from difflib import SequenceMatcher
