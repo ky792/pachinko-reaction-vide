@@ -159,7 +159,7 @@ const Tag: React.FC<{at: number; x: number; y: number; text: string; color?: str
 };
 
 // 星がはじける
-const Burst: React.FC<{at: number; x: number; y: number; text?: string}> = ({at, x, y, text}) => {
+const Burst: React.FC<{at: number; x: number; y: number; text?: string; dx?: number}> = ({at, x, y, text, dx = 0}) => {
   const f = useCurrentFrame();
   const t = f - at;
   if (t < 0 || t > 26) return null;
@@ -189,8 +189,8 @@ const Burst: React.FC<{at: number; x: number; y: number; text?: string}> = ({at,
         <div
           style={{
             position: 'absolute',
-            left: 0,
-            top: -110 - t * 1.2,
+            left: dx,
+            top: (dx ? -30 : -110) - t * 1.2,
             translate: '-50% 0',
             fontFamily: JP,
             fontWeight: 900,
@@ -230,7 +230,7 @@ const Token: React.FC<{kf: KF[]; face?: string; q?: boolean; shake?: number}> = 
   }
   const sx = shake ? Math.sin(f * 2.3) * shake : 0;
   return (
-    <div style={{position: 'absolute', left: x - 52 + sx, top: y - 150 - hop, width: 104, zIndex: 8}}>
+    <div style={{position: 'absolute', left: x - 52 + sx, top: y - 178 - hop, width: 104, zIndex: 8}}>
       <Img src={staticFile(`kyu/baku_${face}.png`)} style={{width: 104, filter: 'drop-shadow(0 6px 6px rgba(0,0,0,0.3))'}} />
       {q ? (
         <div
@@ -299,6 +299,7 @@ const Hidden: React.FC<{at: number}> = ({at}) => {
           fontSize: 26,
           padding: '2px 16px',
           borderRadius: 10,
+          whiteSpace: 'nowrap',
         }}
       >
         内部状態（見えない）
@@ -459,13 +460,13 @@ const AtMode: React.FC = () => {
       <Node at={amai + 10} x={P.UP.x} y={P.UP.y} w={200} label="上位AT" color={YELLOW} glow={0.25 + 0.15 * Math.sin(f / 6)} />
       <Tag at={amai + 6} x={1170} y={152} text="上乗せ" color={RED} size={26} />
       <Tag at={amai + 14} x={1232} y={205} text="昇格" color="#c99600" size={26} />
-      <Tag at={amai + 26} x={610} y={690} text="終わったら通常時へ" color="#7d879f" size={26} />
+      <Tag at={amai + 26} x={640} y={560} text="終わったら通常時へ" color="#7d879f" size={30} />
       <Counter at={amai} x={760} y={100} text="まだ続く！" color={RED} size={64} />
       {/* ATのタイプ */}
-      <Tag at={M(43, 0.05)} x={1310} y={400} text="ゲーム数を上乗せ" color={BLUE} size={30} />
-      <Tag at={M(43, 0.35)} x={1310} y={465} text="継続バトルを突破" color={BLUE} size={30} />
-      <Tag at={M(43, 0.65)} x={1310} y={530} text="差枚数を消化" color={BLUE} size={30} />
-      <Tag at={M(43, 0.02)} x={1310} y={345} text="ATのタイプ（一例）" color={BLUE_DEEP} solid size={26} />
+      <Tag at={M(43, 0.05)} x={1290} y={410} text="ゲーム数を上乗せ" color={BLUE} size={36} />
+      <Tag at={M(43, 0.35)} x={1290} y={480} text="継続バトルを突破" color={BLUE} size={36} />
+      <Tag at={M(43, 0.65)} x={1290} y={550} text="差枚数を消化" color={BLUE} size={36} />
+      <Tag at={M(43, 0.02)} x={1290} y={345} text="ATのタイプ（一例）" color={BLUE_DEEP} solid size={26} />
       <Token kf={[[t0 - 30, P.AT]]} face={f >= amai ? 'surprised' : 'happy'} shake={f >= amai && f < amai + 16 ? 10 : 0} />
     </>
   );
@@ -488,7 +489,7 @@ const Moments: React.FC = () => {
       <Node at={t0} x={P.CZ.x} y={P.CZ.y} label="CZ" color={ORANGE} glow={f >= a(0.56) && f < a(0.84) ? 0.5 : 0} />
       <Node at={t0} x={P.AT.x} y={P.AT.y} label="AT" color={GREEN} glow={f >= a(0.84) ? 0.6 : 0} />
       <Burst at={a(0.08) + 4} x={P.N.x} y={P.N.y - 90} text="強レア役！" />
-      <Burst at={a(0.32) + 14} x={P.K.x} y={P.K.y - 90} text="高確！" />
+      <Burst at={a(0.32) + 14} x={P.K.x} y={P.K.y} text="高確！" dx={250} />
       <Burst at={a(0.56) + 14} x={P.CZ.x} y={P.CZ.y - 90} text="CZ！" />
       <Burst at={a(0.84) + 14} x={P.AT.x} y={P.AT.y - 90} text="突破！" />
       {count > 0 ? <Counter at={a(0.08) + 14} x={1300} y={470} text={`嬉しい ×${count}`} size={count >= 4 ? 84 : 66} /> : null}
@@ -532,7 +533,7 @@ const Gyakuten: React.FC = () => {
         <div style={{fontSize: 36, color: remain <= 10 ? RED : GREEN}}>残り{remain}G</div>
       </Node>
       <Node at={toTk - 8} x={P.TK.x} y={P.TK.y} w={250} h={92} label="特化ゾーン" color={RED} glow={f >= toTk && f < back ? 0.6 : 0} />
-      <Tag at={t0 + 10} x={610} y={690} text="このままだと終了…" color={RED} size={28} />
+      <Tag at={t0 + 10} x={640} y={560} text="このままだと終了…" color={RED} size={32} />
       <Tag at={chance} x={1290} y={300} text="強チェリー！" color={RED} solid size={40} rot={-6} />
       <Burst at={chance} x={P.AT.x} y={P.AT.y - 60} />
       {add > 0 ? <Counter at={toTk + 16} x={1320} y={110} text={`+${add}G`} color={RED} size={add >= 300 ? 96 : 72} /> : null}
