@@ -1,8 +1,8 @@
 {
  "k01-001": {
-  "sha1": "f42f2fd6c24ddc54aecdf3bbd9ad36798ac2b6cf",
+  "sha1": "2298c5ab18ba4c91451d5528d73ca972d9c9b92c",
   "model": "large-v3-turbo",
-  "text": "なあ、ナギ、じゃあ10歩やえ"
+  "text": "なあナギちょっと聞いてやえ?"
  },
  "k01-008": {
   "sha1": "47f92abac4b635bf96a573760ebe7a96048eba84",
@@ -10,9 +10,9 @@
   "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間"
  },
  "k01-012": {
-  "sha1": "6ec87e551905734561324e0f00cb422adddba470",
+  "sha1": "b987a9ad3a60315b0653ecaebba8eaa185cf6957",
   "model": "large-v3-turbo",
-  "text": "撃つだけなら何も知らんでも撃てるじゃあか?"
+  "text": "撃つだけなら正直なんも知らんでも撃てる撃てるねん"
  },
  "k01-020": {
   "sha1": "60d640c1c4e5c3cd0f6785d238c1c5542f761bff",
@@ -25,9 +25,9 @@
   "text": "んーそれはそれでつまらんねん"
  },
  "k01-042": {
-  "sha1": "82eca6efc54036d357d3ec20bf32ce06719ec96b",
+  "sha1": "c270e1bfc8ae396cdcd6ed4d04f47db3c0cac67d",
   "model": "large-v3-turbo",
-  "text": "うまい!すじいちもね!"
+  "text": "甘い甘い、そんな簡単ちゃうね"
  },
  "k01-047": {
   "sha1": "6b7281f72c27c21fb63b0200568d10dfd73c2639",
@@ -35,14 +35,14 @@
   "text": "上位AT入ってようやく正社員や"
  },
  "k01-049": {
-  "sha1": "193126d503c362582f5454df4528402ec3edc5a5",
+  "sha1": "52b528bcb5a52dfc4eaf1ccc246cb3d167c2d0af",
   "model": "large-v3-turbo",
-  "text": "即クビソーセキュッテル"
+  "text": "そんなもん、即クビやで!"
  },
  "k01-062": {
-  "sha1": "6bfbad4dcc5832111ecf6c5bb90e35e144849be1",
+  "sha1": "c35c65dcdc25a37c6995404599a3a566e23eea20",
   "model": "large-v3-turbo",
-  "text": "あれは理屈ちゃうねんそんなご"
+  "text": "あれはもう理屈ちゃうねん本能や"
  },
  "k01-069": {
   "sha1": "b26c3832c0e707698399ccae6f5bc9b021bae1ce",
@@ -50,18 +50,18 @@
   "text": "好きなとこは好き次やったよな"
  },
  "k01-073": {
-  "sha1": "67c99c68192a65c858b8439dba4b2bcf8ab73b96",
+  "sha1": "f8a4853751dba78af2f579cec090347cb15fa326",
   "model": "large-v3-turbo",
-  "text": "AT中もそうや、そんだけだな"
+  "text": "AT中も全く同じことが言えるで"
  },
  "k01-080": {
-  "sha1": "398b5e546d8951dd248fba401cade83026489a7e",
+  "sha1": "dc8ad37e0f71cb39fc9fac646c8b1c24e1a6be5b",
   "model": "large-v3-turbo",
-  "text": "いや、水分スイッチもあるじゃん"
+  "text": "いや、そうとも言い切れんねんちゅー"
  },
  "k01-099": {
-  "sha1": "c260071d4ddce393aff5a33e07230718a2dcb8a8",
+  "sha1": "b599132eddc008f2f22151c3f663679fb12cb0b3",
   "model": "large-v3-turbo",
-  "text": "クソ負けたわそん負けたやな"
+  "text": "くそ、負けたわ、ほんまに?"
  }
 }
