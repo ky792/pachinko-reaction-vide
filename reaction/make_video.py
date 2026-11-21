@@ -451,11 +451,16 @@ class Painter:
         self.hall = Image.open(ASSETS / "backgrounds" / (ep.get("background") or "hall_anime.png")).convert("RGB").resize((W, H))
         # 固定キャラ：ナギ（うさぎ・左下）とバク（ねこ・右下）。全身・白フチ付きで前計算
         self.sprites = {}
+        # char_layout（任意）：{"x": {"nagi": 260, "baku": 1660}, "foot": 1080, "talk": 430, "idle": 400}
+        lay = ep.get("char_layout") or {}
+        self.char_x = dict(CHAR_X, **lay.get("x", {}))
+        self.foot_y = lay.get("foot", FOOT_Y)
+        talk_h, idle_h = lay.get("talk", CHAR_TALK), lay.get("idle", CHAR_IDLE)
         for who in ("nagi", "baku"):
             # characters: "v2" のように指定すると generator/assets/characters/v2/<nagi|baku>/ を使う（無指定は従来どおり）
             for p in (ASSETS / "characters" / (ep.get("characters") or "") / who).glob("*.png"):
                 src = Image.open(p).convert("RGBA")
-                for mode, sc, bright in (("talk", CHAR_TALK / src.height, 1.0), ("idle", CHAR_IDLE / src.height, 0.86)):
+                for mode, sc, bright in (("talk", talk_h / src.height, 1.0), ("idle", idle_h / src.height, 0.86)):
                     self.sprites[(who, p.stem, mode)] = sticker(src, sc, bright)
         self.bg_cache = {}
         self.glow = corner_glow()
@@ -499,8 +504,12 @@ class Painter:
             base.paste(card, ((W - card.width) // 2, 140), card)
         else:
             # 画像が無い時：ホール背景を暗くして、機種名パネルを出す
-            base = Image.blend(base.filter(ImageFilter.GaussianBlur(4)), Image.new("RGB", (W, H), (0, 0, 0)), 0.38)
             label = bg.get("label")
+            pb = self.ep.get("plain_bg") or {}   # plain_bg（任意）：資料なしの場面の背景のぼかし・暗さ {"blur": 0, "dark": 0.12}
+            blur, dark = (pb.get("blur", 4), pb.get("dark", 0.38)) if not label else (4, 0.38)
+            if blur:
+                base = base.filter(ImageFilter.GaussianBlur(blur))
+            base = Image.blend(base, Image.new("RGB", (W, H), (0, 0, 0)), dark)
             if label:
                 d = ImageDraw.Draw(base)
                 lines = label.split("\n")
@@ -599,9 +608,9 @@ class Painter:
         for c, phase in (("nagi", 0.0), ("baku", 1.7)):
             talking = who == c
             if talking:
-                face = pick_face(c, it)
+                face = it.get("face") if (c, it.get("face"), "talk") in self.sprites else pick_face(c, it)   # 素材にある表情名はそのまま使う
                 spr, (fx, fy) = self.sprites.get((c, face, "talk")) or self.sprites[(c, "normal", "talk")]
-                strong = face in ("max", "surprise", "tsukkomi")
+                strong = face in ("max", "surprise", "tsukkomi", "excited", "surprised", "angry", "despair")
                 k = min(tau / 0.32, 1.0)
                 scale = 0.82 + 0.18 * ease_out_back(k) if tau < 0.32 else 1.0
                 jump = (46 if strong else 24) * math.sin(math.pi * min(tau / 0.34, 1.0)) if tau < 0.34 else 0
@@ -617,8 +626,8 @@ class Painter:
             if scale != 1.0:
                 spr = spr.resize((max(1, int(spr.width * scale)), max(1, int(spr.height * scale))), Image.BILINEAR)
                 fx, fy = fx * scale, fy * scale
-            x = int(CHAR_X[c] - fx + lean)
-            y = int(FOOT_Y - fy + dy)
+            x = int(self.char_x[c] - fx + lean)
+            y = int(self.foot_y - fy + dy)
             fr.paste(spr, (x, y), spr)
         return fr
 
@@ -646,9 +655,10 @@ class Painter:
 
         # テロップ（下部中央・下端から約12%）
         size = it.get("size", "normal")
-        fnt = font(SIZES[size])
+        px = self.ep.get("telop_size", SIZES["normal"]) if size == "normal" else SIZES[size]   # telop_size（任意）：通常テロップの大きさ
+        fnt = font(px)
         lines = wrap(it["text"], 12 if size == "ochi" else 16)
-        lh = int(SIZES[size] * 1.22)
+        lh = int(px * 1.22)
         bottom = int(H * 0.88)
         top = bottom - lh * len(lines)
         color = COLORS[it.get("color", "white")]
@@ -682,7 +692,7 @@ class Painter:
                 d.text((nx, ny), name, font=fn, fill=(255, 255, 255), anchor="mm",
                        stroke_width=4, stroke_fill=(0, 0, 0))
         for i, l in enumerate(lines):
-            draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, fnt, color, STROKE[size])
+            draw_stroked(d, (W // 2, top + lh * i + lh // 2), l, fnt, color, max(8, int(STROKE[size] * px / SIZES[size])))
 
         # キャラの名札
         if who in ("nagi", "baku", "narrator") and not it.get("notag"):
