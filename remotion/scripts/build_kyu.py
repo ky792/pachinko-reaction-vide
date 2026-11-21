@@ -16,6 +16,10 @@ for raw in (EP / 'k01.txt').read_text(encoding='utf-8').splitlines():
     if m:
         lines.append({'who': 'nagi' if m.group(1) == 'ナギ' else 'baku', 'text': re.sub(r'《([^|》]+)\|[^》]+》', r'\1', m.group(2))})
 assert len(lines) == 105
+# 字幕の改行は手で整えた版（reaction 版 episodes/kyu001v2）を使う
+_rj = json.loads((ROOT / 'episodes/kyu001/telop.json').read_text(encoding='utf-8'))
+for i, ln in enumerate(lines, 1):
+    ln['text'] = _rj[str(i)]
 
 # 表情（素材名）
 FACE = """1 happy;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;

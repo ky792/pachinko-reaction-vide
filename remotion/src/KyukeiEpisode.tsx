@@ -270,8 +270,7 @@ const Telop: React.FC = () => {
           textAlign: 'center',
           maxWidth: 980,
           minWidth: 300,
-          textWrap: 'balance',
-          wordBreak: 'auto-phrase' as React.CSSProperties['wordBreak'],
+          whiteSpace: 'pre-line',
           opacity: p,
           translate: `${shake}px ${(1 - p) * 16}px`,
           scale: `${line.punch ? interpolate(local, [0, 6], [1.22, 1], {...clamp, easing: OUT}) : 1}`,
@@ -526,8 +525,8 @@ const Flow: React.FC<{seg: Seg; title: string; steps: string[]; last?: string; c
               {i > 0 ? <div style={{fontSize: 46, color: '#9aa3b8', opacity: frame < at ? 0 : 1}}>➜</div> : null}
               <div
                 style={{
-                  fontSize: 42,
-                  padding: '18px 22px',
+                  fontSize: 40,
+                  padding: '16px 20px',
                   borderRadius: 20,
                   background: final ? color : 'white',
                   color: final ? 'white' : BLUE_DEEP,
@@ -542,7 +541,7 @@ const Flow: React.FC<{seg: Seg; title: string; steps: string[]; last?: string; c
             </React.Fragment>
           );
         })}
-        {last ? <Stamp at={b - 14} text={last} x={820} y={70} size={90} rot={-10} /> : null}
+        {last ? <Stamp at={b - 14} text={last} x={840} y={-120} size={90} rot={10} /> : null}
       </div>
     </Board>
   );
@@ -568,7 +567,7 @@ const JobPanel: React.FC<{seg: Seg}> = ({seg}) => {
       <div style={{position: 'relative'}}>
         <Rows rows={rows} shown={shown} />
         {st35 ? <Stamp at={st35.at + 6} text="10社連続 不採用" x={560} y={70} size={52} /> : null}
-        {st5 ? <Stamp at={st5.at + 18} text="参加賞" x={640} y={250} size={70} rot={8} /> : null}
+        {st5 ? <Stamp at={st5.at + 18} text="参加賞" x={620} y={-108} size={70} rot={8} /> : null}
       </div>
     </Board>
   );
@@ -589,7 +588,7 @@ const Job2Panel: React.FC<{seg: Seg}> = ({seg}) => {
     <Board seg={seg} title="入社してからも試験" color={ORANGE} width={980}>
       <div style={{position: 'relative'}}>
         <Rows rows={rows} shown={shown} />
-        {s3 ? <Stamp at={s3.at + 8} text="クビ" x={700} y={160} size={90} /> : null}
+        {s3 ? <Stamp at={s3.at + 8} text="クビ" x={660} y={-110} size={90} rot={10} /> : null}
       </div>
     </Board>
   );
