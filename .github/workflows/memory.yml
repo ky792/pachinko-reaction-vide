@@ -2,7 +2,8 @@ name: Shared memory (nbmem)
 # ナギバク共有記憶。正本は main の memory/store.json。追加・変更は必ず PR（マージ＝確定）。
 #  - Issue に「memory」ラベルを付ける（またはタイトルを「記憶:」で始める）→ 本文から記憶の候補を抜き出して PR を作る
 #    （ChatGPT・Claude Web で「共有記憶に追加して」と言うと出てくる ```nbmem ブロックを、そのまま Issue に貼ればよい）
-#  - memory-inbox/** ブランチに memory/inbox/*.json を push（Actions など一時的な環境から）→ 同じく PR
+#  - memory-inbox/** ブランチに memory/inbox/ のファイルを push → 同じく PR
+#    （*.json＝候補そのもの。*.md / *.txt＝ChatGPT などが書いたメモ。中の nbmem ブロックと本文から抜き出す）
 #  - memory/ か scripts/memory/ を変える PR → テストと正本の点検（個人情報・形・MEMORY.md が最新か）
 # main には直接書かない。課金なし（GitHub Actions の無料枠のみ）。
 on:
@@ -85,6 +86,12 @@ jobs:
             # memory-inbox/** に push された候補（一時的な環境から）を取り出す
             git fetch -q --depth 1 origin "$SRC_SHA"
             git checkout "$SRC_SHA" -- memory/inbox
+            # ChatGPT などが書いたメモ（.md / .txt）は、中の nbmem ブロックと本文から候補を抜き出す
+            for f in memory/inbox/*.md memory/inbox/*.txt; do
+              [ -f "$f" ] || continue
+              python scripts/memory/nbmem.py extract "$f" --surface "memo:$(basename "$f")" --name "memo-$(basename "${f%.*}")"
+              rm -f "$f"
+            done
             echo "BR=memory/from-${SRC_REF#memory-inbox/}" >> $GITHUB_ENV
           fi
           ls memory/inbox

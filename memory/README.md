@@ -25,6 +25,7 @@
 | --- | --- | --- |
 | Claude Code | **自動**：セッション開始時に SessionStart フックが MEMORY.md を読み込む（`.claude/settings.json`） | **自動**：Stop フックが会話のユーザー発言から候補を抜き出し `memory/inbox/` に置く → 区切りで `python scripts/memory/nbmem.py submit` を実行すると PR になる |
 | Codex | AGENTS.md の指示で、作業前に MEMORY.md を読む（フックがないため） | 作業の最後に `nbmem.py propose …` / `extract` → `submit`（AGENTS.md に手順） |
+| ChatGPT（GitHub に書ける場合） | 指示文（memory/WEB_AI.md）で MEMORY.md を読む | `memory-inbox/<名前>` ブランチに `memory/inbox/<名前>.md` としてメモを書く → Actions が照合して PR |
 | Claude（claude.ai）・ChatGPT | `memory/WEB_AI.md` の文を貼る（リポジトリが読める連携があれば URL を読ませる。なければ MEMORY.md の中身を貼る） | 「この内容を共有記憶に追加して」→ AI が ```nbmem ブロックを出す → **GitHub の Issue に貼って `memory` ラベル**（スマホの GitHub アプリで可）→ Actions が照合して PR を作る |
 | GitHub Actions など一時的な環境 | `nbmem.py context` | `memory-inbox/<名前>` ブランチに `memory/inbox/*.json` を push → Actions が PR を作る（環境が消えても残る） |
 
