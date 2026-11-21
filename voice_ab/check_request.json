@@ -3,6 +3,7 @@
  "model": "large-v3-turbo",
  "trim": true,
  "only": [
-  "k01-037"
- ]
+  "k01-044"
+ ],
+ "_try": "s7"
 }
