@@ -263,6 +263,11 @@ def apply(st, cand):
             if e["status"] == "confirmed" and similar(e["value"], cand["value"]) >= 0.85:
                 key = k
                 break
+    q = norm(cand["source"].get("quote", ""))
+    if key not in ents and q:
+        for k, e in ents.items():
+            if q in {norm(h["source"].get("quote", "")) for h in e.get("history", [])} | {norm(e["source"].get("quote", ""))}:
+                return "merged"                  # 同じ発言から作った記憶がすでにある
     rec = {"date": cand["source"]["date"], "value": cand["value"], "source": cand["source"]}
     if key not in ents:
         # 決まったキーでなくても、同じ話題で逆のこと（いる/いらない）を言っていたら矛盾として止める
@@ -430,10 +435,12 @@ def submit(base="main", dry=False):
     cands = [c for p in pend for c in json.loads(p.read_text(encoding="utf-8"))]
     branch = f"memory/update-{dt.datetime.now(JST).strftime('%Y%m%d-%H%M%S')}"
     tmp = ROOT / ".nbmem-wt"
-    sh("git", "fetch", "-q", "--depth", "50", "origin", base)
-    if base == "main" and subprocess.run(["git", "cat-file", "-e", "origin/main:memory/store.json"], cwd=ROOT).returncode:
+    fetch = lambda b: sh("git", "fetch", "-q", "--depth", "50", "origin", f"+{b}:refs/remotes/origin/{b}")  # noqa: E731
+    fetch(base)
+    if base == "main" and subprocess.run(["git", "cat-file", "-e", "origin/main:memory/store.json"], cwd=ROOT,
+                                         capture_output=True).returncode:
         base = "feat/shared-memory"            # 仕組みの PR がまだマージ前のときだけ
-        sh("git", "fetch", "-q", "--depth", "50", "origin", base)
+        fetch(base)
     sh("git", "worktree", "add", "-q", "-B", branch, str(tmp), f"origin/{base}")
     try:
         env = dict(os.environ, NBMEM_ROOT=str(tmp))
@@ -553,7 +560,10 @@ def main(argv=None):
         text = user_text_from_transcript(tp)
         cands = extract(text, "claude-code") + parse_blocks(text, "claude-code")
         # すでに正本にあるもの（同じ文）は候補にしない
-        cands = [c for c in cands if not any(similar(e["value"], c["value"]) >= 0.85 for e in st["entries"].values())]
+        known = {norm(e["source"].get("quote", "")) for e in st["entries"].values()} | {
+            norm(h["source"].get("quote", "")) for e in st["entries"].values() for h in e.get("history", [])}
+        cands = [c for c in cands if norm(c["source"]["quote"]) not in known
+                 and not any(similar(e["value"], c["value"]) >= 0.85 for e in st["entries"].values())]
         sid = re.sub(r"[^\w-]", "", str(info.get("session_id", "session")))[:40]
         p = INBOX / f"cc-{sid}.json"
         if cands:

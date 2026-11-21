@@ -119,6 +119,15 @@ class TestConflictAndMerge(Base):
         self.assertEqual(len(st["entries"]), 1)
         self.assertEqual(len(st["entries"]["baku.first_person"]["history"]), 2)
 
+    def test_same_quote_is_merged(self):
+        st = self.m.load_store()
+        self.m.apply(st, {"key": "kyu.ochi_face", "category": "correction", "value": "負けた場面でバクを笑わせない",
+                          "source": {"surface": "t", "date": "2026-11-22", "quote": "負けたわのとこバク笑わせる必要なくね"}})
+        r = self.m.apply(st, {"key": "correction.x", "category": "correction", "value": "負けたわのとこバク笑わせる必要なくね",
+                              "source": {"surface": "cc", "date": "2026-11-22", "quote": "負けたわのとこバク笑わせる必要なくね"}})
+        self.assertEqual(r, "merged")
+        self.assertEqual(len(st["entries"]), 1)
+
     def test_similar_text_with_other_key_is_merged(self):
         st = self.m.load_store()
         self.m.apply(st, self.cand("style.aaaa1111", "概要欄はキャラとチャンネルの紹介だけでいい"))
