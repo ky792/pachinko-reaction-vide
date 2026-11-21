@@ -462,8 +462,13 @@ def submit(base="main", dry=False):
             print(body)
             return branch
         subprocess.run(["git", "-c", "push.negotiate=true", "push", "-q", "-u", "origin", branch], cwd=tmp, check=True)
-        subprocess.run(["gh", "pr", "create", "--base", base, "--head", branch, "--title", "共有記憶の更新（要確認）",
-                        "--body", body], cwd=tmp, check=False)
+        # PR は REST で作る（GraphQL が使えない環境でも動くように）
+        url = subprocess.run(["git", "remote", "get-url", "origin"], cwd=tmp, capture_output=True, text=True).stdout.strip()
+        m = re.search(r"github\.com[:/]([^/]+/[^/.]+?)(?:\.git)?$", url) or re.search(r"/git/([^/]+/[^/]+?)(?:\.git)?$", url)
+        repo = m.group(1) if m else ""
+        r = subprocess.run(["gh", "api", f"repos/{repo}/pulls", "-f", "title=共有記憶の更新（要確認）", "-f", f"head={branch}",
+                            "-f", f"base={base}", "-f", f"body={body}", "--jq", ".html_url"], cwd=tmp, capture_output=True, text=True)
+        print(r.stdout.strip() or f"PR を作れなかった（{r.stderr.strip()[:200]}）。ブランチ {branch} から PR を作ってください")
         for p in pend:
             p.unlink()
         print(f"PR を出した：{branch}")
