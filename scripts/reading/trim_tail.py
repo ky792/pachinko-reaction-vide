@@ -1,0 +1,130 @@
+#!/usr/bin/env python3
+"""台詞の後ろに勝手に付いた声（ハルシネーション）を切り落とす
+
+  python scripts/reading/trim_tail.py episodes/kyu001v2 [--only ID,…]
+
+TTS（とくに Irodori）は、台詞を言い終えたあとに「うわぁぁ」「ちゅー」のような台本にない声を足すことがある。
+Whisper（faster-whisper）で単語ごとの時刻つきで書き起こし、台本の最後の音が聞こえた時刻で音声を切る。
+- 台本と文字起こしは、どちらもかなにして並べる（asr_check と同じ reading.canon）
+- 台本の最後の音（終わりから2音以内）が文字起こしで見つかれば、その単語の終わり＋余韻（声が静かになるまで、最大0.35秒）で切る
+- 台本の終わりが見つからない行は切らない（本物の台詞を切らないため）→ voice_gate で落ちる
+結果：episodes/<回>/voices/*.wav を上書き、episodes/<回>/reading/trim.json に記録（元の長さ・切った位置・切った部分の文字起こし）
+"""
+import argparse
+import json
+import sys
+import wave
+from difflib import SequenceMatcher
+from pathlib import Path
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "lab"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import reading  # noqa: E402
+from asr_check import DEFAULT_MODEL, load16k  # noqa: E402
+from precheck import all_lines  # noqa: E402
+
+TAIL_SLACK = 2       # 台本の終わりから何音までの取りこぼしを「言い終えた」とみなすか
+MAX_RING = 0.35      # 単語の終わりから、声の余韻として残す最大の長さ（秒）
+PAD = 0.06           # 切る位置のあとに残す無音（秒）
+FADE = 0.03
+
+
+def expected_kana(it, d, terms):
+    sp = reading.speech_text(it["say"], d, reading.ENGINE[it["who"]])
+    reading.use_engine(None, d)
+    return reading.canon(sp, d, terms, rules=False)
+
+
+def find_cut(words, exp, d, terms):
+    """words=[(text,start,end)] → (切る秒 or None, 台本の後ろに聞こえた文字)"""
+    got, owner = "", []
+    for wi, (w, _, _) in enumerate(words):
+        k = reading.canon(w, d, terms) if w.strip() else ""
+        got += k
+        owner += [wi] * len(k)
+    if not got or not exp:
+        return None, ""
+    sm = SequenceMatcher(None, exp, got, autojunk=False)
+    blocks = [b for b in sm.get_matching_blocks() if b.size]
+    end_blocks = [b for b in blocks if b.a + b.size >= len(exp) - TAIL_SLACK]
+    if not end_blocks:
+        return None, ""
+    b = end_blocks[-1]
+    gi = b.b + b.size - 1
+    wi = owner[gi]
+    extra = "".join(w for w, _, _ in words[wi + 1:]).strip()
+    return words[wi][2], extra
+
+
+def ring_end(x, sr, t):
+    """t から、声が静かになる（10ms 窓で6つ続けて小さい）ところまで延ばす。最大 MAX_RING 秒"""
+    fr = int(sr * 0.01)
+    peak = float(np.sqrt(np.mean(x ** 2)) or 1e-4)
+    thr = max(0.012, peak * 0.18)
+    i = int(t * sr)
+    quiet = 0
+    limit = min(len(x), int((t + MAX_RING) * sr))
+    while i + fr <= limit:
+        if np.sqrt(np.mean(x[i:i + fr] ** 2)) < thr:
+            quiet += 1
+            if quiet >= 6:
+                return (i - 5 * fr) / sr
+        else:
+            quiet = 0
+        i += fr
+    return limit / sr
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("episode")
+    ap.add_argument("--only")
+    ap.add_argument("--model", default=DEFAULT_MODEL)
+    a = ap.parse_args()
+    ep = (ROOT / a.episode).resolve() if not Path(a.episode).is_absolute() else Path(a.episode)
+    d = reading.load_dict()
+    terms = [t for t in reading.terms(d) if t[3] == "ok"]
+    only = set(a.only.split(",")) if a.only else None
+    items = [it for it in all_lines(ep, only) if (ep / "voices" / f"{it['id']}.wav").exists()]
+    from faster_whisper import WhisperModel
+    model = WhisperModel(a.model, device="cpu", compute_type="int8")
+    logp = ep / "reading" / "trim.json"
+    log = json.loads(logp.read_text(encoding="utf-8")) if logp.exists() else {}
+    for n, it in enumerate(items, 1):
+        wp = ep / "voices" / f"{it['id']}.wav"
+        with wave.open(str(wp)) as w:
+            params, sr = w.getparams(), w.getframerate()
+            raw = np.frombuffer(w.readframes(w.getnframes()), dtype=np.int16)
+        x = raw.astype(np.float32) / 32768
+        segs, _ = model.transcribe(load16k(wp), language="ja", beam_size=5, temperature=0.0,
+                                   condition_on_previous_text=False, vad_filter=False, word_timestamps=True)
+        words = [(wd.word, wd.start, wd.end) for s in segs for wd in (s.words or [])]
+        exp = expected_kana(it, d, terms)
+        t, extra = find_cut(words, exp, d, terms)
+        dur = len(x) / sr
+        rec = {"orig": round(dur, 3), "asr": "".join(w for w, _, _ in words).strip()}
+        if t is None:
+            rec.update(cut=None, note="台本の終わりが聞き取れないので切らない（要確認）")
+        else:
+            cut = min(dur, ring_end(x, sr, t) + PAD)
+            if dur - cut > 0.12:
+                y = raw[: int(cut * sr)].astype(np.float32)
+                f = int(sr * FADE)
+                y[-f:] *= np.linspace(1, 0, f)
+                with wave.open(str(wp), "wb") as o:
+                    o.setparams(params)
+                    o.writeframes(y.astype(np.int16).tobytes())
+                rec.update(cut=round(cut, 3), removed=round(dur - cut, 3), extra=extra)
+            else:
+                rec.update(cut=None, note="後ろに余分な声なし")
+        log[it["id"]] = rec
+        print(f"[{n}/{len(items)}] {it['id']} {rec.get('removed', 0)}s 切る  後ろ：{extra!r}", flush=True)
+    logp.parent.mkdir(parents=True, exist_ok=True)
+    logp.write_text(json.dumps(log, ensure_ascii=False, indent=1), encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()

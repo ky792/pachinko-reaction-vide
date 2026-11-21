@@ -2,6 +2,7 @@ name: Voice check (Whisper)
 
 # 作業ブランチの voice_ab/check_request.json を書き換えて push すると動く。
 #   {"episode": "episodes/eva_history", "model": "large-v3-turbo", "only": ["02_bousou-006", …]}   … only を省くと全行
+#   {"episode": …, "trim": true}  … 先に台詞の後ろの余分な声を切り落としてから照合（ハルシネーション対策・2026-11-22）
 #   {"episode": …, "probe": ["行ID", …]}   … 数行だけでモデル・設定を比べる（scripts/reading/asr_probe.py）
 # faster-whisper（無料・CPU）で文字起こしして台本と照合し、episodes/<回>/reading/ に report.md・report.json・asr.json を戻す
 on:
@@ -39,7 +40,12 @@ jobs:
           PROBE=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('probe',[])))")
           if [ -n "$PROBE" ]; then python scripts/reading/asr_probe.py "$EP" "$PROBE"; exit 0; fi
           python scripts/reading/precheck.py "$EP"
+          TRIM=$(python -c "import json;print('1' if json.load(open('voice_ab/check_request.json')).get('trim') else '')")
+          # trim: true なら、台詞の後ろに勝手に付いた声を先に切り落とす（scripts/reading/trim_tail.py）
+          if [ -n "$TRIM" ]; then python scripts/reading/trim_tail.py "$EP" --model "$MODEL" ${ONLY:+--only "$ONLY"}; fi
           python scripts/reading/asr_check.py "$EP" --model "$MODEL" ${ONLY:+--only "$ONLY"}
+          # 関門：台本にない声が1行でも残っていたら、結果を保存したうえでこのジョブを失敗にする
+          python scripts/reading/voice_gate.py "$EP" || echo "GATE_FAILED=1" >> $GITHUB_ENV
           # 作り直した行があれば、修正前後も文字起こしして比べる
           if [ -f "$EP/reading/before/info.json" ]; then python scripts/reading/compare.py "$EP" --whisper --model "$MODEL"; fi
       - name: Commit results
@@ -47,11 +53,16 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "$EP/reading"
+          git add "$EP/reading" "$EP/voices"
           git diff --cached --quiet && { echo "変更なし"; exit 0; }
           git commit -m "reading: Whisper check results"
           # 同じファイルを手元でも直していたら、ここで作った結果を優先する
           for i in 1 2 3; do git pull --no-rebase -q -X ours origin "${GITHUB_REF_NAME}" && git push && break; sleep 5; done
+      - name: Fail if the voice gate failed
+        if: env.GATE_FAILED == '1'
+        run: |
+          echo "::error::台本にない声が残っている行があります（$EP/reading/gate.md）"
+          exit 1
       - name: Keep results as artifact
         if: always()
         uses: actions/upload-artifact@v4
