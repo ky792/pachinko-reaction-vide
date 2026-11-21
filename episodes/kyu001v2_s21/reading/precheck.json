@@ -11,18 +11,5 @@
   "speech": "当たってからの戦い方も、台ごとにバラバラや。",
   "kana": "アタッテカラノタタカイカタモ、タイゴトニバラバラヤ。",
   "audio": "episodes/kyu001v2_s21/voices/k01-044.wav"
- },
- {
-  "id": "k01-079",
-  "who": "nagi",
-  "kind": "辞書にない固有名詞",
-  "where": "正義",
-  "expect": "",
-  "reason": "辞書にない固有名詞。OpenJTalk の読み（参考・未確定）：マサヨシ",
-  "level": "低",
-  "text": "じゃあ、複雑さは正義？",
-  "speech": "じゃあ、複雑さは正義？",
-  "kana": "ジャー、フクザツサワマサヨシ？",
-  "audio": "episodes/kyu001v2_s21/voices/k01-079.wav"
  }
 ]
