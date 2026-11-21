@@ -235,6 +235,15 @@ def parse_blocks(text, surface="chat"):
     return out
 
 
+def from_text(text, surface):
+    """nbmem ブロックがあればそれだけを使う（AI が判断して書いたもの）。なければ本文から規則で抜き出す。
+    コードブロックの中身は規則の抜き出しに使わない"""
+    blocks = parse_blocks(text, surface)
+    if blocks:
+        return blocks
+    return extract(re.sub(r"```.*?```", "", text, flags=re.S), surface)
+
+
 # ───────────────────────── 正本の読み書き
 def load_store():
     if STORE.exists():
@@ -513,7 +522,7 @@ def main(argv=None):
         print(context_text(st))
     elif a.cmd == "extract":
         text = sys.stdin.read() if a.file == "-" else Path(a.file).read_text(encoding="utf-8")
-        cands = extract(text, a.surface) + parse_blocks(text, a.surface)
+        cands = from_text(text, a.surface)
         if a.print:
             print(json.dumps(cands, ensure_ascii=False, indent=1))
         else:
@@ -563,7 +572,7 @@ def main(argv=None):
         if not tp or not Path(tp).exists():
             return
         text = user_text_from_transcript(tp)
-        cands = extract(text, "claude-code") + parse_blocks(text, "claude-code")
+        cands = from_text(text, "claude-code")
         # すでに正本にあるもの（同じ文）は候補にしない
         known = {norm(e["source"].get("quote", "")) for e in st["entries"].values()} | {
             norm(h["source"].get("quote", "")) for e in st["entries"].values() for h in e.get("history", [])}

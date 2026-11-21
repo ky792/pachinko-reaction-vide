@@ -87,6 +87,17 @@ class TestExtract(Base):
         self.assertEqual(cs[0]["key"], "bgm.volume")
 
 
+    def test_memo_with_block_uses_block_only(self):
+        memo = "# ChatGPT からのメモ\n今日の会話で決まったこと。\n```nbmem\n" + \
+               '{"category": "style", "value": "サムネの文字は白フチの太字にしてほしい", "quote": "白フチの太字がいい"}' + "\n```\n"
+        cs = self.m.from_text(memo, "chatgpt")
+        self.assertEqual(len(cs), 1)
+        self.assertEqual(cs[0]["value"], "サムネの文字は白フチの太字にしてほしい")
+
+    def test_code_is_not_extracted_as_memory(self):
+        self.assertEqual(self.m.from_text("```\nprint('毎回必ず実行してほしい')\n```", "x"), [])
+
+
 class TestPrivacy(Base):
     def test_secrets_and_personal_info_are_never_stored(self):
         bad = ["トークンは ghp_abcdefghijklmnopqrstuvwxyz0123 を使って",
