@@ -16,6 +16,7 @@ import {Audio} from '@remotion/media';
 import data from './data/kyu001.json';
 import {SlotFlow, FlowMode} from './SlotFlow';
 import {PixelJob, pixelSounds} from './PixelJob';
+import {Beats, beatSounds} from './Beats';
 
 // ───────────────────────── 共通
 const BLUE = '#2a6cff';
@@ -883,6 +884,7 @@ export const KyukeiEpisode: React.FC = () => {
     <AbsoluteFill style={{background: '#000'}}>
       <Room />
       <Panels />
+      <Beats />
       <Telop />
       <Ochi />
       <ChapterChip />
@@ -922,6 +924,11 @@ export const KyukeiEpisode: React.FC = () => {
       <Sequence from={OCHI.start} durationInFrames={60}>
         <Audio src={staticFile('kyu/se_ochi.wav')} volume={0.7} />
       </Sequence>
+      {beatSounds().map((o, i) => (
+        <Sequence key={`bt${i}`} from={o.at} durationInFrames={60}>
+          <Audio src={staticFile(`kyu/${o.src}.wav`)} volume={o.vol} />
+        </Sequence>
+      ))}
       {pixelSounds().map((o, i) => (
         <Sequence key={`px${i}`} from={o.at} durationInFrames={90}>
           <Audio src={staticFile(`kyu/${o.src}.wav`)} volume={o.vol} />

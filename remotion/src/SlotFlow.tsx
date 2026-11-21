@@ -475,7 +475,7 @@ const AtMode: React.FC = () => {
 const Moments: React.FC = () => {
   const f = useCurrentFrame();
   const t0 = S(70);
-  const a = (r: number) => M(71, r);
+  const a = (r: number) => M(70, r);
   const count = [a(0.08), a(0.32), a(0.56), a(0.84)].filter((x) => f >= x + 14).length;
   return (
     <>
@@ -511,8 +511,8 @@ const Moments: React.FC = () => {
 
 const Gyakuten: React.FC = () => {
   const f = useCurrentFrame();
-  const t0 = S(74);
-  const a = (r: number) => M(75, r);
+  const t0 = S(73);
+  const a = (r: number) => M(74, r);
   const chance = a(0.3),
     toTk = a(0.48),
     back = a(0.86);
