@@ -64,6 +64,11 @@ def main():
                 head = got[:first.b] if first.a == 0 else ""
                 if len(tail) >= 1:
                     why.append(f"台本の後ろに「{tail}」が聞こえる")
+                # 終わりのあたり（台本の後ろ4割）で、台本より声が2音以上多い（「つまらんねん」→「つまらんないなぁね」）
+                more = sum(max(0, (j2 - j1) - (i2 - i1)) for tag, i1, i2, j1, j2 in sm.get_opcodes()
+                           if tag in ("insert", "replace") and i1 >= len(exp) * 0.6)
+                if more >= 2 and not tail:
+                    why.append(f"台本の終わりのあたりに余分な声（+{more}音）：{a.get('text', '')}")
                 if len(head) >= 1:
                     why.append(f"台本の前に「{head}」が聞こえる")
             same = re.sub(r"[、。？！!?…,. 「」ー]", "", a.get("text", "")) == re.sub(r"[、。？！!?…,. 「」ー]", "", re.sub(r"《([^|》]+)\|[^》]+》", r"\1", it["text"]))
