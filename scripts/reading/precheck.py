@@ -40,6 +40,18 @@ def all_lines(ep, only=None, chapter=None):
     return out
 
 
+_PITFALLS = []
+
+
+def pitfalls():
+    """voice/tts_pitfalls.json（TTS で崩れやすい言い回し。ユーザーの指摘を貯めたもの）"""
+    if not _PITFALLS:
+        pf = ROOT / "voice" / "tts_pitfalls.json"
+        if pf.exists():
+            _PITFALLS.extend(json.loads(pf.read_text(encoding="utf-8")).get("items", []))
+    return _PITFALLS
+
+
 def check_line(it, d, terms, known):
     eng = reading.ENGINE[it["who"]]
     reading.use_engine(eng, d)            # ナギは AivisSpeech のユーザー辞書（aivis_words）を入れた OpenJTalk で読む
@@ -51,6 +63,11 @@ def check_line(it, d, terms, known):
     def add(kind, where, expect, reason, level):
         found.append({"id": it["id"], "who": it["who"], "kind": kind, "where": where, "expect": expect,
                       "reason": reason, "level": level, "text": disp, "speech": sp, "kana": kana})
+
+    for p in pitfalls():
+        if p.get("who", "all") in ("all", it["who"]) and re.search(p["pattern"], it["say"].strip()):
+            add("崩れやすい言い回し", p["pattern"], p.get("fix", ""),
+                f"前に「{p.get('heard', '?')}」と崩れた言い回し（{p.get('date', '')}・{p.get('where', '')}）。直し方：{p.get('fix', '')}", "高")
 
     for m in re.finditer(r"[A-Za-zＡ-Ｚａ-ｚ]+(?:[ .\-][A-Za-z]+)*", sp):
         add("英字残り", m.group(0), "", f"読み上げ用テキストに英字「{m.group(0)}」が残っている。OpenJTalk の読み：{reading.kana(m.group(0))}", "中")
