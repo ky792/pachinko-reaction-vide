@@ -63,6 +63,14 @@ def envelope(path):
     return n, [round(min(1, e / pk * 1.3), 2) for e in env]
 
 
+# 関門：検査済み（scripts/sync_voices.py で取り込んだ）声だけを使う。台本にない声が混ざった wav は使わない
+import hashlib
+_ver = json.loads((WAV / '_verified.json').read_text(encoding='utf-8'))['files'] if (WAV / '_verified.json').exists() else {}
+_bad = [f'k01-{i:03d}' for i in range(1, len(lines) + 1)
+        if _ver.get(f'k01-{i:03d}') != hashlib.sha1((WAV / f'k01-{i:03d}.wav').read_bytes()).hexdigest()]
+if _bad:
+    raise SystemExit(f'検査していない声がある：{_bad}。voice-check（trim: true）→ scripts/sync_voices.py で取り込み直す')
+
 t = 12
 out, chapters, title_at, bgm_cut, bgm_resume = [], [], None, None, None
 ch_start = {c[0]: c for c in CHAPTERS}
