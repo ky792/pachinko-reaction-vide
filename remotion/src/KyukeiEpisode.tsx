@@ -873,7 +873,7 @@ const EndCard: React.FC = () => {
 // ───────────────────────── 音
 const OCHI = LINES.find((l) => l.ochi)!;
 const bgmVolume = (f: number) => {
-  const base = f >= data.title_at && f < data.title_at + 80 ? 0.2 : 0.11;
+  const base = f >= data.title_at && f < data.title_at + 80 ? 0.16 : 0.09;  // 休憩室BGM（ユーザーがGeminiで作成・2026-11-22）。前の曲より約3.5dB大きいので係数を下げ、体感は少し大きめ
   if (f >= data.bgm_cut && f < data.bgm_resume) return interpolate(f, [data.bgm_cut, data.bgm_cut + 12], [base, 0], clamp);
   if (f >= data.bgm_resume) return interpolate(f, [data.bgm_resume, data.bgm_resume + 20], [0, base], clamp);
   return base;
