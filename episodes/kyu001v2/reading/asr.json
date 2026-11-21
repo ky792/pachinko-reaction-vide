@@ -35,9 +35,9 @@
   "text": "通常A通常B天国準備天国広角超広角"
  },
  "k01-008": {
-  "sha1": "820a542f9bcdb1c2d18ad773970f748a76fb49c1",
+  "sha1": "eae83e2dafdea89feff4853bdcee5904f70a7685",
   "model": "large-v3-turbo",
-  "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有力"
+  "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間"
  },
  "k01-009": {
   "sha1": "2cf422f21ff62e9b8dcf9bf86051f18d04404444",
@@ -225,9 +225,9 @@
   "text": "就活で言うと入社してからも試験があるってこと?"
  },
  "k01-046": {
-  "sha1": "186756db2dd94013c7ea35f8affb07ce791b48d9",
+  "sha1": "381475a0902e78aeac9bdf55854f93e71ddf676c",
   "model": "large-v3-turbo",
-  "text": "そう、普通のATはまだ使用期"
+  "text": "そう普通のATはまだ使用期間"
  },
  "k01-047": {
   "sha1": "3c5042a11a376ba65dbc52fedc5d0d15ac139200",
