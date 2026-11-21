@@ -1,0 +1,101 @@
+name: Remotion kyukeishitsu
+
+on:
+  push:
+    branches: [feat/kyu001-remotion]
+    paths:
+      - "remotion/**"
+      - ".github/workflows/remotion-kyu.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: remotion-kyu
+  cancel-in-progress: true
+
+env:
+  COMP: Kyu001
+  STILLS: "89 184 979 1013 2157 4027 5766 5591 7024 10038 10313 10374 12170 12782 7512"
+
+jobs:
+  stills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render still previews
+        run: |
+          mkdir -p out
+          for f in $STILLS; do
+            npx remotion still "$COMP" "out/frame_${f}.png" --frame=$f --scale=0.5
+          done
+      - name: Save to outputs-kyu001-stills branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-kyu001-stills
+          git add -A
+          git commit -q -m "Stills ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-kyu001-stills
+
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra ffmpeg
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render MP4
+        run: |
+          mkdir -p out
+          npx remotion render "$COMP" out/kyu001.mp4 --codec=h264 --crf=20 --concurrency=4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/kyu001.mp4
+          ls -la out
+      - name: Publish full video as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete kyu001-remotion -y --cleanup-tag || true
+          gh release create kyu001-remotion out/kyu001.mp4 --target "$GITHUB_SHA" --prerelease \
+            --title "ナギバクの休憩室 #1（Remotion版）" --notes "feat/kyu001-remotion で自動書き出し（1080p）"
+      - name: Make phone preview (720p)
+        run: |
+          mkdir -p preview
+          ffmpeg -v error -y -i out/kyu001.mp4 -vf scale=1280:-2 -c:v libx264 -preset veryfast -crf 27 -c:a aac -b:a 128k preview/kyu001_preview.mp4
+          ls -la preview
+      - name: Save to outputs-remotion branch
+        run: |
+          cd preview
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-kyu001-remotion
+          git add -A
+          git commit -q -m "Render ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-kyu001-remotion

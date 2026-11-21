@@ -1,6 +1,7 @@
 import {Composition} from 'remotion';
 import {NewsOpening} from './NewsOpening';
 import {NewsEpisode, calculateEpisodeMetadata} from './NewsEpisode';
+import {KyukeiEpisode, calculateKyuMetadata} from './KyukeiEpisode';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -22,6 +23,16 @@ export const RemotionRoot: React.FC = () => {
         width={1920}
         height={1080}
         calculateMetadata={calculateEpisodeMetadata}
+      />
+      {/* ナギバクの休憩室 #1（スロットって複雑すぎひん？）。尺は音声から自動 */}
+      <Composition
+        id="Kyu001"
+        component={KyukeiEpisode}
+        durationInFrames={2400}
+        fps={30}
+        width={1920}
+        height={1080}
+        calculateMetadata={calculateKyuMetadata}
       />
     </>
   );
