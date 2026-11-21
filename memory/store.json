@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-22T03:50:43+09:00",
+ "updated": "2026-11-22T04:15:20+09:00",
  "entries": {
   "nagi.base": {
    "key": "nagi.base",
@@ -855,6 +855,32 @@
       "surface": "claude-chat",
       "date": "2026-10-29",
       "quote": "1本に時間をかけすぎず、やりながら改善する本数重視"
+     },
+     "change": "created"
+    }
+   ]
+  },
+  "decision.47a5aeb8": {
+   "key": "decision.47a5aeb8",
+   "category": "decision",
+   "subject": "検証",
+   "value": "【検証用】休憩室回のBGMは毎回同じ曲にする",
+   "status": "confirmed",
+   "created": "2026-11-22T04:15:20+09:00",
+   "updated": "2026-11-22T04:15:20+09:00",
+   "source": {
+    "surface": "claude",
+    "date": "2026-11-22",
+    "quote": "検証用の発言"
+   },
+   "history": [
+    {
+     "date": "2026-11-22",
+     "value": "【検証用】休憩室回のBGMは毎回同じ曲にする",
+     "source": {
+      "surface": "claude",
+      "date": "2026-11-22",
+      "quote": "検証用の発言"
      },
      "change": "created"
     }
