@@ -467,7 +467,7 @@ const AtMode: React.FC = () => {
       <Tag at={M(43, 0.35)} x={1290} y={480} text="継続バトルを突破" color={BLUE} size={36} />
       <Tag at={M(43, 0.65)} x={1290} y={550} text="差枚数を消化" color={BLUE} size={36} />
       <Tag at={M(43, 0.02)} x={1290} y={345} text="ATのタイプ（一例）" color={BLUE_DEEP} solid size={26} />
-      <Token kf={[[t0 - 30, P.AT]]} face={f >= amai ? 'surprised' : 'happy'} shake={f >= amai && f < amai + 16 ? 10 : 0} />
+      <Token kf={[[t0 - 30, {x: 890, y: 450}]]} face={f >= amai ? 'surprised' : 'happy'} shake={f >= amai && f < amai + 16 ? 10 : 0} />
     </>
   );
 };
