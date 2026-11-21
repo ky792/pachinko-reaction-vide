@@ -15,6 +15,7 @@ import {
 import {Audio} from '@remotion/media';
 import data from './data/kyu001.json';
 import {SlotFlow, FlowMode} from './SlotFlow';
+import {PixelJob, pixelSounds} from './PixelJob';
 
 // ───────────────────────── 共通
 const BLUE = '#2a6cff';
@@ -657,6 +658,7 @@ const PekaPanel: React.FC<{seg: Seg}> = ({seg}) => {
 };
 
 const Panel: React.FC<{seg: Seg}> = ({seg}) => {
+  if (seg.key.startsWith('pixel_')) return <PixelJob mode={seg.key.slice(6) as 'job' | 'job2'} from={seg.from} to={seg.to} />;
   if (seg.key.startsWith('flow_')) return <SlotFlow mode={seg.key.slice(5) as FlowMode} from={seg.from} to={seg.to} />;
   switch (seg.key) {
     case 'terms1':
@@ -920,6 +922,11 @@ export const KyukeiEpisode: React.FC = () => {
       <Sequence from={OCHI.start} durationInFrames={60}>
         <Audio src={staticFile('kyu/se_ochi.wav')} volume={0.7} />
       </Sequence>
+      {pixelSounds().map((o, i) => (
+        <Sequence key={`px${i}`} from={o.at} durationInFrames={90}>
+          <Audio src={staticFile(`kyu/${o.src}.wav`)} volume={o.vol} />
+        </Sequence>
+      ))}
       <Sequence from={startOf(9)} durationInFrames={30}>
         <Audio src={staticFile('kyu/se_emphasis.wav')} volume={0.4} />
       </Sequence>

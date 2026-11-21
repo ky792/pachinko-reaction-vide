@@ -17,7 +17,7 @@ concurrency:
 
 env:
   COMP: Kyu001
-  STILLS: "2453 2777 2864 3188 5062 8461 8598 8906 8975 9055"
+  STILLS: "3307 3408 3472 3626 3718 3793 3985 4111 5475 5597 5672"
 
 jobs:
   stills:
@@ -35,6 +35,8 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+          mkdir -p public/fonts
+          curl -sSfL -o public/fonts/DotGothic16-Regular.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/dotgothic16/DotGothic16-Regular.ttf || echo "::warning::DotGothic16 を取得できず"
       - name: Install Remotion
         run: npm install --no-audit --no-fund
       - name: Render still previews
@@ -69,6 +71,8 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra ffmpeg
+          mkdir -p public/fonts
+          curl -sSfL -o public/fonts/DotGothic16-Regular.ttf https://raw.githubusercontent.com/google/fonts/main/ofl/dotgothic16/DotGothic16-Regular.ttf || echo "::warning::DotGothic16 を取得できず"
       - name: Install Remotion
         run: npm install --no-audit --no-fund
       - name: Render MP4
