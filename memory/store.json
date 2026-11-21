@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-22T03:50:43+09:00",
+ "updated": "2026-11-22T03:54:14+09:00",
  "entries": {
   "nagi.base": {
    "key": "nagi.base",
@@ -861,5 +861,18 @@
    ]
   }
  },
- "conflicts": []
+ "conflicts": [
+  {
+   "key": "baku.first_person",
+   "current": "バクの一人称は「ウチ」（俺・オレは使わない）",
+   "proposed": "【検証用・マージしない】バクの一人称はオレにする",
+   "source": {
+    "surface": "claude-code",
+    "date": "2026-11-22",
+    "quote": "検証：矛盾のテスト"
+   },
+   "category": "correction",
+   "noted": "2026-11-22T03:54:14+09:00"
+  }
+ ]
 }
