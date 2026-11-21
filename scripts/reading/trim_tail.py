@@ -39,24 +39,33 @@ def expected_kana(it, d, terms):
 
 
 def find_cut(words, exp, d, terms):
-    """words=[(text,start,end)] → (切る秒 or None, 台本の後ろに聞こえた文字)"""
+    """words=[(text,start,end)] → (後ろを切る秒 or None, 台本の後ろに聞こえた文字, 前を切る秒 or None)"""
     got, owner = "", []
     for wi, (w, _, _) in enumerate(words):
         k = reading.canon(w, d, terms) if w.strip() else ""
         got += k
         owner += [wi] * len(k)
     if not got or not exp:
-        return None, ""
+        return None, "", None
     sm = SequenceMatcher(None, exp, got, autojunk=False)
     blocks = [b for b in sm.get_matching_blocks() if b.size]
+    # 前：台本の最初の音がそのまま聞こえていて、その前に声（「んー」など）があれば、そこを切る
+    head = None
+    if blocks and blocks[0].a == 0 and blocks[0].b >= 1:
+        gi0 = blocks[0].b
+        w0 = owner[gi0]
+        first = owner.index(w0)                      # その単語のかなが始まる位置
+        n = owner.count(w0)
+        ws, we = words[w0][1], words[w0][2]
+        head = max(0.0, ws + (we - ws) * (gi0 - first) / max(1, n) - 0.05)   # 単語の途中なら、かなの割合で時刻を見積もる
     end_blocks = [b for b in blocks if b.a + b.size >= len(exp) - TAIL_SLACK]
     if not end_blocks:
-        return None, ""
+        return None, "", head
     b = end_blocks[-1]
     gi = b.b + b.size - 1
     wi = owner[gi]
     extra = "".join(w for w, _, _ in words[wi + 1:]).strip()
-    return words[wi][2], extra
+    return words[wi][2], extra, head
 
 
 def ring_end(x, sr, t):
@@ -103,25 +112,30 @@ def main():
                                    condition_on_previous_text=False, vad_filter=False, word_timestamps=True)
         words = [(wd.word, wd.start, wd.end) for s in segs for wd in (s.words or [])]
         exp = expected_kana(it, d, terms)
-        t, extra = find_cut(words, exp, d, terms)
+        t, extra, head = find_cut(words, exp, d, terms)
         dur = len(x) / sr
         rec = {"orig": round(dur, 3), "asr": "".join(w for w, _, _ in words).strip()}
+        cut = dur
         if t is None:
-            rec.update(cut=None, note="台本の終わりが聞き取れないので切らない（要確認）")
+            rec.update(cut=None, note="台本の終わりが聞き取れないので後ろは切らない（関門で確かめる）")
         else:
-            cut = min(dur, ring_end(x, sr, t) + PAD)
-            if dur - cut > 0.12:
-                y = raw[: int(cut * sr)].astype(np.float32)
-                f = int(sr * FADE)
-                y[-f:] *= np.linspace(1, 0, f)
-                with wave.open(str(wp), "wb") as o:
-                    o.setparams(params)
-                    o.writeframes(y.astype(np.int16).tobytes())
+            c = min(dur, ring_end(x, sr, t) + PAD)
+            if dur - c > 0.12:
+                cut = c
                 rec.update(cut=round(cut, 3), removed=round(dur - cut, 3), extra=extra)
-            else:
-                rec.update(cut=None, note="後ろに余分な声なし")
+        start = head if head and head > 0.08 else 0.0
+        if start:
+            rec.update(head_cut=round(start, 3))
+        if cut < dur or start:
+            y = raw[int(start * sr): int(cut * sr)].astype(np.float32)
+            f = int(sr * FADE)
+            y[-f:] *= np.linspace(1, 0, f)
+            y[:f] *= np.linspace(0, 1, f)
+            with wave.open(str(wp), "wb") as o:
+                o.setparams(params)
+                o.writeframes(y.astype(np.int16).tobytes())
         log[it["id"]] = rec
-        print(f"[{n}/{len(items)}] {it['id']} {rec.get('removed', 0)}s 切る  後ろ：{extra!r}", flush=True)
+        print(f"[{n}/{len(items)}] {it['id']} 後ろ{rec.get('removed', 0)}s 前{rec.get('head_cut', 0)}s  後ろの声：{extra!r}", flush=True)
     logp.parent.mkdir(parents=True, exist_ok=True)
     logp.write_text(json.dumps(log, ensure_ascii=False, indent=1), encoding="utf-8")
 

@@ -6,13 +6,14 @@
 
 落とす条件（asr_check の文字起こし asr.json を使う。声が変わっていたら asr_check を先に回すこと）
 - 台本の終わりより後ろに、かなで1音以上の声が聞こえる（＝勝手に足された声）
-- 台本の最初より前に、かなで2音以上の声が聞こえる
-- 台本との一致（かな）が 0.75 未満（台詞が抜けた・別のことを言っている）
+- 台本の最初の音より前に、声（「んー」など）が聞こえる
+- 台本との一致（かな）が 0.75 未満（台詞が抜けた・別のことを言っている）。文字起こしが台本の字面と同じなら通す
 - 文字起こしが音声と合っていない（sha1 が違う＝声を作り直したのに検査していない）
 耳で聞いて問題ないと確かめた行は reading/gate_override.json に {行ID: "理由"} で書くと通す（sha1 も一緒に記録され、声を作り直すと無効になる）
 """
 import hashlib
 import json
+import re
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -60,12 +61,13 @@ def main():
             if blocks:
                 last, first = blocks[-1], blocks[0]
                 tail = got[last.b + last.size:] if last.a + last.size >= len(exp) - 2 else ""
-                head = got[:first.b] if first.a <= 1 else ""
+                head = got[:first.b] if first.a == 0 else ""
                 if len(tail) >= 1:
                     why.append(f"台本の後ろに「{tail}」が聞こえる")
-                if len(head) >= 2:
+                if len(head) >= 1:
                     why.append(f"台本の前に「{head}」が聞こえる")
-            if sm.ratio() < MIN_RATIO:
+            same = re.sub(r"[、。？！!?…,. 「」ー]", "", a.get("text", "")) == re.sub(r"[、。？！!?…,. 「」ー]", "", re.sub(r"《([^|》]+)\|[^》]+》", r"\1", it["text"]))
+            if sm.ratio() < MIN_RATIO and not same:
                 why.append(f"台本との一致が低い（{sm.ratio():.2f}）：{a.get('text', '')}")
         ov = override.get(it["id"])
         if why and ov and (not isinstance(ov, dict) or ov.get("sha1") in (None, h)):
