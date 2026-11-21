@@ -1,24 +1,26 @@
 name: Shared memory (nbmem)
-# ナギバク共有記憶。正本は main の memory/store.json。追加・変更は必ず PR（マージ＝確定）。
-#  - Issue に「memory」ラベルを付ける（またはタイトルを「記憶:」で始める）→ 本文から記憶の候補を抜き出して PR を作る
-#    （ChatGPT・Claude Web で「共有記憶に追加して」と言うと出てくる ```nbmem ブロックを、そのまま Issue に貼ればよい）
-#  - memory-inbox/** ブランチに memory/inbox/ のファイルを push → 同じく PR
-#    （*.json＝候補そのもの。*.md / *.txt＝ChatGPT などが書いたメモ。中の nbmem ブロックと本文から抜き出す）
+# ナギバク共有記憶。正本は main の memory/store.json（AI が読むのは memory/MEMORY.md）。追加・変更は必ず PR（マージ＝確定）。
+#  - Issue に「memory」ラベル（またはタイトル「記憶:」）→ 本文から候補を抜き出して PR
+#  - memory-inbox/** ブランチに memory/inbox/ のファイルを push → PR
+#    （*.json＝候補そのもの。*.md / *.txt＝ChatGPT・Claude などが書いたメモ。nbmem ブロック／JSON Lines／本文から抜き出す）
+#  - main への反映時・毎日1回・手動実行（text 空）→ まだ処理していない memory-inbox/** をまとめて処理（取りこぼし対策）
 #  - memory/ か scripts/memory/ を変える PR → テストと正本の点検（個人情報・形・MEMORY.md が最新か）
 # main には直接書かない。課金なし（GitHub Actions の無料枠のみ）。
 on:
   issues:
     types: [opened, edited, labeled]
   push:
-    branches: ['memory-inbox/**']
-    paths: ['memory/inbox/**']
+    branches: ['memory-inbox/**', main]
+    paths: ['memory/inbox/**', '.github/workflows/memory.yml', 'scripts/memory/**']
   pull_request:
     paths: ['memory/**', 'scripts/memory/**']
+  schedule:
+    - cron: '17 20 * * *'      # 毎日 5:17（日本時間）
   workflow_dispatch:
     inputs:
       text:
-        description: '記憶に追加したい内容（会話の抜粋や nbmem ブロック）'
-        required: true
+        description: '記憶に追加したい内容（空なら、未処理の memory-inbox ブランチをまとめて処理）'
+        required: false
 
 permissions:
   contents: write
@@ -42,86 +44,40 @@ jobs:
 
   propose:
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      github.event_name == 'push' ||
-      (github.event_name == 'issues' &&
-       (contains(github.event.issue.labels.*.name, 'memory') || startsWith(github.event.issue.title, '記憶')))
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'issues' ||
+       contains(github.event.issue.labels.*.name, 'memory') || startsWith(github.event.issue.title, '記憶'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with: {fetch-depth: 1}
-      - name: Base on main (the single source of truth)
-        run: |
-          # 正本は main。main にまだ共有記憶がない（この仕組みのPRがマージ前）ときだけ、仕組みのブランチを土台にする
-          BASE=main
-          git fetch -q --depth 1 origin main
-          git cat-file -e origin/main:memory/store.json 2>/dev/null || BASE=feat/shared-memory
-          git fetch -q --depth 1 origin "$BASE"
-          git checkout -q -B nbmem-work "origin/$BASE"
-          echo "BASE=$BASE" >> $GITHUB_ENV
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - name: Tests
         run: python -m unittest scripts/memory/test_nbmem.py
-      - name: Collect candidates
-        env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          ISSUE_NO: ${{ github.event.issue.number }}
-          INPUT_TEXT: ${{ github.event.inputs.text }}
-          EV: ${{ github.event_name }}
-          SRC_REF: ${{ github.ref_name }}
-          SRC_SHA: ${{ github.sha }}
-        run: |
-          set -e
-          mkdir -p memory/inbox
-          if [ "$EV" = issues ]; then
-            printf '%s' "$ISSUE_BODY" > /tmp/in.txt
-            python scripts/memory/nbmem.py extract /tmp/in.txt --surface "github-issue#$ISSUE_NO" --name "issue-$ISSUE_NO"
-            echo "BR=memory/issue-$ISSUE_NO" >> $GITHUB_ENV
-          elif [ "$EV" = workflow_dispatch ]; then
-            printf '%s' "$INPUT_TEXT" > /tmp/in.txt
-            python scripts/memory/nbmem.py extract /tmp/in.txt --surface manual --name "manual-${{ github.run_id }}"
-            echo "BR=memory/manual-${{ github.run_id }}" >> $GITHUB_ENV
-          else
-            # memory-inbox/** に push された候補（一時的な環境から）を取り出す
-            git fetch -q --depth 1 origin "$SRC_SHA"
-            git checkout "$SRC_SHA" -- memory/inbox
-            # ChatGPT などが書いたメモ（.md / .txt）は、中の nbmem ブロックと本文から候補を抜き出す
-            for f in memory/inbox/*.md memory/inbox/*.txt; do
-              [ -f "$f" ] || continue
-              python scripts/memory/nbmem.py extract "$f" --surface "memo:$(basename "$f")" --name "memo-$(basename "${f%.*}")"
-              rm -f "$f"
-            done
-            echo "BR=memory/from-${SRC_REF#memory-inbox/}" >> $GITHUB_ENV
-          fi
-          ls memory/inbox
-      - name: Ingest (duplicates merged, contradictions not overwritten)
-        run: |
-          python scripts/memory/nbmem.py ingest --clear | tee /tmp/result.txt
-          python scripts/memory/nbmem.py check
-      - name: Open PR
+      - name: Propose
         env:
           GH_TOKEN: ${{ github.token }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          INPUT_TEXT: ${{ github.event.inputs.text }}
+          EV: ${{ github.event_name }}
+          REF: ${{ github.ref_name }}
           ISSUE_NO: ${{ github.event.issue.number }}
         run: |
           set -e
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A memory
-          if git diff --cached --quiet; then
-            MSG="記憶の候補はありませんでした（すでに同じ内容がある・残す情報ではない・個人情報らしきものを含む のどれか）。"
+          cp scripts/memory/ci_propose.sh /tmp/ci_propose.sh   # 土台のブランチを切り替えても同じ手順で動くように
+          if [ "$EV" = issues ]; then
+            bash /tmp/ci_propose.sh issue "$ISSUE_NO"
+          elif [ "$EV" = workflow_dispatch ] && [ -n "$INPUT_TEXT" ]; then
+            bash /tmp/ci_propose.sh text "${{ github.run_id }}"
+          elif [ "$EV" = push ] && [ "$REF" != main ]; then
+            bash /tmp/ci_propose.sh inbox "$REF"
           else
-            git checkout -q -b "$BR"
-            git commit -q -m "memory: 記憶の候補を反映（要確認）"
-            git push -q -f origin "$BR"
-            printf '共有記憶の候補を正本に照合しました。**マージで確定**します。矛盾は上書きせず memory/CONFLICTS.md に載せています。\n\n```\n%s\n```\n' "$(cat /tmp/result.txt)" > /tmp/body.md
-            [ -n "$ISSUE_NO" ] && echo "Issue #$ISSUE_NO から" >> /tmp/body.md
-            URL=$(gh pr create --base "$BASE" --head "$BR" --title "共有記憶の更新（要確認）" --body-file /tmp/body.md 2>/dev/null || gh pr view "$BR" --json url -q .url 2>/dev/null || true)
-            if [ -z "$URL" ]; then
-              URL="https://github.com/${{ github.repository }}/compare/$BASE...$BR?expand=1 （Actions から PR を作れない設定のため、ここから PR を作ってください）"
-            fi
-            MSG="記憶の候補を PR にしました：$URL"
+            # まだ処理していない memory-inbox/** をまとめて（memory/from-<名前> ブランチがないもの）
+            DONE=$(git ls-remote --heads origin 'memory/from-*' | sed 's#.*refs/heads/memory/from-##')
+            for b in $(git ls-remote --heads origin 'memory-inbox/*' | sed 's#.*refs/heads/##'); do
+              n=${b#memory-inbox/}
+              if echo "$DONE" | grep -qx "$n"; then echo "処理済み：$b"; continue; fi
+              bash /tmp/ci_propose.sh inbox "$b" || echo "::warning::$b の処理に失敗"
+            done
           fi
-          echo "$MSG"
-          echo "$MSG" >> $GITHUB_STEP_SUMMARY
-          if [ -n "$ISSUE_NO" ]; then gh issue comment "$ISSUE_NO" --body "$MSG"; fi

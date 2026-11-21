@@ -94,6 +94,13 @@ class TestExtract(Base):
         self.assertEqual(len(cs), 1)
         self.assertEqual(cs[0]["value"], "サムネの文字は白フチの太字にしてほしい")
 
+    def test_bare_json_lines(self):
+        memo = ('{"category":"character","subject":"ナギの口調","value":"ナギは標準語のタメ口で話し、敬語は使わない。","quote":"ナギは敬語を使わない","source":{"surface":"claude"}}\n'
+                '{"category":"style","value":"BGMは大きめ","quote":"BGM大きめ"}\n')
+        cs = self.m.from_text(memo, "memo")
+        self.assertEqual([c["category"] for c in cs], ["character", "style"])
+        self.assertEqual(cs[0]["source"]["surface"], "claude")
+
     def test_code_is_not_extracted_as_memory(self):
         self.assertEqual(self.m.from_text("```\nprint('毎回必ず実行してほしい')\n```", "x"), [])
 

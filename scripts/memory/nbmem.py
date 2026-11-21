@@ -211,9 +211,11 @@ def subject_of(s, key):
 
 
 def parse_blocks(text, surface="chat"):
-    """AI が書く ```nbmem ブロック（1行1件の JSON）を読む"""
+    """AI が書く記憶の候補を読む：```nbmem ブロック、またはブロックなしの JSON Lines（1行1件の JSON オブジェクト）"""
     out = []
-    for blk in re.findall(r"```nbmem\s*\n(.*?)```", text, flags=re.S):
+    blks = re.findall(r"```(?:nbmem|json|jsonl)?\s*\n(.*?)```", text, flags=re.S)
+    bare = [ln for ln in re.sub(r"```.*?```", "", text, flags=re.S).splitlines() if ln.strip().startswith("{")]
+    for blk in blks + ["\n".join(bare)]:
         for line in blk.splitlines():
             line = line.strip().rstrip(",")
             if not line or line.startswith("#"):
