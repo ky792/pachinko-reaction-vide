@@ -542,8 +542,8 @@ const Gyakuten: React.FC = () => {
         kf={[
           [t0, P.AT],
           [toTk, P.AT],
-          [toTk + 14, {x: P.TK.x + 200, y: P.TK.y + 150}],
-          [back, {x: P.TK.x + 200, y: P.TK.y + 150}],
+          [toTk + 14, {x: P.TK.x - 200, y: P.TK.y + 150}],
+          [back, {x: P.TK.x - 200, y: P.TK.y + 150}],
           [back + 14, P.AT],
         ]}
         face={f >= chance ? 'excited' : 'sweat'}

@@ -249,7 +249,7 @@ const Coins: React.FC = () => {
           if (f < a + i * 9) return null;
           return <div key={i} style={{position: 'absolute', left: 395, top: -40 + t * 200, width: 34, height: 34, borderRadius: '50%', background: YELLOW, border: '4px solid #b8860b', opacity: t < 0.9 ? 1 : 0}} />;
         })}
-        <div style={{position: 'absolute', left: 560, top: 140, fontSize: 64, color: RED}}>-{(n * 1000).toLocaleString()}円</div>
+        <div style={{position: 'absolute', left: 560, top: 150, fontSize: 56, color: RED, whiteSpace: 'nowrap'}}>-{(n * 1000).toLocaleString()}円</div>
         <Stamp at={S(15) + 4} text="言い方！" color={ORANGE} x={40} y={140} size={70} rot={-8} />
       </div>
     </Card>
@@ -424,10 +424,10 @@ const Hint: React.FC = () => {
         </div>
         {f >= S(78) ? (
           <div style={{flex: 1, display: 'flex', flexDirection: 'column', gap: 16}}>
-            <div style={{background: '#24305e', borderRadius: 16, padding: '14px 20px', fontSize: 38, scale: `${pop(f, S(78), fps)}`}}>
+            <div style={{background: '#24305e', borderRadius: 16, padding: '14px 20px', fontSize: 34, whiteSpace: 'nowrap', scale: `${pop(f, S(78), fps)}`}}>
               知らない人：<span style={{color: '#9fb4ff'}}>「ふーん」</span>
             </div>
-            <div style={{background: '#5e2430', borderRadius: 16, padding: '14px 20px', fontSize: 38, scale: `${pop(f, M(78, 0.45), fps)}`}}>
+            <div style={{background: '#5e2430', borderRadius: 16, padding: '14px 20px', fontSize: 34, whiteSpace: 'nowrap', scale: `${pop(f, M(78, 0.45), fps)}`}}>
               知ってる人：<span style={{color: '#ffd23f'}}>手汗ダラダラ</span>
             </div>
           </div>
