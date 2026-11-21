@@ -1,6 +1,6 @@
 {
  "version": 1,
- "updated": "2026-11-22T03:50:43+09:00",
+ "updated": "2026-11-22T04:06:20+09:00",
  "entries": {
   "nagi.base": {
    "key": "nagi.base",
@@ -859,7 +859,46 @@
      "change": "created"
     }
    ]
+  },
+  "thumbnail": {
+   "key": "thumbnail",
+   "category": "style",
+   "subject": "{\"category\": \"",
+   "value": "{\"category\": \"style\", \"subject\": \"検証\", \"value\": \"【検証用】サムネの文字は白フチの太字にしてほしい\", \"quote\": \"サムネの文字は白フチの太字がいい\", \"source\": {\"surface\": \"chatgpt\"}}",
+   "status": "confirmed",
+   "created": "2026-11-22T04:06:20+09:00",
+   "updated": "2026-11-22T04:06:20+09:00",
+   "source": {
+    "surface": "memo:chatgpt-test.md",
+    "date": "2026-11-22",
+    "quote": "{\"category\": \"style\", \"subject\": \"検証\", \"value\": \"【検証用】サムネの文字は白フチの太字にしてほしい\", \"quote\": \"サムネの文字は白フチの太字がいい\", \"source\": {\"surface\": \"chatgpt\"}}"
+   },
+   "history": [
+    {
+     "date": "2026-11-22",
+     "value": "{\"category\": \"style\", \"subject\": \"検証\", \"value\": \"【検証用】サムネの文字は白フチの太字にしてほしい\", \"quote\": \"サムネの文字は白フチの太字がいい\", \"source\": {\"surface\": \"chatgpt\"}}",
+     "source": {
+      "surface": "memo:chatgpt-test.md",
+      "date": "2026-11-22",
+      "quote": "{\"category\": \"style\", \"subject\": \"検証\", \"value\": \"【検証用】サムネの文字は白フチの太字にしてほしい\", \"quote\": \"サムネの文字は白フチの太字がいい\", \"source\": {\"surface\": \"chatgpt\"}}"
+     },
+     "change": "created"
+    }
+   ]
   }
  },
- "conflicts": []
+ "conflicts": [
+  {
+   "key": "thumbnail",
+   "current": "{\"category\": \"style\", \"subject\": \"検証\", \"value\": \"【検証用】サムネの文字は白フチの太字にしてほしい\", \"quote\": \"サムネの文字は白フチの太字がいい\", \"source\": {\"surface\": \"chatgpt\"}}",
+   "proposed": "【検証用】サムネの文字は白フチの太字にしてほしい",
+   "source": {
+    "surface": "chatgpt",
+    "date": "2026-11-22",
+    "quote": "サムネの文字は白フチの太字がいい"
+   },
+   "category": "style",
+   "noted": "2026-11-22T04:06:20+09:00"
+  }
+ ]
 }
