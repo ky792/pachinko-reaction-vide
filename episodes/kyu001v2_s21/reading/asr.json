@@ -1,8 +1,8 @@
 {
  "k01-001": {
-  "sha1": "40df8cd0a6b18fa94554fae2071a92adedc0b142",
+  "sha1": "e8062e87044e7248977cec96119a635603816ea1",
   "model": "large-v3-turbo",
-  "text": "なあ、ナギ、なんちゃうちぞ!"
+  "text": "なあナギ ちょっと聞いてや"
  },
  "k01-008": {
   "sha1": "27b45c73624482aff312f440133d8fa3cec8da23",
@@ -10,9 +10,9 @@
   "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間"
  },
  "k01-012": {
-  "sha1": "bf523e4acac3d196e8c0c18f496fa80d203762bf",
+  "sha1": "8db19825e428f4634471d95d08b1470a714be013",
   "model": "large-v3-turbo",
-  "text": "撃つだけなら何も知らんでも撃てる電人は?"
+  "text": "撃つだけなら正直なんも知らんでも撃てるねん"
  },
  "k01-020": {
   "sha1": "ceb551d31dbd5b41f2acf3642db72b59e8563fd8",
@@ -25,9 +25,9 @@
   "text": "それはそれでってつまらんねん"
  },
  "k01-042": {
-  "sha1": "219a0f38f92d1e0cde397b2c72f8a5ae01fcbb9e",
+  "sha1": "8310fc1421cc527523f11d3028c5c521e4f3b756",
   "model": "large-v3-turbo",
-  "text": "甘いおナッツね"
+  "text": "甘い甘い!そんな簡単ちゃうで!"
  },
  "k01-047": {
   "sha1": "3c5042a11a376ba65dbc52fedc5d0d15ac139200",
@@ -35,14 +35,14 @@
   "text": "上位AT入ってようやく正社員や"
  },
  "k01-049": {
-  "sha1": "45e08a238a3942d1b39f493b23d1f740dfd1df48",
+  "sha1": "f6a1eb2db7cdd66a8011a104ec069b0a7546323d",
   "model": "large-v3-turbo",
-  "text": "即首即すっきゃ"
+  "text": "そんなもん即クビや!で?"
  },
  "k01-062": {
-  "sha1": "7f6e64b128248988d9bf6d2b1e825956db31bc4e",
+  "sha1": "fe1cfc469300ef04ac0868ed0efa67204240f6cb",
   "model": "large-v3-turbo",
-  "text": "あれは理屈ちゃうねん時間尽きな"
+  "text": "あれはもう理屈ちゃうねん本能や"
  },
  "k01-069": {
   "sha1": "88c371f418b531c7bca9e3cbbc2752e43f882809",
@@ -50,18 +50,18 @@
   "text": "好きなとこは好き?時間つけ!"
  },
  "k01-073": {
-  "sha1": "dd3742c28a6c3ea6775e4ae2512ea21eb51a21cb",
+  "sha1": "3b80387f819fefc33309bef482bba4ec180772a3",
   "model": "large-v3-turbo",
-  "text": "AT中もそうや、近づけーな"
+  "text": "AT中も全く同じことが言えるで"
  },
  "k01-080": {
-  "sha1": "dfaa7b4e72ab8704c1c101472c71429358f23e98",
+  "sha1": "f772c4ab799e86fd2bab546c5eabcc49c8ad8724",
   "model": "large-v3-turbo",
-  "text": "いや、骨葬なんだよね"
+  "text": "いや、そうとも言い切れんねんすのっちゃけんで"
  },
  "k01-099": {
-  "sha1": "5df3bfde9888ac9991a727a29cbe86a9939a0e7f",
+  "sha1": "c4224ef2c7f58aeda77c8f82fc45af517ea8c6aa",
   "model": "large-v3-turbo",
-  "text": "くそ負けたわ、ちか!"
+  "text": "くそ負けたわほんまに"
  }
 }
