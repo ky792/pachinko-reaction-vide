@@ -1,0 +1,67 @@
+{
+ "k01-001": {
+  "sha1": "f42f2fd6c24ddc54aecdf3bbd9ad36798ac2b6cf",
+  "model": "large-v3-turbo",
+  "text": "なあ、ナギ、じゃあ10歩やえ"
+ },
+ "k01-008": {
+  "sha1": "47f92abac4b635bf96a573760ebe7a96048eba84",
+  "model": "large-v3-turbo",
+  "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間"
+ },
+ "k01-012": {
+  "sha1": "6ec87e551905734561324e0f00cb422adddba470",
+  "model": "large-v3-turbo",
+  "text": "撃つだけなら何も知らんでも撃てるじゃあか?"
+ },
+ "k01-020": {
+  "sha1": "60d640c1c4e5c3cd0f6785d238c1c5542f761bff",
+  "model": "large-v3-turbo",
+  "text": "規定ゲーム数で当てる代も周期でポイント貯める代もあるやろ?"
+ },
+ "k01-037": {
+  "sha1": "e3687838f4cca26750f84f75e91de5ccecefe0ec",
+  "model": "large-v3-turbo",
+  "text": "んーそれはそれでつまらんねん"
+ },
+ "k01-042": {
+  "sha1": "82eca6efc54036d357d3ec20bf32ce06719ec96b",
+  "model": "large-v3-turbo",
+  "text": "うまい!すじいちもね!"
+ },
+ "k01-047": {
+  "sha1": "6b7281f72c27c21fb63b0200568d10dfd73c2639",
+  "model": "large-v3-turbo",
+  "text": "上位AT入ってようやく正社員や"
+ },
+ "k01-049": {
+  "sha1": "193126d503c362582f5454df4528402ec3edc5a5",
+  "model": "large-v3-turbo",
+  "text": "即クビソーセキュッテル"
+ },
+ "k01-062": {
+  "sha1": "6bfbad4dcc5832111ecf6c5bb90e35e144849be1",
+  "model": "large-v3-turbo",
+  "text": "あれは理屈ちゃうねんそんなご"
+ },
+ "k01-069": {
+  "sha1": "b26c3832c0e707698399ccae6f5bc9b021bae1ce",
+  "model": "large-v3-turbo",
+  "text": "好きなとこは好き次やったよな"
+ },
+ "k01-073": {
+  "sha1": "67c99c68192a65c858b8439dba4b2bcf8ab73b96",
+  "model": "large-v3-turbo",
+  "text": "AT中もそうや、そんだけだな"
+ },
+ "k01-080": {
+  "sha1": "398b5e546d8951dd248fba401cade83026489a7e",
+  "model": "large-v3-turbo",
+  "text": "いや、水分スイッチもあるじゃん"
+ },
+ "k01-099": {
+  "sha1": "c260071d4ddce393aff5a33e07230718a2dcb8a8",
+  "model": "large-v3-turbo",
+  "text": "クソ負けたわそん負けたやな"
+ }
+}
