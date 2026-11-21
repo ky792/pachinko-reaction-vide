@@ -1,15 +1,15 @@
 [
  {
-  "kind": "脱落",
-  "where": "エーティー",
-  "expect": "エーティー",
-  "reason": "台本の「エーティー」が聞こえない",
+  "kind": "誤読",
+  "where": "セーギ",
+  "expect": "セーギ",
+  "reason": "台本は「セーギ」、聞こえたのは「マサヨシ」",
   "level": "中",
-  "id": "k01-008",
-  "who": "baku",
-  "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間……",
-  "asr": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間",
-  "ratio": 0.947,
-  "audio": "episodes/kyu001v2/voices/k01-008.wav"
+  "id": "k01-079",
+  "who": "nagi",
+  "text": "じゃあ、複雑さは正義？",
+  "asr": "じゃあ、複雑さは正義?",
+  "ratio": 0.72,
+  "audio": "episodes/kyu001v2/voices/k01-079.wav"
  }
 ]
