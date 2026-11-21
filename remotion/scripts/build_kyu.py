@@ -44,11 +44,11 @@ FX = {7: 'lines', 8: 'lines', 10: 'lines', 27: 'lines', 46: 'lines', 47: 'lines'
 KEY = {14: ['お金を入れ続ける'], 24: ['探偵'], 27: ['就活'], 32: ['圧迫面接'], 35: ['参加賞'], 46: ['試用期間'], 47: ['正社員'], 49: ['即クビ'],
        50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 99: ['クソ負けたわ'], 101: ['明日は勝つ']}
 # 資料パネル：key → (最初の行, 最後の行)
-PANELS = [('terms1', 7, 9), ('terms2', 10, 11), ('route', 19, 21), ('job', 27, 35), ('attype', 43, 44), ('job2', 45, 50),
-          ('yuuri', 52, 54), ('pachi', 58, 59), ('moments', 70, 72), ('gyakuten', 74, 75), ('neq', 82, 83), ('peka', 84, 85)]
+PANELS = [('terms1', 7, 9), ('terms2', 10, 11), ('flow_intro', 19, 26), ('job', 27, 35), ('flow_at', 41, 44), ('job2', 45, 50),
+          ('yuuri', 52, 54), ('pachi', 58, 59), ('flow_moments', 70, 72), ('flow_gyakuten', 74, 76), ('neq', 82, 83), ('peka', 84, 85)]
 # パネル内の段階（その行から何段目まで出すか）。st=段階の開始行
 STEP = {'job': {27: 0, 28: 3, 31: 3.5, 33: 4, 35: 5}, 'job2': {46: 1, 47: 2, 49: 3},
-        'yuuri': {52: 1, 53: 2}, 'route': {19: 1, 20: 3}}
+        'yuuri': {52: 1, 53: 2}}
 CHAPTERS = [(1, '①', 'ふとした疑問'), (19, '②', '当てるまでが長い'), (41, '③', '当たってからも複雑'), (57, '④', 'パチンコは単純だから強い'),
             (68, '⑤', '複雑さは正義？'), (86, '⑥', '勉強と遊び'), (92, '⑦', '結局、勝ってるの？')]
 SILENT_AFTER = {94: [('baku', 34, 'sweat'), ('nagi', 30, 'normal')], 98: [('baku', 36, 'sweat'), ('nagi', 30, 'normal')]}
@@ -98,7 +98,7 @@ for key, a, b in PANELS:
     seg = {'key': key, 'from': by_n[a]['start'] - 4, 'to': by_n[b]['end'] + 6, 'steps': []}
     for ln_no, st in sorted(STEP.get(key, {}).items()):
         seg['steps'].append({'at': by_n[ln_no]['start'], 'end': by_n[ln_no]['end'], 'v': st})
-    if key in ('terms1', 'terms2', 'pachi', 'moments', 'gyakuten', 'attype'):
+    if key in ('terms1', 'terms2', 'pachi'):
         seg['reveal'] = [by_n[a]['start'], by_n[a if key != 'terms1' else a + 1]['end']]
     panels.append(seg)
 

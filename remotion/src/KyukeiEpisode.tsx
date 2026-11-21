@@ -14,6 +14,7 @@ import {
 } from 'remotion';
 import {Audio} from '@remotion/media';
 import data from './data/kyu001.json';
+import {SlotFlow, FlowMode} from './SlotFlow';
 
 // ───────────────────────── 共通
 const BLUE = '#2a6cff';
@@ -656,6 +657,7 @@ const PekaPanel: React.FC<{seg: Seg}> = ({seg}) => {
 };
 
 const Panel: React.FC<{seg: Seg}> = ({seg}) => {
+  if (seg.key.startsWith('flow_')) return <SlotFlow mode={seg.key.slice(5) as FlowMode} from={seg.from} to={seg.to} />;
   switch (seg.key) {
     case 'terms1':
       return (
