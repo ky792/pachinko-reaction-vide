@@ -54,12 +54,13 @@ def main():
         if a.get("sha1") != h:
             why.append("文字起こしがこの音声のものではない（asr_check を回す）")
         else:
-            exp = expected_kana(it, d, terms)
+            same = re.sub(r"[、。？！!?…,. 「」ー]", "", a.get("text", "")) == re.sub(r"[、。？！!?…,. 「」ー]", "", re.sub(r"《([^|》]+)\|[^》]+》", r"\1", it["text"]))
+            exp = expected_kana(it, d, terms) if not same else ""
             reading.use_engine(None, d)
             got = reading.canon(a.get("text", ""), d, terms) if a.get("text") else ""
             sm = SequenceMatcher(None, exp, got, autojunk=False)
             blocks = [b for b in sm.get_matching_blocks() if b.size]
-            if blocks:
+            if blocks and not same:     # 文字起こしが台本の字面とまったく同じなら、かなの照合はしない（「正義」をかなにすると読みがゆれる）
                 last, first = blocks[-1], blocks[0]
                 tail = got[last.b + last.size:] if last.a + last.size >= len(exp) - 2 else ""
                 head = got[:first.b] if first.a == 0 else ""
@@ -75,7 +76,6 @@ def main():
                     why.append(f"台本の終わりのあたりに余分な声（+{more}音）：{a.get('text', '')}")
                 if len(head) >= 1:
                     why.append(f"台本の前に「{head}」が聞こえる")
-            same = re.sub(r"[、。？！!?…,. 「」ー]", "", a.get("text", "")) == re.sub(r"[、。？！!?…,. 「」ー]", "", re.sub(r"《([^|》]+)\|[^》]+》", r"\1", it["text"]))
             if sm.ratio() < MIN_RATIO and not same:
                 why.append(f"台本との一致が低い（{sm.ratio():.2f}）：{a.get('text', '')}")
         ov = override.get(it["id"])
