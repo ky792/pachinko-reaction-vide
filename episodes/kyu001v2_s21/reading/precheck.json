@@ -1,0 +1,28 @@
+[
+ {
+  "id": "k01-044",
+  "who": "baku",
+  "kind": "辞書と違う",
+  "where": "台",
+  "expect": "ダイ",
+  "reason": "辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）",
+  "level": "低",
+  "text": "当たってからの戦い方も、台ごとにバラバラや。",
+  "speech": "当たってからの戦い方も、台ごとにバラバラや。",
+  "kana": "アタッテカラノタタカイカタモ、タイゴトニバラバラヤ。",
+  "audio": "episodes/kyu001v2_s21/voices/k01-044.wav"
+ },
+ {
+  "id": "k01-079",
+  "who": "nagi",
+  "kind": "辞書にない固有名詞",
+  "where": "正義",
+  "expect": "",
+  "reason": "辞書にない固有名詞。OpenJTalk の読み（参考・未確定）：マサヨシ",
+  "level": "低",
+  "text": "じゃあ、複雑さは正義？",
+  "speech": "じゃあ、複雑さは正義？",
+  "kana": "ジャー、フクザツサワマサヨシ？",
+  "audio": "episodes/kyu001v2_s21/voices/k01-079.wav"
+ }
+]

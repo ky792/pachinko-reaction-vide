@@ -1,0 +1,67 @@
+{
+ "k01-001": {
+  "sha1": "40df8cd0a6b18fa94554fae2071a92adedc0b142",
+  "model": "large-v3-turbo",
+  "text": "なあ、ナギ、なんちゃうちぞ!"
+ },
+ "k01-008": {
+  "sha1": "27b45c73624482aff312f440133d8fa3cec8da23",
+  "model": "large-v3-turbo",
+  "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間"
+ },
+ "k01-012": {
+  "sha1": "bf523e4acac3d196e8c0c18f496fa80d203762bf",
+  "model": "large-v3-turbo",
+  "text": "撃つだけなら何も知らんでも撃てる電人は?"
+ },
+ "k01-020": {
+  "sha1": "ceb551d31dbd5b41f2acf3642db72b59e8563fd8",
+  "model": "large-v3-turbo",
+  "text": "規定ゲーム数で当てる代も周期でポイント貯めるままよあるやろ"
+ },
+ "k01-037": {
+  "sha1": "89c139626f6d866c7f86afa139441e70c4565c08",
+  "model": "large-v3-turbo",
+  "text": "それはそれでってつまらんねん"
+ },
+ "k01-042": {
+  "sha1": "219a0f38f92d1e0cde397b2c72f8a5ae01fcbb9e",
+  "model": "large-v3-turbo",
+  "text": "甘いおナッツね"
+ },
+ "k01-047": {
+  "sha1": "3c5042a11a376ba65dbc52fedc5d0d15ac139200",
+  "model": "large-v3-turbo",
+  "text": "上位AT入ってようやく正社員や"
+ },
+ "k01-049": {
+  "sha1": "45e08a238a3942d1b39f493b23d1f740dfd1df48",
+  "model": "large-v3-turbo",
+  "text": "即首即すっきゃ"
+ },
+ "k01-062": {
+  "sha1": "7f6e64b128248988d9bf6d2b1e825956db31bc4e",
+  "model": "large-v3-turbo",
+  "text": "あれは理屈ちゃうねん時間尽きな"
+ },
+ "k01-069": {
+  "sha1": "88c371f418b531c7bca9e3cbbc2752e43f882809",
+  "model": "large-v3-turbo",
+  "text": "好きなとこは好き?時間つけ!"
+ },
+ "k01-073": {
+  "sha1": "dd3742c28a6c3ea6775e4ae2512ea21eb51a21cb",
+  "model": "large-v3-turbo",
+  "text": "AT中もそうや、近づけーな"
+ },
+ "k01-080": {
+  "sha1": "dfaa7b4e72ab8704c1c101472c71429358f23e98",
+  "model": "large-v3-turbo",
+  "text": "いや、骨葬なんだよね"
+ },
+ "k01-099": {
+  "sha1": "5df3bfde9888ac9991a727a29cbe86a9939a0e7f",
+  "model": "large-v3-turbo",
+  "text": "くそ負けたわ、ちか!"
+ }
+}
