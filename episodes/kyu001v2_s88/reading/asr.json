@@ -1,0 +1,67 @@
+{
+ "k01-001": {
+  "sha1": "dc89e7eb84b19c71e29528be3c444b667bf3a5e7",
+  "model": "large-v3-turbo",
+  "text": "なあ、ナギ、本性っちゃっちゃうね"
+ },
+ "k01-008": {
+  "sha1": "eae83e2dafdea89feff4853bdcee5904f70a7685",
+  "model": "large-v3-turbo",
+  "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間"
+ },
+ "k01-012": {
+  "sha1": "80e445f430c5bf6c98a13d2a48439f1c881f829a",
+  "model": "large-v3-turbo",
+  "text": "撃つだけなら何も知らんでも撃てるえって?"
+ },
+ "k01-020": {
+  "sha1": "290afaf7e941cbe72df7c00f4ea8443709e1695b",
+  "model": "large-v3-turbo",
+  "text": "規定ゲーム数で当てる代も周期でポイント貯める代もあるやろ"
+ },
+ "k01-037": {
+  "sha1": "2b2af75252b8fa90303c983e0e35b72794ff9358",
+  "model": "large-v3-turbo",
+  "text": "んーそれはそれでつまらんねん"
+ },
+ "k01-042": {
+  "sha1": "2540a4380b0fe14aa6b11f8d0f55ff40f8e46287",
+  "model": "large-v3-turbo",
+  "text": "甘い!うまちゅ!"
+ },
+ "k01-047": {
+  "sha1": "d24dbd55b14f8bde5e1f76d46641539051032355",
+  "model": "large-v3-turbo",
+  "text": "上位ATIってようやく正社員や!"
+ },
+ "k01-049": {
+  "sha1": "cd16aec67cc856e7e2fdcc468ed787938f987254",
+  "model": "large-v3-turbo",
+  "text": "即首?そうじゃぜ?"
+ },
+ "k01-062": {
+  "sha1": "835958629fbc92d7452dd0e676decac45c189ef0",
+  "model": "large-v3-turbo",
+  "text": "あれは理屈ちゃうねん添えたちょうで"
+ },
+ "k01-069": {
+  "sha1": "fdd725805e2c1e545f84353bb0c128479e6930a4",
+  "model": "large-v3-turbo",
+  "text": "好きなとこは、好き!"
+ },
+ "k01-073": {
+  "sha1": "c28a280810a0b33eb975dbd43a1c7920aa75a9fd",
+  "model": "large-v3-turbo",
+  "text": "AT2もそうや、雑負や"
+ },
+ "k01-080": {
+  "sha1": "263e90606e7192bb31f2d483769765a27c4cf8fd",
+  "model": "large-v3-turbo",
+  "text": "いや、そんなのうちゃう"
+ },
+ "k01-099": {
+  "sha1": "1ba7dfa6ebdc30fc85a2ea5eafe97878bacc1c9e",
+  "model": "large-v3-turbo",
+  "text": "くそ負けたわ!とさっとね!"
+ }
+}
