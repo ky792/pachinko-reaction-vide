@@ -558,7 +558,7 @@ const Report: React.FC = () => {
         {row('研究場所', '休憩室', S(100) + 10, RED, true)}
         {row('研究時間', '朝から ずっと', S(102) + 8, RED)}
         {row('成果', '雑談', M(102, 0.7), '#7a86a8')}
-        <Stamp at={S(103) + 6} text="所長に報告" x={520} y={150} size={76} rot={-12} />
+        <Stamp at={S(103) + 6} text="所長に報告" x={560} y={250} size={70} rot={-10} />
       </div>
     </Card>
   );
