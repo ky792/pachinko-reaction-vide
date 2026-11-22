@@ -55,6 +55,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const evRef = useRef({ ev: engine.s.events[0], prev: null as MatchEvent | null, start: performance.now(), dur: 600 });
   const timer = useRef<number | null>(null);
   const speedRef = useRef<number>(speed);
+  const resumeNow = useRef(false);
   speedRef.current = ffwd ? 8 : speed;
   const fxKey = useRef(0);
   const finishedRef = useRef(false);
@@ -138,7 +139,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
     (e: MatchEvent) => {
       const isFx = e.fx && e.fx !== 'none' && e.fx !== 'hit';
       // ボールが届く・運び終えるまで待つ（瞬間移動に見えないように）
-      let d = Math.max(e.dur * 1.25, travelMs(events[e.idx - 1] ?? null, e));
+      let d = e.action ? e.dur * (fastFx ? 0.65 : 1) : Math.max(e.dur * 1.25, travelMs(events[e.idx - 1] ?? null, e));
       if (fastFx && isFx) d = Math.min(d, e.kind === 'goal' ? 1400 : 600);
       if (ffwd) return e.kind === 'goal' ? Math.max(900, d / 3) : 40;
       return isFx ? d / Math.min(speed, 2) : d / speed;
@@ -152,12 +153,15 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
     const cur = events[cursor];
     if (!cur) return;
     if (cursor < events.length - 1) {
+      // 判断・ハーフタイム明けは、直前の場面を待ち直さずすぐ次へ
+      const wait = resumeNow.current ? 0 : durOf(cur);
+      resumeNow.current = false;
       timer.current = window.setTimeout(() => {
         const next = events[cursor + 1];
         evRef.current = { ev: next, prev: cur, start: performance.now(), dur: durOf(next) };
         onEventStart(next, ffwd);
         setCursor(cursor + 1);
-      }, durOf(cur));
+      }, wait);
       return () => {
         if (timer.current) clearTimeout(timer.current);
       };
@@ -206,6 +210,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
       setHitstop(false);
       engine.choose(o.key);
       engine.advance();
+      resumeNow.current = true;
       setBusy(false);
     }, fastFx ? 90 : 200);
   };
@@ -339,6 +344,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
               sfx.play('whistle');
               engine.resumeHalftime();
               engine.advance();
+              resumeNow.current = true;
               setHalftime(false);
               force((x) => x + 1);
             }}

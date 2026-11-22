@@ -17,6 +17,7 @@ import {
 } from './eff';
 import { playerPos, toAbs } from './positions';
 import type {
+  CommandAction,
   CommandOption,
   CommandResult,
   Factor,
@@ -1230,17 +1231,38 @@ export class MatchEngine {
     // コマンド実行の演出
     const kind: MatchEvent['kind'] =
       opt.commandId === 'shoot' ? 'shot' : opt.commandId === 'cross' ? 'cross' : opt.commandId === 'dribble' || opt.commandId === 'cutin' || opt.commandId === 'scissors' ? 'dribble' : 'command';
-    if (opt.commandId !== 'shoot' && !(opt.commandId === 'dribble' && sit.gk1v1)) {
+    {
       const defNote = userDefended ? `［あなたの守備対応 ${defFactor!.value > 0 ? '+' : ''}${defFactor!.value}%］` : '';
+      const isDef = sit.type === 'defend';
+      const u = isDef ? sit.underlying! : sit;
+      const isShot = opt.commandId === 'shoot' || (opt.commandId === 'dribble' && !!sit.gk1v1);
+      const action: CommandAction = {
+        cmd: opt.commandId,
+        evolutionId: opt.evolutionId,
+        success,
+        actorId: actor.p.id,
+        opponentId: isDef ? u.actorId : u.defenderId,
+        supportId: opt.targetId ?? u.supportId,
+        gkId: this.gkOf(other(sit.atk)).p.id,
+        stance: u.stance,
+        gk1v1: !!sit.gk1v1,
+        defense: isDef,
+        byUser,
+        shotToGoal: isShot,
+        name: opt.name,
+        passKind: opt.commandId !== 'pass' ? undefined : opt.targetId ? 'target' : opt.name.includes('展開') ? 'side' : 'back',
+      };
+      const base = byUser ? (opt.evolutionId ? 2300 : isShot ? 1600 : 1800) : isShot ? 1100 : 1000;
       this.emit({
-        kind,
+        kind: isShot ? 'shot' : kind,
         team,
         rx: relX,
         ry,
-        carrierId: sit.type === 'defend' ? sit.actorId : actor.p.id,
-        text: `${this.nm(actor)}：${opt.name}（${opt.rate}%）${defNote} → ${success ? opt.successText : opt.failText}`,
-        fx: success ? (sit.type === 'defend' && outcome.kind === 'steal' ? 'steal' : 'hit') : 'none',
-        dur: 700,
+        carrierId: isDef ? sit.actorId : actor.p.id,
+        text: `${this.nm(actor)}：${opt.name}（${opt.rate}%）${defNote} → ${isShot ? 'シュート！' : success ? opt.successText : opt.failText}`,
+        fx: isShot ? 'none' : success ? (isDef && outcome.kind === 'steal' ? 'steal' : 'hit') : 'none',
+        dur: base,
+        action,
       });
     }
     const result: CommandResult = {
@@ -1575,6 +1597,7 @@ export class MatchEngine {
     playerId?: string;
     skillId?: string;
     result?: CommandResult;
+    action?: CommandAction;
   }): void {
     const s = this.s;
     const ball = toAbs(e.team, e.rx, e.ry);
@@ -1595,6 +1618,7 @@ export class MatchEngine {
       playerId: e.playerId,
       skillId: e.skillId,
       result: e.result,
+      action: e.action,
     });
   }
 

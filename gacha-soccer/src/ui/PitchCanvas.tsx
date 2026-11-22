@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import type { MatchEngine } from '../core/match/engine';
 import type { MatchEvent } from '../core/match/types';
 import { playerPos } from '../core/match/positions';
+import { scriptFrame, warp, type ScriptFrame, type ScriptInit } from './actionScript';
 
 const W = 1050;
 const H = 680;
@@ -66,6 +67,34 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
     let flight: { from: P; to: P; start: number; dur: number; arc: number; receiver: string | null; kind: string } | null = null;
     let target: P | null = null; // 保持者が向かう地点
     let lastT = performance.now();
+    // コマンド実行モーション
+    let script: {
+      init: ScriptInit;
+      start: number;
+      dur: number;
+      slow: boolean;
+      ids: { actor: string; opp: string; support: string; gk: string };
+      last: ScriptFrame | null;
+      trail: P[];
+      userTeamGood: boolean | null;
+    } | null = null;
+
+    const finishScript = () => {
+      if (!script) return;
+      const f = script.last ?? scriptFrame(script.init, 1);
+      const fin = scriptFrame(script.init, 1);
+      const ids = script.ids;
+      pos.set(ids.actor, fin.actor);
+      pos.set(ids.opp, fin.opp);
+      if (fin.support) pos.set(ids.support, fin.support);
+      if (fin.gk) pos.set(ids.gk, fin.gk);
+      ball = fin.ball;
+      holder = fin.holderAfter ? ids[fin.holderAfter] : null;
+      // 保持者はその場にとどまる（次の場面で改めて動く）
+      target = holder ? { ...pos.get(holder)! } : null;
+      void f;
+      script = null;
+    };
 
     const attackDir = (team: number) => (team === 0 ? 1 : -1);
     const feet = (id: string): P => {
@@ -106,9 +135,53 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
       }
     };
 
+    const label = (x: number, y: number, text: string, bg: string, size = 20) => {
+      g.font = `900 ${size}px system-ui, sans-serif`;
+      const w = g.measureText(text).width + 16;
+      const cx = Math.max(PAD + w / 2, Math.min(W - PAD - w / 2, x));
+      const cy = Math.max(size, y);
+      g.fillStyle = bg;
+      g.globalAlpha = 0.92;
+      g.beginPath();
+      g.roundRect(cx - w / 2, cy - size * 0.75, w, size * 1.5, 8);
+      g.fill();
+      g.globalAlpha = 1;
+      g.fillStyle = '#fff';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(text, cx, cy);
+    };
+
     /** 新しいイベントの開始：ボールの動きを決める */
     let lastKind = '';
     const onNewEvent = (ev: MatchEvent, now: number) => {
+      finishScript();
+      if (ev.kind === 'judge') return; // 結果表示：ボールは動かさない
+      if (ev.action) {
+        const a = ev.action;
+        const ids = { actor: a.actorId, opp: a.opponentId, support: a.supportId, gk: a.gkId };
+        if ([ids.actor, ids.opp, ids.support, ids.gk].every((id) => pos.has(id))) {
+          // 進行中のパスは受け手に届いたことにする
+          if (flight && flight.receiver) holder = flight.receiver;
+          flight = null;
+          target = null;
+          const atkTeam = a.defense ? engine.player(a.opponentId).team : engine.player(a.actorId).team;
+          const actorTeam = engine.player(a.actorId).team;
+          script = {
+            init: { a, dir: atkTeam === 0 ? 1 : -1, actor: { ...pos.get(ids.actor)! }, opp: { ...pos.get(ids.opp)! }, support: { ...pos.get(ids.support)! }, gk: { ...pos.get(ids.gk)! } },
+            start: now,
+            dur: Math.max(300, evRef.current.dur),
+            slow: a.byUser,
+            ids,
+            last: null,
+            trail: [],
+            userTeamGood: actorTeam === 0 ? a.success : !a.success,
+          };
+          holder = null;
+          lastKind = ev.kind;
+          return;
+        }
+      }
       const afterGoal = lastKind === 'goal';
       lastKind = ev.kind;
       if (afterGoal) {
@@ -179,10 +252,39 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
         if (best > 0.3) marker = null;
       }
 
+      // モーション再生
+      let sf: ScriptFrame | null = null;
+      let sp = 0;
+      if (script) {
+        const t = Math.min(1, (now - script.start) / script.dur);
+        sp = warp(t, script.slow);
+        sf = scriptFrame(script.init, sp);
+        script.last = sf;
+        if (script.init.a.evolutionId) {
+          script.trail.push({ ...sf.actor });
+          if (script.trail.length > 7) script.trail.shift();
+        }
+      }
+      const scripted = new Set<string>();
+      if (script && sf) {
+        pos.set(script.ids.actor, sf.actor);
+        pos.set(script.ids.opp, sf.opp);
+        scripted.add(script.ids.actor).add(script.ids.opp);
+        if (sf.support) {
+          pos.set(script.ids.support, sf.support);
+          scripted.add(script.ids.support);
+        }
+        if (sf.gk) {
+          pos.set(script.ids.gk, sf.gk);
+          scripted.add(script.ids.gk);
+        }
+      }
+
       // 選手の移動
       for (const team of s.teams) {
         for (const mp of team.players) {
           const id = mp.p.id;
+          if (scripted.has(id)) continue;
           const formation = playerPos(mp, poss, ev.progress, team.tactics.line);
           const cur = pos.get(id) ?? formation;
           let dest = formation;
@@ -209,7 +311,11 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
 
       // ボール
       let lift = 0;
-      if (flight) {
+      if (sf) {
+        ball = sf.ball;
+        lift = sf.lift;
+        if (sp >= 1 && script && now - script.start > script.dur + 30) finishScript();
+      } else if (flight) {
         const t = Math.min(1, (now - flight.start) / (flight.dur / spd));
         const e = flight.kind === 'shot' ? t : 1 - Math.pow(1 - t, 2);
         ball = { x: flight.from.x + (flight.to.x - flight.from.x) * e, y: flight.from.y + (flight.to.y - flight.from.y) * e };
@@ -243,6 +349,70 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
         }
       }
 
+      // 判断待ち：DFの向き（縦切り／中切り）と空いている方向を図示
+      const pend = s.pending;
+      if (pend && pend.situation.type === 'wing' && pend.situation.stance && !script) {
+        const sit = pend.situation;
+        const dp = pos.get(sit.defenderId);
+        const ap = pos.get(sit.actorId);
+        if (dp && ap) {
+          const dir = sit.atk === 0 ? 1 : -1;
+          const inward = ap.y < 0.5 ? 1 : -1;
+          const blocked = sit.stance === 'outside' ? { x: dir, y: 0 } : { x: dir * 0.35, y: inward };
+          const open = sit.stance === 'outside' ? { x: dir * 0.35, y: inward } : { x: dir, y: 0 };
+          const ang = (v: P) => Math.atan2(v.y * (H - PAD * 2), v.x * (W - PAD * 2));
+          const DX = px(dp.x);
+          const DY = py(dp.y);
+          const pulse = 0.55 + Math.sin(now / 250) * 0.15;
+          g.fillStyle = `rgba(244,63,94,${0.35 * pulse})`;
+          g.beginPath();
+          g.moveTo(DX, DY);
+          g.arc(DX, DY, 95, ang(blocked) - 0.55, ang(blocked) + 0.55);
+          g.closePath();
+          g.fill();
+          const AX = px(ap.x);
+          const AY = py(ap.y);
+          const oa = ang(open);
+          g.strokeStyle = `rgba(163,230,53,${0.6 + pulse * 0.4})`;
+          g.lineWidth = 6;
+          g.beginPath();
+          g.moveTo(AX, AY);
+          const ex = AX + Math.cos(oa) * 110;
+          const ey = AY + Math.sin(oa) * 110;
+          g.lineTo(ex, ey);
+          g.stroke();
+          g.beginPath();
+          g.moveTo(ex, ey);
+          g.lineTo(ex - Math.cos(oa - 0.5) * 22, ey - Math.sin(oa - 0.5) * 22);
+          g.moveTo(ex, ey);
+          g.lineTo(ex - Math.cos(oa + 0.5) * 22, ey - Math.sin(oa + 0.5) * 22);
+          g.stroke();
+          label(DX, DY - 44, sit.stance === 'outside' ? '縦を切っている' : '中を切っている', '#be123c');
+          label(ex, ey - 18, '空いている', '#3f6212');
+        }
+      }
+
+      // 進化コマンドの残像
+      if (script && script.trail.length) {
+        const tc = engine.player(script.ids.actor);
+        script.trail.forEach((p, i) => {
+          g.globalAlpha = ((i + 1) / script!.trail.length) * 0.35;
+          g.fillStyle = '#fde68a';
+          g.beginPath();
+          g.arc(px(p.x), py(p.y), 19, 0, Math.PI * 2);
+          g.fill();
+        });
+        g.globalAlpha = 1;
+        const ap = pos.get(tc.p.id)!;
+        const glow = g.createRadialGradient(px(ap.x), py(ap.y), 10, px(ap.x), py(ap.y), 60);
+        glow.addColorStop(0, 'rgba(250,204,21,0.55)');
+        glow.addColorStop(1, 'rgba(244,114,182,0)');
+        g.fillStyle = glow;
+        g.beginPath();
+        g.arc(px(ap.x), py(ap.y), 60, 0, Math.PI * 2);
+        g.fill();
+      }
+
       // 選手描画
       for (const team of s.teams) {
         for (const mp of team.players) {
@@ -254,8 +424,11 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
           g.beginPath();
           g.ellipse(X + 2, Y + 16, 16, 5, 0, 0, Math.PI * 2);
           g.fill();
+          const isDown = !!(sf && script && sf.down && script.ids[sf.down] === mp.p.id);
+          const isJump = !!(sf && script && sf.jump && sf.jump.some((k) => script!.ids[k] === mp.p.id));
           g.beginPath();
-          g.arc(X, Y, 19, 0, Math.PI * 2);
+          if (isDown) g.ellipse(X, Y + 6, 24, 11, 0, 0, Math.PI * 2);
+          else g.arc(X, Y - (isJump ? 10 : 0), isJump ? 23 : 19, 0, Math.PI * 2);
           g.fillStyle = mp.slot.role === 'GK' ? (mp.team === 0 ? '#f59e0b' : '#e879f9') : tc.color;
           g.fill();
           g.lineWidth = 3;
@@ -310,6 +483,30 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
       g.lineWidth = 1.5;
       g.stroke();
 
+      // コマンド名・交錯の瞬間・成否
+      if (script && sf) {
+        const ap = pos.get(script.ids.actor)!;
+        const a = script.init.a;
+        label(px(ap.x), py(ap.y) - 46, a.name, a.evolutionId ? '#7e22ce' : '#0f172a');
+        const hitAt = a.shotToGoal ? 0.78 : 0.5;
+        if (sp >= hitAt) {
+          const k = Math.min(1, (sp - hitAt) / 0.22);
+          const good = script.userTeamGood;
+          const col = good === null ? '255,255,255' : good ? '163,230,53' : '244,63,94';
+          if (k < 1) {
+            g.strokeStyle = `rgba(${col},${1 - k})`;
+            g.lineWidth = 6;
+            g.beginPath();
+            g.arc(px(sf.contact.x), py(sf.contact.y), 20 + k * 70, 0, Math.PI * 2);
+            g.stroke();
+          }
+          if (!a.shotToGoal || !a.success) {
+            const txt = a.defense ? (a.success ? '奪った！' : 'かわされた') : a.success ? '成功！' : a.shotToGoal ? '止められた' : '失敗…';
+            label(px(sf.contact.x), py(sf.contact.y) - 84 - k * 10, txt, good === false ? '#be123c' : '#15803d', 26);
+          }
+        }
+      }
+
       if (ev.kind === 'goal' && !flight) {
         const left = ev.ball.x < 0.5;
         g.strokeStyle = `rgba(255,255,255,${0.6 + Math.sin(now / 40) * 0.4})`;
@@ -340,5 +537,5 @@ export function travelMs(prev: MatchEvent | null, ev: MatchEvent): number {
     const sp = ev.kind === 'cross' ? SPEED.cross : SPEED.pass;
     return (d / sp) * 1000 + 350;
   }
-  return Math.min(2200, (d / SPEED.carry) * 1000 * 0.7);
+  return Math.min(3200, (d / SPEED.carry) * 1000 + 150);
 }

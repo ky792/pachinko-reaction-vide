@@ -68,6 +68,28 @@ export type Outcome =
   | { kind: 'atkMod'; mod: number; timeBurn: number }
   | { kind: 'atkAdvantage'; next: Situation };
 
+/** コマンド実行の動き（描画用。判定には使わない） */
+export interface CommandAction {
+  cmd: string;
+  evolutionId?: string;
+  success: boolean;
+  /** 実行した選手（守備コマンドなら守備者） */
+  actorId: string;
+  /** 対峙する相手（攻撃ならDF、守備なら攻撃側の保持者） */
+  opponentId: string;
+  /** パスの受け手・クロスのターゲット・裏へ走る選手 */
+  supportId: string;
+  gkId: string;
+  stance?: 'inside' | 'outside';
+  gk1v1: boolean;
+  defense: boolean;
+  byUser: boolean;
+  /** ゴールへ向かうプレー（シュート・GKかわし） */
+  shotToGoal: boolean;
+  name: string;
+  passKind?: 'target' | 'side' | 'back';
+}
+
 /** 成功率の内訳1行 */
 export interface Factor {
   label: string;
@@ -198,6 +220,7 @@ export interface MatchEvent {
   playerId?: string;
   skillId?: string;
   result?: CommandResult;
+  action?: CommandAction;
 }
 
 export interface GoalRecord {
