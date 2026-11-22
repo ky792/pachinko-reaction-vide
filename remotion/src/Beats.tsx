@@ -382,6 +382,75 @@ const Balance: React.FC = () => {
   );
 };
 
+// 56.03〜56.10：なんで複雑になった？ 規則の移り変わり（ナギの解説）
+const History: React.FC = () => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const rows: {at: number; era: string; when: string; what: string; c: string; sub?: {at: number; text: string}}[] = [
+    {at: S(56.03) + 10, era: '4号機', when: '〜2004年', what: '一撃 何千〜何万枚', c: RED},
+    {at: S(56.05) + 8, era: '5号機', when: '2004年 規則改正', what: '一度に大量は ほぼNG', c: BLUE_DEEP, sub: {at: S(56.08) + 6, text: '→ ARTで少しずつ積み上げ'}},
+    {at: S(56.09) + 8, era: '6号機', when: '2018年 規則改正', what: '有利区間 ＋ 上限2400枚', c: ORANGE},
+    {at: S(56.10) + 8, era: 'いま', when: '6.5号機・スマスロ', what: '少しずつ緩和', c: '#3a9a5c'},
+  ];
+  const lineH = interpolate(f, [S(56.03), E(56.10)], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  return (
+    <Card from={S(56.03) - 4} to={E(56.10) + 6} look="board" title="パチスロの規則の移り変わり" width={1120}>
+      <div style={{position: 'relative', paddingLeft: 70}}>
+        <div style={{position: 'absolute', left: 28, top: 20, width: 8, height: `${lineH * 92}%`, background: '#c9d3ea', borderRadius: 4}} />
+        {rows.map((r) => {
+          const on = f >= r.at;
+          const sc = on ? pop(f, r.at, fps) : 0;
+          return (
+            <div key={r.era} style={{position: 'relative', height: 108, display: 'flex', alignItems: 'center', gap: 24, opacity: on ? 1 : 0.15}}>
+              <div style={{position: 'absolute', left: -54, width: 40, height: 40, borderRadius: '50%', background: on ? r.c : '#ddd', border: '6px solid white', boxShadow: '0 2px 6px rgba(0,0,0,0.25)', scale: `${on ? sc : 1}`}} />
+              <div style={{width: 150, fontSize: 52, fontWeight: 900, color: r.c}}>{r.era}</div>
+              <div style={{width: 290, fontSize: 32, color: '#7a7f8c'}}>{r.when}</div>
+              <div style={{fontSize: 44, color: BLUE_DEEP, scale: `${on ? sc : 1}`, transformOrigin: '0 50%'}}>
+                {r.what}
+                {r.sub && f >= r.sub.at ? <div style={{fontSize: 34, color: RED, marginTop: 2}}>{r.sub.text}</div> : null}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+};
+
+// 56.11〜56.14：出せる量に上限 → ドキドキを細かく刻む → 工夫の跡
+const Stairs: React.FC = () => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const steps = ['CZ', '前兆', 'モード', '上乗せ'];
+  return (
+    <Card from={S(56.11) - 4} to={E(56.14) + 6} look="paper" title="上限があるなら、山場を刻む" width={1080}>
+      <div style={{position: 'relative', height: 400}}>
+        <div style={{position: 'absolute', right: 20, top: 6, padding: '6px 18px', border: `5px dashed ${RED}`, color: RED, fontSize: 36, borderRadius: 12, opacity: f >= S(56.11) + 6 ? 1 : 0}}>出せる量の上限</div>
+        {steps.map((t, i) => {
+          const at = M(56.12, 0.12 + i * 0.18);
+          const on = f >= at;
+          return (
+            <div key={t} style={{position: 'absolute', left: 30 + i * 230, bottom: 0, width: 210, height: 90 + i * 80, background: on ? [BLUE_DEEP, '#3d5fb0', ORANGE, RED][i] : 'transparent', borderRadius: '14px 14px 0 0',
+              color: 'white', fontSize: 46, fontWeight: 900, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 14, scale: `1 ${on ? pop(f, at, fps) : 0}`, transformOrigin: '50% 100%'}}>
+              {t}
+            </div>
+          );
+        })}
+        {f >= S(56.13) ? (
+          <div style={{position: 'absolute', left: 0, right: 0, top: 70, textAlign: 'center'}}>
+            <Big at={S(56.13) + 8} text="複雑さ ＝ 工夫の跡" color={ORANGE} size={84} />
+          </div>
+        ) : null}
+        {f >= S(56.14) ? (
+          <Pop at={S(56.14) + 6} style={{position: 'absolute', left: 0, right: 0, top: 170, textAlign: 'center', fontSize: 52, color: RED}}>
+            呪文 ＝ メーカーの努力の歴史
+          </Pop>
+        ) : null}
+      </div>
+    </Card>
+  );
+};
+
 // 55〜56：よう考える／縛られるほど燃える
 const Bulb: React.FC = () => {
   const f = useCurrentFrame();
@@ -721,6 +790,8 @@ export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
   {from: S(38) - 4, to: E(38) + 6, el: <Heart />},
   {from: S(39) - 4, to: E(40) + 6, el: <Balance />},
   {from: S(55) - 4, to: E(56) + 6, el: <Bulb />},
+  {from: S(56.03) - 4, to: E(56.10) + 6, el: <History />},
+  {from: S(56.11) - 4, to: E(56.14) + 6, el: <Stairs />},
   {from: S(57) - 4, to: E(67) + 6, el: <PachiBoard />},
   {from: S(68) - 4, to: E(69) + 6, el: <Choice />},
   {from: S(77) - 4, to: E(78) + 6, el: <Hint />},
