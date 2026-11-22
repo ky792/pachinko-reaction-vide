@@ -104,7 +104,7 @@
   "audio": "episodes/kyu001v2/voices/k01-065.wav"
  },
  {
-  "id": "k01-107",
+  "id": "k01-109",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "^[^、。！？]{1,6}[。！？]?$",
@@ -114,7 +114,7 @@
   "text": "ほななー！",
   "speech": "ほななー！",
   "kana": "ホナナー！",
-  "audio": "episodes/kyu001v2/voices/k01-107.wav"
+  "audio": "episodes/kyu001v2/voices/k01-109.wav"
  },
  {
   "id": "k01-044",
