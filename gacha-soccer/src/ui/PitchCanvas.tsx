@@ -3,6 +3,16 @@ import type { MatchEngine } from '../core/match/engine';
 import type { MatchEvent } from '../core/match/types';
 import { playerPos } from '../core/match/positions';
 import { scriptFrame, warp, type ScriptFrame, type ScriptInit } from './actionScript';
+import { HAIR, SKIN } from './Face';
+
+/** 背景色に対して読みやすい文字色 */
+function contrast(hex: string): string {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return r * 0.299 + g * 0.587 + b * 0.114 > 150 ? '#0f172a' : '#ffffff';
+}
 
 const W = 1050;
 const H = 680;
@@ -26,6 +36,8 @@ interface Props {
   speedRef: React.MutableRefObject<number>;
   /** カットイン中は俯瞰のモーションを待たせる */
   cineRef: React.MutableRefObject<{ idx: number; delay: number; skipped: boolean }>;
+  /** 演出短縮（祝福演出・軌跡を省略） */
+  fastRef: React.MutableRefObject<boolean>;
   highlightId?: string;
 }
 
@@ -48,7 +60,7 @@ function stepToward(cur: P, target: P, maxStep: number): P {
  * - ボールは「保持者の足元」か「出し手→受け手への飛行中」のどちらか
  * - シュートはゴールへ、クロスは弧を描いて飛ぶ
  */
-export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: Props) {
+export function PitchCanvas({ engine, evRef, speedRef, cineRef, fastRef, highlightId }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -69,6 +81,10 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
     let flight: { from: P; to: P; start: number; dur: number; arc: number; receiver: string | null; kind: string } | null = null;
     let target: P | null = null; // 保持者が向かう地点
     let lastT = performance.now();
+    const prevPos = new Map<string, P>();
+    const ballTrail: P[] = [];
+    let confetti: { x: number; y: number; vx: number; vy: number; r: number; vr: number; c: string; life: number }[] = [];
+    let celebrate: { team: number; scorer: string | null; until: number } | null = null;
     // コマンド実行モーション
     let script: {
       init: ScriptInit;
@@ -134,7 +150,100 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
         g.strokeStyle = '#94a3b8';
         g.strokeRect(left ? PAD - 14 : W - PAD, (H - 90) / 2, 14, 90);
         g.strokeStyle = '#dcfce7cc';
+        // ペナルティスポットとペナルティアーク
+        const spotX = left ? PAD + 110 : W - PAD - 110;
+        g.fillStyle = '#dcfce7cc';
+        g.beginPath();
+        g.arc(spotX, H / 2, 4, 0, Math.PI * 2);
+        g.fill();
+        g.beginPath();
+        if (left) g.arc(spotX, H / 2, 70, -0.93, 0.93);
+        else g.arc(spotX, H / 2, 70, Math.PI - 0.93, Math.PI + 0.93);
+        g.stroke();
       }
+      // センタースポット・コーナーアーク
+      g.fillStyle = '#dcfce7cc';
+      g.beginPath();
+      g.arc(W / 2, H / 2, 5, 0, Math.PI * 2);
+      g.fill();
+      for (const [cx, cy, a0] of [
+        [PAD, PAD, 0],
+        [W - PAD, PAD, Math.PI / 2],
+        [W - PAD, H - PAD, Math.PI],
+        [PAD, H - PAD, Math.PI * 1.5],
+      ] as const) {
+        g.beginPath();
+        g.arc(cx, cy, 12, a0, a0 + Math.PI / 2);
+        g.stroke();
+      }
+    };
+
+    /** 選手スプライト（頭＋体のシルエット、チームカラーのユニフォーム） */
+    const GK_COLOR = '#facc15';
+    const drawSprite = (X: number, Y: number, mp: (typeof engine.s.teams)[0]['players'][0], o: { down: boolean; jump: boolean; moving: boolean; now: number }) => {
+      const tm = engine.s.teams[mp.team].team;
+      const isGK = mp.slot.role === 'GK';
+      const shirt = isGK ? GK_COLOR : tm.color;
+      const trim = isGK ? tm.color : tm.color2;
+      const skin = SKIN[mp.p.face.skin % SKIN.length];
+      const hair = HAIR[mp.p.face.hairColor % HAIR.length];
+      const f = mp.team === 0 ? 1 : -1;
+      g.save();
+      g.translate(X, Y - (o.jump ? 12 : 0));
+      g.scale(1.22, 1.22);
+      if (o.down) g.rotate(f * 1.35);
+      // 影
+      g.fillStyle = 'rgba(0,0,0,0.35)';
+      g.beginPath();
+      g.ellipse(2, 22, 15, 5, 0, 0, Math.PI * 2);
+      g.fill();
+      // 脚（走りアニメ）
+      const ph = o.moving ? Math.sin(o.now / 70 + X * 0.05) : 0;
+      g.fillStyle = '#111827';
+      g.fillRect(-7 + ph * 2, 8, 5, 12 - Math.max(0, ph) * 3);
+      g.fillRect(2 - ph * 2, 8, 5, 12 - Math.max(0, -ph) * 3);
+      g.fillStyle = trim;
+      g.fillRect(-7 + ph * 2, 16 - Math.max(0, ph) * 3, 5, 3);
+      g.fillRect(2 - ph * 2, 16 - Math.max(0, -ph) * 3, 5, 3);
+      // パンツ
+      g.fillStyle = isGK ? '#111827' : mp.team === 0 ? '#0f172a' : tm.color2;
+      g.beginPath();
+      g.roundRect(-10, 3, 20, 8, 3);
+      g.fill();
+      // 胴体（ユニフォーム）
+      g.fillStyle = shirt;
+      g.strokeStyle = trim;
+      g.lineWidth = 2.5;
+      g.beginPath();
+      g.roundRect(-12, -14, 24, 20, 6);
+      g.fill();
+      g.stroke();
+      // 腕
+      g.strokeStyle = shirt;
+      g.lineWidth = 6;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.moveTo(-12, -10);
+      g.lineTo(-16, -1 + ph * 3);
+      g.moveTo(12, -10);
+      g.lineTo(16, -1 - ph * 3);
+      g.stroke();
+      // 背番号
+      g.fillStyle = isGK ? '#111827' : contrast(shirt);
+      g.font = '900 13px system-ui, sans-serif';
+      g.textAlign = 'center';
+      g.textBaseline = 'middle';
+      g.fillText(String(mp.p.number), 0, -4);
+      // 頭
+      g.fillStyle = skin;
+      g.beginPath();
+      g.arc(0, -22, 8.5, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = hair;
+      g.beginPath();
+      g.arc(-f * 1.5, -24, 8.8, Math.PI * 1.02, Math.PI * 1.98);
+      g.fill();
+      g.restore();
     };
 
     const label = (x: number, y: number, text: string, bg: string, size = 20) => {
@@ -194,6 +303,24 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
         ball = { x: 0.5, y: 0.5 };
       }
       const isShotEnd = ev.kind === 'goal' || ev.kind === 'save' || ev.kind === 'miss';
+      if (ev.kind === 'goal' && !fastRef.current) {
+        // 祝福：得点したチームが得点者のもとに集まる（自軍の得点なら紙吹雪）
+        celebrate = { team: ev.team, scorer: ev.playerId ?? null, until: now + 2600 };
+        if (ev.team === 0) {
+          const cols = ['#facc15', '#f472b6', '#22d3ee', '#a3e635', '#ffffff', '#fb923c'];
+          confetti = Array.from({ length: 70 }, (_, i) => ({
+            x: Math.random() * W,
+            y: -20 - Math.random() * 120,
+            vx: (Math.random() - 0.5) * 120,
+            vy: 120 + Math.random() * 160,
+            r: Math.random() * Math.PI,
+            vr: (Math.random() - 0.5) * 10,
+            c: cols[i % cols.length],
+            life: 2.6 + Math.random() * 0.8,
+          }));
+        }
+      }
+      if (ev.kind !== 'goal') celebrate = null;
       const newCarrier = ev.carrierId ?? null;
       if (isShotEnd) {
         // ゴール/セーブ/枠外：現在地からゴール方向へシュート
@@ -302,6 +429,12 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
           } else if (!holder && !flight && ev.carrierId === id && target) {
             dest = target;
             maxSp = SPEED.carry;
+          } else if (celebrate && now < celebrate.until && mp.team === celebrate.team && mp.slot.role !== 'GK' && celebrate.scorer && pos.has(celebrate.scorer)) {
+            // 得点者のもとに集まる
+            const sp0 = pos.get(celebrate.scorer)!;
+            const k = (mp.p.number * 2.399) % (Math.PI * 2);
+            dest = id === celebrate.scorer ? sp0 : { x: sp0.x + Math.cos(k) * 0.035, y: sp0.y + Math.sin(k) * 0.05 };
+            maxSp = SPEED.run * 1.6;
           } else if (marker === id) {
             // 自陣ゴール側から間合いを詰める
             const goalX = mp.team === 0 ? 0 : 1;
@@ -334,6 +467,39 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
 
       drawPitch();
 
+      // ボールの軌跡（動いているときだけ）
+      const lastB = ballTrail[ballTrail.length - 1];
+      const moving = !lastB || Math.hypot(ball.x - lastB.x, ball.y - lastB.y) > 0.002;
+      if (moving && !fastRef.current) ballTrail.push({ ...ball });
+      else if (ballTrail.length) ballTrail.shift();
+      if (ballTrail.length > 10) ballTrail.shift();
+      ballTrail.forEach((p, i) => {
+        g.fillStyle = `rgba(255,255,255,${(i / ballTrail.length) * 0.35})`;
+        g.beginPath();
+        g.arc(px(p.x), py(p.y), 3 + (i / ballTrail.length) * 5, 0, Math.PI * 2);
+        g.fill();
+      });
+      // シュートの速度線
+      const shooting = (flight && flight.kind === 'shot') || (sf && script?.init.a.shotToGoal && sp > 0.42 && sp < 0.8);
+      if (shooting && lastB && !fastRef.current) {
+        const dx = ball.x - lastB.x;
+        const dy = ball.y - lastB.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const ux = dx / d;
+        const uy = dy / d;
+        g.strokeStyle = 'rgba(253,230,138,0.85)';
+        g.lineWidth = 3;
+        for (let i = -2; i <= 2; i++) {
+          const ox = -uy * i * 7;
+          const oy = ux * i * 7;
+          const len = 60 - Math.abs(i) * 12;
+          g.beginPath();
+          g.moveTo(px(ball.x) + ox * 1.0 - ux * 14, py(ball.y) + oy - uy * 14);
+          g.lineTo(px(ball.x) + ox - ux * (14 + len), py(ball.y) + oy - uy * (14 + len));
+          g.stroke();
+        }
+      }
+
       // パスの軌跡（読みやすさ用）
       if (flight) {
         g.strokeStyle = flight.kind === 'shot' ? '#fde68acc' : '#ffffff88';
@@ -355,7 +521,8 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
 
       // 判断待ち：DFの向き（縦切り／中切り）と空いている方向を図示
       const pend = s.pending;
-      if (pend && pend.situation.type === 'wing' && pend.situation.stance && !script) {
+      const atDecision = ev.idx === s.events.length - 1;
+      if (pend && atDecision && pend.situation.type === 'wing' && pend.situation.stance && !script) {
         const sit = pend.situation;
         const dp = pos.get(sit.defenderId);
         const ap = pos.get(sit.actorId);
@@ -423,50 +590,26 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
           const p = pos.get(mp.p.id)!;
           const X = px(p.x);
           const Y = py(p.y);
-          const tc = team.team;
-          g.fillStyle = '#0006';
-          g.beginPath();
-          g.ellipse(X + 2, Y + 16, 16, 5, 0, 0, Math.PI * 2);
-          g.fill();
           const isDown = !!(sf && script && sf.down && script.ids[sf.down] === mp.p.id);
           const isJump = !!(sf && script && sf.jump && sf.jump.some((k) => script!.ids[k] === mp.p.id));
-          g.beginPath();
-          if (isDown) g.ellipse(X, Y + 6, 24, 11, 0, 0, Math.PI * 2);
-          else g.arc(X, Y - (isJump ? 10 : 0), isJump ? 23 : 19, 0, Math.PI * 2);
-          g.fillStyle = mp.slot.role === 'GK' ? (mp.team === 0 ? '#f59e0b' : '#e879f9') : tc.color;
-          g.fill();
-          g.lineWidth = 3;
-          g.strokeStyle = tc.color2;
-          g.stroke();
-          if (mp.p.rarity === 'GOD') {
-            g.strokeStyle = '#fde68a';
-            g.lineWidth = 2;
+          const pp = prevPos.get(mp.p.id);
+          const movingP = !!pp && Math.hypot(p.x - pp.x, p.y - pp.y) > 0.0004;
+          prevPos.set(mp.p.id, { ...p });
+          // 足元のリング：神選手=金、操作選手=水色、ボール保持者=白
+          const ring = (col: string, r: number, w: number) => {
+            g.strokeStyle = col;
+            g.lineWidth = w;
             g.beginPath();
-            g.arc(X, Y, 23, 0, Math.PI * 2);
+            g.ellipse(X, Y + 26, r, r * 0.36, 0, 0, Math.PI * 2);
             g.stroke();
-          }
-          if (highlightId === mp.p.id) {
-            g.strokeStyle = '#22d3ee';
-            g.lineWidth = 3;
-            g.beginPath();
-            g.arc(X, Y, 27, 0, Math.PI * 2);
-            g.stroke();
-          }
-          if (holder === mp.p.id) {
-            g.strokeStyle = '#fff';
-            g.lineWidth = 2.5;
-            g.beginPath();
-            g.arc(X, Y, 25 + Math.sin(now / 160) * 2, 0, Math.PI * 2);
-            g.stroke();
-          }
-          g.fillStyle = '#fff';
-          g.font = 'bold 18px system-ui, sans-serif';
-          g.textAlign = 'center';
-          g.textBaseline = 'middle';
-          g.fillText(String(mp.p.number), X, Y + 0.5);
+          };
+          if (mp.p.rarity === 'GOD') ring('#fde68a', 20, 2.5);
+          if (highlightId === mp.p.id) ring('#22d3ee', 24, 3);
+          if (holder === mp.p.id) ring('#ffffff', 22 + Math.sin(now / 160) * 2, 3);
+          drawSprite(X, Y, mp, { down: isDown, jump: isJump, moving: movingP, now });
           if (mp.stamina < 35 && mp.slot.role !== 'GK') {
             g.fillStyle = '#f43f5e';
-            g.fillRect(X - 14, Y - 30, 28 * (mp.stamina / 35), 5);
+            g.fillRect(X - 14, Y - 44, 28 * (mp.stamina / 35), 5);
           }
         }
       }
@@ -523,11 +666,29 @@ export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: P
           g.stroke();
         }
       }
+      // 紙吹雪
+      if (confetti.length) {
+        const dtr = Math.min(0.05, dt / (speedRef.current || 1));
+        confetti = confetti.filter((c) => (c.life -= dtr) > 0 && c.y < H + 20);
+        for (const c of confetti) {
+          c.x += c.vx * dtr;
+          c.y += c.vy * dtr;
+          c.vx *= 0.99;
+          c.r += c.vr * dtr;
+          g.save();
+          g.translate(c.x, c.y);
+          g.rotate(c.r);
+          g.fillStyle = c.c;
+          g.globalAlpha = Math.min(1, c.life);
+          g.fillRect(-6, -3, 12, 6 * Math.abs(Math.cos(c.r * 2)) + 1);
+          g.restore();
+        }
+      }
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [engine, evRef, speedRef, cineRef, highlightId]);
+  }, [engine, evRef, speedRef, cineRef, fastRef, highlightId]);
 
   return <canvas ref={canvasRef} width={W} height={H} aria-label="試合のピッチ" />;
 }

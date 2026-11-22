@@ -47,6 +47,7 @@ export function PlayerCard({
   animate,
   delay = 0,
   extra,
+  back,
 }: {
   p: Player;
   onClick?: () => void;
@@ -54,8 +55,17 @@ export function PlayerCard({
   animate?: boolean;
   delay?: number;
   extra?: ReactNode;
+  /** 裏向き（まだめくっていない） */
+  back?: boolean;
 }) {
   const hl = isHighlight(p);
+  if (back) {
+    return (
+      <button className="pcard card-back" onClick={onClick} aria-label="まだめくっていないカード" data-silent>
+        <span className="cb-mark">GS</span>
+      </button>
+    );
+  }
   const t = topStats(p);
   return (
     <button

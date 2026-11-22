@@ -25,7 +25,6 @@ export function GachaScreen({ run, fastFx, initialReveal, onChanged, onNext, onB
   const rerender = () => force((x) => x + 1);
   const [detail, setDetail] = useState<Player | null>(null);
   const [animIds, setAnimIds] = useState<Set<string>>(new Set());
-  const [delays, setDelays] = useState<Record<string, number>>({});
   const [god, setGod] = useState(false);
   const [ticket, setTicket] = useState(0);
   const [scoutPick, setScoutPick] = useState(false);
@@ -43,23 +42,49 @@ export function GachaScreen({ run, fastFx, initialReveal, onChanged, onNext, onB
 
   useEffect(() => () => timers.current.forEach((t) => clearTimeout(t)), []);
 
-  /** 11人の公開演出：通常は短くテンポよく、レアだけ間を取る */
-  const revealAll = (players: Player[]) => {
-    const d: Record<string, number> = {};
-    let t = 0;
-    for (const p of players) {
-      const hl = isHighlight(p);
-      if (hl && !fastFx) t += 380;
-      d[p.id] = t;
-      const at = t;
-      timers.current.push(
-        window.setTimeout(() => sfx.play(hl === 'ssr' || hl === 'god' ? 'ssr' : hl ? 'rare' : 'card'), at),
-      );
-      t += fastFx ? 25 : hl ? 420 : 90;
+  const [hidden, setHidden] = useState<Set<string>>(new Set());
+  const [spot, setSpot] = useState<Player | null>(null);
+  const spotDone = useRef<(() => void) | null>(null);
+  const token = useRef(0);
+  const wait = (ms: number) => new Promise<void>((res) => timers.current.push(window.setTimeout(res, ms)));
+
+  /** SSR・神選手：暗転→光→カード登場（タップでスキップ） */
+  const spotlight = (p: Player) =>
+    new Promise<void>((res) => {
+      spotDone.current = () => {
+        spotDone.current = null;
+        setSpot(null);
+        res();
+      };
+      setSpot(p);
+    });
+
+  /** 11人の公開演出：裏向きのカードを1枚ずつめくる。SSR以上は全画面の特別演出 */
+  const revealAll = async (players: Player[]) => {
+    const my = ++token.current;
+    if (fastFx) {
+      setHidden(new Set());
+      setAnimIds(new Set());
+      return;
     }
-    setDelays(d);
-    setAnimIds(new Set(players.map((p) => p.id)));
-    return t;
+    setHidden(new Set(players.map((p) => p.id)));
+    setAnimIds(new Set());
+    sfx.play('draw');
+    await wait(650);
+    for (const p of players) {
+      if (token.current !== my) return;
+      const hl = isHighlight(p);
+      if (hl === 'ssr' || hl === 'god') await spotlight(p);
+      if (token.current !== my) return;
+      setHidden((h) => {
+        const n = new Set(h);
+        n.delete(p.id);
+        return n;
+      });
+      setAnimIds((a) => new Set(a).add(p.id));
+      sfx.play(hl === 'rareSkill' ? 'rare' : 'card');
+      await wait(hl ? 380 : 140);
+    }
   };
 
   useEffect(() => {
@@ -67,29 +92,29 @@ export function GachaScreen({ run, fastFx, initialReveal, onChanged, onNext, onB
     if (initialReveal.godTriggered) {
       setGod(true);
     } else {
-      const t = revealAll(sorted);
-      if (initialReveal.scoutGained > 0) timers.current.push(window.setTimeout(() => setTicket(initialReveal.scoutGained), t + 400));
+      void revealAll(sorted).then(() => {
+        if (initialReveal.scoutGained > 0) setTicket(initialReveal.scoutGained);
+      });
     }
+    return () => {
+      token.current++;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const doReroll = (p: Player) => {
+  const doReroll = async (p: Player) => {
     const r = run.reroll(p.id);
     setDetail(null);
     if (!r) return;
-    sfx.play('reroll');
     onChanged({ scout: r.scout ? 1 : 0, god: r.godTriggered, draws: 1 });
     if (r.godTriggered) {
       setGod(true);
       rerender();
       return;
     }
-    const hl = isHighlight(r.player);
-    setDelays({ [r.player.id]: 0 });
-    setAnimIds(new Set([r.player.id]));
-    timers.current.push(window.setTimeout(() => sfx.play(hl === 'ssr' || hl === 'god' ? 'ssr' : hl ? 'rare' : 'card'), 150));
-    if (r.scout) timers.current.push(window.setTimeout(() => setTicket(1), 900));
     rerender();
+    await revealAll([r.player]);
+    if (r.scout) setTicket(1);
   };
 
   const doScout = (p: Player) => {
@@ -144,9 +169,9 @@ export function GachaScreen({ run, fastFx, initialReveal, onChanged, onNext, onB
             key={p.id}
             p={p}
             animate={animIds.has(p.id)}
-            delay={delays[p.id] ?? 0}
+            back={hidden.has(p.id)}
             onClick={() => {
-              sfx.play('tap');
+              if (hidden.has(p.id)) return;
               setDetail(p);
             }}
           />
@@ -224,14 +249,16 @@ export function GachaScreen({ run, fastFx, initialReveal, onChanged, onNext, onB
         </div>
       )}
 
+      {spot && <Spotlight p={spot} onDone={() => spotDone.current?.()} />}
+
       {god && (
         <GodSequence
           fastFx={fastFx}
           onDone={() => {
             setGod(false);
             const all = [...run.players];
-            setDelays(Object.fromEntries(all.map((p, i) => [p.id, i * 60])));
-            setAnimIds(new Set(all.map((p) => p.id)));
+            setHidden(new Set());
+            setAnimIds(fastFx ? new Set() : new Set(all.map((p) => p.id)));
             if (initialReveal && initialReveal.scoutGained > 0) setTicket(initialReveal.scoutGained);
             rerender();
           }}
@@ -328,3 +355,33 @@ export function GodSequence({ onDone, fastFx }: { onDone: () => void; fastFx: bo
 }
 
 export type { Position };
+
+/** SSR・神選手の出現演出：暗転 → 光 → カード登場 */
+function Spotlight({ p, onDone }: { p: Player; onDone: () => void }) {
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    const ts = [
+      window.setTimeout(() => {
+        setPhase(1);
+        sfx.play('ssr');
+      }, 550),
+      window.setTimeout(() => setPhase(2), 1000),
+      window.setTimeout(() => onDone(), 2600),
+    ];
+    return () => ts.forEach((t) => clearTimeout(t));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <div className={`spotlight ph${phase} ${p.rarity === 'GOD' ? 'god' : ''}`} onClick={onDone} data-silent>
+      {phase >= 1 && <div className="spot-light" />}
+      {phase >= 1 && <div className="god-rays" />}
+      {phase >= 2 && (
+        <div className="spot-card">
+          <div className="spot-label">{p.rarity === 'GOD' ? '神' : 'SSR'}</div>
+          <PlayerCard p={p} animate />
+        </div>
+      )}
+      <div className="cinema-skip">タップでスキップ</div>
+    </div>
+  );
+}

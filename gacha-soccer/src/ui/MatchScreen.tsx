@@ -46,7 +46,6 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const [halftime, setHalftime] = useState(false);
   const [tacticsOpen, setTacticsOpen] = useState(false);
   const [ffwd, setFfwd] = useState(false);
-  const [scorePop, setScorePop] = useState(0);
   const [hitstop, setHitstop] = useState(false);
   const [busy, setBusy] = useState(false);
   const [armQuit, setArmQuit] = useState(false);
@@ -62,6 +61,15 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const cineRef = useRef({ idx: -1, delay: 0, skipped: false });
   const [cine, setCine] = useState<{ action: NonNullable<MatchEvent['action']>; key: number; dur: number } | null>(null);
   const [skipTick, setSkipTick] = useState(0);
+  const [dim, setDim] = useState(false);
+  const [panelMin, setPanelMin] = useState(false);
+  const pitchRef = useRef<HTMLDivElement>(null);
+
+  // 観客のざわめき（試合中だけ）
+  useEffect(() => {
+    sfx.crowd(true);
+    return () => sfx.crowd(false);
+  }, []);
   speedRef.current = ffwd ? 8 : speed;
   const fxKey = useRef(0);
   const finishedRef = useRef(false);
@@ -73,20 +81,31 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const onEventStart = useCallback(
     (e: MatchEvent, fast: boolean) => {
       const big = e.fx === 'bigGoal';
-      if (e.action?.byUser && !fast) {
+      if (e.action?.byUser && !fast && !fastFxRef.current) {
         const dur = cinematicMs(e.action, fastFxRef.current);
         cineRef.current = { idx: e.idx, delay: dur, skipped: false };
         setCine({ action: e.action, key: e.idx, dur });
       }
       switch (e.kind) {
         case 'kickoff':
-        case 'halftime':
-        case 'fulltime':
           sfx.play('whistle');
+          sfx.crowdLevel(0.35);
+          window.setTimeout(() => sfx.crowdLevel(0.1), 1500);
+          break;
+        case 'halftime':
+          sfx.play('whistleEnd');
+          break;
+        case 'fulltime':
+          sfx.play('whistleEnd');
+          sfx.crowdLevel(0.6);
           break;
         case 'pass':
+          if (!fast) sfx.play('pass');
+          break;
         case 'carry':
-          if (!fast) sfx.play('kick');
+          if (!fast) sfx.play('pass');
+          // 敵陣深くの局面では観客がざわつく（チャンス／ピンチ）
+          sfx.crowdLevel(e.progress >= 0.8 ? 0.5 : e.progress >= 0.6 ? 0.25 : 0.1);
           break;
         case 'dribble':
           sfx.play('dribble');
@@ -97,8 +116,19 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
           break;
         case 'goal':
           sfx.play('net');
-          window.setTimeout(() => sfx.play(e.team === 0 ? (big ? 'bigCheer' : 'cheer') : 'groan'), 120);
-          setScorePop((x) => x + 1);
+          if (e.team === 0) {
+            window.setTimeout(() => sfx.play(big ? 'bigCheer' : 'cheer'), 100);
+            window.setTimeout(() => sfx.play('goalFanfare'), 250);
+            sfx.crowdLevel(1);
+          } else {
+            window.setTimeout(() => sfx.play('groan'), 120);
+            sfx.crowdLevel(0.7);
+            if (!fastFxRef.current) {
+              setDim(true);
+              window.setTimeout(() => setDim(false), 1800);
+            }
+          }
+          window.setTimeout(() => sfx.crowdLevel(0.12), 3200);
           break;
         case 'save':
           sfx.play('save');
@@ -120,7 +150,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
             const r = e.result;
             setLastResult({ r, key: e.idx });
             const good = r.team === 0 ? r.success : !r.success;
-            window.setTimeout(() => sfx.play(good ? 'steal' : 'fail'), fast ? 0 : 450);
+            window.setTimeout(() => sfx.play(good ? 'success' : 'fail'), fast ? 0 : 450);
             if (r.quality === 'good') window.setTimeout(() => sfx.play('judge'), fast ? 0 : 750);
           }
           break;
@@ -151,7 +181,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
       const isFx = e.fx && e.fx !== 'none' && e.fx !== 'hit';
       // ボールが届く・運び終えるまで待つ（瞬間移動に見えないように）
       let d = e.action
-        ? e.dur * (fastFx ? 0.65 : 1) + (e.action.byUser && !ffwd ? cinematicMs(e.action, fastFx) : 0)
+        ? e.dur * (fastFx ? 0.65 : 1) + (e.action.byUser && !ffwd && !fastFx ? cinematicMs(e.action, fastFx) : 0)
         : Math.max(e.dur * 1.25, travelMs(events[e.idx - 1] ?? null, e));
       if (fastFx && isFx) d = Math.min(d, e.kind === 'goal' ? 1400 : 600);
       if (ffwd) return e.kind === 'goal' ? Math.max(900, d / 3) : 40;
@@ -187,7 +217,10 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
       if (s.pending) {
         setFfwd(false);
         setShowDecision(true);
+        setPanelMin(false);
         sfx.play('select');
+        sfx.crowdLevel(s.pending.situation.type === 'box' || s.pending.situation.gk1v1 ? 0.85 : 0.55);
+        pitchRef.current?.scrollIntoView({ behavior: fastFx ? 'auto' : 'smooth', block: 'start' });
       } else if (s.halftimePause) {
         setFfwd(false);
         setHalftime(true);
@@ -251,25 +284,28 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
 
   return (
     <div className={`match ${hitstop ? 'hitstop' : ''}`}>
-      <div className="scoreboard">
-        <div className="tname">
-          <span className="swatch" style={{ background: home.color }} />
-          <span>{home.name}</span>
+      <div className="tv-board">
+        <div className="tv-team home" style={{ ['--tc' as string]: home.color }}>
+          <span className="tv-chip" />
+          <span className="tv-name">{home.name}</span>
         </div>
-        <div className={`score ${scorePop ? 'pop' : ''}`} key={scorePop}>
-          {shownScore[0]} - {shownScore[1]}
-          <span className="min">
-            {minute}' {s.finished && cursor >= events.length - 1 ? '試合終了' : minute < 45 || (ev?.kind === 'halftime') ? '前半' : '後半'}
-          </span>
+        <div className="tv-score">
+          <ScoreDigit v={shownScore[0]} animate={!fastFx} />
+          <span className="tv-sep">-</span>
+          <ScoreDigit v={shownScore[1]} animate={!fastFx} />
         </div>
-        <div className="tname away">
-          <span>{away.name}</span>
-          <span className="swatch" style={{ background: away.color }} />
+        <div className="tv-team away" style={{ ['--tc' as string]: away.color }}>
+          <span className="tv-name">{away.name}</span>
+          <span className="tv-chip" />
+        </div>
+        <div className="tv-clock">
+          <b>{String(Math.min(minute, 99)).padStart(2, '0')}:00</b>
+          <span>{s.finished && cursor >= events.length - 1 ? '試合終了' : minute < 45 || ev?.kind === 'halftime' ? '前半' : '後半'}</span>
         </div>
       </div>
 
-      <div className={`pitch-wrap ${shake}`} onClick={skipFx}>
-        <PitchCanvas engine={engine} evRef={evRef} speedRef={speedRef} cineRef={cineRef} highlightId={controlled} />
+      <div className={`pitch-wrap ${shake} ${dim ? 'dim' : ''}`} onClick={skipFx} ref={pitchRef}>
+        <PitchCanvas engine={engine} evRef={evRef} speedRef={speedRef} cineRef={cineRef} fastRef={fastFxRef} highlightId={controlled} />
         <div className="fx-layer">
           {flash > 0 && <div className="flash" key={`f${flash}`} />}
           {fx && <FxView fx={fx} engine={engine} />}
@@ -336,17 +372,20 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
 
       <div className="legend">
         <span>
-          <span className="swatch" style={{ display: 'inline-block', background: home.color }} /> あなた（→攻撃）
+          <span className="swatch" style={{ display: 'inline-block', background: home.color, outline: `2px solid ${home.color2}` }} /> あなた（→右へ攻撃）
         </span>
         <span>
-          <span className="swatch" style={{ display: 'inline-block', background: away.color }} /> 相手
+          <span className="swatch" style={{ display: 'inline-block', background: away.color, outline: `2px solid ${away.color2}` }} /> 相手（←左へ攻撃）
         </span>
-        <span>白い輪＝ボール保持者／赤いバー＝スタミナ切れ</span>
+        <span>
+          <span className="swatch" style={{ display: 'inline-block', background: '#facc15' }} /> GK（両チーム共通・縁取りがチーム色）
+        </span>
+        <span>足元の白い輪＝ボール保持者／赤いバー＝スタミナ切れ</span>
       </div>
 
-      <div style={{ height: showDecision ? 300 : 20 }} />
+      <div style={{ height: showDecision && !panelMin ? 340 : 60 }} />
 
-      {showDecision && pending && <DecisionPanel engine={engine} onChoose={choose} />}
+      {showDecision && pending && <DecisionPanel engine={engine} onChoose={choose} minimized={panelMin} onToggle={() => setPanelMin((x) => !x)} />}
 
       {halftime && (
         <Modal>
@@ -488,15 +527,28 @@ function FxView({ fx, engine }: { fx: Fx; engine: MatchEngine }) {
   }
 }
 
-function DecisionPanel({ engine, onChoose }: { engine: MatchEngine; onChoose: (o: CommandOption) => void }) {
+function DecisionPanel({
+  engine,
+  onChoose,
+  minimized,
+  onToggle,
+}: {
+  engine: MatchEngine;
+  onChoose: (o: CommandOption) => void;
+  minimized: boolean;
+  onToggle: () => void;
+}) {
   const d = engine.s.pending!;
   const sit = d.situation;
   const isDef = sit.type === 'defend';
   const actor = engine.player(isDef ? sit.underlying!.defenderId : sit.actorId);
   const opp = engine.player(isDef ? sit.underlying!.actorId : sit.defenderId);
   return (
-    <div className={`decision ${isDef ? 'def' : ''}`}>
+    <div className={`decision ${isDef ? 'def' : ''} ${minimized ? 'min' : ''}`}>
       <div className="inner">
+        <button className="panel-toggle" onClick={onToggle} aria-label={minimized ? '選択肢を開く' : 'ピッチを見る（選択肢をたたむ）'}>
+          {minimized ? '▲ 選択肢を開く' : '▼ ピッチを見る'}
+        </button>
         <h3>
           <Face g={actor.p.face} size={34} rarity={actor.p.rarity} />
           <span>
@@ -587,5 +639,30 @@ function ResultPanel({ r, k, still }: { r: CommandResult; k: number; still?: boo
       <FactorChips base={r.base} factors={r.factors} label={r.baseLabel} all />
       {r.qualityText && <div className={`rp-quality q-${r.quality}`}>采配評価：{r.qualityText}</div>}
     </div>
+  );
+}
+
+/** スコアの数字：変わったら下から差し替わるアニメーション */
+function ScoreDigit({ v, animate }: { v: number; animate: boolean }) {
+  const [prev, setPrev] = useState(v);
+  const [flip, setFlip] = useState(false);
+  useEffect(() => {
+    if (v === prev) return;
+    if (!animate) {
+      setPrev(v);
+      return;
+    }
+    setFlip(true);
+    const t = window.setTimeout(() => {
+      setPrev(v);
+      setFlip(false);
+    }, 650);
+    return () => clearTimeout(t);
+  }, [v, prev, animate]);
+  return (
+    <span className={`tv-digit ${flip ? 'flip' : ''}`}>
+      <span className="old">{prev}</span>
+      {flip && <span className="new">{v}</span>}
+    </span>
   );
 }

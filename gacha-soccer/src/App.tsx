@@ -43,7 +43,34 @@ export default function App() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    // BGM：試合中は試合用、それ以外はタイトル用
+    sfx.bgm(screen === 'match' ? 'match' : 'title');
   }, [screen]);
+
+  // 自動再生制限：最初のユーザー操作で音を有効化
+  useEffect(() => {
+    const unlock = () => {
+      sfx.unlock();
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+    window.addEventListener('pointerdown', unlock);
+    window.addEventListener('keydown', unlock);
+    return () => {
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+  }, []);
+
+  // 全ボタンのクリック音（個別に音を鳴らすボタンは data-silent で除外）
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement | null)?.closest('button');
+      if (el && !el.disabled && !el.closest('[data-silent]')) sfx.play('tap');
+    };
+    document.addEventListener('click', onClick, true);
+    return () => document.removeEventListener('click', onClick, true);
+  }, []);
 
   const today = () => new Date().toLocaleDateString('ja-JP');
 
@@ -117,8 +144,8 @@ export default function App() {
       players: run.players,
       lineup: { ...run.lineup },
       tactics: { ...run.tactics },
-      color: '#22c55e',
-      color2: '#052e16',
+      color: '#2563eb',
+      color2: '#f8fafc',
     };
     const away = buildOpponent(opp);
     const seed = (run.seed ^ hashString(`${opp.id}:${run.results.length}`)) >>> 0;
@@ -171,7 +198,8 @@ export default function App() {
   const run = runRef.current;
 
   return (
-    <div className="app">
+    <div className={`app ${st.fastFx ? 'fast-fx' : ''}`}>
+      <div className="screen-fade" key={screen}>
       {screen === 'title' && (
         <TitleScreen
           save={save}
@@ -245,6 +273,7 @@ export default function App() {
           onBack={() => setScreen('title')}
         />
       )}
+      </div>
     </div>
   );
 }

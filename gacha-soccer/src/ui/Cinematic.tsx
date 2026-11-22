@@ -328,7 +328,7 @@ function drawFigure(g: CanvasRenderingContext2D, mp: MatchPlayer, p: Pose, color
   const hipY = baseY - legL * (1 - crouch * 0.25);
   const skin = SKIN[mp.p.face.skin % SKIN.length];
   const hair = HAIR[mp.p.face.hairColor % HAIR.length];
-  const shirt = colors.gk ? (mp.team === 0 ? '#f59e0b' : '#e879f9') : colors.c;
+  const shirt = colors.gk ? '#facc15' : colors.c;
   g.save();
   g.globalAlpha = p.alpha ?? 1;
   // 影
