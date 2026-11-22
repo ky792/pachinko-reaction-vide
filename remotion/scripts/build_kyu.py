@@ -15,7 +15,7 @@ for raw in (EP / 'k01.txt').read_text(encoding='utf-8').splitlines():
     m = re.match(r'^(ナギ|バク)[:：]\s*(.+)$', raw.strip())
     if m:
         lines.append({'who': 'nagi' if m.group(1) == 'ナギ' else 'baku', 'text': re.sub(r'《([^|》]+)\|[^》]+》', r'\1', m.group(2))})
-assert len(lines) == 107
+assert len(lines) == 109
 # 字幕の改行は手で整えた版（reaction 版 episodes/kyu001v2）を使う
 _rj = json.loads((ROOT / 'episodes/kyu001/telop.json').read_text(encoding='utf-8'))
 for i, ln in enumerate(lines, 1):
@@ -28,21 +28,21 @@ FACE = """1 happy;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 e
 57 happy;58 excited;59 happy;60 excited;61 excited;62 normal;63 normal;64 excited;65 smug;66 normal;67 happy;
 68 confused;69 smug;70 excited;71 normal;72 happy;73 happy;74 excited;75 excited;76 happy;77 smug;78 normal;79 confused;80 happy;81 angry;82 angry;83 happy;84 smug;85 happy;
 86 surprised;87 smug;88 surprised;89 confused;90 normal;91 smug;
-92 happy;93 excited;94 happy;95 sweat;96 confused;97 excited;98 normal;99 smug;100 smug;101 smug;102 normal;103 happy;104 sweat;105 excited;106 happy;107 excited"""
+92 happy;93 excited;94 happy;95 sweat;96 confused;97 excited;98 happy;99 excited;100 surprised;101 normal;102 sweat;103 smug;104 smug;105 happy;106 sweat;107 excited;108 happy;109 excited"""
 FACE = {int(a): b for a, b in (p.split() for p in FACE.replace('\n', '').split(';'))}
 # 強調（赤枠・揺れ）
-PUNCH = {2, 5, 15, 18, 27, 32, 35, 42, 49, 86, 88, 104}
+PUNCH = {2, 5, 15, 18, 27, 32, 35, 42, 49, 86, 88, 106}
 # 前の間（フレーム）
-PRE = {3: 6, 9: 4, 15: 10, 31: 8, 37: 10, 49: 10, 50: 10, 65: 16, 66: 16, 80: 12, 89: 10, 98: 14, 100: 8, 102: 18, 103: 10, 105: 14}
+PRE = {3: 6, 9: 4, 15: 10, 31: 8, 37: 10, 49: 10, 50: 10, 65: 16, 66: 16, 80: 12, 89: 10, 98: 12, 100: 14, 101: 8, 103: 8, 105: 12, 107: 14}
 # カメラの寄り（キャラ, 倍率）
 FOCUS = {15: ('baku', 1.35), 31: ('nagi', 1.3), 32: ('baku', 1.45), 49: ('baku', 1.5), 50: ('nagi', 1.3), 65: ('baku', 1.3),
-         95: ('baku', 1.3), 102: ('nagi', 1.4), 104: ('baku', 1.5), 3: ('nagi', 1.25), 56: ('nagi', 1.25)}
+         95: ('baku', 1.3), 100: ('nagi', 1.4), 106: ('baku', 1.5), 3: ('nagi', 1.25), 56: ('nagi', 1.25)}
 # 画面効果
 FX = {7: 'lines', 8: 'lines', 10: 'lines', 27: 'lines', 46: 'lines', 47: 'lines', 58: 'lines', 61: 'lines', 64: 'lines', 74: 'lines', 75: 'lines',
-      104: 'gloom', 81: 'dark', 82: 'dark'}
+      106: 'gloom', 81: 'dark', 82: 'dark'}
 # 色付きのキーワード（字幕の中で強調）
 KEY = {14: ['お金を入れ続ける'], 24: ['探偵'], 27: ['就活'], 32: ['圧迫面接'], 35: ['参加賞'], 46: ['試用期間'], 47: ['正社員'], 49: ['即クビ'],
-       50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 100: ['休憩室'], 101: ['立派な研究'], 103: ['所長']}
+       50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 99: ['朝からずっと'], 103: ['休憩室'], 104: ['立派な研究'], 105: ['所長']}
 # 資料パネル：key → (最初の行, 最後の行)
 PANELS = [('terms1', 7, 9), ('terms2', 10, 11), ('flow_intro', 19, 26), ('pixel_job', 27, 35), ('flow_at', 41, 44), ('pixel_job2', 45, 50),
           ('yuuri', 51, 54), ('flow_moments', 70, 72), ('flow_gyakuten', 73, 76), ('neq', 82, 83), ('peka', 84, 85)]
@@ -51,7 +51,7 @@ STEP = {'job': {27: 0, 28: 3, 31: 3.5, 33: 4, 35: 5}, 'job2': {46: 1, 47: 2, 49:
         'yuuri': {52: 1, 53: 2}}
 CHAPTERS = [(1, '①', 'ふとした疑問'), (19, '②', '当てるまでが長い'), (41, '③', '当たってからも複雑'), (57, '④', 'パチンコは単純だから強い'),
             (68, '⑤', '複雑さは正義？'), (86, '⑥', '勉強と遊び'), (92, '⑦', '結局、勝ってるの？')]
-SILENT_AFTER = {94: [('baku', 34, 'sweat'), ('nagi', 30, 'normal')], 102: [('baku', 44, 'sweat')]}
+SILENT_AFTER = {94: [('baku', 34, 'sweat'), ('nagi', 30, 'normal')], 100: [('baku', 40, 'sweat')]}
 
 
 def envelope(path):
@@ -87,8 +87,8 @@ for i, ln in enumerate(lines, 1):
     if i in FOCUS: item['focus'] = {'who': FOCUS[i][0], 'zoom': FOCUS[i][1]}
     if i in FX: item['fx'] = FX[i]
     if i in KEY: item['key'] = KEY[i]
-    if i == 102: item['ochi'] = True      # 大オチ：朝からずっと休憩室
-    if i == 105: bgm_resume = t
+    if i == 100: item['ochi'] = True      # オチの入口：バクの口すべりに「……朝から、ずっと？」
+    if i == 107: bgm_resume = t
     out.append(item)
     t += n + GAP
     if i == 2:

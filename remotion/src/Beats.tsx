@@ -536,7 +536,25 @@ const Balance2: React.FC = () => {
   );
 };
 
-// 98〜104：本日の研究報告書（大オチ：朝からずっと休憩室）
+// 98〜99：今日は楽しめた？→最高やった（口すべりの前ふり）
+const Joy: React.FC = () => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const stars = f < S(99) ? 0 : Math.min(5, Math.floor((f - S(99)) / 8) + 1);
+  return (
+    <Card from={S(98) - 4} to={E(99) + 4} look="sticky" title="今日の満足度" width={820} tilt={-2}>
+      <div style={{textAlign: 'center'}}>
+        <div style={{fontSize: 110, letterSpacing: 10, color: ORANGE}}>
+          {'★★★★★'.slice(0, stars)}
+          <span style={{color: '#e0d38a'}}>{'★★★★★'.slice(stars)}</span>
+        </div>
+        {f >= M(99, 0.55) ? <Pop at={M(99, 0.55)} style={{fontSize: 56, color: RED}}>最高（朝からずっと）</Pop> : null}
+      </div>
+    </Card>
+  );
+};
+
+// 100〜106：本日の研究報告書（口すべりからサボりがばれる）
 const Report: React.FC = () => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -550,29 +568,29 @@ const Report: React.FC = () => {
       {f < at ? <div style={{fontSize: 40, color: '#c9bfa8'}}>＿＿＿＿＿＿</div> : null}
     </div>
   );
-  const shake = f >= S(104) && f < S(104) + 16 ? Math.sin(f * 2.4) * 8 : 0;
+  const shake = f >= S(106) && f < S(106) + 16 ? Math.sin(f * 2.4) * 8 : 0;
   return (
-    <Card from={S(98) - 4} to={E(104) + 6} look="paper" title="本日の研究報告書　担当：バク" width={980}>
+    <Card from={S(101) - 4} to={E(106) + 6} look="paper" title="本日の研究報告書　担当：バク" width={980}>
       <div style={{position: 'relative', translate: `${shake}px 0`}}>
-        {row('研究テーマ', 'スロットの複雑さ', S(99) + 8)}
-        {row('研究場所', '休憩室', S(100) + 10, RED, true)}
-        {row('研究時間', '朝から ずっと', S(102) + 8, RED)}
-        {row('成果', '雑談', M(102, 0.7), '#7a86a8')}
-        <Stamp at={S(103) + 6} text="所長に報告" x={560} y={250} size={70} rot={-10} />
+        {row('研究テーマ', 'スロットの複雑さ', S(102) + 8)}
+        {row('研究場所', '休憩室', S(103) + 10, RED, true)}
+        {row('研究時間', '朝から ずっと', S(101) + 10, RED)}
+        {row('成果', '雑談', M(104, 0.7), '#7a86a8')}
+        <Stamp at={S(105) + 6} text="所長に報告" x={560} y={250} size={70} rot={-10} />
       </div>
     </Card>
   );
 };
 
-// 105〜106：コメントで教えて
+// 107〜108：コメントで教えて
 const Comments: React.FC = () => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   return (
-    <Card from={S(105) - 4} to={E(106) + 6} look="board" title="コメントで教えてね" width={1000}>
+    <Card from={S(107) - 4} to={E(108) + 6} look="board" title="コメントで教えてね" width={1000}>
       <div style={{fontSize: 42, marginBottom: 16}}>パチンコとスロット、どっちのどこが好き？</div>
       {['パチンコ派：', 'スロット派：', '両方派：'].map((t, i) => (
-        <div key={t} style={{display: 'flex', alignItems: 'center', gap: 14, marginTop: 12, scale: `${pop(f, S(105) + 10 + i * 8, fps)}`}}>
+        <div key={t} style={{display: 'flex', alignItems: 'center', gap: 14, marginTop: 12, scale: `${pop(f, S(107) + 10 + i * 8, fps)}`}}>
           <div style={{width: 54, height: 54, borderRadius: '50%', background: [ORANGE, BLUE, GREEN][i]}} />
           <div style={{flex: 1, fontSize: 36, padding: '10px 18px', borderRadius: 14, background: '#f1f3f8', border: '3px solid #d9dde6', color: '#7a86a8'}}>
             {t}＿＿＿＿＿＿＿＿
@@ -719,8 +737,9 @@ export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
   {from: S(86) - 4, to: E(91) + 6, el: <Phone />},
   {from: S(92) - 4, to: E(93) + 6, el: <More />},
   {from: S(94) - 4, to: E(97) + 6, el: <Balance2 />},
-  {from: S(98) - 4, to: E(104) + 6, el: <Report />},
-  {from: S(105) - 4, to: E(106) + 6, el: <Comments />},
+  {from: S(98) - 4, to: E(99) + 4, el: <Joy />},
+  {from: S(101) - 4, to: E(106) + 6, el: <Report />},
+  {from: S(107) - 4, to: E(108) + 6, el: <Comments />},
 ];
 
 export const Beats: React.FC = () => {
@@ -741,6 +760,6 @@ export const beatSounds = (): {at: number; src: string; vol: number}[] => {
   out.push({at: Math.round(M(61, 0.04)), src: 'px_start', vol: 0.35});
   out.push({at: Math.round(M(61, 0.82)), src: 'se_emphasis', vol: 0.5});
   out.push({at: Math.round(M(59, 0.55)), src: 'se_emphasis', vol: 0.4});
-  out.push({at: S(103) + 6, src: 'se_emphasis', vol: 0.45});
+  out.push({at: S(105) + 6, src: 'se_emphasis', vol: 0.45});
   return out.map((o) => ({...o, at: Math.round(o.at)}));
 };
