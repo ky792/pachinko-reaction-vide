@@ -22,7 +22,7 @@ for i, ln in enumerate(lines, 1):
     ln['text'] = _rj[str(i)]
 
 # 表情（素材名）
-FACE = """1 sweat;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;
+FACE = """1 normal;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;
 19 happy;20 happy;21 happy;22 happy;23 smug;24 smug;25 surprised;26 confused;27 excited;28 excited;29 confused;30 smug;31 normal;32 angry;33 sweat;34 confused;35 surprised;36 confused;37 sweat;38 normal;39 smug;40 smug;
 41 confused;42 smug;43 happy;44 happy;45 confused;46 excited;47 excited;48 confused;49 angry;50 smug;51 confused;52 happy;53 excited;54 happy;55 normal;56 smug;
 57 happy;58 excited;59 happy;60 excited;61 excited;62 normal;63 normal;64 excited;65 smug;66 normal;67 happy;
