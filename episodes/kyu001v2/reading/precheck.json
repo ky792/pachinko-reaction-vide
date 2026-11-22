@@ -1,6 +1,6 @@
 [
  {
-  "id": "k01-008",
+  "id": "k01-013",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "間[。、！？…]*$",
@@ -10,10 +10,10 @@
   "text": "規定ゲーム数、周期抽選、CZ、AT、上位AT、差枚数管理、有利区間……",
   "speech": "規定ゲーム数、周期抽選、シーゼット、エーティー、じょういエーティー、さまいすう管理、有利区間……",
   "kana": "キテーゲームスー、シューキチューセン、シーゼット、エーティー、ジョーイエーティー、サマイスーカンリ、ユーリクカン……",
-  "audio": "episodes/kyu001v2/voices/k01-008.wav"
+  "audio": "episodes/kyu001v2/voices/k01-013.wav"
  },
  {
-  "id": "k01-015",
+  "id": "k01-020",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "^……",
@@ -23,10 +23,10 @@
   "text": "……言い方。",
   "speech": "……言い方。",
   "kana": "……イーカタ。",
-  "audio": "episodes/kyu001v2/voices/k01-015.wav"
+  "audio": "episodes/kyu001v2/voices/k01-020.wav"
  },
  {
-  "id": "k01-015",
+  "id": "k01-020",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "^[^、。！？]{1,6}[。！？]?$",
@@ -36,10 +36,10 @@
   "text": "……言い方。",
   "speech": "……言い方。",
   "kana": "……イーカタ。",
-  "audio": "episodes/kyu001v2/voices/k01-015.wav"
+  "audio": "episodes/kyu001v2/voices/k01-020.wav"
  },
  {
-  "id": "k01-031",
+  "id": "k01-036",
   "who": "nagi",
   "kind": "崩れやすい言い回し",
   "where": "(?<!《)\\d+社",
@@ -49,10 +49,10 @@
   "text": "10社連続、不採用。",
   "speech": "じゅっしゃ連続、ふさいよう。",
   "kana": "ジュッシャレンゾク、フサイヨー。",
-  "audio": "episodes/kyu001v2/voices/k01-031.wav"
+  "audio": "episodes/kyu001v2/voices/k01-036.wav"
  },
  {
-  "id": "k01-033",
+  "id": "k01-038",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "ちょっと",
@@ -62,10 +62,10 @@
   "text": "ほんで、やっと内定もろたと思ったら、AT100枚ちょっとで終わるとか、ザラやからな。",
   "speech": "ほんで、やっと内定もろたと思ったら、エーティー100枚ちょっとで終わるとか、ザラやからな。",
   "kana": "ホンデ、ヤットナイテーモロタトオモッタラ、エーティーヒャクマイチョットデオワルトカ、ザラヤカラナ。",
-  "audio": "episodes/kyu001v2/voices/k01-033.wav"
+  "audio": "episodes/kyu001v2/voices/k01-038.wav"
  },
  {
-  "id": "k01-046",
+  "id": "k01-051",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "間[。、！？…]*$",
@@ -75,10 +75,10 @@
   "text": "そう！ 普通のATは、まだ試用期間。",
   "speech": "そう！ 普通のエーティーは、まだ試用期間。",
   "kana": "ソー！フツーノエーティーワ、マダシヨーキカン。",
-  "audio": "episodes/kyu001v2/voices/k01-046.wav"
+  "audio": "episodes/kyu001v2/voices/k01-051.wav"
  },
  {
-  "id": "k01-060",
+  "id": "k01-065",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "^[^、。！？]{1,6}[。！？]?$",
@@ -88,10 +88,10 @@
   "text": "それよ！",
   "speech": "それよ！",
   "kana": "ソレヨ！",
-  "audio": "episodes/kyu001v2/voices/k01-060.wav"
+  "audio": "episodes/kyu001v2/voices/k01-065.wav"
  },
  {
-  "id": "k01-065",
+  "id": "k01-070",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "^……",
@@ -101,10 +101,10 @@
   "text": "……まあ最近は、演出見るより、保留4個貯める方が難しいけどな。",
   "speech": "……まあ最近は、演出見るより、保留4個貯める方が難しいけどな。",
   "kana": "……マーサイキンワ、エンシュツミルヨリ、ホリューヨンコタメルホーガムズカシイケドナ。",
-  "audio": "episodes/kyu001v2/voices/k01-065.wav"
+  "audio": "episodes/kyu001v2/voices/k01-070.wav"
  },
  {
-  "id": "k01-109",
+  "id": "k01-113",
   "who": "baku",
   "kind": "崩れやすい言い回し",
   "where": "^[^、。！？]{1,6}[。！？]?$",
@@ -114,10 +114,10 @@
   "text": "ほななー！",
   "speech": "ほななー！",
   "kana": "ホナナー！",
-  "audio": "episodes/kyu001v2/voices/k01-109.wav"
+  "audio": "episodes/kyu001v2/voices/k01-113.wav"
  },
  {
-  "id": "k01-044",
+  "id": "k01-049",
   "who": "baku",
   "kind": "辞書と違う",
   "where": "台",
@@ -127,6 +127,6 @@
   "text": "当たってからの戦い方も、台ごとにバラバラや。",
   "speech": "当たってからの戦い方も、台ごとにバラバラや。",
   "kana": "アタッテカラノタタカイカタモ、タイゴトニバラバラヤ。",
-  "audio": "episodes/kyu001v2/voices/k01-044.wav"
+  "audio": "episodes/kyu001v2/voices/k01-049.wav"
  }
 ]
