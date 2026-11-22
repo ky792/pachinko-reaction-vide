@@ -68,6 +68,34 @@ export type Outcome =
   | { kind: 'atkMod'; mod: number; timeBurn: number }
   | { kind: 'atkAdvantage'; next: Situation };
 
+/** 成功率の内訳1行 */
+export interface Factor {
+  label: string;
+  value: number;
+}
+
+/** コマンド実行結果（結果カード・采配ログ用） */
+export interface CommandResult {
+  name: string;
+  actorName: string;
+  team: TeamIdx;
+  rate: number;
+  /** 出目 0..100（rate 未満なら成功） */
+  roll: number;
+  success: boolean;
+  base: number;
+  factors: Factor[];
+  /** 何が起きたか */
+  resultText: string;
+  /** その結果、次にどうなるか */
+  nextText: string;
+  evolved: boolean;
+  byUser: boolean;
+  quality?: JudgeQuality;
+  qualityText?: string;
+  minute: number;
+}
+
 export type RiskLevel = 'なし' | '小' | '中' | '大' | '特大';
 
 export interface CommandOption {
@@ -80,6 +108,9 @@ export interface CommandOption {
   targetId?: string;
   /** 成功率（整数%） 表示値＝内部判定値 */
   rate: number;
+  /** 成功率の基本値と内訳 */
+  base: number;
+  factors: Factor[];
   reward: RiskLevel;
   risk: RiskLevel;
   successText: string;
@@ -109,6 +140,7 @@ export interface DecisionRecord {
   success: boolean;
   quality: JudgeQuality;
   rate: number;
+  result?: CommandResult;
 }
 
 export type FxKind =
@@ -122,7 +154,8 @@ export type FxKind =
   | 'hit'
   | 'steal'
   | 'whistle'
-  | 'judgeGood';
+  | 'judgeGood'
+  | 'result';
 
 export interface MatchEvent {
   idx: number;
@@ -161,6 +194,7 @@ export interface MatchEvent {
   dur: number;
   playerId?: string;
   skillId?: string;
+  result?: CommandResult;
 }
 
 export interface GoalRecord {

@@ -18,6 +18,8 @@ import {
 import { playerPos, toAbs } from './positions';
 import type {
   CommandOption,
+  CommandResult,
+  Factor,
   Decision,
   FxKind,
   JudgeQuality,
@@ -455,11 +457,27 @@ export class MatchEngine {
     }
   }
 
-  private duel(base: number, atk: number, def: number, mod: number): number {
-    return Math.round(clamp(base + (atk - def) * 0.48 + mod, 5, 95));
+  /** 成功率 = 基本値 + 各要因。内訳は UI でそのまま表示する（表示値 = 判定値） */
+  private calc(base: number, fs: (Factor | null | undefined)[], min = 5, max = 95): { rate: number; base: number; factors: Factor[] } {
+    const list = fs.filter((f): f is Factor => !!f && Math.round(f.value) !== 0).map((f) => ({ label: f.label, value: Math.round(f.value) }));
+    const v = base + list.reduce((a, f) => a + f.value, 0);
+    return { rate: Math.round(clamp(v, min, max)), base: Math.round(base), factors: list };
   }
 
-  shotRate(shooterId: string, quality: number, header: boolean, mod: number): { rate: number; skillId?: string } {
+  private skillF(b: { value: number; skillId?: string }): Factor | null {
+    if (!b.value) return null;
+    return { label: b.skillId ? `技能「${SKILL_MAP[b.skillId]?.name ?? ''}」` : '技能・弱点', value: b.value };
+  }
+
+  private evoF(evo?: string): Factor | null {
+    return evo ? { label: '進化ボーナス', value: EVOLUTION_MAP[evo].bonus } : null;
+  }
+
+  private defF(mod: number, scale = 1): Factor | null {
+    return mod ? { label: 'DFの守備対応', value: mod * scale } : null;
+  }
+
+  shotRate(shooterId: string, quality: number, header: boolean, extra: (Factor | null)[]): { rate: number; base: number; factors: Factor[]; skillId?: string } {
     const sh = this.player(shooterId);
     const c = this.ctx(sh);
     const gk = this.gkOf(other(sh.team));
@@ -468,8 +486,8 @@ export class MatchEngine {
       : this.eff(sh, 'shoot', c);
     const g = this.eff(gk, 'gk', this.ctx(gk));
     const fb = finishBonus(sh, c);
-    const v = 4 + 44 * quality + (shootV - g) * 0.24 + fb.value + mod * 0.5;
-    return { rate: Math.round(clamp(v, 2, 90)), skillId: fb.skillId };
+    const r = this.calc(4 + 44 * quality, [{ label: header ? 'ヘディング力 vs GK' : 'シュート力 vs GK', value: (shootV - g) * 0.24 }, this.skillF(fb), ...extra], 2, 90);
+    return { ...r, skillId: fb.skillId };
   }
 
   private oppDanger(defTeam: TeamIdx): number {
@@ -510,7 +528,7 @@ export class MatchEngine {
       const m = 1 + sit.mod / 45;
       switch (sit.type) {
         case 'box':
-          return (this.shotRate(sit.actorId, sit.quality, false, sit.mod).rate / 100) * 0.95;
+          return (this.shotRate(sit.actorId, sit.quality, false, [this.defF(sit.mod, 0.5)]).rate / 100) * 0.95;
         case 'wing':
           return 0.085 * m;
         case 'center':
@@ -548,19 +566,24 @@ export class MatchEngine {
     const opts: CommandOption[] = [];
     const T = sit.atk;
     const ch = sit.chain + 1;
+    const diff = (a: number, d: number, label = '能力差') => ({ label, value: (a - d) * 0.48 });
 
     // 縦突破
     {
       const b = commandBonus(A, 'dribble', ca);
-      const stanceMod = sit.stance === 'outside' ? -18 : 10;
-      const rate = this.duel(50, e(A, 'speed', ca) * 0.5 + e(A, 'dribble', ca) * 0.5, e(Dp, 'defense', cd) * 0.5 + e(Dp, 'speed', cd) * 0.5, mod + stanceMod + b.value);
+      const r = this.calc(50, [
+        diff(e(A, 'speed', ca) * 0.5 + e(A, 'dribble', ca) * 0.5, e(Dp, 'defense', cd) * 0.5 + e(Dp, 'speed', cd) * 0.5, '能力差（速さ・ドリブル）'),
+        { label: sit.stance === 'outside' ? 'DFが縦を切っている' : 'DFが中を切っている（縦が空く）', value: sit.stance === 'outside' ? -18 : 10 },
+        this.skillF(b),
+        this.defF(mod),
+      ]);
       const receiver = this.bestShooter(T, A.p.id);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'dribble',
           name: '縦突破',
           actorId: A.p.id,
-          rate,
+          ...r,
           reward: '中',
           risk: '小',
           successText: '縦をぶち抜く！',
@@ -574,21 +597,24 @@ export class MatchEngine {
     // カットイン / ファントムカットイン
     {
       const b = commandBonus(A, 'cutin', ca);
-      const stanceMod = sit.stance === 'inside' ? -18 : 12;
       const evo = (hasSkill(A, 'genius_dribbler') || hasSkill(A, 'finisher')) && sit.stance === 'outside' ? 'phantom_cutin' : undefined;
-      const bonus = evo ? EVOLUTION_MAP[evo].bonus : 0;
-      const rate = this.duel(
-        46,
-        e(A, 'dribble', ca) * 0.6 + e(A, 'judgment', ca) * 0.2 + e(A, 'speed', ca) * 0.2,
-        e(Dp, 'defense', cd) * 0.6 + e(Dp, 'judgment', cd) * 0.4,
-        mod + stanceMod + b.value + bonus,
-      );
+      const r = this.calc(46, [
+        diff(
+          e(A, 'dribble', ca) * 0.6 + e(A, 'judgment', ca) * 0.2 + e(A, 'speed', ca) * 0.2,
+          e(Dp, 'defense', cd) * 0.6 + e(Dp, 'judgment', cd) * 0.4,
+          '能力差（技術・判断）',
+        ),
+        { label: sit.stance === 'inside' ? 'DFが中を切っている' : 'DFが縦を切っている（中が空く）', value: sit.stance === 'inside' ? -18 : 12 },
+        this.skillF(b),
+        this.evoF(evo),
+        this.defF(mod),
+      ]);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'cutin',
           evolutionId: evo,
           actorId: A.p.id,
-          rate,
+          ...r,
           reward: evo ? '大' : '中',
           risk: '中',
           successText: evo ? '幻の切り返し！完全に逆を取った！' : '中へ切れ込んだ！',
@@ -606,16 +632,20 @@ export class MatchEngine {
     {
       const b = commandBonus(A, 'scissors', ca);
       const tired = Dp.stamina < 60 ? (60 - Dp.stamina) * 0.4 : 0;
-      const evo =
-        hasSkill(A, 'genius_dribbler') && (Dp.stamina < 65 || e(A, 'speed', ca) >= e(Dp, 'speed', cd)) ? 'fast_scissors' : undefined;
-      const bonus = evo ? EVOLUTION_MAP[evo].bonus : 0;
-      const rate = this.duel(36, e(A, 'dribble', ca) * 0.8 + e(A, 'speed', ca) * 0.2, e(Dp, 'defense', cd) * 0.5 + e(Dp, 'judgment', cd) * 0.5, mod + tired + b.value + bonus);
+      const evo = hasSkill(A, 'genius_dribbler') && (Dp.stamina < 65 || e(A, 'speed', ca) >= e(Dp, 'speed', cd)) ? 'fast_scissors' : undefined;
+      const r = this.calc(36, [
+        diff(e(A, 'dribble', ca) * 0.8 + e(A, 'speed', ca) * 0.2, e(Dp, 'defense', cd) * 0.5 + e(Dp, 'judgment', cd) * 0.5, '能力差（ドリブル vs 守備・判断）'),
+        tired ? { label: '相手DFのスタミナ切れ', value: tired } : null,
+        this.skillF(b),
+        this.evoF(evo),
+        this.defF(mod),
+      ]);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'scissors',
           evolutionId: evo,
           actorId: A.p.id,
-          rate,
+          ...r,
           reward: '大',
           risk: '大',
           successText: evo ? '高速シザースでDFを置き去り！' : 'シザースで完全に外した！',
@@ -636,16 +666,21 @@ export class MatchEngine {
       const aerialS = this.aerial(S);
       const aerialC = this.aerial(cb);
       const evo = hasSkill(S, 'aerial_king') && aerialS > aerialC ? 'sky_header' : undefined;
-      const bonus = evo ? EVOLUTION_MAP[evo].bonus : 0;
-      const rate = Math.round(clamp(42 + (e(A, 'pass', ca) - 60) * 0.5 + (aerialS - aerialC) * 0.7 + mod + b.value + bonus, 5, 95));
-      const hr = this.shotRate(S.p.id, evo ? 0.6 : 0.42, true, 0);
+      const r = this.calc(42, [
+        { label: 'キッカーのパス精度', value: (e(A, 'pass', ca) - 60) * 0.5 },
+        { label: `空中戦（${this.nm(S)} vs ${this.nm(cb)}）`, value: (aerialS - aerialC) * 0.7 },
+        this.skillF(b),
+        this.evoF(evo),
+        this.defF(mod),
+      ]);
+      const hr = this.shotRate(S.p.id, evo ? 0.6 : 0.42, true, []);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'cross',
           evolutionId: evo,
           actorId: A.p.id,
           targetId: S.p.id,
-          rate,
+          ...r,
           reward: '中',
           risk: '小',
           successText: `${this.nm(S)}が競り勝った！ヘディング！`,
@@ -659,13 +694,13 @@ export class MatchEngine {
     }
     // 戻す
     {
-      const rate = Math.round(clamp(86 + (e(A, 'pass', ca) - 60) * 0.2, 60, 97));
+      const r = this.calc(86, [{ label: 'パス精度', value: (e(A, 'pass', ca) - 60) * 0.2 }], 60, 97);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'pass',
           name: 'バックパスで作り直す',
           actorId: A.p.id,
-          rate,
+          ...r,
           reward: '小',
           risk: '小',
           successText: '落ち着いて作り直す',
@@ -702,20 +737,27 @@ export class MatchEngine {
       const lineMod = tD.tactics.line === 'high' ? 14 : tD.tactics.line === 'low' ? -10 : 0;
       const runnerOk = hasSkill(R, 'line_breaker') || e(R, 'speed', cr) >= 75;
       const evo = hasSkill(A, 'pass_magician') && runnerOk && (tD.tactics.line === 'high' || counter || sit.behindLine) ? 'killer_pass' : undefined;
-      const bonus = evo ? EVOLUTION_MAP[evo].bonus : 0;
-      const rate = this.duel(
-        counter ? 46 : sit.behindLine ? 44 : 34,
-        e(A, 'pass', ca) * 0.6 + e(A, 'judgment', ca) * 0.4 + (e(R, 'speed', cr) - 60) * 0.3,
-        e(Dp, 'judgment', cd) * 0.4 + e(Dp, 'defense', cd) * 0.3 + cbSpeed * 0.3,
-        mod + lineMod + b.value + rb.value * 0.5 + bonus,
-      );
+      const r = this.calc(34, [
+        counter ? { label: 'カウンター（相手の守備が整っていない）', value: 12 } : sit.behindLine ? { label: 'ライン裏にスペース', value: 10 } : null,
+        {
+          label: '能力差（パス・受け手の速さ vs 守備）',
+          value:
+            (e(A, 'pass', ca) * 0.6 + e(A, 'judgment', ca) * 0.4 + (e(R, 'speed', cr) - 60) * 0.3 - (e(Dp, 'judgment', cd) * 0.4 + e(Dp, 'defense', cd) * 0.3 + cbSpeed * 0.3)) *
+            0.48,
+        },
+        lineMod ? { label: tD.tactics.line === 'high' ? '相手のラインが高い（裏が広い）' : '相手のラインが低い（裏が狭い）', value: lineMod } : null,
+        this.skillF(b),
+        rb.value ? { label: `受け手の技能「${SKILL_MAP[rb.skillId ?? '']?.name ?? ''}」`, value: rb.value * 0.5 } : null,
+        this.evoF(evo),
+        this.defF(mod),
+      ]);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'through',
           evolutionId: evo,
           actorId: A.p.id,
           targetId: R.p.id,
-          rate,
+          ...r,
           reward: '大',
           risk: '中',
           successText: evo ? '時が止まるようなキラーパス！' : `${this.nm(R)}が抜け出した！`,
@@ -733,14 +775,18 @@ export class MatchEngine {
     }
     // シュート（ミドル）
     {
-      const lowLineBonus = tD.tactics.line === 'low' ? 0.06 : 0;
-      const sr = this.shotRate(A.p.id, (counter ? 0.1 : 0.15) + lowLineBonus, false, mod);
+      const sr = this.shotRate(A.p.id, counter ? 0.1 : 0.15, false, [
+        tD.tactics.line === 'low' ? { label: '相手のラインが低い（ミドルが空く）', value: 0.06 * 44 } : null,
+        this.defF(mod, 0.5),
+      ]);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'shoot',
           name: counter ? 'ロングシュート' : 'ミドルシュート',
           actorId: A.p.id,
           rate: sr.rate,
+          base: sr.base,
+          factors: sr.factors,
           reward: '特大',
           risk: '小',
           successText: 'ゴール！！',
@@ -754,15 +800,24 @@ export class MatchEngine {
     // ドリブル（中央突破 / 持ち上がり）
     {
       const b = commandBonus(A, 'dribble', ca);
-      const rate = counter
-        ? this.duel(52, e(A, 'speed', ca) * 0.6 + e(A, 'dribble', ca) * 0.4, e(Dp, 'speed', cd) * 0.6 + e(Dp, 'defense', cd) * 0.4, mod + b.value)
-        : this.duel(40, e(A, 'dribble', ca) * 0.7 + e(A, 'physical', ca) * 0.3, e(Dp, 'defense', cd) * 0.6 + e(Dp, 'physical', cd) * 0.4, mod + b.value - lineP.boxDensity);
+      const r = counter
+        ? this.calc(52, [
+            { label: '能力差（スピード勝負）', value: (e(A, 'speed', ca) * 0.6 + e(A, 'dribble', ca) * 0.4 - e(Dp, 'speed', cd) * 0.6 - e(Dp, 'defense', cd) * 0.4) * 0.48 },
+            this.skillF(b),
+            this.defF(mod),
+          ])
+        : this.calc(40, [
+            { label: '能力差（ドリブル・体の強さ）', value: (e(A, 'dribble', ca) * 0.7 + e(A, 'physical', ca) * 0.3 - e(Dp, 'defense', cd) * 0.6 - e(Dp, 'physical', cd) * 0.4) * 0.48 },
+            lineP.boxDensity ? { label: lineP.boxDensity > 0 ? '相手が中央を固めている' : '相手の中央が手薄', value: -lineP.boxDensity } : null,
+            this.skillF(b),
+            this.defF(mod),
+          ]);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'dribble',
           name: counter ? 'ドリブルで持ち運ぶ' : '中央突破',
           actorId: A.p.id,
-          rate,
+          ...r,
           reward: '中',
           risk: counter ? '中' : '大',
           successText: 'DFを振り切った！',
@@ -776,13 +831,13 @@ export class MatchEngine {
     // パス
     {
       const b = commandBonus(A, 'pass', ca);
-      const rate = Math.round(clamp(84 + (e(A, 'pass', ca) - 60) * 0.25 + b.value, 55, 97));
+      const r = this.calc(84, [{ label: 'パス精度', value: (e(A, 'pass', ca) - 60) * 0.25 }, this.skillF(b)], 55, 97);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'pass',
           name: counter ? '落ち着かせる' : 'サイドへ展開',
           actorId: A.p.id,
-          rate,
+          ...r,
           reward: '小',
           risk: '小',
           successText: counter ? '一度落ち着かせる' : 'サイドへ展開',
@@ -831,13 +886,18 @@ export class MatchEngine {
     const mod = sit.mod;
     const ch = sit.chain + 1;
     const opts: CommandOption[] = [];
-    const crowd = !sit.gk1v1 ? -TACTIC_PARAMS.line[this.s.teams[other(T)].tactics.line].boxDensity : 0;
-    const sr = this.shotRate(A.p.id, sit.quality, false, mod + crowd);
+    const density = TACTIC_PARAMS.line[this.s.teams[other(T)].tactics.line].boxDensity;
+    const sr = this.shotRate(A.p.id, sit.quality, false, [
+      !sit.gk1v1 && density ? { label: density > 0 ? 'ゴール前が密集（相手の低いライン）' : 'ゴール前が手薄', value: -density * 0.5 } : null,
+      this.defF(mod, 0.5),
+    ]);
     opts.push(
       this.mkOpt(sit, depth, {
         commandId: 'shoot',
         actorId: A.p.id,
         rate: sr.rate,
+        base: sr.base,
+        factors: sr.factors,
         reward: '特大',
         risk: '小',
         successText: 'ゴール！！',
@@ -849,11 +909,22 @@ export class MatchEngine {
     );
     if (sit.chain < 3) {
       const gk = this.gkOf(other(T));
+      const gkV = e(gk, 'gk', this.ctx(gk));
       // パス
       const b = commandBonus(A, 'pass', ca);
-      const passRate = sit.gk1v1
-        ? Math.round(clamp(48 + (e(A, 'pass', ca) - e(gk, 'gk', this.ctx(gk))) * 0.5 + b.value, 10, 90))
-        : Math.round(clamp(58 + (e(A, 'pass', ca) - 60) * 0.6 - (e(Dp, 'judgment', cd) - 60) * 0.3 + b.value + mod * 0.5, 10, 92));
+      const pr = sit.gk1v1
+        ? this.calc(48, [{ label: 'パス精度 vs GKの飛び出し', value: (e(A, 'pass', ca) - gkV) * 0.5 }, this.skillF(b)], 10, 90)
+        : this.calc(
+            58,
+            [
+              { label: 'パス精度', value: (e(A, 'pass', ca) - 60) * 0.6 },
+              { label: '相手DFの読み', value: -(e(Dp, 'judgment', cd) - 60) * 0.3 },
+              this.skillF(b),
+              this.defF(mod, 0.5),
+            ],
+            10,
+            92,
+          );
       const q2 = sit.gk1v1 ? 0.92 : Math.min(0.85, sit.quality + 0.22);
       opts.push(
         this.mkOpt(sit, depth, {
@@ -861,7 +932,7 @@ export class MatchEngine {
           name: sit.gk1v1 ? `横パス（→${this.nm(S)}）` : `ラストパス（→${this.nm(S)}）`,
           actorId: A.p.id,
           targetId: S.p.id,
-          rate: passRate,
+          ...pr,
           reward: '大',
           risk: '小',
           successText: `${this.nm(S)}へ！フリーだ！`,
@@ -878,13 +949,13 @@ export class MatchEngine {
       // ドリブル
       const db = commandBonus(A, 'dribble', ca);
       if (sit.gk1v1) {
-        const rate = Math.round(clamp(30 + (e(A, 'dribble', ca) - e(gk, 'gk', this.ctx(gk))) * 0.6 + db.value + mod * 0.5, 5, 85));
+        const r = this.calc(30, [{ label: 'ドリブル vs GK', value: (e(A, 'dribble', ca) - gkV) * 0.6 }, this.skillF(db), this.defF(mod, 0.5)], 5, 85);
         opts.push(
           this.mkOpt(sit, depth, {
             commandId: 'dribble',
             name: 'GKをかわす',
             actorId: A.p.id,
-            rate,
+            ...r,
             reward: '特大',
             risk: '小',
             successText: 'GKをかわして無人のゴールへ！',
@@ -895,13 +966,13 @@ export class MatchEngine {
           }),
         );
       } else {
-        const rate = this.duel(42, e(A, 'dribble', ca), e(Dp, 'defense', cd), db.value + mod);
+        const r = this.calc(42, [{ label: '能力差（ドリブル vs 守備）', value: (e(A, 'dribble', ca) - e(Dp, 'defense', cd)) * 0.48 }, this.skillF(db), this.defF(mod)]);
         opts.push(
           this.mkOpt(sit, depth, {
             commandId: 'dribble',
             name: 'DFをかわす',
             actorId: A.p.id,
-            rate,
+            ...r,
             reward: '中',
             risk: '小',
             successText: '切り返してDFを外した！',
@@ -926,7 +997,6 @@ export class MatchEngine {
     const ca = this.ctx(A);
     const cd = this.ctx(Dp);
     const e = (mp: MatchPlayer, k: StatKey, c: EffCtx) => this.eff(mp, k, c);
-    const D = other(u.atk);
     const opts: CommandOption[] = [];
     const isDribbleSit = u.type === 'wing' || u.type === 'counter' || (u.type === 'box' && !u.gk1v1);
     const counterOk = u.type !== 'box';
@@ -938,17 +1008,15 @@ export class MatchEngine {
     // プレス
     {
       const b = commandBonus(Dp, 'press', cd);
-      const rate = this.duel(
-        44,
-        e(Dp, 'speed', cd) * 0.4 + e(Dp, 'defense', cd) * 0.3 + Dp.stamina * 0.3,
-        e(A, 'dribble', ca) * 0.5 + e(A, 'pass', ca) * 0.5,
-        b.value,
-      );
+      const r = this.calc(44, [
+        { label: '能力差（寄せの速さ・スタミナ vs 相手の技術）', value: (e(Dp, 'speed', cd) * 0.4 + e(Dp, 'defense', cd) * 0.3 + Dp.stamina * 0.3 - e(A, 'dribble', ca) * 0.5 - e(A, 'pass', ca) * 0.5) * 0.48 },
+        this.skillF(b),
+      ]);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'press',
           actorId: Dp.p.id,
-          rate,
+          ...r,
           reward: '中',
           risk: '中',
           successText: '鋭い寄せでボールを奪った！',
@@ -962,12 +1030,12 @@ export class MatchEngine {
     // コースを限定
     {
       const b = commandBonus(Dp, 'limit', cd);
-      const rate = Math.round(clamp(72 + (e(Dp, 'judgment', cd) - e(A, 'judgment', ca)) * 0.5 + b.value, 30, 95));
+      const r = this.calc(72, [{ label: '判断力の差', value: (e(Dp, 'judgment', cd) - e(A, 'judgment', ca)) * 0.5 }, this.skillF(b)], 30, 95);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'limit',
           actorId: Dp.p.id,
-          rate,
+          ...r,
           reward: '小',
           risk: 'なし',
           successText: 'コースを切った！相手は苦しい体勢',
@@ -982,19 +1050,17 @@ export class MatchEngine {
     {
       const b = commandBonus(Dp, 'tackle', cd);
       const evo = hasSkill(Dp, 'defense_craftsman') && isDribbleSit ? 'iron_sliding' : undefined;
-      const bonus = evo ? EVOLUTION_MAP[evo].bonus : 0;
-      const rate = this.duel(
-        40,
-        e(Dp, 'defense', cd) * 0.6 + e(Dp, 'physical', cd) * 0.4,
-        e(A, 'dribble', ca) * 0.6 + e(A, 'physical', ca) * 0.4,
-        b.value + bonus,
-      );
+      const r = this.calc(40, [
+        { label: '能力差（守備・体の強さ vs ドリブル）', value: (e(Dp, 'defense', cd) * 0.6 + e(Dp, 'physical', cd) * 0.4 - e(A, 'dribble', ca) * 0.6 - e(A, 'physical', ca) * 0.4) * 0.48 },
+        this.skillF(b),
+        this.evoF(evo),
+      ]);
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'tackle',
           evolutionId: evo,
           actorId: Dp.p.id,
-          rate,
+          ...r,
           reward: '大',
           risk: evo ? '小' : '大',
           successText: evo ? '鉄壁のスライディング！完璧に刈り取った！' : 'タックル成功！カウンターだ！',
@@ -1008,18 +1074,20 @@ export class MatchEngine {
     // インターセプト
     {
       const b = commandBonus(Dp, 'intercept', cd);
-      const rate = this.duel(
-        34,
-        e(Dp, 'judgment', cd) * 0.6 + e(Dp, 'speed', cd) * 0.4,
-        e(A, 'pass', ca) * 0.6 + e(A, 'judgment', ca) * 0.4,
-        b.value + (u.type === 'center' || u.type === 'counter' ? 6 : 0),
-      );
-      const runnerSit: Situation = u.type === 'box' ? beaten(0.7) : this.makeBox(u.atk, u.supportId, 0.68, u.chain + 1, { gk1v1: true, desc: `読みが外れた！ ${this.nm(this.player(u.supportId))}がフリーで抜け出す`, defended: true });
+      const r = this.calc(34, [
+        { label: '能力差（読み・速さ vs パス・判断）', value: (e(Dp, 'judgment', cd) * 0.6 + e(Dp, 'speed', cd) * 0.4 - e(A, 'pass', ca) * 0.6 - e(A, 'judgment', ca) * 0.4) * 0.48 },
+        u.type === 'center' || u.type === 'counter' ? { label: 'パスを出す局面（読みやすい）', value: 6 } : null,
+        this.skillF(b),
+      ]);
+      const runnerSit: Situation =
+        u.type === 'box'
+          ? beaten(0.7)
+          : this.makeBox(u.atk, u.supportId, 0.68, u.chain + 1, { gk1v1: true, desc: `読みが外れた！ ${this.nm(this.player(u.supportId))}がフリーで抜け出す`, defended: true });
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'intercept',
           actorId: Dp.p.id,
-          rate,
+          ...r,
           reward: '特大',
           risk: '特大',
           successText: '読み切った！インターセプトから逆襲！',
@@ -1037,6 +1105,8 @@ export class MatchEngine {
           commandId: 'retreat',
           actorId: Dp.p.id,
           rate: 88,
+          base: 88,
+          factors: [],
           reward: '小',
           risk: 'なし',
           successText: '下がって守備ブロックを整えた',
@@ -1046,7 +1116,6 @@ export class MatchEngine {
         }),
       );
     }
-    void D;
     return opts;
   }
 
@@ -1138,41 +1207,63 @@ export class MatchEngine {
     const roll = this.rng.next() * 100;
     const success = roll < opt.rate;
     const outcome = success ? opt.onSuccess : opt.onFail;
+    const defFactor = opt.factors.find((f) => f.label === 'DFの守備対応');
+    const userDefended = team === 1 && sit.atk === 1 && !!defFactor;
 
     // コマンド実行の演出
     const kind: MatchEvent['kind'] =
       opt.commandId === 'shoot' ? 'shot' : opt.commandId === 'cross' ? 'cross' : opt.commandId === 'dribble' || opt.commandId === 'cutin' || opt.commandId === 'scissors' ? 'dribble' : 'command';
     if (opt.commandId !== 'shoot' && !(opt.commandId === 'dribble' && sit.gk1v1)) {
+      const defNote = userDefended ? `［あなたの守備対応 ${defFactor!.value > 0 ? '+' : ''}${defFactor!.value}%］` : '';
       this.emit({
         kind,
         team,
         rx: relX,
         ry,
         carrierId: sit.type === 'defend' ? sit.actorId : actor.p.id,
-        text: `${this.nm(actor)}：${opt.name}${byUser ? `（${opt.rate}%）` : ''} → ${success ? opt.successText : opt.failText}`,
+        text: `${this.nm(actor)}：${opt.name}（${opt.rate}%）${defNote} → ${success ? opt.successText : opt.failText}`,
         fx: success ? (sit.type === 'defend' && outcome.kind === 'steal' ? 'steal' : 'hit') : 'none',
         dur: 700,
       });
     }
+    const result: CommandResult = {
+      name: opt.name,
+      actorName: actor.p.name,
+      team,
+      rate: opt.rate,
+      roll: Math.floor(roll),
+      success,
+      base: opt.base,
+      factors: opt.factors,
+      resultText: success ? opt.successText : opt.failText,
+      nextText: this.outcomeText(outcome, sit),
+      evolved: !!opt.evolutionId,
+      byUser,
+      minute: Math.floor(s.minute),
+    };
     if (byUser) {
       const q = this.judge(options, opt);
-      s.stats.decisions.push({ minute: Math.floor(s.minute), team, commandName: opt.name, evolved: !!opt.evolutionId, success, quality: q, rate: opt.rate });
-      if (opt.evolutionId && success) s.stats.evolutionsSucceeded++;
       const qText = q === 'good' ? '好判断' : q === 'ok' ? '妥当な判断' : '疑問の残る判断';
       const rText = success ? (q === 'bad' ? '結果オーライ' : '成功') : q === 'good' ? '判断は正しかった、結果は不運' : '失敗';
+      result.quality = q;
+      result.qualityText = `${qText}／${rText}`;
+      s.stats.decisions.push({ minute: Math.floor(s.minute), team, commandName: opt.name, evolved: !!opt.evolutionId, success, quality: q, rate: opt.rate, result });
+      if (opt.evolutionId && success) s.stats.evolutionsSucceeded++;
+    } else if (opt.evolutionId && success && team === 0) {
+      s.stats.evolutionsSucceeded++;
+    }
+    if (byUser || userDefended) {
       this.emit({
         kind: 'judge',
         team,
         rx: relX,
         ry,
-        text: `${qText}／${rText}`,
-        fx: q === 'good' ? 'judgeGood' : 'none',
-        fxText: qText,
-        fxSub: rText,
-        dur: q === 'good' ? 700 : 350,
+        carrierId: sit.type === 'defend' ? sit.actorId : actor.p.id,
+        text: `${byUser ? '' : '相手の'}${opt.name} ${opt.rate}% → 出目${result.roll}で${success ? '成功' : '失敗'}。${result.nextText}`,
+        fx: 'result',
+        dur: byUser ? 2100 : 1700,
+        result,
       });
-    } else if (opt.evolutionId && success && team === 0) {
-      s.stats.evolutionsSucceeded++;
     }
     actor.score += success ? 1 : -0.3;
     this.applyOutcome(sit, outcome, opt);
@@ -1465,6 +1556,7 @@ export class MatchEngine {
     dur: number;
     playerId?: string;
     skillId?: string;
+    result?: CommandResult;
   }): void {
     const s = this.s;
     const ball = toAbs(e.team, e.rx, e.ry);
@@ -1484,7 +1576,46 @@ export class MatchEngine {
       dur: e.dur,
       playerId: e.playerId,
       skillId: e.skillId,
+      result: e.result,
     });
+  }
+
+  /** コマンドの結果、次に何が起きるかを言葉で説明する */
+  private outcomeText(o: Outcome, sit: Situation): string {
+    const boxRate = (n: Situation) => this.shotRate(n.actorId, n.quality, false, [this.defF(n.mod, 0.5)]).rate;
+    switch (o.kind) {
+      case 'goal':
+        return 'ゴール！';
+      case 'saved':
+        return 'シュートは決まらず、相手ボールに。';
+      case 'header':
+        return `${this.nm(this.player(o.shooterId))}のヘディングシュートへ（決定率${o.rate}%）。`;
+      case 'situation':
+        if (o.next.reroll) return '次の局面：サイドで1対1。';
+        return `次の局面：${this.sitTitle(o.next)}${o.next.type === 'box' ? `（${this.nm(this.player(o.next.actorId))}のシュート成功率 約${boxRate(o.next)}%）` : ''}。`;
+      case 'turnover':
+        return {
+          low: 'ボールロスト。相手は自陣深くからの攻撃になる（危険度：低）。',
+          mid: '中盤でボールロスト。相手の速攻に注意（危険度：中）。',
+          high: 'ボールを奪われ、カウンターを受ける（危険度：高）！',
+        }[o.danger];
+      case 'reset':
+        return 'ボールを保持したまま組み立て直し（約1分経過）。';
+      case 'steal':
+        return o.counter ? 'ボールを奪った！そのままカウンターへ。' : 'ボールを奪った。自分たちの攻撃へ。';
+      case 'atkMod': {
+        const u = sit.underlying!;
+        const t =
+          o.mod < 0
+            ? `${this.nm(this.player(u.actorId))}の次のプレーの成功率 ${o.mod}%。`
+            : o.mod > 0
+              ? `${this.nm(this.player(u.actorId))}の次のプレーの成功率 +${o.mod}%（相手が有利に）。`
+              : '相手の攻撃はそのまま続く。';
+        return o.timeBurn ? `${t}時計が${o.timeBurn}分進む。` : t;
+      }
+      case 'atkAdvantage':
+        return `突破された！相手の${this.sitTitle(o.next)}${o.next.type === 'box' ? `（シュート成功率 約${boxRate(o.next)}%）` : ''}。`;
+    }
   }
 }
 

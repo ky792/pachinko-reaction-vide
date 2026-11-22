@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { MatchEngine } from '../core/match/engine';
-import type { CommandOption, MatchConfig, MatchEvent, RiskLevel } from '../core/match/types';
+import type { CommandOption, CommandResult, Factor, MatchConfig, MatchEvent, RiskLevel } from '../core/match/types';
 import type { Tactics } from '../core/types';
 import { COMMANDS, EVOLUTION_MAP } from '../core/data/commands';
 import { sfx } from '../audio/sfx';
@@ -49,6 +49,8 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const [hitstop, setHitstop] = useState(false);
   const [busy, setBusy] = useState(false);
   const [armQuit, setArmQuit] = useState(false);
+  const [lastResult, setLastResult] = useState<{ r: CommandResult; key: number } | null>(null);
+  const [logOpen, setLogOpen] = useState(false);
   const [, force] = useState(0);
   const evRef = useRef({ ev: engine.s.events[0], prev: null as MatchEvent | null, start: performance.now(), dur: 600 });
   const timer = useRef<number | null>(null);
@@ -100,7 +102,13 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
           sfx.play('evolve');
           break;
         case 'judge':
-          if (e.fx === 'judgeGood') sfx.play('judge');
+          if (e.result) {
+            const r = e.result;
+            setLastResult({ r, key: e.idx });
+            const good = r.team === 0 ? r.success : !r.success;
+            window.setTimeout(() => sfx.play(good ? 'steal' : 'fail'), fast ? 0 : 450);
+            if (r.quality === 'good') window.setTimeout(() => sfx.play('judge'), fast ? 0 : 750);
+          }
           break;
         default:
           break;
@@ -249,6 +257,9 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
         <button className="btn small" onClick={() => setTacticsOpen(true)}>
           📋 作戦
         </button>
+        <button className="btn small" onClick={() => setLogOpen(true)}>
+          📝 采配ログ
+        </button>
         <button className="btn small" onClick={() => onMute(!muted)}>
           {muted ? '🔇' : '🔊'}
         </button>
@@ -269,6 +280,8 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
           </button>
         )}
       </div>
+
+      {lastResult && <ResultPanel r={lastResult.r} k={lastResult.key} />}
 
       <div className="commentary">
         {recent.map((e, i) => (
@@ -328,6 +341,22 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
             }}
           >
             後半キックオフ
+          </button>
+        </Modal>
+      )}
+
+      {logOpen && (
+        <Modal onClose={() => setLogOpen(false)}>
+          <h3 style={{ marginBottom: 8 }}>采配ログ</h3>
+          {s.stats.decisions.filter((d) => d.result).length === 0 && <div className="small muted">まだ指示していません。</div>}
+          {[...s.stats.decisions]
+            .filter((d) => d.result)
+            .reverse()
+            .map((d, i) => (
+              <ResultPanel key={i} r={d.result!} k={-1} still />
+            ))}
+          <button className="btn block" onClick={() => setLogOpen(false)}>
+            閉じる
           </button>
         </Modal>
       )}
@@ -401,6 +430,9 @@ function FxView({ fx, engine }: { fx: Fx; engine: MatchEngine }) {
           </div>
         </div>
       );
+    case 'result': {
+      return null;
+    }
     case 'judgeGood':
       return (
         <div className="judge-badge" key={fx.key}>
@@ -453,12 +485,62 @@ function DecisionPanel({ engine, onChoose }: { engine: MatchEngine; onChoose: (o
                     リスク <b style={{ color: RISK_COLOR[o.risk] }}>{o.risk}</b>
                   </span>
                 </div>
+                <FactorChips base={o.base} factors={o.factors} />
                 <div className="hint">成功→{o.successText}</div>
               </button>
             );
           })}
         </div>
       </div>
+    </div>
+  );
+}
+
+function FactorChips({ base, factors, all }: { base: number; factors: Factor[]; all?: boolean }) {
+  const sorted = [...factors].sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
+  return (
+    <div className={`factors ${all ? 'all' : ''}`}>
+      <span className="fc base">基本{base}</span>
+      {sorted.map((f, i) => (
+        <span key={i} className={`fc ${f.value > 0 ? 'plus' : 'minus'} ${i >= 2 ? 'extra' : ''}`}>
+          {f.label} {f.value > 0 ? '+' : '−'}
+          {Math.abs(f.value)}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/** 直前のプレー：成功率の内訳 → 判定（出目） → 何が起きたか → 次にどうなるか */
+function ResultPanel({ r, k, still }: { r: CommandResult; k: number; still?: boolean }) {
+  const mine = r.team === 0;
+  const good = mine ? r.success : !r.success;
+  return (
+    <div className={`result-panel ${good ? 'good' : 'bad'} ${still ? 'still' : ''}`} key={k}>
+      <div className="rp-head">
+        <span className="small muted">
+          {r.minute}' {mine ? (r.byUser ? 'あなたの指示' : '味方') : '相手の攻撃（あなたの守備対応が影響）'}
+        </span>
+        <b>
+          {r.actorName.split(/[ ・]/)[0]}：{r.name}
+          {r.evolved && <span className="evo-badge">進化</span>}
+        </b>
+      </div>
+      <div className="rollbar" aria-label={`成功率${r.rate}%、出目${r.roll}`}>
+        <div className="zone" style={{ width: `${r.rate}%` }}>
+          <span>成功 0〜{r.rate - 1}</span>
+        </div>
+        <div className="marker" style={{ left: `${Math.min(99, r.roll)}%` }}>
+          <span>{r.roll}</span>
+        </div>
+      </div>
+      <div className="rp-verdict">
+        <span className={`stamp ${r.success ? 'ok' : 'ng'}`}>{r.success ? '成功' : '失敗'}</span>
+        <span>{r.resultText}</span>
+      </div>
+      <div className="rp-next">→ {r.nextText}</div>
+      <FactorChips base={r.base} factors={r.factors} all />
+      {r.qualityText && <div className={`rp-quality q-${r.quality}`}>采配評価：{r.qualityText}</div>}
     </div>
   );
 }
