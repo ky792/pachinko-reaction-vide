@@ -22,7 +22,7 @@ for i, ln in enumerate(lines, 1):
     ln['text'] = _rj[str(i)]
 
 # 表情（素材名）
-FACE = """1 happy;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;
+FACE = """1 sweat;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;
 19 happy;20 happy;21 happy;22 happy;23 smug;24 smug;25 surprised;26 confused;27 excited;28 excited;29 confused;30 smug;31 normal;32 angry;33 sweat;34 confused;35 surprised;36 confused;37 sweat;38 normal;39 smug;40 smug;
 41 confused;42 smug;43 happy;44 happy;45 confused;46 excited;47 excited;48 confused;49 angry;50 smug;51 confused;52 happy;53 excited;54 happy;55 normal;56 smug;
 57 happy;58 excited;59 happy;60 excited;61 excited;62 normal;63 normal;64 excited;65 smug;66 normal;67 happy;
@@ -42,7 +42,7 @@ FX = {7: 'lines', 8: 'lines', 10: 'lines', 27: 'lines', 46: 'lines', 47: 'lines'
       106: 'gloom', 81: 'dark', 82: 'dark'}
 # 色付きのキーワード（字幕の中で強調）
 KEY = {14: ['お金を入れ続ける'], 24: ['探偵'], 27: ['就活'], 32: ['圧迫面接'], 35: ['参加賞'], 46: ['試用期間'], 47: ['正社員'], 49: ['即クビ'],
-       50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 99: ['朝からずっと'], 103: ['休憩室'], 104: ['立派な研究'], 105: ['所長']}
+       50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 1: ['機械の修理'], 99: ['朝イチから'], 101: ['機械の修理'], 103: ['そんな日はない'], 104: ['立派な研究'], 105: ['所長']}
 # 資料パネル：key → (最初の行, 最後の行)
 PANELS = [('terms1', 7, 9), ('terms2', 10, 11), ('flow_intro', 19, 26), ('pixel_job', 27, 35), ('flow_at', 41, 44), ('pixel_job2', 45, 50),
           ('yuuri', 51, 54), ('flow_moments', 70, 72), ('flow_gyakuten', 73, 76), ('neq', 82, 83), ('peka', 84, 85)]

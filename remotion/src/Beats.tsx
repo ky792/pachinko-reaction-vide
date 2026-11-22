@@ -164,6 +164,13 @@ const Big: React.FC<{at: number; text: string; color?: string; size?: number; su
 };
 
 // ───────── 各場面
+// 1：冒頭のフリ（朝から機械の修理……のはず）
+const Plan: React.FC = () => (
+  <Card from={S(1) - 2} to={E(1) + 8} look="sticky" title="バクの今日の予定" width={760} tilt={2}>
+    <div style={{fontSize: 64, textAlign: 'center', color: BLUE_DEEP}}>機械の修理（朝から）</div>
+  </Card>
+);
+
 // 4〜6：バクは毎日打っている
 const Calendar: React.FC = () => {
   const f = useCurrentFrame();
@@ -548,7 +555,7 @@ const Joy: React.FC = () => {
           {'★★★★★'.slice(0, stars)}
           <span style={{color: '#e0d38a'}}>{'★★★★★'.slice(stars)}</span>
         </div>
-        {f >= M(99, 0.55) ? <Pop at={M(99, 0.55)} style={{fontSize: 56, color: RED}}>最高（朝からずっと）</Pop> : null}
+        {f >= M(99, 0.55) ? <Pop at={M(99, 0.55)} style={{fontSize: 56, color: RED}}>最高（朝イチからずっと）</Pop> : null}
       </div>
     </Card>
   );
@@ -570,13 +577,14 @@ const Report: React.FC = () => {
   );
   const shake = f >= S(106) && f < S(106) + 16 ? Math.sin(f * 2.4) * 8 : 0;
   return (
-    <Card from={S(101) - 4} to={E(106) + 6} look="paper" title="本日の研究報告書　担当：バク" width={980}>
+    <Card from={S(101) - 4} to={E(106) + 6} look="paper" title="本日の作業報告書　担当：バク" width={980}>
       <div style={{position: 'relative', translate: `${shake}px 0`}}>
-        {row('研究テーマ', 'スロットの複雑さ', S(102) + 8)}
-        {row('研究場所', '休憩室', S(103) + 10, RED, true)}
-        {row('研究時間', '朝から ずっと', S(101) + 10, RED)}
-        {row('成果', '雑談', M(104, 0.7), '#7a86a8')}
-        <Stamp at={S(105) + 6} text="所長に報告" x={560} y={250} size={70} rot={-10} />
+        {row('本日の作業', '機械の修理', S(101) + 10)}
+        {row('居場所', '朝イチから 休憩室', M(101, 0.6), RED, true)}
+        {row('言い分', 'スロットの研究日', S(102) + 8, '#7a86a8')}
+        {row('そんな日', 'ない', S(103) + 12, RED)}
+        {row('進み具合', '0%', M(104, 0.7), '#7a86a8')}
+        <Stamp at={S(105) + 6} text="所長に報告" x={560} y={330} size={70} rot={-10} />
       </div>
     </Card>
   );
@@ -717,6 +725,7 @@ const PachiBoard: React.FC = () => {
 
 // ───────── どの区間で何を出すか
 export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
+  {from: S(1) - 2, to: E(1) + 8, el: <Plan />},
   {from: S(4) - 4, to: E(6) + 6, el: <Calendar />},
   {from: S(12) - 4, to: E(13) + 6, el: <Thermo />},
   {from: S(14) - 4, to: E(15) + 6, el: <Coins />},
