@@ -676,55 +676,50 @@ const PachiBoard: React.FC = () => {
   const ready = boot + 34;
   const powered = f >= boot;
   const on = f >= ready;
-  // 出来事のタイミング（セリフに合わせる）
-  const ball58 = M(58, 0.05),
-    reel58 = M(58, 0.3),
-    rush58 = M(58, 0.55),
-    ijo58 = M(58, 0.85);
-  const yaku59 = M(59, 0.55);
-  const sakibare = M(61, 0.04),
-    hoChange = M(61, 0.25),
-    reach = M(61, 0.45),
-    crash = M(61, 0.82);
-  const migi = S(64),
-    hoNone = S(65),
-    puff = M(65, 0.55);
+  // デモ運転：セリフには合わせず、マシンが自分のペースで演出を繰り返す（2026-11-23 ユーザー指摘）
+  const P = 210;
+  const puff = to - 56;
+  const running = on && f < puff;
+  const k = Math.max(0, f - ready);
+  const cyc = Math.floor(k / P),
+    c = k % P,
+    c0 = f - c; // このサイクルの頭
+  const sakibare = c0 + 70,
+    crash = c0 + 150;
+  const inReach = running && c >= 96 && c < 150;
+  const win = running && c >= 150;
+  const rush = win;
   const landShake = f >= land && f < land + 10 ? Math.sin((f - land) * 3) * (10 - (f - land)) * 1.6 : 0;
-  const shake = landShake + ((f >= S(60) && f < S(60) + 14) || (f >= crash && f < crash + 16) ? Math.sin(f * 2.6) * 10 : 0) + (f >= puff && f < puff + 12 ? Math.sin(f * 4) * 5 : 0);
-  // ドキドキ度（0〜1）：メーターの針
-  const spike = (at: number, v: number, len = 40) => (f >= at ? v * Math.max(0, 1 - (f - at) / len) : 0);
+  const shake = landShake + (running && c >= 150 && c < 166 ? Math.sin(f * 2.6) * 9 : 0) + (f >= puff && f < puff + 12 ? Math.sin(f * 4) * 5 : 0);
+  const rensa = !on ? 0 : Math.min(99, cyc * 4 + (c >= 150 ? Math.min(4, Math.floor((c - 150) / 14) + 1) : 0));
   let doki = on ? 0.18 + 0.03 * Math.sin(f / 7) : 0;
-  doki = Math.max(doki, spike(reel58, 0.55), spike(rush58, 0.7, 60), spike(yaku59, 0.8), spike(sakibare, 0.62, 30));
-  if (f >= hoChange && f < crash) doki = Math.max(doki, interpolate(f, [hoChange, crash], [0.68, 0.95], clamp) + 0.03 * Math.sin(f * 1.7));
-  doki = Math.max(doki, spike(crash, 1.04, 70));
-  if (f >= migi && f < hoNone) doki = 0.86 + 0.08 * Math.sin(f / 3);
-  if (f >= hoNone) doki = interpolate(f, [hoNone, hoNone + 30], [0.5, 0.06], clamp);
+  if (running) {
+    if (c >= 70 && c < 96) doki = Math.max(doki, 0.6 - (c - 70) * 0.004);
+    if (inReach) doki = interpolate(c, [96, 150], [0.68, 0.95]) + 0.03 * Math.sin(f * 1.7);
+    if (win) doki = c < 170 ? 1.04 : 0.86 + 0.08 * Math.sin(f / 3);
+  }
+  if (f >= puff) doki = interpolate(f, [puff, puff + 30], [0.5, 0.06], clamp);
   doki = Math.min(1.05, doki);
-  // 液晶のリール（縦に回る）
   type R = {sym: string; spin: boolean};
   let reels: R[] = ['7', '3', '5'].map((sym) => ({sym, spin: false}));
-  if (f >= ball58 + 10 && f < reel58) reels = reels.map((r) => ({...r, spin: true}));
-  if (f >= reel58) reels = ['7', '7', '7'].map((sym) => ({sym, spin: false}));
-  if (f >= S(61)) reels = ['7', '1', '7'].map((sym) => ({sym, spin: false}));
-  if (f >= reach && f < crash) reels = [{sym: '7', spin: false}, {sym: '7', spin: true}, {sym: '7', spin: false}];
-  if (f >= crash) reels = ['7', '7', '7'].map((sym) => ({sym, spin: false}));
-  if (f >= hoNone) reels = ['3', '8', '1'].map((sym) => ({sym, spin: false}));
-  const win = f >= crash && f < hoNone;
-  // 保留
-  let hold = f >= ball58 + 10 ? 4 : 2;
-  if (f >= hoNone) hold = f >= M(65, 0.85) ? 1 : 0;
+  if (running) {
+    if (c >= 8 && c < 64) reels = reels.map((r) => ({...r, spin: true}));
+    else if (c >= 64 && c < 96) reels = ['7', '1', '7'].map((sym) => ({sym, spin: false}));
+    else if (inReach) reels = [{sym: '7', spin: false}, {sym: '7', spin: true}, {sym: '7', spin: false}];
+    else if (win) reels = ['7', '7', '7'].map((sym) => ({sym, spin: false}));
+  }
+  if (f >= puff) reels = ['3', '8', '1'].map((sym) => ({sym, spin: false}));
+  let hold = running ? (c < 150 ? 4 : 3) : 2;
+  if (f >= puff) hold = 0;
   const hc = (i: number) => {
-    if (!(f >= hoChange && f < crash && i === 0)) return '#4fc3ff';
-    const k = f - hoChange;
-    return k < 6 ? '#4fc3ff' : k < 12 ? '#3fe08a' : RED;
+    if (!(running && c >= 76 && c < 150 && i === 0)) return '#4fc3ff';
+    const q = c - 76;
+    return q < 6 ? '#4fc3ff' : q < 12 ? '#3fe08a' : RED;
   };
-  // 連チャン
-  const rensa = f >= migi ? Math.min(12, Math.floor((f - migi) / 10) + 1) : f >= rush58 ? Math.min(3, Math.floor((f - rush58) / 8) + 1) : 0;
   const flash = (at: number, len = 10) => (f >= at && f < at + len ? 1 - (f - at) / len : 0);
-  const fl = Math.max(flash(sakibare, 12), flash(crash, 14), flash(yaku59, 12), flash(reel58, 8), flash(ready, 10));
-  const yakuAt = f >= crash ? crash : yaku59;
-  const yakuDrop = spring({frame: f - yakuAt, fps, config: {damping: 6, stiffness: 180}});
-  const yakuShown = (f >= yaku59 && f < S(60) + 20) || (f >= crash && f < S(63));
+  const fl = running ? Math.max(flash(sakibare, 12), flash(crash, 14)) : flash(ready, 10);
+  const yakuDrop = spring({frame: f - crash, fps, config: {damping: 6, stiffness: 180}});
+  const yakuShown = running && c >= 150 && c < 186;
   const dim = !powered ? 0.25 : !on ? interpolate(f, [boot, ready], [0.25, 1], clamp) : f >= puff ? 0.55 : 1;
   // 釘（盤面の下半分に格子）
   const pins: [number, number][] = [];
@@ -733,12 +728,12 @@ const PachiBoard: React.FC = () => {
   const lamps = 22;
   const lampOn = (i: number) => {
     if (!on || f >= puff) return 0.15;
-    if (fl > 0 || win || (f >= migi && f < hoNone)) return (Math.floor(f / 3) + i) % 2 ? 1 : 0.35;
+    if (fl > 0 || win) return (Math.floor(f / 3) + i) % 2 ? 1 : 0.35;
     return (Math.floor(f / 4) % lamps === i || (Math.floor(f / 4) + 11) % lamps === i) ? 1 : 0.3;
   };
-  const rainbow = (i: number) => (win || (f >= migi && f < hoNone) ? `hsl(${(i * 30 + f * 12) % 360} 95% 60%)` : '#ffd23f');
+  const rainbow = (i: number) => (win ? `hsl(${(i * 30 + f * 12) % 360} 95% 60%)` : '#ffd23f');
   // 打ち出しの玉：左のレールを回って落ちる
-  const flying = on && f < hoNone ? [0, 1, 2] : [];
+  const flying = running && !rush ? [0, 1, 2] : [];
   const railBall = (k: number) => {
     const t = ((f - ready + k * 13) % 40) / 40; // 0〜1
     if (t < 0.45) {
@@ -834,40 +829,38 @@ const PachiBoard: React.FC = () => {
           {/* 走査線 */}
           {powered ? <div style={{position: 'absolute', inset: 0, background: 'repeating-linear-gradient(transparent 0 3px, rgba(255,255,255,0.05) 3px 4px)'}} /> : null}
         </div>
-        {f >= reach && f < crash ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: 'white', background: RED, borderRadius: 10, scale: `${1 + 0.08 * Math.sin(f / 1.5)}`}}>激アツ</div> : null}
-        {f >= rush58 && f < S(59) ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: BLUE_DEEP, background: YELLOW, borderRadius: 10, scale: `${pop(f, rush58, fps)}`}}>RUSH突入！</div> : null}
+        {inReach ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: 'white', background: RED, borderRadius: 10, scale: `${1 + 0.08 * Math.sin(f / 1.5)}`}}>激アツ</div> : null}
+        {running && c >= 166 ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: BLUE_DEEP, background: YELLOW, borderRadius: 10, scale: `${pop(f, c0 + 166, fps)}`}}>RUSH中！</div> : null}
         {/* 保留 */}
-        <div style={{position: 'absolute', left: 230, top: 330, display: 'flex', gap: 18, opacity: f >= reach && f < crash ? 0 : 1}}>
+        <div style={{position: 'absolute', left: 230, top: 330, display: 'flex', gap: 18, opacity: inReach ? 0 : 1}}>
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} style={{width: 34, height: 34, borderRadius: '50%', background: i < hold ? hc(i) : '#2a3058', boxShadow: i < hold ? `0 0 14px ${hc(i)}` : 'none', scale: `${f >= hoChange && f < crash && i === 0 ? 1.3 + 0.15 * Math.sin(f) : i < hold && f >= ball58 + 10 + i * 3 && f < ball58 + 16 + i * 3 ? 1.3 : 1}`}} />
+            <div key={i} style={{width: 34, height: 34, borderRadius: '50%', background: i < hold ? hc(i) : '#2a3058', boxShadow: i < hold ? `0 0 14px ${hc(i)}` : 'none', scale: `${running && c >= 76 && c < 150 && i === 0 ? 1.3 + 0.15 * Math.sin(f) : 1}`}} />
           ))}
         </div>
         {/* ヘソ */}
-        <div style={{position: 'absolute', left: 300, top: 470, width: 60, height: 30, borderRadius: '0 0 30px 30px', background: '#c8a24a', boxShadow: f >= ball58 + 12 && f < ball58 + 20 ? '0 0 24px #ffd23f' : 'none'}} />
+        <div style={{position: 'absolute', left: 300, top: 470, width: 60, height: 30, borderRadius: '0 0 30px 30px', background: '#c8a24a', boxShadow: running && !rush && c % 40 < 6 ? '0 0 24px #ffd23f' : 'none'}} />
         {/* アタッカー（右下） */}
         <div style={{position: 'absolute', left: 470, top: 520, width: 120, height: 28, borderRadius: 6, background: '#c8a24a', overflow: 'hidden'}}>
-          <div style={{position: 'absolute', left: 10, right: 10, top: 6, height: 16, background: '#05081c', scale: `${f >= migi && f < hoNone ? 1 : 0} 1`}} />
+          <div style={{position: 'absolute', left: 10, right: 10, top: 6, height: 16, background: '#05081c', scale: `${rush ? 1 : 0} 1`}} />
         </div>
         {/* 打ち出しの玉 */}
         {flying.map((k) => {
           const p = railBall(k);
           return <div key={k} style={{position: 'absolute', left: p.x - 11, top: p.y - 11, width: 22, height: 22, borderRadius: '50%', background: BALL}} />;
         })}
-        {/* 最初の1玉：ヘソに入る */}
-        {f >= ball58 && f < ball58 + 14 ? <div style={{position: 'absolute', left: 318 + Math.sin((f - ball58) * 1.4) * 20, top: interpolate(f, [ball58, ball58 + 14], [0, 470]), width: 24, height: 24, borderRadius: '50%', background: BALL}} /> : null}
         {/* 右打ち：右ルートを流れてアタッカーへ */}
-        {f >= migi && f < hoNone
+        {rush
           ? Array.from({length: 12}).map((_, i) => {
-              const t = ((f - migi + i * 4) % 36) / 36;
+              const t = ((f - crash + i * 4) % 36) / 36;
               const y = 40 + t * 490;
               const x = 610 - (t > 0.8 ? (t - 0.8) * 5 * 80 : 0);
               return <div key={i} style={{position: 'absolute', left: x, top: y, width: 22, height: 22, borderRadius: '50%', background: BALL}} />;
             })
           : null}
         {/* 回らない：釘ではじかれる玉 */}
-        {f >= hoNone
+        {f >= puff
           ? Array.from({length: 6}).map((_, i) => {
-              const t = ((f - hoNone + i * 9) % 54) / 54;
+              const t = ((f - puff + i * 9) % 54) / 54;
               return <div key={i} style={{position: 'absolute', left: 300 + Math.sin(t * 9 + i) * 140 * t, top: 380 + t * 220, width: 20, height: 20, borderRadius: '50%', background: BALL}} />;
             })
           : null}
@@ -922,22 +915,9 @@ const PachiBoard: React.FC = () => {
       {f >= puff && f < puff + 40 ? <div style={{position: 'absolute', left: 250, top: -40, fontFamily: JP, fontWeight: 900, fontSize: 70, color: '#c9cfe0', WebkitTextStroke: '8px #0b1f4d', paintOrder: 'stroke fill', rotate: '-6deg'}}>プスン……</div> : null}
       {/* 吹き出し文字 */}
       {f >= ready - 4 && f < ready + 22 ? <div style={{position: 'absolute', left: 230, top: 280, fontFamily: JP, fontWeight: 900, fontSize: 90, color: '#7fffb0', WebkitTextStroke: '9px #0b1f4d', paintOrder: 'stroke fill', scale: `${pop(f, ready - 4, fps)}`}}>起動！</div> : null}
-      {f >= sakibare && f < sakibare + 26 ? <div style={{position: 'absolute', left: -170, top: 300, fontFamily: JP, fontWeight: 900, fontSize: 80, color: '#7fd3ff', WebkitTextStroke: '8px #0b1f4d', paintOrder: 'stroke fill', rotate: '-10deg'}}>キュイン！</div> : null}
-      {(f >= crash && f < crash + 30) || (f >= yaku59 && f < yaku59 + 26) ? <div style={{position: 'absolute', right: -160, top: 80, fontFamily: JP, fontWeight: 900, fontSize: 84, color: YELLOW, WebkitTextStroke: '9px #0b1f4d', paintOrder: 'stroke fill', rotate: '8deg'}}>ガシャーン！</div> : null}
-      {f >= ijo58 && f < S(59) ? <div style={{position: 'absolute', right: -140, top: 260, border: `9px solid ${RED}`, color: RED, background: 'rgba(255,255,255,0.9)', borderRadius: 16, fontFamily: JP, fontWeight: 900, fontSize: 80, padding: '0 20px', rotate: '10deg', scale: `${interpolate(pop(f, ijo58, fps), [0, 1], [2.4, 1])}`}}>以上！</div> : null}
-      {f >= S(62) && f < E(62) ? <div style={{position: 'absolute', left: -150, top: 300, fontFamily: JP, fontWeight: 900, fontSize: 96, color: '#ff5a8a', WebkitTextStroke: '9px white', paintOrder: 'stroke fill', scale: `${pop(f, S(62), fps)}`}}>本能！</div> : null}
-      {f >= migi && f < hoNone ? <div style={{position: 'absolute', left: 780, top: 400, fontFamily: JP, fontWeight: 900, fontSize: 46, whiteSpace: 'nowrap', color: '#ff5a8a', WebkitTextStroke: '7px white', paintOrder: 'stroke fill', rotate: '6deg'}}>脳汁ドバー</div> : null}
-      {f >= hoNone ? <div style={{position: 'absolute', left: -170, top: 430, fontFamily: JP, fontWeight: 900, fontSize: 52, color: '#9fb4ff', WebkitTextStroke: '7px #0b1f4d', paintOrder: 'stroke fill', rotate: '-6deg'}}>保留4個が<br />遠い……</div> : null}
+      {running && f >= sakibare && f < sakibare + 24 ? <div style={{position: 'absolute', left: -170, top: 300, fontFamily: JP, fontWeight: 900, fontSize: 80, color: '#7fd3ff', WebkitTextStroke: '8px #0b1f4d', paintOrder: 'stroke fill', rotate: '-10deg'}}>キュイン！</div> : null}
+      {running && f >= crash && f < crash + 28 ? <div style={{position: 'absolute', right: -160, top: 80, fontFamily: JP, fontWeight: 900, fontSize: 84, color: YELLOW, WebkitTextStroke: '9px #0b1f4d', paintOrder: 'stroke fill', rotate: '8deg'}}>ガシャーン！</div> : null}
       <div style={{position: 'absolute', left: 30, top: 716, fontFamily: JP, fontWeight: 700, fontSize: 22, color: '#2a3058'}}>※イメージです。実在の機種ではありません</div>
-      {f >= S(67) ? (
-        <div style={{position: 'absolute', left: -60, right: -60, bottom: -40, display: 'flex', justifyContent: 'space-around'}}>
-          {['キュイン派', 'ガキン派', 'ピキーン派'].map((t, i) => (
-            <div key={t} style={{fontFamily: JP, fontWeight: 900, fontSize: 38, color: 'white', background: [BLUE, ORANGE, '#c03aff'][i], padding: '8px 22px', borderRadius: 30, scale: `${pop(f, S(67) + 6 + i * 8, fps)}`}}>
-              {t}
-            </div>
-          ))}
-        </div>
-      ) : null}
     </div>
   );
 };
@@ -989,11 +969,12 @@ export const beatSounds = (): {at: number; src: string; vol: number}[] => {
   out.push({at: S(57.01) + 12, src: 'se_res', vol: 0.4});
   out.push({at: Math.round(M(57.01, 0.82)), src: 'px_start', vol: 0.4});
   out.push({at: Math.round(M(57.01, 0.82)) + 30, src: 'px_pass', vol: 0.35});
-  out.push({at: Math.round(M(65, 0.55)), src: 'px_fail', vol: 0.35});
-  out.push({at: Math.round(M(58, 0.3)), src: 'px_coin', vol: 0.3});
-  out.push({at: Math.round(M(61, 0.04)), src: 'px_start', vol: 0.35});
-  out.push({at: Math.round(M(61, 0.82)), src: 'se_emphasis', vol: 0.5});
-  out.push({at: Math.round(M(59, 0.55)), src: 'se_emphasis', vol: 0.4});
+  {
+    const ready = Math.round(M(57.01, 0.82)) + 34,
+      puff = E(67) + 6 - 56;
+    for (let c0 = ready; c0 + 150 < puff; c0 += 210) out.push({at: c0 + 150, src: 'se_emphasis', vol: 0.28});
+    out.push({at: puff, src: 'px_fail', vol: 0.35});
+  }
   out.push({at: S(105) + 6, src: 'se_emphasis', vol: 0.45});
   return out.map((o) => ({...o, at: Math.round(o.at)}));
 };
