@@ -166,7 +166,7 @@ const Big: React.FC<{at: number; text: string; color?: string; size?: number; su
 // ───────── 各場面
 // 1：冒頭のフリ（朝から機械の修理……のはず）
 const Plan: React.FC = () => (
-  <Card from={S(1) - 2} to={E(1) + 8} look="sticky" title="バクの今日の予定" width={760} tilt={2}>
+  <Card from={S(1) - 2} to={E(1.1) + 8} look="sticky" title="バクの今日の予定" width={760} tilt={2}>
     <div style={{fontSize: 64, textAlign: 'center', color: BLUE_DEEP}}>機械の修理（朝から）</div>
   </Card>
 );
@@ -543,25 +543,7 @@ const Balance2: React.FC = () => {
   );
 };
 
-// 98〜99：今日は楽しめた？→最高やった（口すべりの前ふり）
-const Joy: React.FC = () => {
-  const f = useCurrentFrame();
-  const {fps} = useVideoConfig();
-  const stars = f < S(99) ? 0 : Math.min(5, Math.floor((f - S(99)) / 8) + 1);
-  return (
-    <Card from={S(98) - 4} to={E(99) + 4} look="sticky" title="今日の満足度" width={820} tilt={-2}>
-      <div style={{textAlign: 'center'}}>
-        <div style={{fontSize: 110, letterSpacing: 10, color: ORANGE}}>
-          {'★★★★★'.slice(0, stars)}
-          <span style={{color: '#e0d38a'}}>{'★★★★★'.slice(stars)}</span>
-        </div>
-        {f >= M(99, 0.55) ? <Pop at={M(99, 0.55)} style={{fontSize: 56, color: RED}}>最高（朝イチからずっと）</Pop> : null}
-      </div>
-    </Card>
-  );
-};
-
-// 100〜106：本日の研究報告書（口すべりからサボりがばれる）
+// 102〜106：本日の作業報告書（口すべりからサボりがばれる）
 const Report: React.FC = () => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -577,11 +559,11 @@ const Report: React.FC = () => {
   );
   const shake = f >= S(106) && f < S(106) + 16 ? Math.sin(f * 2.4) * 8 : 0;
   return (
-    <Card from={S(101) - 4} to={E(106) + 6} look="paper" title="本日の作業報告書　担当：バク" width={980}>
+    <Card from={S(102) - 6} to={E(106) + 6} look="paper" title="本日の作業報告書　担当：バク" width={980}>
       <div style={{position: 'relative', translate: `${shake}px 0`}}>
-        {row('本日の作業', '機械の修理', S(101) + 10)}
-        {row('居場所', '朝イチから 休憩室', M(101, 0.6), RED, true)}
-        {row('言い分', 'スロットの研究日', S(102) + 8, '#7a86a8')}
+        {row('本日の作業', '機械の修理', S(102) - 2)}
+        {row('実際は', 'スマスロ', S(102) + 12, RED, true)}
+        {row('言い分', 'スロットの研究日', M(102, 0.6), '#7a86a8')}
         {row('そんな日', 'ない', S(103) + 12, RED)}
         {row('進み具合', '0%', M(104, 0.7), '#7a86a8')}
         <Stamp at={S(105) + 6} text="所長に報告" x={560} y={330} size={70} rot={-10} />
@@ -725,7 +707,7 @@ const PachiBoard: React.FC = () => {
 
 // ───────── どの区間で何を出すか
 export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
-  {from: S(1) - 2, to: E(1) + 8, el: <Plan />},
+  {from: S(1) - 2, to: E(1.1) + 8, el: <Plan />},
   {from: S(4) - 4, to: E(6) + 6, el: <Calendar />},
   {from: S(12) - 4, to: E(13) + 6, el: <Thermo />},
   {from: S(14) - 4, to: E(15) + 6, el: <Coins />},
@@ -746,8 +728,7 @@ export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
   {from: S(86) - 4, to: E(91) + 6, el: <Phone />},
   {from: S(92) - 4, to: E(93) + 6, el: <More />},
   {from: S(94) - 4, to: E(97) + 6, el: <Balance2 />},
-  {from: S(98) - 4, to: E(99) + 4, el: <Joy />},
-  {from: S(101) - 4, to: E(106) + 6, el: <Report />},
+  {from: S(102) - 6, to: E(106) + 6, el: <Report />},
   {from: S(107) - 4, to: E(108) + 6, el: <Comments />},
 ];
 

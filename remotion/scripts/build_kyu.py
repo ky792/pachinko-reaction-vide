@@ -15,11 +15,13 @@ for raw in (EP / 'k01.txt').read_text(encoding='utf-8').splitlines():
     m = re.match(r'^(ナギ|バク)[:：]\s*(.+)$', raw.strip())
     if m:
         lines.append({'who': 'nagi' if m.group(1) == 'ナギ' else 'baku', 'text': re.sub(r'《([^|》]+)\|[^》]+》', r'\1', m.group(2))})
-assert len(lines) == 109
+# 行の呼び名（演出表・字幕・Beats の S(n) はこの番号で書く。声のファイルは k01-<実際の行順>）
+LABELS = [1, 1.1, 1.2, 1.3, 1.4, 1.5] + list(range(2, 101)) + list(range(102, 110))
+assert len(lines) == len(LABELS) == 113
 # 字幕の改行は手で整えた版（reaction 版 episodes/kyu001v2）を使う
 _rj = json.loads((ROOT / 'episodes/kyu001/telop.json').read_text(encoding='utf-8'))
-for i, ln in enumerate(lines, 1):
-    ln['text'] = _rj[str(i)]
+for L, ln in zip(LABELS, lines):
+    ln['text'] = _rj[str(L)]
 
 # 表情（素材名）
 FACE = """1 normal;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;
@@ -28,12 +30,12 @@ FACE = """1 normal;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 
 57 happy;58 excited;59 happy;60 excited;61 excited;62 normal;63 normal;64 excited;65 smug;66 normal;67 happy;
 68 confused;69 smug;70 excited;71 normal;72 happy;73 happy;74 excited;75 excited;76 happy;77 smug;78 normal;79 confused;80 happy;81 angry;82 angry;83 happy;84 smug;85 happy;
 86 surprised;87 smug;88 surprised;89 confused;90 normal;91 smug;
-92 happy;93 excited;94 happy;95 sweat;96 confused;97 excited;98 happy;99 excited;100 surprised;101 normal;102 sweat;103 smug;104 smug;105 happy;106 sweat;107 excited;108 happy;109 excited"""
-FACE = {int(a): b for a, b in (p.split() for p in FACE.replace('\n', '').split(';'))}
+92 happy;93 excited;94 happy;95 sweat;96 confused;97 excited;98 normal;99 excited;100 surprised;102 sweat;1.1 happy;1.2 happy;1.3 normal;1.4 smug;1.5 confused;103 smug;104 smug;105 happy;106 sweat;107 excited;108 happy;109 excited"""
+FACE = {(float(a) if '.' in a else int(a)): b for a, b in (p.split() for p in FACE.replace('\n', '').split(';'))}
 # 強調（赤枠・揺れ）
 PUNCH = {2, 5, 15, 18, 27, 32, 35, 42, 49, 86, 88, 106}
 # 前の間（フレーム）
-PRE = {3: 6, 9: 4, 15: 10, 31: 8, 37: 10, 49: 10, 50: 10, 65: 16, 66: 16, 80: 12, 89: 10, 98: 12, 100: 14, 101: 8, 103: 8, 105: 12, 107: 14}
+PRE = {3: 6, 9: 4, 15: 10, 31: 8, 37: 10, 49: 10, 50: 10, 65: 16, 66: 16, 80: 12, 89: 10, 98: 12, 100: 14, 103: 8, 105: 12, 107: 14}
 # カメラの寄り（キャラ, 倍率）
 FOCUS = {15: ('baku', 1.35), 31: ('nagi', 1.3), 32: ('baku', 1.45), 49: ('baku', 1.5), 50: ('nagi', 1.3), 65: ('baku', 1.3),
          95: ('baku', 1.3), 100: ('nagi', 1.4), 106: ('baku', 1.5), 3: ('nagi', 1.25), 56: ('nagi', 1.25)}
@@ -42,7 +44,7 @@ FX = {7: 'lines', 8: 'lines', 10: 'lines', 27: 'lines', 46: 'lines', 47: 'lines'
       106: 'gloom', 81: 'dark', 82: 'dark'}
 # 色付きのキーワード（字幕の中で強調）
 KEY = {14: ['お金を入れ続ける'], 24: ['探偵'], 27: ['就活'], 32: ['圧迫面接'], 35: ['参加賞'], 46: ['試用期間'], 47: ['正社員'], 49: ['即クビ'],
-       50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 1: ['機械の修理'], 99: ['朝イチから'], 101: ['機械の修理'], 103: ['そんな日はない'], 104: ['立派な研究'], 105: ['所長']}
+       50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 1: ['機械の修理'], 1.1: ['修理担当'], 1.4: ['スロットの気分'], 99: ['スマスロ'], 100: ['修理'], 103: ['そんな日はない'], 104: ['立派な研究'], 105: ['所長']}
 # 資料パネル：key → (最初の行, 最後の行)
 PANELS = [('terms1', 7, 9), ('terms2', 10, 11), ('flow_intro', 19, 26), ('pixel_job', 27, 35), ('flow_at', 41, 44), ('pixel_job2', 45, 50),
           ('yuuri', 51, 54), ('flow_moments', 70, 72), ('flow_gyakuten', 73, 76), ('neq', 82, 83), ('peka', 84, 85)]
@@ -51,7 +53,7 @@ STEP = {'job': {27: 0, 28: 3, 31: 3.5, 33: 4, 35: 5}, 'job2': {46: 1, 47: 2, 49:
         'yuuri': {52: 1, 53: 2}}
 CHAPTERS = [(1, '①', 'ふとした疑問'), (19, '②', '当てるまでが長い'), (41, '③', '当たってからも複雑'), (57, '④', 'パチンコは単純だから強い'),
             (68, '⑤', '複雑さは正義？'), (86, '⑥', '勉強と遊び'), (92, '⑦', '結局、勝ってるの？')]
-SILENT_AFTER = {94: [('baku', 34, 'sweat'), ('nagi', 30, 'normal')], 100: [('baku', 56, 'surprised', 'ギクッ！')], 101: [('baku', 54, 'sweat', 'バレた……')]}  # 無言の間（声なし。文字と効果音だけ）
+SILENT_AFTER = {94: [('baku', 34, 'sweat'), ('nagi', 30, 'normal')], 100: [('baku', 56, 'surprised', 'ギクッ！'), ('baku', 54, 'sweat', 'バレた……')]}  # 無言の間（声なし。文字と効果音だけ）
 
 
 def envelope(path):
@@ -74,28 +76,28 @@ if _bad:
 t = 12
 out, chapters, title_at, bgm_cut, bgm_resume = [], [], None, None, None
 ch_start = {c[0]: c for c in CHAPTERS}
-for i, ln in enumerate(lines, 1):
+for r, (i, ln) in enumerate(zip(LABELS, lines), 1):
     if i in ch_start and i != 1:
         no, mark, name = ch_start[i][0], ch_start[i][1], ch_start[i][2]
         chapters.append({'at': t, 'mark': mark, 'title': name}); t += EYE_LEN
     elif i == 1:
         chapters.append({'at': 0, 'mark': '①', 'title': 'ふとした疑問', 'noeye': True})
     t += PRE.get(i, 0)
-    n, env = envelope(WAV / f'k01-{i:03d}.wav')
-    item = {'id': f'k01-{i:03d}', 'n': i, 'who': ln['who'], 'text': ln['text'], 'face': FACE[i], 'start': t, 'end': t + n, 'env': env}
+    n, env = envelope(WAV / f'k01-{r:03d}.wav')
+    item = {'id': f'k01-{r:03d}', 'n': i, 'who': ln['who'], 'text': ln['text'], 'face': FACE[i], 'start': t, 'end': t + n, 'env': env}
     if i in PUNCH: item['punch'] = True
     if i in FOCUS: item['focus'] = {'who': FOCUS[i][0], 'zoom': FOCUS[i][1]}
     if i in FX: item['fx'] = FX[i]
     if i in KEY: item['key'] = KEY[i]
-    if i == 100: item['ochi'] = True      # オチの入口：バクの口すべりに「……朝から、ずっと？」
+    if i == 100: item['ochi'] = True      # オチの入口：バクの口すべり「今日もスマスロ打ってた」に「……ん？ 今日は、修理してたんじゃないの？」
     if i == 107: bgm_resume = t
     out.append(item)
     t += n + GAP
     if i == 2:
         title_at = t; t += TITLE_LEN
-    for who, d, face, *fx in SILENT_AFTER.get(i, []):
+    for k, (who, d, face, *fx) in enumerate(SILENT_AFTER.get(i, [])):
         if bgm_cut is None: bgm_cut = t
-        item = {'id': None, 'n': i + 0.5, 'who': who, 'text': '……', 'face': face, 'start': t, 'end': t + d, 'env': [], 'silent': True}
+        item = {'id': None, 'n': round(i + 0.5 + 0.01 * k, 2), 'who': who, 'text': '……', 'face': face, 'start': t, 'end': t + d, 'env': [], 'silent': True}
         if fx: item['fx'] = fx[0]
         out.append(item)
         t += d + GAP
