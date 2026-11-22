@@ -171,7 +171,7 @@ const FxLayer: React.FC = () => {
   if (!line || !line.fx || frame > line.end + 10) return null;
   const t = frame - line.start;
   if (line.fx === 'lines') return <SpeedLines cx={SEAT[line.who].x} cy={760} t={t} />;
-  if (line.fx === 'gloom') return <Gloom t={frame - startOf(99)} />;
+  if (line.fx === 'gloom') return <Gloom t={frame - line.start} />;
   if (line.fx === 'dark')
     return <AbsoluteFill style={{background: 'rgba(5,10,30,0.35)', opacity: interpolate(t, [0, 8], [0, 1], clamp)}} />;
   return null;
@@ -330,7 +330,10 @@ const Ochi: React.FC = () => {
         style={{
           fontFamily: JP,
           fontWeight: 900,
-          fontSize: 150,
+          fontSize: 132,
+          lineHeight: 1.15,
+          whiteSpace: 'pre-line',
+          textAlign: 'center',
           color: '#4f8dff',
           WebkitTextStroke: '14px #08143a',
           paintOrder: 'stroke fill',

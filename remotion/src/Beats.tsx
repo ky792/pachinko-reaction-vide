@@ -516,13 +516,13 @@ const More: React.FC = () => (
 const Balance2: React.FC = () => {
   const f = useCurrentFrame();
   const pts = [0, 6, -4, 9, 2, -12, -20, -15, -30, -38];
-  const shown = f < S(95) ? 0 : Math.min(pts.length, Math.floor(ramp(f, S(95), E(97)) * pts.length) + 1);
+  const shown = f < S(95) ? 0 : Math.min(pts.length, Math.floor(ramp(f, S(95), E(96)) * pts.length) + 1);
   const W2 = 760,
     H2 = 300;
   const xy = (i: number) => [20 + (i * (W2 - 40)) / (pts.length - 1), H2 / 2 - pts[i] * 3.4];
   const path = pts.slice(0, shown).map((_, i) => `${i ? 'L' : 'M'} ${xy(i)[0]} ${xy(i)[1]}`).join(' ');
   return (
-    <Card from={S(94) - 4} to={E(102) + 6} look="paper" title="バクの今月の収支" width={940}>
+    <Card from={S(94) - 4} to={E(97) + 6} look="paper" title="バクの今月の収支" width={940}>
       <div style={{position: 'relative', height: 330}}>
         {f < S(95) ? <div style={{fontSize: 120, textAlign: 'center', color: '#b0a690', marginTop: 60, filter: 'blur(2px)'}}>？？？</div> : null}
         <svg width={W2} height={H2} style={{position: 'absolute', left: 40, top: 10}}>
@@ -530,22 +530,49 @@ const Balance2: React.FC = () => {
           <path d={path} fill="none" stroke={shown > 6 ? RED : BLUE} strokeWidth={8} strokeLinejoin="round" strokeLinecap="round" />
           {shown ? <circle cx={xy(shown - 1)[0]} cy={xy(shown - 1)[1]} r={12} fill={shown > 6 ? RED : BLUE} /> : null}
         </svg>
-        <Stamp at={S(99) + 4} text="−38,000円" x={400} y={210} size={74} rot={-8} />
-        {f >= S(101) ? <Pop at={S(101)} style={{position: 'absolute', left: 30, top: 230, fontSize: 44, color: ORANGE}}>明日は勝つ（たぶん）</Pop> : null}
+        {f >= S(97) ? <Pop at={S(97) + 6} style={{position: 'absolute', left: 300, top: 230, fontSize: 44, color: ORANGE}}>楽しめたら勝ち（本人談）</Pop> : null}
       </div>
     </Card>
   );
 };
 
-// 103〜104：コメントで教えて
+// 98〜104：本日の研究報告書（大オチ：朝からずっと休憩室）
+const Report: React.FC = () => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const row = (label: string, value: string, at: number, color = BLUE_DEEP, circle = false) => (
+    <div style={{display: 'flex', alignItems: 'center', gap: 20, height: 84, borderBottom: '3px solid #e2d6bd'}}>
+      <div style={{width: 230, fontSize: 38, color: '#8a7f68'}}>{label}</div>
+      <div style={{position: 'relative', fontSize: 50, color, opacity: f >= at ? 1 : 0, scale: `${f >= at ? pop(f, at, fps) : 0}`, transformOrigin: '0 50%'}}>
+        {f >= at ? value : ''}
+        {circle && f >= at + 6 ? <div style={{position: 'absolute', inset: '-10px -20px', border: `6px solid ${RED}`, borderRadius: '50%', rotate: '-4deg'}} /> : null}
+      </div>
+      {f < at ? <div style={{fontSize: 40, color: '#c9bfa8'}}>＿＿＿＿＿＿</div> : null}
+    </div>
+  );
+  const shake = f >= S(104) && f < S(104) + 16 ? Math.sin(f * 2.4) * 8 : 0;
+  return (
+    <Card from={S(98) - 4} to={E(104) + 6} look="paper" title="本日の研究報告書　担当：バク" width={980}>
+      <div style={{position: 'relative', translate: `${shake}px 0`}}>
+        {row('研究テーマ', 'スロットの複雑さ', S(99) + 8)}
+        {row('研究場所', '休憩室', S(100) + 10, RED, true)}
+        {row('研究時間', '朝から ずっと', S(102) + 8, RED)}
+        {row('成果', '雑談', M(102, 0.7), '#7a86a8')}
+        <Stamp at={S(103) + 6} text="所長に報告" x={520} y={150} size={76} rot={-12} />
+      </div>
+    </Card>
+  );
+};
+
+// 105〜106：コメントで教えて
 const Comments: React.FC = () => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   return (
-    <Card from={S(103) - 4} to={E(104) + 6} look="board" title="コメントで教えてね" width={1000}>
+    <Card from={S(105) - 4} to={E(106) + 6} look="board" title="コメントで教えてね" width={1000}>
       <div style={{fontSize: 42, marginBottom: 16}}>パチンコとスロット、どっちのどこが好き？</div>
       {['パチンコ派：', 'スロット派：', '両方派：'].map((t, i) => (
-        <div key={t} style={{display: 'flex', alignItems: 'center', gap: 14, marginTop: 12, scale: `${pop(f, S(103) + 10 + i * 8, fps)}`}}>
+        <div key={t} style={{display: 'flex', alignItems: 'center', gap: 14, marginTop: 12, scale: `${pop(f, S(105) + 10 + i * 8, fps)}`}}>
           <div style={{width: 54, height: 54, borderRadius: '50%', background: [ORANGE, BLUE, GREEN][i]}} />
           <div style={{flex: 1, fontSize: 36, padding: '10px 18px', borderRadius: 14, background: '#f1f3f8', border: '3px solid #d9dde6', color: '#7a86a8'}}>
             {t}＿＿＿＿＿＿＿＿
@@ -691,8 +718,9 @@ export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
   {from: S(79) - 4, to: E(81) + 6, el: <Justice />},
   {from: S(86) - 4, to: E(91) + 6, el: <Phone />},
   {from: S(92) - 4, to: E(93) + 6, el: <More />},
-  {from: S(94) - 4, to: E(102) + 6, el: <Balance2 />},
-  {from: S(103) - 4, to: E(104) + 6, el: <Comments />},
+  {from: S(94) - 4, to: E(97) + 6, el: <Balance2 />},
+  {from: S(98) - 4, to: E(104) + 6, el: <Report />},
+  {from: S(105) - 4, to: E(106) + 6, el: <Comments />},
 ];
 
 export const Beats: React.FC = () => {
@@ -713,6 +741,6 @@ export const beatSounds = (): {at: number; src: string; vol: number}[] => {
   out.push({at: Math.round(M(61, 0.04)), src: 'px_start', vol: 0.35});
   out.push({at: Math.round(M(61, 0.82)), src: 'se_emphasis', vol: 0.5});
   out.push({at: Math.round(M(59, 0.55)), src: 'se_emphasis', vol: 0.4});
-  out.push({at: S(99) + 4, src: 'px_sad', vol: 0.25});
+  out.push({at: S(103) + 6, src: 'se_emphasis', vol: 0.45});
   return out.map((o) => ({...o, at: Math.round(o.at)}));
 };
