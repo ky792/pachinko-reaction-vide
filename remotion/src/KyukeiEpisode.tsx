@@ -140,16 +140,16 @@ const SilentFx: React.FC = () => {
     const sc = spring({frame: t, fps, config: {damping: 7, stiffness: 260}});
     const sh = t < 16 ? Math.sin(t * 3) * (16 - t) * 0.9 : 0;
     return (
-      <div style={{position: 'absolute', left: 1600 - 300 + sh, top: 330, width: 600, textAlign: 'center', opacity: out, scale: `${sc}`, rotate: '-9deg',
-        fontSize: 150, fontWeight: 900, color: '#ff6a2b', WebkitTextStroke: '10px white', paintOrder: 'stroke fill', textShadow: '0 10px 0 rgba(30,30,80,0.35)'}}>
+      <div style={{position: 'absolute', left: 1580 - 340 + sh, top: 360, width: 680, textAlign: 'center', opacity: out, scale: `${sc}`, rotate: '-9deg',
+        fontFamily: JP, fontSize: 170, fontWeight: 900, color: '#ff5a1f', WebkitTextStroke: '16px #08143a', paintOrder: 'stroke fill'}}>
         ギクッ！
       </div>
     );
   }
   const chars = [...line.fx];
   return (
-    <div style={{position: 'absolute', left: 1640 - 260, top: 470, width: 520, textAlign: 'center', opacity: out, rotate: '-4deg',
-      fontSize: 76, fontWeight: 900, color: '#5b6b9a', WebkitTextStroke: '8px white', paintOrder: 'stroke fill'}}>
+    <div style={{position: 'absolute', left: 1690 - 225, top: 660, width: 450, textAlign: 'center', opacity: out, rotate: '-4deg',
+      fontFamily: JP, fontSize: 68, fontWeight: 900, color: '#c9d6ff', WebkitTextStroke: '12px #08143a', paintOrder: 'stroke fill'}}>
       {chars.map((c, i) => (
         <span key={i} style={{opacity: interpolate(t, [4 + i * 5, 10 + i * 5], [0, 1], clamp)}}>{c}</span>
       ))}
@@ -354,7 +354,7 @@ const Ochi: React.FC = () => {
   const {fps} = useVideoConfig();
   const l = LINES.find((x) => x.ochi)!;
   const local = frame - l.start;
-  if (local < 0 || frame > l.end + 24) return null;
+  if (local < 0 || frame > l.end + 5) return null;  // 直後の無言の間（ギクッ！）にかぶらないように
   const s = spring({frame: local, fps, config: {damping: 11, stiffness: 210}});
   return (
     <AbsoluteFill style={{alignItems: 'center', justifyContent: 'flex-end', paddingBottom: 120}}>
@@ -370,7 +370,7 @@ const Ochi: React.FC = () => {
           WebkitTextStroke: '14px #08143a',
           paintOrder: 'stroke fill',
           scale: `${interpolate(s, [0, 1], [2.2, 1])}`,
-          opacity: Math.min(1, local / 3),
+          opacity: Math.min(1, local / 3, (l.end + 5 - frame) / 5),
           rotate: '-3deg',
           textShadow: '0 12px 0 rgba(0,0,0,0.25)',
         }}
