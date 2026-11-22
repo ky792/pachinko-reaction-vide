@@ -84,6 +84,7 @@ export interface CommandResult {
   roll: number;
   success: boolean;
   base: number;
+  baseLabel?: string;
   factors: Factor[];
   /** 何が起きたか */
   resultText: string;
@@ -110,6 +111,8 @@ export interface CommandOption {
   rate: number;
   /** 成功率の基本値と内訳 */
   base: number;
+  /** 基本値の意味（シュートなら位置・フリー度） */
+  baseLabel?: string;
   factors: Factor[];
   reward: RiskLevel;
   risk: RiskLevel;

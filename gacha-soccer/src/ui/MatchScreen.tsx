@@ -4,7 +4,7 @@ import type { CommandOption, CommandResult, Factor, MatchConfig, MatchEvent, Ris
 import type { Tactics } from '../core/types';
 import { COMMANDS, EVOLUTION_MAP } from '../core/data/commands';
 import { sfx } from '../audio/sfx';
-import { PitchCanvas } from './PitchCanvas';
+import { PitchCanvas, travelMs } from './PitchCanvas';
 import { Face } from './Face';
 import { Modal } from './common';
 import { TacticRows } from './TacticsScreen';
@@ -54,6 +54,8 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const [, force] = useState(0);
   const evRef = useRef({ ev: engine.s.events[0], prev: null as MatchEvent | null, start: performance.now(), dur: 600 });
   const timer = useRef<number | null>(null);
+  const speedRef = useRef<number>(speed);
+  speedRef.current = ffwd ? 8 : speed;
   const fxKey = useRef(0);
   const finishedRef = useRef(false);
 
@@ -135,12 +137,13 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const durOf = useCallback(
     (e: MatchEvent) => {
       const isFx = e.fx && e.fx !== 'none' && e.fx !== 'hit';
-      let d = e.dur;
+      // ボールが届く・運び終えるまで待つ（瞬間移動に見えないように）
+      let d = Math.max(e.dur * 1.25, travelMs(events[e.idx - 1] ?? null, e));
       if (fastFx && isFx) d = Math.min(d, e.kind === 'goal' ? 1400 : 600);
       if (ffwd) return e.kind === 'goal' ? Math.max(900, d / 3) : 40;
       return isFx ? d / Math.min(speed, 2) : d / speed;
     },
-    [speed, fastFx, ffwd],
+    [speed, fastFx, ffwd, events],
   );
 
   // 再生ループ
@@ -240,7 +243,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
       </div>
 
       <div className={`pitch-wrap ${shake}`} onClick={skipFx}>
-        <PitchCanvas engine={engine} evRef={evRef} highlightId={controlled} />
+        <PitchCanvas engine={engine} evRef={evRef} speedRef={speedRef} highlightId={controlled} />
         <div className="fx-layer">
           {flash > 0 && <div className="flash" key={`f${flash}`} />}
           {fx && <FxView fx={fx} engine={engine} />}
@@ -485,7 +488,7 @@ function DecisionPanel({ engine, onChoose }: { engine: MatchEngine; onChoose: (o
                     リスク <b style={{ color: RISK_COLOR[o.risk] }}>{o.risk}</b>
                   </span>
                 </div>
-                <FactorChips base={o.base} factors={o.factors} />
+                <FactorChips base={o.base} factors={o.factors} label={o.baseLabel} />
                 <div className="hint">成功→{o.successText}</div>
               </button>
             );
@@ -496,11 +499,13 @@ function DecisionPanel({ engine, onChoose }: { engine: MatchEngine; onChoose: (o
   );
 }
 
-function FactorChips({ base, factors, all }: { base: number; factors: Factor[]; all?: boolean }) {
+function FactorChips({ base, factors, all, label }: { base: number; factors: Factor[]; all?: boolean; label?: string }) {
   const sorted = [...factors].sort((a, b) => Math.abs(b.value) - Math.abs(a.value));
   return (
     <div className={`factors ${all ? 'all' : ''}`}>
-      <span className="fc base">基本{base}</span>
+      <span className="fc base">
+        {label ? `${label} ${base}` : `基本${base}`}
+      </span>
       {sorted.map((f, i) => (
         <span key={i} className={`fc ${f.value > 0 ? 'plus' : 'minus'} ${i >= 2 ? 'extra' : ''}`}>
           {f.label} {f.value > 0 ? '+' : '−'}
@@ -539,7 +544,7 @@ function ResultPanel({ r, k, still }: { r: CommandResult; k: number; still?: boo
         <span>{r.resultText}</span>
       </div>
       <div className="rp-next">→ {r.nextText}</div>
-      <FactorChips base={r.base} factors={r.factors} all />
+      <FactorChips base={r.base} factors={r.factors} label={r.baseLabel} all />
       {r.qualityText && <div className={`rp-quality q-${r.quality}`}>采配評価：{r.qualityText}</div>}
     </div>
   );

@@ -60,8 +60,8 @@ export const TACTIC_PARAMS = {
     low: { turnover: -0.07, drain: 0.75, brokenCounter: 0.04 },
   },
   tempo: {
-    fast: { minutes: 2.3, retention: -0.06, counterRate: 0.35 },
-    normal: { minutes: 2.9, retention: 0, counterRate: 0.18 },
-    slow: { minutes: 3.6, retention: 0.07, counterRate: 0.08, tireOpponent: 1.3 },
+    fast: { minutes: 2.8, retention: -0.06, counterRate: 0.35 },
+    normal: { minutes: 3.5, retention: 0, counterRate: 0.18 },
+    slow: { minutes: 4.3, retention: 0.07, counterRate: 0.08, tireOpponent: 1.3 },
   },
 } as const;

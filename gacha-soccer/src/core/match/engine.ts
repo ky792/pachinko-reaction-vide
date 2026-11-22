@@ -52,6 +52,14 @@ export interface MatchState {
   progress: number;
 }
 
+function qualityLabel(q: number): string {
+  if (q >= 0.85) return 'ドフリー';
+  if (q >= 0.65) return '決定的な位置';
+  if (q >= 0.45) return 'シュートコースあり';
+  if (q >= 0.25) return '角度が厳しい';
+  return '遠目から';
+}
+
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const other = (t: TeamIdx): TeamIdx => (t === 0 ? 1 : 0);
 
@@ -477,7 +485,12 @@ export class MatchEngine {
     return mod ? { label: 'DFの守備対応', value: mod * scale } : null;
   }
 
-  shotRate(shooterId: string, quality: number, header: boolean, extra: (Factor | null)[]): { rate: number; base: number; factors: Factor[]; skillId?: string } {
+  shotRate(
+    shooterId: string,
+    quality: number,
+    header: boolean,
+    extra: (Factor | null)[],
+  ): { rate: number; base: number; factors: Factor[]; skillId?: string; baseLabel: string } {
     const sh = this.player(shooterId);
     const c = this.ctx(sh);
     const gk = this.gkOf(other(sh.team));
@@ -486,8 +499,9 @@ export class MatchEngine {
       : this.eff(sh, 'shoot', c);
     const g = this.eff(gk, 'gk', this.ctx(gk));
     const fb = finishBonus(sh, c);
-    const r = this.calc(4 + 44 * quality, [{ label: header ? 'ヘディング力 vs GK' : 'シュート力 vs GK', value: (shootV - g) * 0.24 }, this.skillF(fb), ...extra], 2, 90);
-    return { ...r, skillId: fb.skillId };
+    // 位置・フリー度（quality）で基本値が大きく変わる：遠目≈6%、角度が厳しい≈14%、1対1≈47%、ドフリー≈70%
+    const r = this.calc(2 + 80 * Math.pow(quality, 1.6), [{ label: header ? 'ヘディング力 vs GK' : 'シュート力 vs GK', value: (shootV - g) * 0.24 }, this.skillF(fb), ...extra], 2, 92);
+    return { ...r, skillId: fb.skillId, baseLabel: header ? 'ヘディングの体勢' : qualityLabel(quality) };
   }
 
   private oppDanger(defTeam: TeamIdx): number {
@@ -786,6 +800,7 @@ export class MatchEngine {
           actorId: A.p.id,
           rate: sr.rate,
           base: sr.base,
+          baseLabel: sr.baseLabel,
           factors: sr.factors,
           reward: '特大',
           risk: '小',
@@ -897,6 +912,7 @@ export class MatchEngine {
         actorId: A.p.id,
         rate: sr.rate,
         base: sr.base,
+        baseLabel: sr.baseLabel,
         factors: sr.factors,
         reward: '特大',
         risk: '小',
@@ -915,7 +931,7 @@ export class MatchEngine {
       const pr = sit.gk1v1
         ? this.calc(48, [{ label: 'パス精度 vs GKの飛び出し', value: (e(A, 'pass', ca) - gkV) * 0.5 }, this.skillF(b)], 10, 90)
         : this.calc(
-            58,
+            50,
             [
               { label: 'パス精度', value: (e(A, 'pass', ca) - 60) * 0.6 },
               { label: '相手DFの読み', value: -(e(Dp, 'judgment', cd) - 60) * 0.3 },
@@ -925,7 +941,8 @@ export class MatchEngine {
             10,
             92,
           );
-      const q2 = sit.gk1v1 ? 0.92 : Math.min(0.85, sit.quality + 0.22);
+      // ラストパスが通れば「フリー」で受ける＝高い質のシュート機会
+      const q2 = sit.gk1v1 ? 0.96 : Math.max(0.78, Math.min(0.9, sit.quality + 0.3));
       opts.push(
         this.mkOpt(sit, depth, {
           commandId: 'pass',
@@ -1234,6 +1251,7 @@ export class MatchEngine {
       roll: Math.floor(roll),
       success,
       base: opt.base,
+      baseLabel: opt.baseLabel,
       factors: opt.factors,
       resultText: success ? opt.successText : opt.failText,
       nextText: this.outcomeText(outcome, sit),
