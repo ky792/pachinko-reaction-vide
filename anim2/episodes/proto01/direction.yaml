@@ -1,0 +1,55 @@
+# ナギバク2.0 試作01：休憩室#1 改訂版「スロット就活」（k01-030〜040）
+# 台本の字面はここに書かない（台本は kyu001v2/script/k01.txt。ここは行IDで演出だけを書く）
+# 書いていない項目は前の行の状態を引き継ぐ。キャラの表情は公式表情集の番号（nagi_01〜08 / baku_01〜08）
+source: kyu001v2
+lead: 0.6          # 冒頭の間（秒）
+gap: 0.28          # 行と行の間（秒）
+tail: 1.2
+bgm: {file: bgm.mp3, volume: 0.22, from: 95}
+start: {cam: two, nagi: nagi_01, baku: baku_01}
+
+lines:
+  - k01-030:
+      baku: baku_01
+      board: {kind: flow, items: [レア役, CZ, AT抽選, AT], hot: 2}
+  - k01-031:
+      nagi: {face: nagi_03, tilt: 4}
+      board: {kind: flow, items: [レア役, CZ, AT抽選, AT], hot: 3, ask: true}
+  - k01-032:
+      cam: baku_punch
+      baku: baku_02
+      fx: shuchusen
+      se: emphasis
+  - k01-033:
+      cam: two
+      baku: baku_01
+      board: {kind: job, rows: [[レア役→CZ, 書類選考], [CZ→AT抽選, 一次面接], [AT, 内定]]}
+  - k01-034:
+      cam: nagi_up
+      nagi: {face: nagi_01, tilt: 0}
+      board: null
+  - k01-035:
+      cam: two
+      baku: baku_04
+  - k01-036:
+      pause_before: 0.45
+      cam: nagi_up
+      board: {kind: stamps, count: 10, label: CZ, stamp: 不採用}
+  - k01-037:
+      cam: baku_up
+      baku: baku_06
+      shake: 0.5
+      board: null
+  - k01-038:
+      cam: two
+      baku: baku_07
+      board: {kind: salary, label: 初任給（AT）, value: 100枚ちょっと, end: 終了}
+  - k01-039:
+      pause_before: 0.35
+      cam: nagi_up
+      board: null
+  - k01-040:
+      cam: baku_punch
+      baku: baku_05
+      prop: {kind: ribbon, text: 参加賞}
+      se: pop
