@@ -733,9 +733,16 @@ const PachiBoard: React.FC = () => {
   };
   const rainbow = (i: number) => (win ? `hsl(${(i * 30 + f * 12) % 360} 95% 60%)` : '#ffd23f');
   // 打ち出しの玉：左のレールを回って落ちる
-  const flying = running && !rush ? [0, 1, 2] : [];
+  const flying = running && !rush ? [0, 1, 2, 3, 4] : [];
+  const spins = running && !win ? Math.floor(c / 2.4) + 37 * (cyc % 3) : 0;
+  const hits = on ? cyc + (c >= 150 ? 1 : 0) : 0;
+  const lcdBg = win
+    ? `repeating-conic-gradient(from ${f * 4}deg at 50% 50%, #4a3300 0deg 12deg, #7a5600 12deg 24deg)`
+    : inReach
+      ? 'repeating-linear-gradient(135deg, #3a0010 0 18px, #6e0018 18px 36px)'
+      : 'linear-gradient(#0d1a52, #05081c)';
   const railBall = (k: number) => {
-    const t = ((f - ready + k * 13) % 40) / 40; // 0〜1
+    const t = ((f - ready + k * 8) % 40) / 40; // 0〜1
     if (t < 0.45) {
       const a = Math.PI * (1 - t / 0.45); // 左下→上→右
       return {x: 330 + Math.cos(a) * 300, y: 300 - Math.sin(a) * 270};
@@ -768,6 +775,16 @@ const PachiBoard: React.FC = () => {
         <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: 30, color: doki > 0.9 ? RED : '#3a4470'}}>{Math.round(doki * 100)}%</div>
       </div>
       <div style={{position: 'absolute', left: -32, top: 160, width: 40, height: 14, background: '#5a6078', borderRadius: 7}} />
+      {/* データ表示 */}
+      <div style={{position: 'absolute', left: -250, top: 280, width: 220, height: 120, borderRadius: 16, background: '#05081c', border: '6px solid #3a4470', fontFamily: 'monospace', fontWeight: 900, color: '#ff7a3a', padding: '10px 16px', boxShadow: '0 10px 20px rgba(0,0,0,0.35)'}}>
+        <div style={{fontFamily: JP, fontSize: 18, color: '#9fb4ff'}}>回転数</div>
+        <div style={{fontSize: 34, lineHeight: 1, textShadow: '0 0 8px #ff7a3a'}}>{String(spins).padStart(4, '0')}</div>
+        <div style={{fontFamily: JP, fontSize: 18, color: '#9fb4ff', marginTop: 4}}>大当たり <span style={{fontFamily: 'monospace', fontSize: 28, color: '#ff7a3a'}}>{String(hits).padStart(2, '0')}</span></div>
+      </div>
+      {/* ハンドル */}
+      <div style={{position: 'absolute', left: 742, top: 560, width: 80, height: 80, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #9aa3b8, #4a5068)', border: '5px solid #2a3058'}}>
+        <div style={{position: 'absolute', left: 34, top: 4, width: 6, height: 30, background: '#e8eefc', borderRadius: 3, transformOrigin: '3px 32px', rotate: `${running ? 40 + Math.sin(f / 5) * 6 : 0}deg`}} />
+      </div>
       {/* 右：脳汁タンク */}
       <div style={{position: 'absolute', left: 790, top: 60, width: 130, height: 330, borderRadius: 30, border: '6px solid #3a4470', background: 'rgba(220,235,255,0.55)', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.3)'}}>
         <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: `${8 + (rensa / 12) * 82}%`, background: 'linear-gradient(#ffb25a,#ff6a2b)', transition: 'none'}} />
@@ -782,6 +799,13 @@ const PachiBoard: React.FC = () => {
       <div style={{position: 'absolute', left: 742, top: 210, width: 52, height: 14, background: '#5a6078', borderRadius: 7}} />
       {/* 筐体 */}
       <div style={{position: 'absolute', inset: 0, borderRadius: 60, background: 'linear-gradient(160deg,#e6ebf5,#8d9bc0)', border: '10px solid #3a4470', boxShadow: '0 30px 60px rgba(0,0,0,0.5)'}} />
+      {/* スピーカー */}
+      {[[60, 60], [700, 60]].map(([x, y], i) => (
+        <React.Fragment key={`sp${i}`}>
+          <div style={{position: 'absolute', left: x - 30, top: y - 30, width: 60, height: 60, borderRadius: '50%', background: 'repeating-radial-gradient(circle, #3a4470 0 3px, #7a86a8 3px 6px)', border: '4px solid #3a4470'}} />
+          {win ? <div style={{position: 'absolute', left: x - 30 - ((f % 12) * 3), top: y - 30 - ((f % 12) * 3), width: 60 + (f % 12) * 6, height: 60 + (f % 12) * 6, borderRadius: '50%', border: `4px solid ${YELLOW}`, opacity: 1 - (f % 12) / 12}} /> : null}
+        </React.Fragment>
+      ))}
       {/* ボルト */}
       {[[28, 28], [712, 28], [28, 712], [712, 712], [28, 370], [712, 370]].map(([x, y], i) => (
         <div key={i} style={{position: 'absolute', left: x - 9, top: y - 9, width: 18, height: 18, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #fff, #8a93a8)', border: '2px solid #4a5068'}} />
@@ -806,12 +830,19 @@ const PachiBoard: React.FC = () => {
               </div>
             </div>
           ) : on ? (
+            <>
+            <div style={{position: 'absolute', inset: 0, background: lcdBg, backgroundPosition: inReach ? `${f * 3}px 0` : undefined}} />
+            {!inReach && !win
+              ? Array.from({length: 16}).map((_, i) => (
+                  <div key={i} style={{position: 'absolute', left: (i * 53) % 340 + 6, top: ((i * 37 + f * (1 + (i % 3))) % 240) - 8, width: 3 + (i % 3), height: 3 + (i % 3), borderRadius: '50%', background: 'white', opacity: 0.5}} />
+                ))
+              : null}
             <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
               {reels.map((r, i) => {
                 const col = '1234567';
                 const off = r.spin ? (f * 38 + i * 50) % (col.length * 120) : 0;
                 return (
-                  <div key={i} style={{position: 'relative', width: 100, height: 140, overflow: 'hidden'}}>
+                  <div key={i} style={{position: 'relative', width: 100, height: 140, overflow: 'hidden', borderRadius: 14, background: 'rgba(255,255,255,0.08)', border: '3px solid rgba(255,255,255,0.25)'}}>
                     {r.spin ? (
                       <div style={{position: 'absolute', top: -off, left: 0, width: 100, filter: 'blur(2px)'}}>
                         {[...col, ...col].map((c, j) => (
@@ -819,12 +850,16 @@ const PachiBoard: React.FC = () => {
                         ))}
                       </div>
                     ) : (
-                      <div style={{textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 120, lineHeight: '140px', color: win ? YELLOW : 'white', textShadow: win ? '0 0 30px #ffd23f' : 'none', scale: `${win ? 1 + 0.06 * Math.sin(f / 2) : 1}`}}>{r.sym}</div>
+                      <div style={{textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 116, lineHeight: '134px', color: win ? YELLOW : r.sym === '7' ? '#ff4a4a' : '#7fd3ff', WebkitTextStroke: '4px white', paintOrder: 'stroke fill', textShadow: win ? '0 0 30px #ffd23f' : 'none', scale: `${win ? 1 + 0.06 * Math.sin(f / 2) : 1}`}}>{r.sym}</div>
                     )}
                   </div>
                 );
               })}
             </div>
+            {inReach && c - 96 < 26 ? (
+              <div style={{position: 'absolute', left: interpolate(c - 96, [0, 8, 18, 26], [-400, 0, 0, 400]), top: 80, width: 360, height: 70, background: 'linear-gradient(90deg, transparent, #ff2040 20%, #ff2040 80%, transparent)', rotate: '-8deg', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: JP, fontWeight: 900, fontSize: 52, color: 'white', WebkitTextStroke: '6px #5a0010', paintOrder: 'stroke fill'}}>リーチ！</div>
+            ) : null}
+            </>
           ) : null}
           {/* 走査線 */}
           {powered ? <div style={{position: 'absolute', inset: 0, background: 'repeating-linear-gradient(transparent 0 3px, rgba(255,255,255,0.05) 3px 4px)'}} /> : null}
@@ -846,7 +881,12 @@ const PachiBoard: React.FC = () => {
         {/* 打ち出しの玉 */}
         {flying.map((k) => {
           const p = railBall(k);
-          return <div key={k} style={{position: 'absolute', left: p.x - 11, top: p.y - 11, width: 22, height: 22, borderRadius: '50%', background: BALL}} />;
+          return (
+            <React.Fragment key={k}>
+              <div style={{position: 'absolute', left: p.x - 11, top: p.y - 11, width: 22, height: 22, borderRadius: '50%', background: BALL}} />
+              {p.y > 360 && (f + k * 2) % 5 < 2 ? <div style={{position: 'absolute', left: p.x - 14, top: p.y + 2, width: 28, height: 28, borderRadius: '50%', border: '3px solid rgba(255,255,220,0.9)', boxShadow: '0 0 10px #fff6c0'}} /> : null}
+            </React.Fragment>
+          );
         })}
         {/* 右打ち：右ルートを流れてアタッカーへ */}
         {rush
@@ -864,15 +904,13 @@ const PachiBoard: React.FC = () => {
               return <div key={i} style={{position: 'absolute', left: 300 + Math.sin(t * 9 + i) * 140 * t, top: 380 + t * 220, width: 20, height: 20, borderRadius: '50%', background: BALL}} />;
             })
           : null}
-        {/* 役物（光の筋つき） */}
-        {yakuShown ? (
-          <>
-            <div style={{position: 'absolute', left: 330 - 300, top: 70 - 300, width: 600, height: 600, background: 'repeating-conic-gradient(rgba(255,230,120,0.35) 0deg 10deg, transparent 10deg 24deg)', rotate: `${f * 3}deg`, borderRadius: '50%'}} />
-            <div style={{position: 'absolute', left: 200, top: interpolate(yakuDrop, [0, 1], [-160, 24]), width: 260, height: 90, borderRadius: 20, background: 'linear-gradient(#ffe36a,#ff9a1f)', border: '6px solid #8a4a00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: JP, fontWeight: 900, fontSize: 48, color: '#7a2a00'}}>
-              ★ 役物 ★
-            </div>
-          </>
-        ) : null}
+        {/* 役物：盤面の上の「BAKUバッジ」。ふだんは揺れていて、当たりで落ちてくる */}
+        {yakuShown ? <div style={{position: 'absolute', left: 330 - 300, top: 70 - 300, width: 600, height: 600, background: 'repeating-conic-gradient(rgba(255,230,120,0.35) 0deg 10deg, transparent 10deg 24deg)', rotate: `${f * 3}deg`, borderRadius: '50%'}} /> : null}
+        <div style={{position: 'absolute', left: 250, top: yakuShown ? interpolate(yakuDrop, [0, 1], [8, 70]) : 8, width: 160, height: 74, rotate: `${yakuShown ? 0 : Math.sin(f / 9) * 4}deg`, scale: `${yakuShown ? 1.5 : 1}`, filter: powered ? 'none' : 'grayscale(1)'}}>
+          <div style={{position: 'absolute', left: 14, top: -14, width: 40, height: 40, background: 'linear-gradient(#ffe36a,#ff9a1f)', border: '5px solid #8a4a00', rotate: '45deg', borderRadius: 6}} />
+          <div style={{position: 'absolute', right: 14, top: -14, width: 40, height: 40, background: 'linear-gradient(#ffe36a,#ff9a1f)', border: '5px solid #8a4a00', rotate: '45deg', borderRadius: 6}} />
+          <div style={{position: 'absolute', inset: 0, borderRadius: 22, background: 'linear-gradient(#ffe36a,#ff9a1f)', border: '5px solid #8a4a00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: JP, fontWeight: 900, fontSize: 40, color: '#7a2a00', letterSpacing: 4, boxShadow: yakuShown ? '0 0 30px #ffd23f' : 'none'}}>BAKU</div>
+        </div>
         <div style={{position: 'absolute', inset: 0, background: 'white', opacity: fl * 0.75}} />
       </div>
       {/* 盤面のふちのランプ */}
