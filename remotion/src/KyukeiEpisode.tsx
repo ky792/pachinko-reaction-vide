@@ -148,7 +148,7 @@ const SilentFx: React.FC = () => {
   }
   const chars = [...line.fx];
   return (
-    <div style={{position: 'absolute', left: 1690 - 225, top: 660, width: 450, textAlign: 'center', opacity: out, rotate: '-4deg',
+    <div style={{position: 'absolute', left: 1690 - 225, top: 520, width: 450, textAlign: 'center', opacity: out, rotate: '-4deg',
       fontFamily: JP, fontSize: 68, fontWeight: 900, color: '#c9d6ff', WebkitTextStroke: '12px #08143a', paintOrder: 'stroke fill'}}>
       {chars.map((c, i) => (
         <span key={i} style={{opacity: interpolate(t, [4 + i * 5, 10 + i * 5], [0, 1], clamp)}}>{c}</span>
