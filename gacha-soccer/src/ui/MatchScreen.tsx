@@ -5,6 +5,7 @@ import type { Tactics } from '../core/types';
 import { COMMANDS, EVOLUTION_MAP } from '../core/data/commands';
 import { sfx } from '../audio/sfx';
 import { PitchCanvas, travelMs } from './PitchCanvas';
+import { Cinematic, cinematicMs } from './Cinematic';
 import { Face } from './Face';
 import { Modal } from './common';
 import { TacticRows } from './TacticsScreen';
@@ -55,7 +56,12 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const evRef = useRef({ ev: engine.s.events[0], prev: null as MatchEvent | null, start: performance.now(), dur: 600 });
   const timer = useRef<number | null>(null);
   const speedRef = useRef<number>(speed);
+  const fastFxRef = useRef(fastFx);
+  fastFxRef.current = fastFx;
   const resumeNow = useRef(false);
+  const cineRef = useRef({ idx: -1, delay: 0, skipped: false });
+  const [cine, setCine] = useState<{ action: NonNullable<MatchEvent['action']>; key: number; dur: number } | null>(null);
+  const [skipTick, setSkipTick] = useState(0);
   speedRef.current = ffwd ? 8 : speed;
   const fxKey = useRef(0);
   const finishedRef = useRef(false);
@@ -67,6 +73,11 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const onEventStart = useCallback(
     (e: MatchEvent, fast: boolean) => {
       const big = e.fx === 'bigGoal';
+      if (e.action?.byUser && !fast) {
+        const dur = cinematicMs(e.action, fastFxRef.current);
+        cineRef.current = { idx: e.idx, delay: dur, skipped: false };
+        setCine({ action: e.action, key: e.idx, dur });
+      }
       switch (e.kind) {
         case 'kickoff':
         case 'halftime':
@@ -139,7 +150,9 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
     (e: MatchEvent) => {
       const isFx = e.fx && e.fx !== 'none' && e.fx !== 'hit';
       // ボールが届く・運び終えるまで待つ（瞬間移動に見えないように）
-      let d = e.action ? e.dur * (fastFx ? 0.65 : 1) : Math.max(e.dur * 1.25, travelMs(events[e.idx - 1] ?? null, e));
+      let d = e.action
+        ? e.dur * (fastFx ? 0.65 : 1) + (e.action.byUser && !ffwd ? cinematicMs(e.action, fastFx) : 0)
+        : Math.max(e.dur * 1.25, travelMs(events[e.idx - 1] ?? null, e));
       if (fastFx && isFx) d = Math.min(d, e.kind === 'goal' ? 1400 : 600);
       if (ffwd) return e.kind === 'goal' ? Math.max(900, d / 3) : 40;
       return isFx ? d / Math.min(speed, 2) : d / speed;
@@ -154,7 +167,9 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
     if (!cur) return;
     if (cursor < events.length - 1) {
       // 判断・ハーフタイム明けは、直前の場面を待ち直さずすぐ次へ
-      const wait = resumeNow.current ? 0 : durOf(cur);
+      let wait = resumeNow.current ? 0 : durOf(cur);
+      // カットインをスキップしたら、残りは俯瞰のモーション分だけ
+      if (cur.action?.byUser && cineRef.current.idx === cur.idx && cineRef.current.skipped) wait = Math.max(0, wait - cineRef.current.delay);
       resumeNow.current = false;
       timer.current = window.setTimeout(() => {
         const next = events[cursor + 1];
@@ -189,7 +204,13 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [cursor, events, events.length, showDecision, halftime, tacticsOpen, busy, durOf, engine, onEventStart, onFinish, ffwd]);
+  }, [cursor, events, events.length, showDecision, halftime, tacticsOpen, busy, durOf, engine, onEventStart, onFinish, ffwd, skipTick]);
+
+  useEffect(() => {
+    if (!cine) return;
+    const t = window.setTimeout(() => setCine(null), cine.dur + 50);
+    return () => clearTimeout(t);
+  }, [cine]);
 
   // 演出の自動消去
   useEffect(() => {
@@ -248,11 +269,24 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
       </div>
 
       <div className={`pitch-wrap ${shake}`} onClick={skipFx}>
-        <PitchCanvas engine={engine} evRef={evRef} speedRef={speedRef} highlightId={controlled} />
+        <PitchCanvas engine={engine} evRef={evRef} speedRef={speedRef} cineRef={cineRef} highlightId={controlled} />
         <div className="fx-layer">
           {flash > 0 && <div className="flash" key={`f${flash}`} />}
           {fx && <FxView fx={fx} engine={engine} />}
         </div>
+        {cine && (
+          <Cinematic
+            key={cine.key}
+            action={cine.action}
+            engine={engine}
+            dur={cine.dur}
+            onSkip={() => {
+              cineRef.current.skipped = true;
+              setCine(null);
+              setSkipTick((x) => x + 1);
+            }}
+          />
+        )}
       </div>
 
       <div className="row">

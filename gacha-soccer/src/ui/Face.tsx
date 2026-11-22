@@ -1,7 +1,7 @@
 import type { FaceGenes, Rarity } from '../core/types';
 
-const SKIN = ['#f6d3b3', '#eab68f', '#d39a6a', '#a8714a', '#7a4e33'];
-const HAIR = ['#1b1b1f', '#3b2a1e', '#7a4a1f', '#d9a441', '#c94f2d', '#e8e6e1', '#3c5ad6', '#29a36a'];
+export const SKIN = ['#f6d3b3', '#eab68f', '#d39a6a', '#a8714a', '#7a4e33'];
+export const HAIR = ['#1b1b1f', '#3b2a1e', '#7a4a1f', '#d9a441', '#c94f2d', '#e8e6e1', '#3c5ad6', '#29a36a'];
 
 /** 遺伝子から手続き生成するオリジナルの顔アイコン */
 export function Face({ g, size = 48, rarity }: { g: FaceGenes; size?: number; rarity?: Rarity }) {

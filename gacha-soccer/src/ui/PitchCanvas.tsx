@@ -24,6 +24,8 @@ interface Props {
   /** 現在再生中のイベント（ref経由で毎フレーム参照） */
   evRef: React.MutableRefObject<{ ev: MatchEvent; prev: MatchEvent | null; start: number; dur: number }>;
   speedRef: React.MutableRefObject<number>;
+  /** カットイン中は俯瞰のモーションを待たせる */
+  cineRef: React.MutableRefObject<{ idx: number; delay: number; skipped: boolean }>;
   highlightId?: string;
 }
 
@@ -46,7 +48,7 @@ function stepToward(cur: P, target: P, maxStep: number): P {
  * - ボールは「保持者の足元」か「出し手→受け手への飛行中」のどちらか
  * - シュートはゴールへ、クロスは弧を描いて飛ぶ
  */
-export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
+export function PitchCanvas({ engine, evRef, speedRef, cineRef, highlightId }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -167,10 +169,11 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
           target = null;
           const atkTeam = a.defense ? engine.player(a.opponentId).team : engine.player(a.actorId).team;
           const actorTeam = engine.player(a.actorId).team;
+          const delay = a.byUser && cineRef.current.idx === ev.idx && !cineRef.current.skipped ? cineRef.current.delay : 0;
           script = {
             init: { a, dir: atkTeam === 0 ? 1 : -1, actor: { ...pos.get(ids.actor)! }, opp: { ...pos.get(ids.opp)! }, support: { ...pos.get(ids.support)! }, gk: { ...pos.get(ids.gk)! } },
-            start: now,
-            dur: Math.max(300, evRef.current.dur),
+            start: now + delay,
+            dur: Math.max(300, evRef.current.dur - delay),
             slow: a.byUser,
             ids,
             last: null,
@@ -256,7 +259,8 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
       let sf: ScriptFrame | null = null;
       let sp = 0;
       if (script) {
-        const t = Math.min(1, (now - script.start) / script.dur);
+        if (cineRef.current.skipped && cineRef.current.idx === lastIdx && script.start > now) script.start = now;
+        const t = Math.max(0, Math.min(1, (now - script.start) / script.dur));
         sp = warp(t, script.slow);
         sf = scriptFrame(script.init, sp);
         script.last = sf;
@@ -523,7 +527,7 @@ export function PitchCanvas({ engine, evRef, speedRef, highlightId }: Props) {
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [engine, evRef, speedRef, highlightId]);
+  }, [engine, evRef, speedRef, cineRef, highlightId]);
 
   return <canvas ref={canvasRef} width={W} height={H} aria-label="試合のピッチ" />;
 }

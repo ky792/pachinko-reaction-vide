@@ -1412,3 +1412,123 @@ input[type='text'] {
     animation: none;
   }
 }
+
+/* ===== カットイン演出（局面のアップ） ===== */
+.cinema {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  cursor: pointer;
+  animation: cinemaIn 0.22s ease-out;
+}
+.cinema canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+@keyframes cinemaIn {
+  from {
+    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+  }
+  to {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+.cinema-title {
+  position: absolute;
+  left: 3%;
+  top: 21%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: rotate(-2.7deg);
+  animation: titleIn 0.35s ease-out both;
+}
+.cinema-title > div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+.cinema-title b {
+  font-size: clamp(18px, 5.2vw, 40px);
+  font-weight: 900;
+  font-style: italic;
+  color: #fff;
+  text-shadow:
+    2px 2px 0 #0b1220,
+    -2px 2px 0 #0b1220,
+    2px -2px 0 #0b1220,
+    -2px -2px 0 #0b1220,
+    0 4px 0 #0b1220,
+    0 0 12px #000;
+}
+.cinema.evo .cinema-title b {
+  background: linear-gradient(90deg, #fff7c2, #facc15, #f472b6, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-stroke: 0;
+  filter: drop-shadow(0 3px 0 #0b1220);
+}
+.cinema-title small {
+  font-size: clamp(10px, 2.4vw, 14px);
+  font-weight: 700;
+  color: #e2e8f0;
+}
+.cinema-title .cinema-evo {
+  color: #facc15;
+  letter-spacing: 0.2em;
+  font-weight: 900;
+}
+@keyframes titleIn {
+  from {
+    transform: rotate(-2.7deg) translateX(-40px);
+    opacity: 0;
+  }
+}
+.cinema-result {
+  position: absolute;
+  right: 5%;
+  bottom: 22%;
+  font-size: clamp(26px, 8vw, 64px);
+  font-weight: 900;
+  font-style: italic;
+  transform: rotate(-4deg);
+  text-shadow:
+    3px 3px 0 #0b1220,
+    -3px 3px 0 #0b1220,
+    3px -3px 0 #0b1220,
+    -3px -3px 0 #0b1220,
+    0 5px 0 #0b1220;
+  animation: resultPop 0.35s cubic-bezier(0.2, 1.8, 0.4, 1) both;
+}
+.cinema-result.good {
+  color: #bef264;
+}
+.cinema-result.bad {
+  color: #fda4af;
+}
+@keyframes resultPop {
+  from {
+    transform: rotate(-4deg) scale(2.4);
+    opacity: 0;
+  }
+}
+.cinema-skip {
+  position: absolute;
+  right: 2%;
+  top: 3%;
+  font-size: 11px;
+  color: #cbd5e1;
+  background: #0008;
+  padding: 2px 8px;
+  border-radius: 99px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cinema,
+  .cinema-title,
+  .cinema-result {
+    animation: none;
+  }
+}
