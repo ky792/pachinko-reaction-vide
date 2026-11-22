@@ -312,6 +312,97 @@
  ],
  "rules": [
   {
+   "re": "10分",
+   "to": "ジュップン",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "1500円",
+   "to": "センゴヒャクエン",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "募集",
+   "to": "ボシュウ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "手間代",
+   "to": "テマダイ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "標準",
+   "to": "ヒョウジュン",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "不正改造",
+   "to": "フセイカイゾウ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "手数料",
+   "to": "テスウリョウ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "保証書",
+   "to": "ホショウショ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "認定",
+   "to": "ニンテイ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "承認",
+   "to": "ショウニン",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "公安委員会",
+   "to": "コウアンイインカイ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "実地調査",
+   "to": "ジッチチョウサ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
+   "re": "型式",
+   "to": "カタシキ",
+   "why": "ニュース第6回",
+   "status": "ok",
+   "engine": "irodori"
+  },
+  {
    "re": "(?<![A-Za-z])AI(?![A-Za-z])",
    "to": "エーアイ",
    "why": "ニュース第5回",
@@ -2330,6 +2421,84 @@
    "yomi": "アンゴウ",
    "cat": "用語",
    "status": "ok"
+  },
+  {
+   "surface": "型式",
+   "yomi": "カタシキ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "実地調査",
+   "yomi": "ジッチチョウサ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "公安委員会",
+   "yomi": "コウアンイインカイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "承認",
+   "yomi": "ショウニン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "認定",
+   "yomi": "ニンテイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "保証書",
+   "yomi": "ホショウショ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "手数料",
+   "yomi": "テスウリョウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "不正改造",
+   "yomi": "フセイカイゾウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "標準",
+   "yomi": "ヒョウジュン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "手間代",
+   "yomi": "テマダイ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "募集",
+   "yomi": "ボシュウ",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "1500円",
+   "yomi": "センゴヒャクエン",
+   "cat": "用語",
+   "status": "ok"
+  },
+  {
+   "surface": "10分",
+   "yomi": "ジュップン",
+   "cat": "用語",
+   "status": "ok"
   }
  ],
  "history": [
@@ -2799,6 +2968,136 @@
    "for": "baku",
    "action": "バク：送る前に 暗号 → アンゴウ",
    "note": "ニュース第5回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "型式",
+   "yomi": "カタシキ",
+   "heard": "",
+   "line": "",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 型式 → カタシキ（アクセント 0） / バク：送る前に 型式 → カタシキ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "実地調査",
+   "yomi": "ジッチチョウサ",
+   "heard": "",
+   "line": "",
+   "for": "both",
+   "action": "ナギ：ユーザー辞書 実地調査 → ジッチチョウサ（アクセント 4） / バク：送る前に 実地調査 → ジッチチョウサ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "公安委員会",
+   "yomi": "コウアンイインカイ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 公安委員会 → コウアンイインカイ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "承認",
+   "yomi": "ショウニン",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 承認 → ショウニン",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "認定",
+   "yomi": "ニンテイ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 認定 → ニンテイ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "保証書",
+   "yomi": "ホショウショ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 保証書 → ホショウショ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "手数料",
+   "yomi": "テスウリョウ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 手数料 → テスウリョウ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "不正改造",
+   "yomi": "フセイカイゾウ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 不正改造 → フセイカイゾウ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "標準",
+   "yomi": "ヒョウジュン",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 標準 → ヒョウジュン",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "手間代",
+   "yomi": "テマダイ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 手間代 → テマダイ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "募集",
+   "yomi": "ボシュウ",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 募集 → ボシュウ",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "1500円",
+   "yomi": "センゴヒャクエン",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 1500円 → センゴヒャクエン",
+   "note": "ニュース第6回"
+  },
+  {
+   "date": "2026-11-23",
+   "surface": "10分",
+   "yomi": "ジュップン",
+   "heard": "",
+   "line": "",
+   "for": "baku",
+   "action": "バク：送る前に 10分 → ジュップン",
+   "note": "ニュース第6回"
   }
  ],
  "aivis_words": [
@@ -3040,6 +3339,24 @@
    "surface": "日替わり",
    "pronunciation": "ヒガワリ",
    "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "型式",
+   "pronunciation": "カタシキ",
+   "accent_type": 0,
+   "word_type": "COMMON_NOUN",
+   "priority": 8,
+   "status": "ok",
+   "accent_status": "確認済み"
+  },
+  {
+   "surface": "実地調査",
+   "pronunciation": "ジッチチョウサ",
+   "accent_type": 4,
    "word_type": "COMMON_NOUN",
    "priority": 8,
    "status": "ok",

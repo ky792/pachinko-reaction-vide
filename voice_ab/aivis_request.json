@@ -1,6 +1,6 @@
 {
  "action": "lines",
- "episode": "episodes/news05",
+ "episode": "episodes/news06",
  "who": "nagi",
  "model": {
   "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
@@ -9,9 +9,6 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "_try": 2,
- "kana_only": false,
- "only": [
-  "03_shikumi-003"
- ]
+ "_try": 1,
+ "kana_only": false
 }

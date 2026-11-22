@@ -21,6 +21,7 @@
   （牙狼v2）hane 羽根とメーター／battle 1stバトル／shingeki 震撃／nanairo 7色／yami 闇→光／tokei 長い変動
            byousoku 秒速／kasane 初代と重なる／vlight 光の枠／count3000 カウントアップ／kyokugen 1500vs7500／burst
   （ニュース第2回・図解のアニメ）lvmeter Lv.1〜Lv.4の札とメーター／flag 通常時が3つの部屋に分かれて玉が移る／hold4 保留4つ→やめどき→？
+  （ニュース第6回・図解のアニメ）tesuryo 手数料の札2枚／kentei 検定3年→認定／nyukae 入替の流れ（承認のときの実地調査を一部省略）／keisan 20台で−1,500円
   （ニュース第3回・図解のアニメ）santen 三店方式で景品が一周する／jikagai 別会社の看板がはがれて中身が店とつながる／count19 2007→2026のカウントと「19年ぶり」
 """
 import colorsys
@@ -91,8 +92,14 @@ FX = {
     "wakaru": {"span": 3, "marks": {"go": ["分かる人だけ"], "kaeru": ["普通に打って"], "nai": ["何の情報もない"], "aiko": ["合言葉"]}},
     "youbou": {"span": 8, "marks": {"n611": ["611店舗"], "tori": ["撮って"], "kentou": ["検討会"], "sho": ["是正要望書"], "n29": ["29店舗"],
                                     "again": ["もう一回"], "bare": ["バレる"], "betto": ["別途の対応"], "mada": ["示されてない"]}},
+    # ニュース第6回：入替の承認と認定の手数料（図解のアニメなので注釈は出さない）
+    "tesuryo": {"span": 4, "marks": {"shounin": ["の承認"], "n3900": ["3900円"], "dai": ["ちゃんと値段"], "nintei": ["もう1つが"], "n3030": ["3030円"]}},
+    "kentei": {"span": 4, "marks": {"k3": ["3年"], "kire": ["期限が切れる"], "nintei": ["認定を受ける"], "furui": ["島に残って"], "kigen": ["期限はある"]}},
+    "nyukae": {"span": 9, "marks": {"shorui": ["証明の写し"], "hosho": ["保証書"], "onaji": ["同じだって"], "kuru": ["店に来て"], "jicchi": ["実地調査っていう"],
+                                    "fusei": ["不正改造"], "habuku": ["一部省く"], "tameshi": ["試したら"], "heru": ["回数が減ったら"]}},
+    "keisan": {"span": 3, "marks": {"dai20": ["20台"], "o6000": ["6000円"], "n4500": ["4500円"], "s1500": ["1500円安く"], "toke": ["溶ける"], "keiei": ["経営"]}},
 }
-NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19", "okane", "wari", "busoku", "nana", "wakaru", "youbou"}
+NO_NOTE = {"tenraku", "fukkatsu", "lvmeter", "santen", "jikagai", "count19", "okane", "wari", "busoku", "nana", "wakaru", "youbou", "tesuryo", "kentei", "nyukae", "keisan"}
 
 
 # ---------------------------------------------------------------- 台本 → 時刻
@@ -301,6 +308,33 @@ def finish(fx, end, scene):
         add(_m(fx, "tori"), "shu", 0.16); add(_m(fx, "kentou"), "pon", 0.14)
         add(_m(fx, "sho"), "don", 0.26); add(_m(fx, "n29"), "impact", 0.22)
         add(_m(fx, "again"), "shu", 0.16); add(_m(fx, "bare"), "piko", 0.16); add(_m(fx, "betto"), "don", 0.2)
+    elif k == "tesuryo":
+        add(_m(fx, "shounin"), "pon", 0.15); add(_m(fx, "nintei"), "pon", 0.15)
+        for nm in ("n3900", "n3030"):
+            x = _m(fx, nm)
+            if x is not None:
+                add(x, "shu", 0.14)
+                for i in range(6):
+                    add(x + 0.12 * i, "tick", 0.11)
+                add(x + 0.85, "don", 0.22)
+        add(_m(fx, "dai"), "piko", 0.15)
+    elif k == "kentei":
+        g = _m(fx, "k3", default=s0 + 0.5)
+        for i in range(3):
+            add(g + 0.33 * (i + 1), "tick", 0.15)
+        add(_m(fx, "kire"), "impact", 0.22); add(_m(fx, "nintei"), "shu", 0.18)
+        add(_m(fx, "furui"), "pon", 0.15); add(_m(fx, "kigen"), "piko", 0.13)
+    elif k == "nyukae":
+        for nm in ("shorui", "hosho", "kuru"):
+            add(_m(fx, nm), "pon", 0.14)
+        add(_m(fx, "jicchi"), "shu", 0.15); add(_m(fx, "fusei"), "impact", 0.2)
+        add(_m(fx, "habuku"), "don", 0.26); add(_m(fx, "tameshi"), "piko", 0.13); add(_m(fx, "heru"), "pon", 0.15)
+    elif k == "keisan":
+        g = _m(fx, "dai20", default=s0 + 0.2)
+        for i in range(10):
+            add(g + 0.08 * i, "tick", 0.11)
+        add(_m(fx, "o6000"), "pon", 0.15); add(_m(fx, "n4500"), "pon", 0.17)
+        add(_m(fx, "s1500"), "impact", 0.24); add(_m(fx, "toke"), "shu", 0.14)
 
     bgm = FX[k].get("bgm")
     if bgm:
@@ -3662,6 +3696,366 @@ def _youbou(cv, t, fx):
         _put(cv, "どんな対応かは、まだ示されていない", 32, xs[4] - 120, cy + 120, a * k, color=(235, 220, 250), glow=(230, 120, 255), glow_a=0.2, weight="bold")
 
 
+# ---------------------------------------------------------------- ニュース第6回：入替の承認と認定の手数料・検定と認定・実地調査（図解のアニメ）
+SHOUNIN_C = (110, 190, 255)   # 入替の承認
+NINTEI_C = (255, 190, 70)     # 認定
+POLICE_C = (150, 160, 255)    # 実地調査（警察）
+
+
+def _yen(cv, v, size, cx, cy, a, base=(235, 240, 255), scale=1.0):
+    """金額（数字は1文字ずつの金属文字、「円」は普通の太字）"""
+    if a <= 0:
+        return
+    s = f"{int(v):,}"
+    adv = sum(int(size * (0.62 if ch.isdigit() else 0.34)) for ch in s) * scale
+    ys = size * 0.62 * scale
+    x0 = cx - (adv + ys) / 2
+    _mnum(cv, s, size, x0 + adv / 2, cy, a, scale, base=base)
+    _put(cv, "円", int(size * 0.55), x0 + adv + ys * 0.55, cy + size * 0.12 * scale, a, scale, color=base, glow=base, glow_a=0.25)
+
+
+def _strike(cv, x0, y0, x1, y1, k, a, col=RED_C, width=12):
+    if k <= 0 or a <= 0:
+        return
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.line((x0, y0, x0 + (x1 - x0) * k, y0 + (y1 - y0) * k), fill=col + (235,), width=width)
+    cv.alpha_composite(fade(lay, a))
+
+
+def _panel(w, h, col, title):
+    key = ("panel06", w, h, col, title)
+    if key not in _C:
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.rounded_rectangle((3, 3, w - 4, h - 4), 30, fill=(16, 20, 30, 236), outline=col + (255,), width=5)
+        d.rounded_rectangle((3, 3, w - 4, 96), 30, fill=col + (60,))
+        d.text((w / 2, 52), title, font=ui.font("black", 44), fill=col + (255,), anchor="mm")
+        _C[key] = im
+    return _C[key]
+
+
+def _badge(text, col):
+    key = ("badge06", text, col)
+    if key not in _C:
+        f = ui.font("black", 46)
+        w = int(ui.text_w(text, f)) + 50
+        im = Image.new("RGBA", (w, 76), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.rounded_rectangle((0, 0, w - 1, 75), 38, fill=col + (250,))
+        d.text((w / 2, 39), text, font=f, fill=(255, 255, 255, 255), anchor="mm")
+        _C[key] = im.rotate(8, resample=Image.BICUBIC, expand=True)
+    return _C[key]
+
+
+def _price_side(cv, t, a, cx, col, title, t_show, old, new, per_old, per_new, t_new, cut, t_per=None):
+    """手数料の札1枚：今の額 → 赤い線で消して、案の額へ数え下がる"""
+    if t_show is None or t < t_show - 0.1:
+        return
+    k = ease_out_back(min(1, max(0, (t - t_show + 0.1) / 0.45)))
+    al = a * min(1, (t - t_show + 0.1) / 0.25)
+    _pput(cv, _panel(780, 640, col, title), cx, 500 + 30 * (1 - k), al)
+    _put(cv, "今", 34, cx - 300, 330, al, color=(200, 205, 220), glow=col, glow_a=0.1, weight="bold")
+    on = t_new is not None and t >= t_new
+    dim = 0.55 if on else 1.0
+    _yen(cv, old, 104, cx, 330, al * dim)
+    if per_old:
+        _put(cv, f"＋1台ごとに {per_old}円", 40, cx, 420, al * dim, color=(225, 230, 240), glow=col, glow_a=0.15, weight="bold")
+    if t_per is not None and t >= t_per:
+        tp = t - t_per
+        _ring(cv, cx, 420, 200 + 80 * ease_out(prog(tp, 0, 0.5)), 4, col, al * (1 - prog(tp, 0, 0.6)), 0.3)
+        for i in range(6):
+            ti = t_per + 0.08 * i
+            if t >= ti:
+                kk = ease_out_back(min(1, (t - ti) / 0.25))
+                _pput(cv, _dai(36, col), cx - 125 + 50 * i, 485, al * min(1, (t - ti) / 0.15), 0.6 + 0.4 * kk)
+    if not on:
+        return
+    tl = t - t_new
+    _strike(cv, cx - 230, 348, cx + 250, 312, ease_out(min(1, tl / 0.25)), al)
+    if per_old:
+        _strike(cv, cx - 200, 428, cx + 210, 412, ease_out(min(1, max(0, tl - 0.1) / 0.25)), al, width=8)
+    kd = ease_in_out(min(1, tl / 0.8))
+    v = round(old - (old - new) * kd, -1)
+    ka = min(1, tl / 0.2)
+    _put(cv, "案", 34, cx - 300, 620, al * ka, color=col, glow=col, glow_a=0.3, weight="bold")
+    _yen(cv, v, 112, cx, 620, al * ka, base=col, scale=0.9 + 0.1 * ease_out_back(min(1, tl / 0.35)))
+    if per_new:
+        _put(cv, f"＋1台ごとに {per_new}円", 42, cx, 720, al * min(1, max(0, tl - 0.4) / 0.25), color=col, glow=col, glow_a=0.3)
+    if tl > 0.85:
+        tb = tl - 0.85
+        kb = ease_out_back(min(1, tb / 0.3))
+        _pput(cv, _badge(cut, RED_C), cx + 290, 550, al * min(1, tb / 0.15), 1.5 - 0.5 * kb)
+        if tb < 0.6:
+            cv.alpha_composite(fade(_edge(col), 0.22 * a * math.exp(-tb / 0.4)))
+
+
+def _tesuryo(cv, t, fx):
+    """手数料の札2枚：左＝入替の承認（5,200円＋1台40円 → 3,900円＋1台30円）、右＝認定（4,340円 → 3,030円）"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.64 * a)
+    s0 = fx["start"]
+    hd = ease_out(prog(t, s0, 0.4))
+    _put(cv, "手数料の標準額（風営法施行令の改正案）", 32, W / 2, 138, a * hd, color=(225, 230, 240), glow=GOLDC, glow_a=0.1, weight="bold")
+    _price_side(cv, t, a, W / 2 - 430, SHOUNIN_C, "入替の承認（1回）", _m(fx, "shounin", default=s0 + 0.2),
+                5200, 3900, 40, 30, _m(fx, "n3900"), "−25%", _m(fx, "dai"))
+    _price_side(cv, t, a, W / 2 + 430, NINTEI_C, "認定（1件）", _m(fx, "nintei"),
+                4340, 3030, 40, 30, _m(fx, "n3030"), "約−30%")
+
+
+def _kentei(cv, t, fx):
+    """検定の期限は3年（金の帯）→ 期限切れの旗 → 店が認定を受けると青い帯が伸びて、同じ台が島に残る"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.64 * a)
+    s0 = fx["start"]
+    m3 = _m(fx, "k3", default=s0 + 0.5)
+    m_kire = max(_m(fx, "kire", default=m3 + 1.0), m3 + 1.0)
+    m_nin = _m(fx, "nintei")
+    m_furui = _m(fx, "furui")
+    m_kigen = _m(fx, "kigen")
+    hd = ease_out(prog(t, s0, 0.4))
+    x0, x1, x2, y = 330, 960, 1590, 470
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.line((x0 - 30, y + 70, x2 + 60, y + 70), fill=(200, 205, 220, int(200 * hd)), width=4)
+    d.text((x0, y + 108), "検定の日", font=ui.font("bold", 30), fill=(220, 225, 235, int(235 * hd)), anchor="mm")
+    cv.alpha_composite(fade(lay, a))
+    # 検定の帯（0〜3年）
+    kb = ease_in_out(prog(t, m3, 1.0))
+    if kb > 0:
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        d.rounded_rectangle((x0, y - 34, x0 + (x1 - x0) * kb, y + 34), 16, fill=GOLDC + (235,))
+        for i in range(1, 4):
+            xi = x0 + (x1 - x0) * i / 3
+            if xi <= x0 + (x1 - x0) * kb + 1:
+                d.line((xi, y + 58, xi, y + 82), fill=(230, 235, 245, 230), width=4)
+                d.text((xi, y + 108), f"{i}年", font=ui.font("black", 32), fill=(235, 240, 250, 240), anchor="mm")
+        cv.alpha_composite(fade(lay, a))
+        _put(cv, "検定（型式ごと）", 40, (x0 + x1) / 2, y - 80, a * min(1, kb * 2), color=GOLDC, glow=GOLDC, glow_a=0.3)
+    # 台が帯の上を進む
+    if t >= m3:
+        if m_nin is None or t < m_nin:
+            px = x0 + (x1 - x0) * min(1, kb) - 70 * min(1, kb)
+            lit = 0.45 if t >= m_kire + 0.2 else 1.0
+        else:
+            kn = ease_in_out(prog(t, m_nin + 0.2, 1.4))
+            px = x1 + (x2 - x1) * 0.82 * kn
+            lit = 1.0
+        _pput(cv, _dai(64, (235, 240, 250), lit), px, y - 150, a)
+    # 期限切れの旗
+    if t >= m_kire:
+        tl = t - m_kire
+        k = ease_out_back(min(1, tl / 0.3))
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        top = y - 60 - 120 * k
+        d.line((x1, y + 40, x1, top), fill=RED_C + (255,), width=6)
+        d.polygon([(x1, top), (x1 + 120, top + 26), (x1, top + 52)], fill=RED_C + (245,))
+        cv.alpha_composite(fade(lay, a * min(1, tl / 0.15)))
+        _put(cv, "期限切れ", 40, x1 + 40, y + 160, a * min(1, tl / 0.2), color=RED_C, glow=RED_C, glow_a=0.3)
+        if tl < 0.6:
+            cv.alpha_composite(fade(_edge(RED_C), 0.25 * a * math.exp(-tl / 0.4)))
+    # 認定の帯
+    if m_nin is not None and t >= m_nin:
+        tl = t - m_nin
+        kn = ease_in_out(min(1, tl / 1.2))
+        lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+        xe = x1 + (x2 - x1) * kn
+        d.rounded_rectangle((x1 + 6, y - 34, xe, y + 34), 16, fill=SHOUNIN_C + (235,))
+        if kn > 0.9:   # 先は「…」（年数は言わない）
+            for i in range(3):
+                d.ellipse((x2 + 20 + 26 * i, y - 7, x2 + 34 + 26 * i, y + 7), fill=SHOUNIN_C + (220,))
+        cv.alpha_composite(fade(lay, a))
+        _put(cv, "認定（店が公安委員会に）", 40, (x1 + x2) / 2 + 20, y - 80, a * min(1, tl / 0.3), color=SHOUNIN_C, glow=SHOUNIN_C, glow_a=0.3)
+    if m_furui is not None and t >= m_furui:
+        tl = t - m_furui
+        k = ease_out(min(1, tl / 0.3))
+        _put(cv, "同じ台が、島に残る", 50, (x1 + x2) / 2 + 20, y + 230, a * k, color=(240, 245, 255), glow=SHOUNIN_C, glow_a=0.4)
+        px = x1 + (x2 - x1) * 0.82
+        _ring(cv, px, y - 150, 70 + 60 * ease_out(prog(tl, 0, 0.5)), 5, SHOUNIN_C, a * (1 - prog(tl, 0, 0.6)), 1.0)
+    if m_kigen is not None and t >= m_kigen:
+        tl = t - m_kigen
+        k = ease_out_back(min(1, tl / 0.3))
+        _put(cv, "？", 70, x2 + 70, y - 90 - 6 * math.sin(tl * 4), a * min(1, tl / 0.2), 0.7 + 0.3 * k, color=(255, 255, 255), glow=SHOUNIN_C, glow_a=0.5)
+        _put(cv, "認定にも期限", 32, x2 + 40, y + 160, a * min(1, tl / 0.25), color=(225, 235, 250), glow=SHOUNIN_C, glow_a=0.2, weight="bold")
+
+
+def _doc(col, w=70):
+    key = ("doc06", col, w)
+    if key not in _C:
+        h = int(w * 1.3)
+        im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+        d.polygon([(2, 2), (w - 22, 2), (w - 3, 21), (w - 3, h - 3), (2, h - 3)], fill=(245, 245, 250, 250), outline=col + (255,))
+        d.polygon([(w - 22, 2), (w - 22, 21), (w - 3, 21)], fill=col + (200,))
+        for i in range(4):
+            d.line((12, 32 + i * 14, w - 14, 32 + i * 14), fill=(150, 160, 180, 230), width=4)
+        _C[key] = im
+    return _C[key]
+
+
+def _lens(cv, cx, cy, r, a, col):
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=col + (255,), width=10, fill=col + (40,))
+    d.line((cx + r * 0.7, cy + r * 0.7, cx + r * 1.5, cy + r * 1.5), fill=col + (255,), width=18)
+    cv.alpha_composite(fade(lay, a))
+
+
+def _nyukae(cv, t, fx):
+    """入替の流れ：新台 → 書類（検定の写し・保証書）→ 承認（公安委員会）→ 営業。承認のときに、下の「実地調査（警察が店に来る）」とつながる。
+    「一部省く」で実地調査の箱が薄くなり「一部省略」のはんこ。省いた中身は描かない（都道府県警察の判断で、公表されていない）"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.64 * a)
+    s0 = fx["start"]
+    m_sho = _m(fx, "shorui", default=s0 + 0.5)
+    m_hos = _m(fx, "hosho", default=m_sho + 1.0)
+    m_ona = _m(fx, "onaji")
+    m_kuru = _m(fx, "kuru")
+    m_jic = _m(fx, "jicchi")
+    m_fus = _m(fx, "fusei")
+    m_hab = _m(fx, "habuku")
+    m_tam = _m(fx, "tameshi")
+    m_heru = _m(fx, "heru")
+    cy = 360
+    xs = [W / 2 - 660, W / 2 - 220, W / 2 + 220, W / 2 + 660]
+    jx, jy = xs[2], cy + 250
+    t_app = [s0 + 0.1, m_sho - 0.1, (m_ona + 0.8) if m_ona else None, (m_ona + 1.4) if m_ona else None]
+    t_jic = (m_kuru - 0.1) if m_kuru else None
+    nodes = [("新台", "店に届く", (235, 240, 250)), ("書類", "検定の写し・保証書", GOLDC), ("承認", "公安委員会", SHOUNIN_C),
+             ("営業", "打てるように", OK_C)]
+    hab_k = ease_out(prog(t, m_hab, 0.5)) if m_hab is not None else 0.0
+    lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
+    for i in range(3):
+        ta = t_app[i + 1]
+        if ta is None or t < ta - 0.2:
+            continue
+        k = ease_out(prog(t, ta - 0.2, 0.4))
+        _arrow(d, (xs[i] + 150, cy), (xs[i + 1] - 150, cy), (210, 215, 230), 0.9, 6, k)
+    if t_jic is not None and t >= t_jic:   # 承認 ⇔ 実地調査（承認のときに）
+        k = ease_out(prog(t, t_jic, 0.4))
+        al = 0.9 * (1 - 0.6 * hab_k)
+        _arrow(d, (jx - 40, cy + 85), (jx - 40, jy - 85), POLICE_C, al, 6, k, dash=True)
+        _arrow(d, (jx + 40, jy - 85), (jx + 40, cy + 85), POLICE_C, al, 6, k, dash=True)
+    cv.alpha_composite(fade(lay, a))
+    if t_jic is not None and t >= t_jic + 0.3:
+        _put(cv, "承認のときに", 30, jx + 170, (cy + jy) / 2, a * ease_out(prog(t, t_jic + 0.3, 0.3)) * (1 - 0.6 * hab_k),
+             color=POLICE_C, glow=POLICE_C, glow_a=0.2, weight="bold")
+    for i, (lab, sub, col) in enumerate(nodes):
+        ta = t_app[i]
+        if ta is None or t < ta:
+            continue
+        k = ease_out_back(min(1, (t - ta) / 0.4))
+        al = a * min(1, (t - ta) / 0.25)
+        w = 300 if i != 1 else 330
+        _pput(cv, _node(lab, sub, col, w, 150), xs[i], cy + 20 * (1 - k), al, 0.85 + 0.15 * k)
+        if i == 0:
+            _pput(cv, _dai(54, (235, 240, 250)), xs[0], cy - 150, al)
+    if t_jic is not None and t >= t_jic:
+        k = ease_out_back(min(1, (t - t_jic) / 0.4))
+        al = a * min(1, (t - t_jic) / 0.25) * (1 - 0.55 * hab_k)
+        _pput(cv, _node("実地調査", "警察が店に来る", POLICE_C, 320, 150), jx, jy + 20 * (1 - k), al, 0.85 + 0.15 * k)
+    # 書類と保証書が箱へ飛ぶ
+    for j, (tt, lab) in enumerate(((m_sho, "検定の写し"), (m_hos, "保証書"))):
+        if tt is None or t < tt:
+            continue
+        tl = t - tt
+        k = ease_in_out(min(1, tl / 0.6))
+        sx, sy = xs[0] + 40, cy - 125
+        ex, ey = xs[1] - 80 + 160 * j, cy - 125
+        x = sx + (ex - sx) * k; yy = sy + (ey - sy) * k - 90 * math.sin(math.pi * k)
+        _pput(cv, _doc(GOLDC if j == 0 else (255, 150, 120)), x, yy, a)
+        if k >= 1:
+            _put(cv, lab, 28, ex, ey - 72, a * min(1, (tl - 0.6) / 0.2), color=(240, 240, 250), glow=GOLDC, glow_a=0.2, weight="bold")
+    if m_ona is not None and t >= m_ona:
+        k = ease_out(prog(t, m_ona, 0.3))
+        _put(cv, "中身＝検定に通った型式", 34, xs[1], cy + 130, a * k, color=GOLDC, glow=GOLDC, glow_a=0.2, weight="bold")
+    # 実地調査：虫めがね
+    if m_jic is not None and t >= m_jic and hab_k < 1:
+        tl = t - m_jic
+        k = ease_out_back(min(1, tl / 0.35))
+        ox = 22 * math.sin(tl * 2.2)
+        _lens(cv, jx + 230 + ox, jy - 20, 44 * k, a * min(1, tl / 0.2) * (1 - hab_k), POLICE_C)
+    if m_fus is not None and t >= m_fus:
+        tl = t - m_fus
+        k = ease_out(min(1, tl / 0.3))
+        _put(cv, "不正改造を防ぐ", 40, jx - 400, jy, a * k * (1 - 0.6 * hab_k), color=(255, 255, 255), glow=RED_C, glow_a=0.4)
+        if tl < 0.6:
+            _ring(cv, jx, jy, 170 + 100 * ease_out(prog(tl, 0, 0.5)), 6, RED_C, a * (1 - prog(tl, 0, 0.6)), 0.6)
+    if m_hab is not None and t >= m_hab:
+        tl = t - m_hab
+        kk = ease_out(min(1, tl / 0.22))
+        st = _stamp("一部省略", GOLDC, 64).rotate(-9, resample=Image.BICUBIC, expand=True)
+        _pput(cv, st, jx, jy - 10, a * kk, 1.7 - 0.7 * kk)
+        if tl > 0.2:
+            cv.alpha_composite(fade(_edge(GOLDC), 0.25 * a * math.exp(-(tl - 0.2) / 0.45)))
+    if m_tam is not None and t >= m_tam:
+        k = ease_out(prog(t, m_tam, 0.3))
+        _put(cv, "一部の県で試した", 34, xs[3] + 20, jy - 30, a * k, color=(225, 235, 245), glow=OK_C, glow_a=0.2, weight="bold")
+        _put(cv, "→ 特に支障なし（報道）", 34, xs[3] + 20, jy + 20, a * k, color=(225, 235, 245), glow=OK_C, glow_a=0.2, weight="bold")
+    if m_heru is not None and t >= m_heru:
+        tl = t - m_heru
+        k = ease_out_back(min(1, tl / 0.3))
+        _put(cv, "警察の手間 ↓", 52, jx - 420, jy + 70, a * min(1, tl / 0.2), 0.8 + 0.2 * k, color=POLICE_C, glow=POLICE_C, glow_a=0.5)
+
+
+def _keisan(cv, t, fx):
+    """20台の入替で：5,200＋40×20＝6,000円 → 3,900＋30×20＝4,500円。差は「−1,500円」。「溶ける」で硬貨が落ちて消える"""
+    a = _env(t, fx["start"], fx["end"], 0.3, 0.5)
+    if a <= 0:
+        return
+    _black(cv, 0.64 * a)
+    s0 = fx["start"]
+    m20 = _m(fx, "dai20", default=s0 + 0.2)
+    m_o = _m(fx, "o6000", default=m20 + 1.0)
+    m_n = _m(fx, "n4500", default=m_o + 0.8)
+    m_s = _m(fx, "s1500", default=m_n + 1.0)
+    m_t = _m(fx, "toke")
+    m_k = _m(fx, "keiei")
+    # 20台
+    for i in range(20):
+        ti = m20 + 0.04 * i
+        r, c = divmod(i, 10)
+        x = W / 2 - 4.5 * 82 + c * 82; y = 165 + r * 95
+        lit = 1.0 if t >= ti else 0.35
+        k = ease_out_back(min(1, max(0, (t - ti) / 0.25)))
+        _pput(cv, _dai(54, SHOUNIN_C, lit), x, y, a * ease_out(prog(t, s0, 0.4)), 0.85 + 0.15 * k if t >= ti else 0.85)
+    if t >= m20 + 0.8:
+        _put(cv, "20台を入れ替える承認", 34, W / 2, 352, a * ease_out(prog(t, m20 + 0.8, 0.3)), color=SHOUNIN_C, glow=SHOUNIN_C, glow_a=0.2, weight="bold")
+    rows = [("今", "5,200 ＋ 40 × 20 ＝", 6000, (230, 235, 245), m_o, 440), ("案", "3,900 ＋ 30 × 20 ＝", 4500, SHOUNIN_C, m_n, 560)]
+    for lab, fml, v, col, tt, y in rows:
+        if t < tt - 0.5:
+            continue
+        k = ease_out(prog(t, tt - 0.5, 0.35))
+        dim = 0.6 if (lab == "今" and t >= m_n) else 1.0
+        _put(cv, lab, 40, W / 2 - 640, y, a * k * dim, color=col, glow=col, glow_a=0.2)
+        _put(cv, fml, 54, W / 2 - 240, y, a * k * dim, color=col, glow=col, glow_a=0.15, weight="bold")
+        if t >= tt:
+            kk = ease_out_back(min(1, (t - tt) / 0.35))
+            _yen(cv, v, 96, W / 2 + 330, y, a * min(1, (t - tt) / 0.2) * dim, base=col, scale=0.8 + 0.2 * kk)
+    if t >= m_n:
+        _strike(cv, W / 2 + 180, 458, W / 2 + 490, 422, ease_out(min(1, (t - m_n) / 0.25)), a, width=10)
+    if t >= m_s:
+        tl = t - m_s
+        k = ease_out_back(min(1, tl / 0.35))
+        _put(cv, "1回で", 40, W / 2 - 330, 700, a * min(1, tl / 0.2), color=(230, 235, 245), glow=RED_C, glow_a=0.2)
+        _mput(cv, "−1,500円", 108, W / 2 + 60, 700, a * min(1, tl / 0.2), 0.7 + 0.3 * k, base=RED_C, glow_a=0.6)
+        if tl < 0.6:
+            cv.alpha_composite(fade(_edge(RED_C), 0.25 * a * math.exp(-tl / 0.4)))
+    if m_t is not None and t >= m_t:
+        tl = t - m_t
+        for i in range(6):
+            ti = 0.1 * i
+            if tl < ti:
+                continue
+            u = tl - ti
+            x = W / 2 + 470 + (i - 2.5) * 40
+            y = 640 + 260 * u * u
+            _pput(cv, _coin(52), x, y, a * max(0, 1 - u / 1.1))
+    if m_k is not None and t >= m_k:
+        k = ease_out(prog(t, m_k, 0.3))
+        _put(cv, "店の経営が楽になる額ではない", 36, W / 2, 805, a * k, color=(225, 230, 240), glow=GOLDC, glow_a=0.1, weight="bold")
+
+
 DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _inazuma3, "door": _door3,
         "bousou": _bousou, "flame": _flame, "knife": _knife, "yari": _yari, "kourin": _kourin, "omedetou": _omedetou,
         "lever": _lever, "rebabu": _rebabu, "honeycomb": _honeycomb, "emergency": _emergency, "spiral": _spiral,
@@ -3671,7 +4065,8 @@ DRAW = {"garo_ken": _garo_ken2, "fog": _fog2, "konjiki": _konjiki3, "inazuma": _
         "lvmeter": _lvmeter, "flag": _flag, "hold4": _hold4,
         "santen": _santen, "jikagai": _jikagai, "count19": _count19,
         "okane": _okane, "wari": _wari, "busoku": _busoku,
-        "nana": _nana, "wakaru": _wakaru, "youbou": _youbou}
+        "nana": _nana, "wakaru": _wakaru, "youbou": _youbou,
+        "tesuryo": _tesuryo, "kentei": _kentei, "nyukae": _nyukae, "keisan": _keisan}
 
 
 NOTE = "※演出はイメージです。実機の演出ではありません"
