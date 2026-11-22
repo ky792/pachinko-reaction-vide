@@ -660,15 +660,23 @@ const Comments: React.FC = () => {
   );
 };
 
-// ───────── パチンコ台（57〜67）
+// ───────── 発明品：パチンコ演出再現機 BKP-01（57.01〜67）
+// バクが休憩室に持ち込んだ自作マシン。落ちてくる→レバーで起動→盤面が点く→演出を再現→最後はプスン……
+const BALL = 'radial-gradient(circle at 30% 30%, white, #9aa6b8 60%, #5d6678)';
 const PachiBoard: React.FC = () => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const from = S(57) - 4,
+  const from = S(57.01) - 4,
     to = E(67) + 6;
-  const inS = spring({frame: f - from, fps, config: {damping: 14}});
+  const land = from + 16;
+  const inS = spring({frame: f - from, fps, config: {damping: 11, stiffness: 120}});
   const outP = interpolate(f, [to - 8, to], [1, 0], clamp);
-  // 出来事のタイミング
+  // 起動
+  const boot = M(57.01, 0.82);
+  const ready = boot + 34;
+  const powered = f >= boot;
+  const on = f >= ready;
+  // 出来事のタイミング（セリフに合わせる）
   const ball58 = M(58, 0.05),
     reel58 = M(58, 0.3),
     rush58 = M(58, 0.55),
@@ -679,90 +687,250 @@ const PachiBoard: React.FC = () => {
     reach = M(61, 0.45),
     crash = M(61, 0.82);
   const migi = S(64),
-    hoNone = S(65);
-  const shake = (f >= S(60) && f < S(60) + 14) || (f >= crash && f < crash + 16) ? Math.sin(f * 2.6) * 10 : 0;
-  // リールの絵柄
-  let reels = ['7', '3', '5'];
-  if (f >= reel58 - 12 && f < reel58) reels = ['?', '?', '?'].map((_, i) => '1234567'[(f + i * 3) % 7]);
-  if (f >= reel58) reels = ['7', '7', '7'];
-  if (f >= S(61)) reels = ['7', '1', '7'];
-  if (f >= reach && f < crash) reels = ['7', '1234567'[Math.floor(f / 2) % 7], '7'];
-  if (f >= crash) reels = ['7', '7', '7'];
-  if (f >= hoNone) reels = ['3', '8', '1'];
-  // 保留ランプ
+    hoNone = S(65),
+    puff = M(65, 0.55);
+  const landShake = f >= land && f < land + 10 ? Math.sin((f - land) * 3) * (10 - (f - land)) * 1.6 : 0;
+  const shake = landShake + ((f >= S(60) && f < S(60) + 14) || (f >= crash && f < crash + 16) ? Math.sin(f * 2.6) * 10 : 0) + (f >= puff && f < puff + 12 ? Math.sin(f * 4) * 5 : 0);
+  // ドキドキ度（0〜1）：メーターの針
+  const spike = (at: number, v: number, len = 40) => (f >= at ? v * Math.max(0, 1 - (f - at) / len) : 0);
+  let doki = on ? 0.18 + 0.03 * Math.sin(f / 7) : 0;
+  doki = Math.max(doki, spike(reel58, 0.55), spike(rush58, 0.7, 60), spike(yaku59, 0.8), spike(sakibare, 0.62, 30));
+  if (f >= hoChange && f < crash) doki = Math.max(doki, interpolate(f, [hoChange, crash], [0.68, 0.95], clamp) + 0.03 * Math.sin(f * 1.7));
+  doki = Math.max(doki, spike(crash, 1.04, 70));
+  if (f >= migi && f < hoNone) doki = 0.86 + 0.08 * Math.sin(f / 3);
+  if (f >= hoNone) doki = interpolate(f, [hoNone, hoNone + 30], [0.5, 0.06], clamp);
+  doki = Math.min(1.05, doki);
+  // 液晶のリール（縦に回る）
+  type R = {sym: string; spin: boolean};
+  let reels: R[] = ['7', '3', '5'].map((sym) => ({sym, spin: false}));
+  if (f >= ball58 + 10 && f < reel58) reels = reels.map((r) => ({...r, spin: true}));
+  if (f >= reel58) reels = ['7', '7', '7'].map((sym) => ({sym, spin: false}));
+  if (f >= S(61)) reels = ['7', '1', '7'].map((sym) => ({sym, spin: false}));
+  if (f >= reach && f < crash) reels = [{sym: '7', spin: false}, {sym: '7', spin: true}, {sym: '7', spin: false}];
+  if (f >= crash) reels = ['7', '7', '7'].map((sym) => ({sym, spin: false}));
+  if (f >= hoNone) reels = ['3', '8', '1'].map((sym) => ({sym, spin: false}));
+  const win = f >= crash && f < hoNone;
+  // 保留
   let hold = f >= ball58 + 10 ? 4 : 2;
   if (f >= hoNone) hold = f >= M(65, 0.85) ? 1 : 0;
-  const holdColor = (i: number) => (f >= hoChange && f < crash && i === 0 ? RED : '#4fc3ff');
+  const hc = (i: number) => {
+    if (!(f >= hoChange && f < crash && i === 0)) return '#4fc3ff';
+    const k = f - hoChange;
+    return k < 6 ? '#4fc3ff' : k < 12 ? '#3fe08a' : RED;
+  };
   // 連チャン
   const rensa = f >= migi ? Math.min(12, Math.floor((f - migi) / 10) + 1) : f >= rush58 ? Math.min(3, Math.floor((f - rush58) / 8) + 1) : 0;
   const flash = (at: number, len = 10) => (f >= at && f < at + len ? 1 - (f - at) / len : 0);
-  const fl = Math.max(flash(sakibare, 12), flash(crash, 14), flash(yaku59, 12), flash(reel58, 8));
-  const yakuY = f >= crash ? interpolate(f, [crash, crash + 6], [-160, 0], clamp) : f >= yaku59 ? interpolate(f, [yaku59, yaku59 + 6], [-160, 0], clamp) : -160;
+  const fl = Math.max(flash(sakibare, 12), flash(crash, 14), flash(yaku59, 12), flash(reel58, 8), flash(ready, 10));
+  const yakuAt = f >= crash ? crash : yaku59;
+  const yakuDrop = spring({frame: f - yakuAt, fps, config: {damping: 6, stiffness: 180}});
   const yakuShown = (f >= yaku59 && f < S(60) + 20) || (f >= crash && f < S(63));
+  const dim = !powered ? 0.25 : !on ? interpolate(f, [boot, ready], [0.25, 1], clamp) : f >= puff ? 0.55 : 1;
+  // 釘（盤面の下半分に格子）
+  const pins: [number, number][] = [];
+  for (let r = 0; r < 6; r++) for (let c = 0; c < 11; c++) pins.push([45 + c * 56 + (r % 2) * 28, 372 + r * 34]);
+  // 盤面のランプ（ふちを回る）
+  const lamps = 22;
+  const lampOn = (i: number) => {
+    if (!on || f >= puff) return 0.15;
+    if (fl > 0 || win || (f >= migi && f < hoNone)) return (Math.floor(f / 3) + i) % 2 ? 1 : 0.35;
+    return (Math.floor(f / 4) % lamps === i || (Math.floor(f / 4) + 11) % lamps === i) ? 1 : 0.3;
+  };
+  const rainbow = (i: number) => (win || (f >= migi && f < hoNone) ? `hsl(${(i * 30 + f * 12) % 360} 95% 60%)` : '#ffd23f');
+  // 打ち出しの玉：左のレールを回って落ちる
+  const flying = on && f < hoNone ? [0, 1, 2] : [];
+  const railBall = (k: number) => {
+    const t = ((f - ready + k * 13) % 40) / 40; // 0〜1
+    if (t < 0.45) {
+      const a = Math.PI * (1 - t / 0.45); // 左下→上→右
+      return {x: 330 + Math.cos(a) * 300, y: 300 - Math.sin(a) * 270};
+    }
+    const u = (t - 0.45) / 0.55;
+    const x = 330 + Math.sin(u * 14 + k) * 70 * (1 - u) + (k - 1) * 30 * (1 - u);
+    return {x, y: 30 + u * 450};
+  };
+  // 風車
+  const windmill = (x: number, y: number, dir: number) => (
+    <div style={{position: 'absolute', left: x - 30, top: y - 30, width: 60, height: 60, rotate: `${(on ? f * 14 : 0) * dir}deg`}}>
+      {[0, 1, 2, 3].map((i) => (
+        <div key={i} style={{position: 'absolute', left: 26, top: 0, width: 8, height: 30, borderRadius: 4, background: '#e8eefc', rotate: `${i * 90}deg`, transformOrigin: '4px 30px'}} />
+      ))}
+      <div style={{position: 'absolute', left: 22, top: 22, width: 16, height: 16, borderRadius: '50%', background: '#c8a24a'}} />
+    </div>
+  );
+  const needle = interpolate(doki, [0, 1], [-80, 80]) + (doki > 0.98 ? Math.sin(f * 3) * 4 : 0);
   return (
-    <div style={{position: 'absolute', left: 960 - 380, top: 40, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -800}px`, scale: '0.84', transformOrigin: '50% 0', zIndex: 3}}>
+    <div style={{position: 'absolute', left: 960 - 380, top: 40, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -900}px`, scale: '0.84', transformOrigin: '50% 0', zIndex: 3}}>
+      {/* アンテナ */}
+      <div style={{position: 'absolute', left: 560, top: -46, width: 8, height: 56, background: '#6a7088', rotate: '12deg'}} />
+      <div style={{position: 'absolute', left: 562, top: -66, width: 26, height: 26, borderRadius: '50%', background: powered && Math.floor(f / 8) % 2 ? RED : '#7a2a2a', boxShadow: powered && Math.floor(f / 8) % 2 ? '0 0 20px #ff4040' : 'none'}} />
+      {/* 左：ドキドキ計測メーター */}
+      <div style={{position: 'absolute', left: -250, top: 70, width: 220, height: 190, borderRadius: 20, background: 'linear-gradient(#e9edf6,#b9c3da)', border: '6px solid #3a4470', boxShadow: '0 10px 20px rgba(0,0,0,0.35)'}}>
+        <div style={{position: 'absolute', left: 20, top: 18, width: 168, height: 84, borderRadius: '84px 84px 0 0', background: `conic-gradient(from -90deg at 50% 100%, #4fc3ff 0deg, #3fe08a 60deg, ${YELLOW} 110deg, ${RED} 180deg, transparent 180deg)`, opacity: 0.85}} />
+        <div style={{position: 'absolute', left: 104 - 4, top: 102 - 78, width: 8, height: 80, background: '#1b1f33', borderRadius: 4, transformOrigin: '4px 78px', rotate: `${needle}deg`}} />
+        <div style={{position: 'absolute', left: 92, top: 90, width: 24, height: 24, borderRadius: '50%', background: '#1b1f33'}} />
+        <div style={{position: 'absolute', left: 0, right: 0, top: 122, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 26, color: BLUE_DEEP}}>ドキドキ計測</div>
+        <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: 24, color: doki > 0.9 ? RED : '#3a4470'}}>{Math.round(doki * 100)}%</div>
+      </div>
+      <div style={{position: 'absolute', left: -32, top: 160, width: 40, height: 14, background: '#5a6078', borderRadius: 7}} />
+      {/* 右：脳汁タンク */}
+      <div style={{position: 'absolute', left: 790, top: 60, width: 130, height: 330, borderRadius: 30, border: '6px solid #3a4470', background: 'rgba(220,235,255,0.55)', overflow: 'hidden', boxShadow: '0 10px 20px rgba(0,0,0,0.3)'}}>
+        <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: `${8 + (rensa / 12) * 82}%`, background: 'linear-gradient(#ffb25a,#ff6a2b)', transition: 'none'}} />
+        {rensa > 0
+          ? Array.from({length: 7}).map((_, i) => {
+              const t = ((f + i * 11) % 44) / 44;
+              return <div key={i} style={{position: 'absolute', left: 16 + ((i * 37) % 90), bottom: `${t * (8 + (rensa / 12) * 82)}%`, width: 12, height: 12, borderRadius: '50%', border: '3px solid rgba(255,255,255,0.8)'}} />;
+            })
+          : null}
+        <div style={{position: 'absolute', left: 0, right: 0, top: 10, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 24, color: BLUE_DEEP}}>脳汁</div>
+      </div>
+      <div style={{position: 'absolute', left: 742, top: 210, width: 52, height: 14, background: '#5a6078', borderRadius: 7}} />
       {/* 筐体 */}
-      <div style={{position: 'absolute', inset: 0, borderRadius: 60, background: 'linear-gradient(160deg,#dfe6f5,#8d9bc0)', border: '10px solid #3a4470', boxShadow: '0 30px 60px rgba(0,0,0,0.5)'}} />
+      <div style={{position: 'absolute', inset: 0, borderRadius: 60, background: 'linear-gradient(160deg,#e6ebf5,#8d9bc0)', border: '10px solid #3a4470', boxShadow: '0 30px 60px rgba(0,0,0,0.5)'}} />
+      {/* ボルト */}
+      {[[28, 28], [712, 28], [28, 712], [712, 712], [28, 370], [712, 370]].map(([x, y], i) => (
+        <div key={i} style={{position: 'absolute', left: x - 9, top: y - 9, width: 18, height: 18, borderRadius: '50%', background: 'radial-gradient(circle at 35% 35%, #fff, #8a93a8)', border: '2px solid #4a5068'}} />
+      ))}
       {/* 盤面 */}
-      <div style={{position: 'absolute', left: 50, top: 40, width: 660, height: 600, borderRadius: '48% 48% 40% 40%', background: 'radial-gradient(circle at 50% 40%, #2a3a8a, #0d1440)', border: '8px solid #c8a24a', overflow: 'hidden'}}>
+      <div style={{position: 'absolute', left: 50, top: 40, width: 660, height: 600, borderRadius: '48% 48% 40% 40%', background: 'radial-gradient(circle at 50% 40%, #2a3a8a, #0d1440)', border: '8px solid #c8a24a', overflow: 'hidden', filter: `brightness(${dim})`}}>
+        {/* レール */}
+        <div style={{position: 'absolute', left: 30, top: 30, width: 600, height: 540, borderRadius: '50% 50% 0 0', border: '5px solid rgba(200,162,74,0.7)', borderBottom: 'none'}} />
         {/* 釘 */}
-        {Array.from({length: 60}).map((_, i) => (
-          <div key={i} style={{position: 'absolute', left: 40 + ((i * 97) % 580), top: 380 + ((i * 53) % 190), width: 8, height: 8, borderRadius: '50%', background: '#d9d9d9'}} />
+        {pins.map(([x, y], i) => (
+          <div key={i} style={{position: 'absolute', left: x, top: y, width: 8, height: 8, borderRadius: '50%', background: '#e2e2e2', boxShadow: '0 0 3px #fff'}} />
         ))}
+        {windmill(150, 345, 1)}
+        {windmill(510, 345, -1)}
         {/* 液晶 */}
-        <div style={{position: 'absolute', left: 150, top: 90, width: 360, height: 230, borderRadius: 16, background: '#05081c', border: '6px solid #6a7ad0', display: 'flex', alignItems: 'center', justifyContent: 'space-around', fontFamily: JP, fontWeight: 900, fontSize: 120, color: f >= crash && f < hoNone ? YELLOW : 'white', textShadow: f >= crash && f < hoNone ? '0 0 30px #ffd23f' : 'none'}}>
-          {reels.map((r, i) => (
-            <span key={i}>{r}</span>
-          ))}
+        <div style={{position: 'absolute', left: 150, top: 90, width: 360, height: 230, borderRadius: 16, background: '#05081c', border: '6px solid #6a7ad0', overflow: 'hidden', boxShadow: win ? '0 0 40px #ffd23f' : 'none'}}>
+          {!on && powered ? (
+            <div style={{position: 'absolute', inset: 0, fontFamily: 'monospace', color: '#7fffb0', fontSize: 26, padding: 18}}>
+              BKP-01 BOOT...
+              <div style={{marginTop: 18, height: 18, width: 300, border: '2px solid #7fffb0'}}>
+                <div style={{height: '100%', width: `${interpolate(f, [boot, ready - 4], [0, 100], clamp)}%`, background: '#7fffb0'}} />
+              </div>
+            </div>
+          ) : on ? (
+            <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-around'}}>
+              {reels.map((r, i) => {
+                const col = '1234567';
+                const off = r.spin ? (f * 38 + i * 50) % (col.length * 120) : 0;
+                return (
+                  <div key={i} style={{position: 'relative', width: 100, height: 140, overflow: 'hidden'}}>
+                    {r.spin ? (
+                      <div style={{position: 'absolute', top: -off, left: 0, width: 100, filter: 'blur(2px)'}}>
+                        {[...col, ...col].map((c, j) => (
+                          <div key={j} style={{height: 120, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 110, color: 'white', lineHeight: '120px'}}>{c}</div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div style={{textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 120, lineHeight: '140px', color: win ? YELLOW : 'white', textShadow: win ? '0 0 30px #ffd23f' : 'none', scale: `${win ? 1 + 0.06 * Math.sin(f / 2) : 1}`}}>{r.sym}</div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : null}
+          {/* 走査線 */}
+          {powered ? <div style={{position: 'absolute', inset: 0, background: 'repeating-linear-gradient(transparent 0 3px, rgba(255,255,255,0.05) 3px 4px)'}} /> : null}
         </div>
-        {f >= reach && f < crash ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: 'white', background: RED, borderRadius: 10}}>激アツ</div> : null}
-        {f >= rush58 && f < S(59) ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: BLUE_DEEP, background: YELLOW, borderRadius: 10}}>RUSH突入！</div> : null}
+        {f >= reach && f < crash ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: 'white', background: RED, borderRadius: 10, scale: `${1 + 0.08 * Math.sin(f / 1.5)}`}}>激アツ</div> : null}
+        {f >= rush58 && f < S(59) ? <div style={{position: 'absolute', left: 170, top: 262, width: 320, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 44, color: BLUE_DEEP, background: YELLOW, borderRadius: 10, scale: `${pop(f, rush58, fps)}`}}>RUSH突入！</div> : null}
         {/* 保留 */}
-        <div style={{position: 'absolute', left: 230, top: 350, display: 'flex', gap: 18, opacity: f >= reach && f < crash ? 0 : 1}}>
+        <div style={{position: 'absolute', left: 230, top: 330, display: 'flex', gap: 18, opacity: f >= reach && f < crash ? 0 : 1}}>
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} style={{width: 34, height: 34, borderRadius: '50%', background: i < hold ? holdColor(i) : '#2a3058', boxShadow: i < hold ? `0 0 12px ${holdColor(i)}` : 'none', scale: `${f >= hoChange && f < crash && i === 0 ? 1.4 : 1}`}} />
+            <div key={i} style={{width: 34, height: 34, borderRadius: '50%', background: i < hold ? hc(i) : '#2a3058', boxShadow: i < hold ? `0 0 14px ${hc(i)}` : 'none', scale: `${f >= hoChange && f < crash && i === 0 ? 1.3 + 0.15 * Math.sin(f) : i < hold && f >= ball58 + 10 + i * 3 && f < ball58 + 16 + i * 3 ? 1.3 : 1}`}} />
           ))}
         </div>
         {/* ヘソ */}
-        <div style={{position: 'absolute', left: 300, top: 470, width: 60, height: 30, borderRadius: '0 0 30px 30px', background: '#c8a24a'}} />
-        {/* 玉 */}
-        {f >= ball58 && f < ball58 + 14 ? <div style={{position: 'absolute', left: 318, top: interpolate(f, [ball58, ball58 + 14], [0, 470]), width: 24, height: 24, borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, white, #9aa)'}} /> : null}
-        {/* 右打ち */}
+        <div style={{position: 'absolute', left: 300, top: 470, width: 60, height: 30, borderRadius: '0 0 30px 30px', background: '#c8a24a', boxShadow: f >= ball58 + 12 && f < ball58 + 20 ? '0 0 24px #ffd23f' : 'none'}} />
+        {/* アタッカー（右下） */}
+        <div style={{position: 'absolute', left: 470, top: 520, width: 120, height: 28, borderRadius: 6, background: '#c8a24a', overflow: 'hidden'}}>
+          <div style={{position: 'absolute', left: 10, right: 10, top: 6, height: 16, background: '#05081c', scale: `${f >= migi && f < hoNone ? 1 : 0} 1`}} />
+        </div>
+        {/* 打ち出しの玉 */}
+        {flying.map((k) => {
+          const p = railBall(k);
+          return <div key={k} style={{position: 'absolute', left: p.x - 11, top: p.y - 11, width: 22, height: 22, borderRadius: '50%', background: BALL}} />;
+        })}
+        {/* 最初の1玉：ヘソに入る */}
+        {f >= ball58 && f < ball58 + 14 ? <div style={{position: 'absolute', left: 318 + Math.sin((f - ball58) * 1.4) * 20, top: interpolate(f, [ball58, ball58 + 14], [0, 470]), width: 24, height: 24, borderRadius: '50%', background: BALL}} /> : null}
+        {/* 右打ち：右ルートを流れてアタッカーへ */}
         {f >= migi && f < hoNone
-          ? Array.from({length: 10}).map((_, i) => {
-              const t = ((f - migi + i * 4) % 30) / 30;
-              return <div key={i} style={{position: 'absolute', left: 600, top: 40 + t * 520, width: 22, height: 22, borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, white, #9aa)'}} />;
+          ? Array.from({length: 12}).map((_, i) => {
+              const t = ((f - migi + i * 4) % 36) / 36;
+              const y = 40 + t * 490;
+              const x = 610 - (t > 0.8 ? (t - 0.8) * 5 * 80 : 0);
+              return <div key={i} style={{position: 'absolute', left: x, top: y, width: 22, height: 22, borderRadius: '50%', background: BALL}} />;
             })
           : null}
         {/* 回らない：釘ではじかれる玉 */}
         {f >= hoNone
           ? Array.from({length: 6}).map((_, i) => {
               const t = ((f - hoNone + i * 9) % 54) / 54;
-              return <div key={i} style={{position: 'absolute', left: 300 + Math.sin(t * 9 + i) * 140 * t, top: 380 + t * 220, width: 20, height: 20, borderRadius: '50%', background: 'radial-gradient(circle at 30% 30%, white, #9aa)'}} />;
+              return <div key={i} style={{position: 'absolute', left: 300 + Math.sin(t * 9 + i) * 140 * t, top: 380 + t * 220, width: 20, height: 20, borderRadius: '50%', background: BALL}} />;
             })
           : null}
-        {/* 役物 */}
+        {/* 役物（光の筋つき） */}
         {yakuShown ? (
-          <div style={{position: 'absolute', left: 200, top: 20 + yakuY, width: 260, height: 90, borderRadius: 20, background: 'linear-gradient(#ffe36a,#ff9a1f)', border: '6px solid #8a4a00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: JP, fontWeight: 900, fontSize: 48, color: '#7a2a00'}}>
-            ★ 役物 ★
-          </div>
+          <>
+            <div style={{position: 'absolute', left: 330 - 300, top: 70 - 300, width: 600, height: 600, background: 'repeating-conic-gradient(rgba(255,230,120,0.35) 0deg 10deg, transparent 10deg 24deg)', rotate: `${f * 3}deg`, borderRadius: '50%'}} />
+            <div style={{position: 'absolute', left: 200, top: interpolate(yakuDrop, [0, 1], [-160, 24]), width: 260, height: 90, borderRadius: 20, background: 'linear-gradient(#ffe36a,#ff9a1f)', border: '6px solid #8a4a00', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: JP, fontWeight: 900, fontSize: 48, color: '#7a2a00'}}>
+              ★ 役物 ★
+            </div>
+          </>
         ) : null}
         <div style={{position: 'absolute', inset: 0, background: 'white', opacity: fl * 0.75}} />
       </div>
+      {/* 盤面のふちのランプ */}
+      {Array.from({length: lamps}).map((_, i) => {
+        const a = Math.PI * (0.05 + (i / (lamps - 1)) * 0.9);
+        const x = 380 - Math.cos(a) * 352,
+          y = 330 - Math.sin(a) * 300;
+        return <div key={i} style={{position: 'absolute', left: x - 9, top: y - 9, width: 18, height: 18, borderRadius: '50%', background: rainbow(i), opacity: lampOn(i), boxShadow: lampOn(i) > 0.9 ? `0 0 14px ${rainbow(i)}` : 'none'}} />;
+      })}
+      {/* 下の帯：連チャンカウンター＋銘板 */}
+      <div style={{position: 'absolute', left: 60, top: 652, width: 230, height: 56, borderRadius: 10, background: '#05081c', border: '4px solid #6a7ad0', fontFamily: 'monospace', fontWeight: 900, fontSize: 34, color: rensa ? '#ff5a3a' : '#40465e', display: 'flex', alignItems: 'center', justifyContent: 'center', textShadow: rensa ? '0 0 10px #ff5a3a' : 'none'}}>
+        {String(rensa).padStart(2, '0')} 連
+      </div>
+      <div style={{position: 'absolute', left: 310, top: 652, width: 390, height: 56, borderRadius: 10, background: 'linear-gradient(#d7b45a,#9a7a28)', border: '3px solid #6a5418', fontFamily: JP, fontWeight: 900, color: '#3a2a08', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', lineHeight: 1.1}}>
+        <div style={{fontSize: 16, letterSpacing: 4}}>BAKU WORKS 試作機 BKP-01</div>
+        <div style={{fontSize: 24}}>パチンコ演出再現機</div>
+      </div>
+      {/* 起動レバー（右側） */}
+      <div style={{position: 'absolute', left: 742, top: 470, width: 26, height: 26, borderRadius: '50%', background: '#4a5068'}} />
+      <div style={{position: 'absolute', left: 750, top: 400, width: 12, height: 90, background: '#8a93a8', transformOrigin: '6px 84px', rotate: `${powered ? 70 : 0}deg`}}>
+        <div style={{position: 'absolute', left: -12, top: -26, width: 36, height: 36, borderRadius: '50%', background: RED, boxShadow: '0 3px 0 #8a0f16'}} />
+      </div>
+      {/* 起動の火花 */}
+      {f >= boot && f < boot + 14
+        ? Array.from({length: 10}).map((_, i) => {
+            const t = (f - boot) / 14;
+            const a = (i / 10) * Math.PI * 2;
+            return <div key={i} style={{position: 'absolute', left: 760 + Math.cos(a) * 90 * t, top: 420 + Math.sin(a) * 90 * t, width: 10, height: 10, borderRadius: '50%', background: YELLOW, opacity: 1 - t, boxShadow: '0 0 10px #ffd23f'}} />;
+          })
+        : null}
+      {/* 着地の土煙／起動の蒸気／最後のプスン */}
+      {[[land, 22, 760, 'rgba(230,230,240,0.8)'], [boot + 4, 30, -10, 'rgba(255,255,255,0.75)'], [puff, 50, -20, 'rgba(90,90,100,0.75)']].map(([at, len, y, c], k) =>
+        f >= (at as number) && f < (at as number) + (len as number)
+          ? Array.from({length: 6}).map((_, i) => {
+              const t = (f - (at as number)) / (len as number);
+              return <div key={`${k}${i}`} style={{position: 'absolute', left: 100 + i * 110 + Math.sin(i * 7) * 30, top: (y as number) - t * 70, width: 90 + t * 80, height: 90 + t * 80, borderRadius: '50%', background: c as string, opacity: 1 - t, translate: '-50% -50%'}} />;
+            })
+          : null,
+      )}
+      {f >= puff && f < puff + 40 ? <div style={{position: 'absolute', left: 250, top: -40, fontFamily: JP, fontWeight: 900, fontSize: 70, color: '#c9cfe0', WebkitTextStroke: '8px #0b1f4d', paintOrder: 'stroke fill', rotate: '-6deg'}}>プスン……</div> : null}
       {/* 吹き出し文字 */}
-      {f >= sakibare && f < sakibare + 26 ? <div style={{position: 'absolute', left: -120, top: 60, fontFamily: JP, fontWeight: 900, fontSize: 80, color: '#7fd3ff', WebkitTextStroke: '8px #0b1f4d', paintOrder: 'stroke fill', rotate: '-10deg'}}>キュイン！</div> : null}
+      {f >= ready - 4 && f < ready + 22 ? <div style={{position: 'absolute', left: 230, top: 280, fontFamily: JP, fontWeight: 900, fontSize: 90, color: '#7fffb0', WebkitTextStroke: '9px #0b1f4d', paintOrder: 'stroke fill', scale: `${pop(f, ready - 4, fps)}`}}>起動！</div> : null}
+      {f >= sakibare && f < sakibare + 26 ? <div style={{position: 'absolute', left: -170, top: 300, fontFamily: JP, fontWeight: 900, fontSize: 80, color: '#7fd3ff', WebkitTextStroke: '8px #0b1f4d', paintOrder: 'stroke fill', rotate: '-10deg'}}>キュイン！</div> : null}
       {(f >= crash && f < crash + 30) || (f >= yaku59 && f < yaku59 + 26) ? <div style={{position: 'absolute', right: -160, top: 80, fontFamily: JP, fontWeight: 900, fontSize: 84, color: YELLOW, WebkitTextStroke: '9px #0b1f4d', paintOrder: 'stroke fill', rotate: '8deg'}}>ガシャーン！</div> : null}
       {f >= ijo58 && f < S(59) ? <div style={{position: 'absolute', right: -140, top: 260, border: `9px solid ${RED}`, color: RED, background: 'rgba(255,255,255,0.9)', borderRadius: 16, fontFamily: JP, fontWeight: 900, fontSize: 80, padding: '0 20px', rotate: '10deg', scale: `${interpolate(pop(f, ijo58, fps), [0, 1], [2.4, 1])}`}}>以上！</div> : null}
       {f >= S(62) && f < E(62) ? <div style={{position: 'absolute', left: -150, top: 300, fontFamily: JP, fontWeight: 900, fontSize: 96, color: '#ff5a8a', WebkitTextStroke: '9px white', paintOrder: 'stroke fill', scale: `${pop(f, S(62), fps)}`}}>本能！</div> : null}
-      {rensa > 0 && f < hoNone ? (
-        <div style={{position: 'absolute', right: -170, top: 420, fontFamily: JP, fontWeight: 900, fontSize: 64, color: RED, WebkitTextStroke: '8px white', paintOrder: 'stroke fill'}}>
-          {rensa}連！{f >= migi ? <div style={{fontSize: 44, color: '#ff5a8a'}}>脳汁ドバー</div> : null}
-        </div>
-      ) : null}
+      {f >= migi && f < hoNone ? <div style={{position: 'absolute', left: 780, top: 400, fontFamily: JP, fontWeight: 900, fontSize: 46, color: '#ff5a8a', WebkitTextStroke: '7px white', paintOrder: 'stroke fill', rotate: '6deg'}}>脳汁ドバー</div> : null}
       {f >= hoNone ? <div style={{position: 'absolute', left: -170, top: 430, fontFamily: JP, fontWeight: 900, fontSize: 52, color: '#9fb4ff', WebkitTextStroke: '7px #0b1f4d', paintOrder: 'stroke fill', rotate: '-6deg'}}>保留4個が<br />遠い……</div> : null}
-      <div style={{position: 'absolute', left: 30, bottom: 12, fontFamily: JP, fontWeight: 700, fontSize: 22, color: '#2a3058'}}>※イメージです。実在の機種ではありません</div>
+      <div style={{position: 'absolute', left: 30, top: 716, fontFamily: JP, fontWeight: 700, fontSize: 22, color: '#2a3058'}}>※イメージです。実在の機種ではありません</div>
       {f >= S(67) ? (
-        <div style={{position: 'absolute', left: -60, right: -60, bottom: -30, display: 'flex', justifyContent: 'space-around'}}>
+        <div style={{position: 'absolute', left: -60, right: -60, bottom: -40, display: 'flex', justifyContent: 'space-around'}}>
           {['キュイン派', 'ガキン派', 'ピキーン派'].map((t, i) => (
             <div key={t} style={{fontFamily: JP, fontWeight: 900, fontSize: 38, color: 'white', background: [BLUE, ORANGE, '#c03aff'][i], padding: '8px 22px', borderRadius: 30, scale: `${pop(f, S(67) + 6 + i * 8, fps)}`}}>
               {t}
@@ -792,7 +960,7 @@ export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
   {from: S(55) - 4, to: E(56) + 6, el: <Bulb />},
   {from: S(56.03) - 4, to: E(56.10) + 6, el: <History />},
   {from: S(56.11) - 4, to: E(56.14) + 6, el: <Stairs />},
-  {from: S(57) - 4, to: E(67) + 6, el: <PachiBoard />},
+  {from: S(57.01) - 4, to: E(67) + 6, el: <PachiBoard />},
   {from: S(68) - 4, to: E(69) + 6, el: <Choice />},
   {from: S(77) - 4, to: E(78) + 6, el: <Hint />},
   {from: S(79) - 4, to: E(81) + 6, el: <Justice />},
@@ -817,6 +985,11 @@ export const Beats: React.FC = () => {
 // 効果音のタイミング
 export const beatSounds = (): {at: number; src: string; vol: number}[] => {
   const out = BEATS.map((b) => ({at: b.from + 2, src: 'se_pop', vol: 0.35}));
+  // 発明品 BKP-01：着地・起動・準備完了・最後のプスン
+  out.push({at: S(57.01) + 12, src: 'se_res', vol: 0.4});
+  out.push({at: Math.round(M(57.01, 0.82)), src: 'px_start', vol: 0.4});
+  out.push({at: Math.round(M(57.01, 0.82)) + 30, src: 'px_pass', vol: 0.35});
+  out.push({at: Math.round(M(65, 0.55)), src: 'px_fail', vol: 0.35});
   out.push({at: Math.round(M(58, 0.3)), src: 'px_coin', vol: 0.3});
   out.push({at: Math.round(M(61, 0.04)), src: 'px_start', vol: 0.35});
   out.push({at: Math.round(M(61, 0.82)), src: 'se_emphasis', vol: 0.5});

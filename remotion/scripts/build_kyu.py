@@ -16,15 +16,15 @@ for raw in (EP / 'k01.txt').read_text(encoding='utf-8').splitlines():
     if m:
         lines.append({'who': 'nagi' if m.group(1) == 'ナギ' else 'baku', 'text': re.sub(r'《([^|》]+)\|[^》]+》', r'\1', m.group(2))})
 # 行の呼び名（演出表・字幕・Beats の S(n) はこの番号で書く。声のファイルは k01-<実際の行順>）
-LABELS = [1, 1.1, 1.2, 1.3, 1.4, 1.5] + list(range(2, 57)) + [round(56 + k / 100, 2) for k in range(1, 16)] + list(range(57, 101)) + list(range(102, 110))
-assert len(lines) == len(LABELS) == 128
+LABELS = [1, 1.1, 1.2, 1.3, 1.4, 1.5] + list(range(2, 57)) + [round(56 + k / 100, 2) for k in range(1, 16)] + [57, 57.01, 57.02] + list(range(58, 101)) + list(range(102, 110))
+assert len(lines) == len(LABELS) == 130
 # 字幕の改行は手で整えた版（reaction 版 episodes/kyu001v2）を使う
 _rj = json.loads((ROOT / 'episodes/kyu001/telop.json').read_text(encoding='utf-8'))
 for L, ln in zip(LABELS, lines):
     ln['text'] = _rj[str(L)]
 
 # 表情（素材名）
-FACE = """1 normal;56.01 smug;56.02 surprised;56.03 normal;56.04 smug;56.05 normal;56.06 normal;56.07 surprised;56.08 smug;56.09 normal;56.10 sweat;56.11 normal;56.12 smug;56.13 surprised;56.14 happy;56.15 happy;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;
+FACE = """1 normal;57.01 excited;57.02 confused;56.01 smug;56.02 surprised;56.03 normal;56.04 smug;56.05 normal;56.06 normal;56.07 surprised;56.08 smug;56.09 normal;56.10 sweat;56.11 normal;56.12 smug;56.13 surprised;56.14 happy;56.15 happy;2 surprised;3 normal;4 normal;5 surprised;6 smug;7 excited;8 excited;9 surprised;10 excited;11 confused;12 happy;13 smug;14 smug;15 angry;16 confused;17 happy;18 surprised;
 19 happy;20 happy;21 happy;22 happy;23 smug;24 smug;25 surprised;26 confused;27 excited;28 excited;29 confused;30 smug;31 normal;32 angry;33 sweat;34 confused;35 surprised;36 confused;37 sweat;38 normal;39 smug;40 smug;
 41 confused;42 smug;43 happy;44 happy;45 confused;46 excited;47 excited;48 confused;49 angry;50 smug;51 confused;52 happy;53 excited;54 happy;55 normal;56 smug;
 57 happy;58 excited;59 happy;60 excited;61 excited;62 normal;63 normal;64 excited;65 smug;66 normal;67 happy;
@@ -43,7 +43,7 @@ FOCUS = {15: ('baku', 1.35), 31: ('nagi', 1.3), 32: ('baku', 1.45), 49: ('baku',
 FX = {7: 'lines', 8: 'lines', 10: 'lines', 27: 'lines', 46: 'lines', 47: 'lines', 58: 'lines', 61: 'lines', 64: 'lines', 74: 'lines', 75: 'lines',
       106: 'gloom', 81: 'dark', 82: 'dark'}
 # 色付きのキーワード（字幕の中で強調）
-KEY = {56.03: ['何万枚'], 56.05: ['2004年'], 56.08: ['ART'], 56.09: ['2400枚'], 56.13: ['工夫の跡'], 56.14: ['努力の歴史'],14: ['お金を入れ続ける'], 24: ['探偵'], 27: ['就活'], 32: ['圧迫面接'], 35: ['参加賞'], 46: ['試用期間'], 47: ['正社員'], 49: ['即クビ'],
+KEY = {57.01: ['パチンコ演出再現機'],56.03: ['何万枚'], 56.05: ['2004年'], 56.08: ['ART'], 56.09: ['2400枚'], 56.13: ['工夫の跡'], 56.14: ['努力の歴史'],14: ['お金を入れ続ける'], 24: ['探偵'], 27: ['就活'], 32: ['圧迫面接'], 35: ['参加賞'], 46: ['試用期間'], 47: ['正社員'], 49: ['即クビ'],
        50: ['労働基準監督署'], 56: ['燃えるタイプ'], 40: ['両立'], 65: ['保留4個'], 84: ['ジャグラー'], 1: ['機械の修理'], 1.1: ['修理担当'], 1.4: ['スロットの気分'], 99: ['スマスロ'], 100: ['修理'], 103: ['そんな日はない'], 104: ['立派な研究'], 105: ['所長']}
 # 資料パネル：key → (最初の行, 最後の行)
 PANELS = [('terms1', 7, 9), ('terms2', 10, 11), ('flow_intro', 19, 26), ('pixel_job', 27, 35), ('flow_at', 41, 44), ('pixel_job2', 45, 50),
