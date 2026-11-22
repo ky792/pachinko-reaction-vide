@@ -42,7 +42,9 @@ jobs:
           python scripts/reading/precheck.py "$EP"
           TRIM=$(python -c "import json;print('1' if json.load(open('voice_ab/check_request.json')).get('trim') else '')")
           # trim: true なら、台詞の後ろに勝手に付いた声を先に切り落とす（scripts/reading/trim_tail.py）
-          if [ -n "$TRIM" ]; then python scripts/reading/trim_tail.py "$EP" --model "$MODEL" ${ONLY:+--only "$ONLY"}; fi
+          # trim_only があれば、切り落とすのはその行だけ（新しく作った声だけ。検査済みの声にもう一度かけると頭や語尾を削ることがある・2026-11-23）
+          TRIM_ONLY=$(python -c "import json;print(','.join(json.load(open('voice_ab/check_request.json')).get('trim_only',[])))")
+          if [ -n "$TRIM" ]; then T="${TRIM_ONLY:-$ONLY}"; python scripts/reading/trim_tail.py "$EP" --model "$MODEL" ${T:+--only "$T"}; fi
           python scripts/reading/asr_check.py "$EP" --model "$MODEL" ${ONLY:+--only "$ONLY"}
           # 関門：台本にない声が1行でも残っていたら、結果を保存したうえでこのジョブを失敗にする
           python scripts/reading/voice_gate.py "$EP" || echo "GATE_FAILED=1" >> $GITHUB_ENV
