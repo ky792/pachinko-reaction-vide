@@ -75,7 +75,7 @@ const Logo: React.FC<{t: number}> = ({t}) => {
           <div style={{fontSize: 220, color: YELLOW, WebkitTextStroke: `20px ${BLUE_DEEP}`, paintOrder: 'stroke fill', textShadow: `0 14px 0 ${BLUE_DEEP}`, scale: `${interpolate(b, [0, 1], [2.2, 1])}`, opacity: Math.min(1, b * 2), rotate: '-3deg', marginTop: 4}}>
             休憩室
           </div>
-          <div style={{fontSize: 40, letterSpacing: 6, color: 'white', marginTop: 18, fontFamily: '"Noto Sans", sans-serif'}}>
+          <div style={{fontSize: 40, letterSpacing: 6, color: 'white', marginTop: 44, fontFamily: '"Noto Sans", sans-serif'}}>
             {en.slice(0, typed)}
             <span style={{opacity: Math.floor(t / 6) % 2 ? 1 : 0}}>▌</span>
           </div>
@@ -104,10 +104,10 @@ const Cast: React.FC<{t: number}> = ({t}) => {
     return (
       <div style={{position: 'absolute', top: 0, bottom: 0, [nagi ? 'left' : 'right']: 0, width: 980, translate: `${(1 - p) * (nagi ? -1100 : 1100)}px 0`, background: nagi ? `linear-gradient(120deg, ${BLUE_DEEP}, ${BLUE})` : `linear-gradient(240deg, #7a2a00, ${ORANGE})`, clipPath: nagi ? 'polygon(0 0, 100% 0, 88% 100%, 0 100%)' : 'polygon(12% 0, 100% 0, 100% 100%, 0 100%)', overflow: 'hidden'} as React.CSSProperties}>
         <div style={{position: 'absolute', [nagi ? 'left' : 'right']: -40, top: 40, fontFamily: '"Noto Sans", sans-serif', fontWeight: 900, fontSize: 260, color: 'rgba(255,255,255,0.08)', whiteSpace: 'nowrap'} as React.CSSProperties}>{nagi ? 'NAGI' : 'BAKU'}</div>
-        <Img src={staticFile(`kyu/${who}_${nagi ? 'smug' : 'excited'}.png`)} style={{position: 'absolute', bottom: -30, [nagi ? 'left' : 'right']: 60, height: 640, scale: `${0.9 + 0.1 * p}`} as React.CSSProperties} />
-        <div style={{position: 'absolute', top: 300, [nagi ? 'left' : 'right']: 560, width: 380, fontFamily: JP, fontWeight: 900, color: 'white', textAlign: nagi ? 'left' : 'right'} as React.CSSProperties}>
+        <Img src={staticFile(`kyu/${who}_${nagi ? 'smug' : 'excited'}.png`)} style={{position: 'absolute', bottom: -30, [nagi ? 'left' : 'right']: 0, height: 560, scale: `${0.9 + 0.1 * p}`} as React.CSSProperties} />
+        <div style={{position: 'absolute', top: 300, [nagi ? 'left' : 'right']: 470, width: 400, fontFamily: JP, fontWeight: 900, color: 'white', textAlign: nagi ? 'left' : 'right'} as React.CSSProperties}>
           <div style={{fontSize: 130, WebkitTextStroke: '10px rgba(0,0,0,0.35)', paintOrder: 'stroke fill'}}>{nagi ? 'ナギ' : 'バク'}</div>
-          <div style={{fontSize: 34, marginTop: 10, lineHeight: 1.4, opacity: interpolate(p, [0.6, 1], [0, 1], clamp)}}>
+          <div style={{fontSize: 32, marginTop: 10, lineHeight: 1.4, whiteSpace: 'nowrap', opacity: interpolate(p, [0.6, 1], [0, 1], clamp)}}>
             {nagi ? <>研究所の頭脳。<br />いつも目は閉じたまま</> : <>研究所のメカニック。<br />パチンコ・パチスロ大好き</>}
           </div>
         </div>
