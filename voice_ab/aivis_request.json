@@ -11,6 +11,8 @@
  "intonation": 0.65,
  "kana_only": false,
  "only": [
-  "k01-103"
+  "k01-098",
+  "k01-100",
+  "k01-101"
  ]
 }
