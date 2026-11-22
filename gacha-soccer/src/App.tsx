@@ -241,7 +241,6 @@ export default function App() {
               else runRef.current.ctx.config.forceGod = true;
             } else forceRef.current[k] = true;
             sfx.play('ticket');
-            window.alert(k === 'scout' ? '次のドローでスカウト券が出ます' : '次のドローでGOD ELEVENが発生します');
           }}
           onBack={() => setScreen('title')}
         />

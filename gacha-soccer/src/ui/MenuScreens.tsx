@@ -163,6 +163,8 @@ export function SettingsScreen({
   const st = save.settings;
   const dbg = save.debug;
   const [taps, setTaps] = useState(0);
+  const [armReset, setArmReset] = useState(false);
+  const [forced, setForced] = useState('');
   const set = (patch: Partial<SaveData['settings']>) => onChange({ ...save, settings: { ...st, ...patch } });
   const setD = (patch: Partial<SaveData['debug']>) => onChange({ ...save, debug: { ...dbg, ...patch } });
   return (
@@ -248,10 +250,10 @@ export function SettingsScreen({
               <input type="text" value={dbg.fixedSeed} onChange={(e) => setD({ fixedSeed: e.target.value })} style={{ width: 140 }} placeholder="例: 12345" />
             </div>
             <div className="row" style={{ marginTop: 8 }}>
-              <button className="btn small gold" onClick={() => onForce('scout')}>
+              <button className="btn small gold" onClick={() => { onForce('scout'); setForced('次のドローでスカウト券が出ます'); }}>
                 次のドローでスカウト券
               </button>
-              <button className="btn small gold" onClick={() => onForce('god')}>
+              <button className="btn small gold" onClick={() => { onForce('god'); setForced('次のドローでGOD ELEVENが発生します'); }}>
                 次のドローでGOD
               </button>
               <button className="btn small" onClick={() => setD({ scoutDenom: 500, godDenom: 8192 })}>
@@ -261,6 +263,7 @@ export function SettingsScreen({
             <div className="small muted" style={{ marginTop: 6 }}>
               強制発生は「次に新しいチームを作る／引き直す」ときの1ドローに適用されます。
             </div>
+            {forced && <div className="pill gold" style={{ marginTop: 6 }}>✔ {forced}</div>}
           </>
         )}
         <div className="list-item">
@@ -269,10 +272,15 @@ export function SettingsScreen({
           <button
             className="btn small danger"
             onClick={() => {
-              if (window.confirm('戦績・実績・天井カウント・設定をすべて削除しますか？')) onReset();
+              if (!armReset) {
+                setArmReset(true);
+                return;
+              }
+              setArmReset(false);
+              onReset();
             }}
           >
-            削除
+            {armReset ? 'もう一度押すと全削除' : '削除'}
           </button>
         </div>
       </div>

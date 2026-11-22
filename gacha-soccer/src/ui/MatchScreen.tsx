@@ -48,6 +48,7 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
   const [scorePop, setScorePop] = useState(0);
   const [hitstop, setHitstop] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [armQuit, setArmQuit] = useState(false);
   const [, force] = useState(0);
   const evRef = useRef({ ev: engine.s.events[0], prev: null as MatchEvent | null, start: performance.now(), dur: 600 });
   const timer = useRef<number | null>(null);
@@ -348,10 +349,11 @@ export function MatchScreen({ config, speed, fastFx, muted, onSpeed, onMute, onF
             <button
               className="btn danger small"
               onClick={() => {
-                if (window.confirm('試合を放棄しますか？（記録されません）')) onQuit();
+                if (armQuit) onQuit();
+                else setArmQuit(true);
               }}
             >
-              試合放棄
+              {armQuit ? 'もう一度押すと放棄（記録されません）' : '試合放棄'}
             </button>
           </div>
         </Modal>
