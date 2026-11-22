@@ -8,7 +8,7 @@ import numpy as np
 FPS = 30
 ROOT = Path(__file__).resolve().parent.parent
 EP, WAV, OUT = ROOT / 'episodes/kyu001', ROOT / 'public/kyu001', ROOT / 'src/data/kyu001.json'
-GAP, TITLE_LEN, EYE_LEN, TAIL, END_CARD = 5, 80, 46, 30, 120
+GAP, TITLE_LEN, EYE_LEN, TAIL, END_CARD = 5, 250, 46, 30, 120   # TITLE_LEN＝オープニング（ロゴ→キャラ紹介→回タイトル。src/Opening.tsx の OP_LEN と同じ）
 
 lines = []
 for raw in (EP / 'k01.txt').read_text(encoding='utf-8').splitlines():

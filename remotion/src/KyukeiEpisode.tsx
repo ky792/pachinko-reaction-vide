@@ -17,6 +17,7 @@ import data from './data/kyu001.json';
 import {SlotFlow, FlowMode} from './SlotFlow';
 import {PixelJob, pixelSounds} from './PixelJob';
 import {Beats, beatSounds} from './Beats';
+import {Opening, OP_LEN, openingSounds} from './Opening';
 
 // ───────────────────────── 共通
 const BLUE = '#2a6cff';
@@ -202,7 +203,7 @@ const Room: React.FC = () => {
     const local = frame - line.start;
     shake = Math.sin(local * 2.7) * interpolate(local, [0, 14], [14, 0], clamp);
   }
-  const titleDim = interpolate(frame, [data.title_at, data.title_at + 6, data.title_at + 70, data.title_at + 80], [0, 1, 1, 0], clamp);
+  const titleDim = 0;   // オープニングの暗幕は Opening.tsx 側
   return (
     <AbsoluteFill style={{transformOrigin: '0 0', scale: `${z}`, translate: `${tx + shake}px ${ty}px`}}>
       <Img src={staticFile('kyu/room.jpg')} style={{width: 1920, height: 1080}} />
@@ -249,7 +250,7 @@ const Telop: React.FC = () => {
   const frame = useCurrentFrame();
   const line = lineAt(frame);
   if (!line || line.ochi || frame > line.end + 30) return null;
-  if (frame >= data.title_at && frame < data.title_at + 80) return null;
+  if (frame >= data.title_at && frame < data.title_at + OP_LEN) return null;
   const local = frame - line.start;
   const p = interpolate(local, [0, 5], [0, 1], {...clamp, easing: OUT});
   const nagi = line.who === 'nagi';
@@ -741,9 +742,9 @@ const Panels: React.FC = () => {
 const ChapterChip: React.FC = () => {
   const frame = useCurrentFrame();
   const {fps} = useVideoConfig();
-  if (frame < data.title_at + 80 || frame >= data.end_card) return null;
+  if (frame < data.title_at + OP_LEN || frame >= data.end_card) return null;
   const c = chapterAt(frame);
-  const s = spring({frame: frame - (c.noeye ? data.title_at + 80 : c.at + 40), fps, config: {damping: 14}});
+  const s = spring({frame: frame - (c.noeye ? data.title_at + OP_LEN : c.at + 40), fps, config: {damping: 14}});
   return (
     <div
       style={{
@@ -873,7 +874,7 @@ const EndCard: React.FC = () => {
 // ───────────────────────── 音
 const OCHI = LINES.find((l) => l.ochi)!;
 const bgmVolume = (f: number) => {
-  const base = f >= data.title_at && f < data.title_at + 80 ? 0.16 : 0.09;  // 休憩室BGM（ユーザーがGeminiで作成・2026-11-22）。前の曲より約3.5dB大きいので係数を下げ、体感は少し大きめ
+  const base = f >= data.title_at && f < data.title_at + OP_LEN ? 0.16 : 0.09;  // 休憩室BGM（ユーザーがGeminiで作成・2026-11-22）。前の曲より約3.5dB大きいので係数を下げ、体感は少し大きめ
   if (f >= data.bgm_cut && f < data.bgm_resume) return interpolate(f, [data.bgm_cut, data.bgm_cut + 12], [base, 0], clamp);
   if (f >= data.bgm_resume) return interpolate(f, [data.bgm_resume, data.bgm_resume + 20], [0, base], clamp);
   return base;
@@ -891,7 +892,7 @@ export const KyukeiEpisode: React.FC = () => {
       {CHAPTERS.filter((c) => !c.noeye).map((c) => (
         <Eyecatch key={c.at} at={c.at} mark={c.mark} title={c.title} />
       ))}
-      <Title />
+      <Opening at={data.title_at} />
       <EndCard />
 
       <Audio src={staticFile('kyu/bgm.mp3')} loop volume={bgmVolume} />
@@ -915,9 +916,11 @@ export const KyukeiEpisode: React.FC = () => {
           <Audio src={staticFile('kyu/se_chapter.wav')} volume={0.5} />
         </Sequence>
       ))}
-      <Sequence from={data.title_at} durationInFrames={60}>
-        <Audio src={staticFile('kyu/se_res.wav')} volume={0.6} />
-      </Sequence>
+      {openingSounds(data.title_at).map((o, i) => (
+        <Sequence key={`op${i}`} from={o.at} durationInFrames={60}>
+          <Audio src={staticFile(`kyu/${o.src}.wav`)} volume={o.vol} />
+        </Sequence>
+      ))}
       <Sequence from={data.bgm_cut} durationInFrames={40}>
         <Audio src={staticFile('kyu/se_bgm_cut.wav')} volume={0.5} />
       </Sequence>
