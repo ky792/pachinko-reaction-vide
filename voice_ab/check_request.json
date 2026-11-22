@@ -1,9 +1,6 @@
 {
- "episode": "episodes/news05",
+ "episode": "episodes/news06",
  "model": "large-v3-turbo",
- "_run": "news05-fix-1",
- "_try": 2,
- "only": [
-  "03_shikumi-003"
- ]
+ "_run": "news06-all",
+ "_try": 1
 }
