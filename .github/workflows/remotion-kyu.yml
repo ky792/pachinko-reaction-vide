@@ -17,7 +17,7 @@ concurrency:
 
 env:
   COMP: Kyu001
-  STILLS: "7400 7800 8300 8800 9000 9350 9550 9700"
+  STILLS: "7400 9000 9350 9700"
 
 jobs:
   stills:

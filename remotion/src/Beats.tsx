@@ -401,13 +401,13 @@ const History: React.FC = () => {
           const on = f >= r.at;
           const sc = on ? pop(f, r.at, fps) : 0;
           return (
-            <div key={r.era} style={{position: 'relative', height: 108, display: 'flex', alignItems: 'center', gap: 24, opacity: on ? 1 : 0.15}}>
+            <div key={r.era} style={{position: 'relative', height: r.sub ? 140 : 104, display: 'flex', alignItems: 'center', gap: 20, opacity: on ? 1 : 0.15}}>
               <div style={{position: 'absolute', left: -54, width: 40, height: 40, borderRadius: '50%', background: on ? r.c : '#ddd', border: '6px solid white', boxShadow: '0 2px 6px rgba(0,0,0,0.25)', scale: `${on ? sc : 1}`}} />
-              <div style={{width: 150, fontSize: 52, fontWeight: 900, color: r.c}}>{r.era}</div>
-              <div style={{width: 290, fontSize: 32, color: '#7a7f8c'}}>{r.when}</div>
-              <div style={{fontSize: 44, color: BLUE_DEEP, scale: `${on ? sc : 1}`, transformOrigin: '0 50%'}}>
+              <div style={{width: 140, fontSize: 50, fontWeight: 900, color: r.c}}>{r.era}</div>
+              <div style={{width: 260, fontSize: 30, color: '#7a7f8c'}}>{r.when}</div>
+              <div style={{fontSize: 42, color: BLUE_DEEP, whiteSpace: 'nowrap', scale: `${on ? sc : 1}`, transformOrigin: '0 50%'}}>
                 {r.what}
-                {r.sub && f >= r.sub.at ? <div style={{fontSize: 34, color: RED, marginTop: 2}}>{r.sub.text}</div> : null}
+                {r.sub && f >= r.sub.at ? <div style={{fontSize: 34, color: RED, marginTop: 4}}>{r.sub.text}</div> : null}
               </div>
             </div>
           );
@@ -424,28 +424,28 @@ const Stairs: React.FC = () => {
   const steps = ['CZ', '前兆', 'モード', '上乗せ'];
   return (
     <Card from={S(56.11) - 4} to={E(56.14) + 6} look="paper" title="上限があるなら、山場を刻む" width={1080}>
-      <div style={{position: 'relative', height: 400}}>
-        <div style={{position: 'absolute', right: 20, top: 6, padding: '6px 18px', border: `5px dashed ${RED}`, color: RED, fontSize: 36, borderRadius: 12, opacity: f >= S(56.11) + 6 ? 1 : 0}}>出せる量の上限</div>
+      <div style={{position: 'relative', height: 460}}>
+        <div style={{position: 'absolute', left: 0, right: 0, top: 0, textAlign: 'center', height: 100}}>
+          {f >= S(56.13) ? <Big at={S(56.13) + 8} text="複雑さ ＝ 工夫の跡" color={ORANGE} size={80} /> : null}
+        </div>
+        {f >= S(56.14) ? (
+          <Pop at={S(56.14) + 6} style={{position: 'absolute', left: 0, right: 0, top: 104, textAlign: 'center', fontSize: 48, color: RED}}>
+            呪文 ＝ メーカーの努力の歴史
+          </Pop>
+        ) : null}
+        <div style={{position: 'absolute', left: 0, right: 0, top: 210, borderTop: `5px dashed ${RED}`, opacity: f >= S(56.11) + 6 ? 1 : 0}}>
+          <div style={{position: 'absolute', right: 0, top: -50, color: RED, fontSize: 34, background: '#fffaf0', padding: '0 10px'}}>出せる量の上限</div>
+        </div>
         {steps.map((t, i) => {
           const at = M(56.12, 0.12 + i * 0.18);
           const on = f >= at;
           return (
-            <div key={t} style={{position: 'absolute', left: 30 + i * 230, bottom: 0, width: 210, height: 90 + i * 80, background: on ? [BLUE_DEEP, '#3d5fb0', ORANGE, RED][i] : 'transparent', borderRadius: '14px 14px 0 0',
-              color: 'white', fontSize: 46, fontWeight: 900, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 14, scale: `1 ${on ? pop(f, at, fps) : 0}`, transformOrigin: '50% 100%'}}>
+            <div key={t} style={{position: 'absolute', left: 40 + i * 240, bottom: 0, width: 220, height: 70 + i * 52, background: on ? [BLUE_DEEP, '#3d5fb0', ORANGE, RED][i] : 'transparent', borderRadius: '14px 14px 0 0',
+              color: 'white', fontSize: 44, fontWeight: 900, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', paddingTop: 10, scale: `1 ${on ? pop(f, at, fps) : 0}`, transformOrigin: '50% 100%'}}>
               {t}
             </div>
           );
         })}
-        {f >= S(56.13) ? (
-          <div style={{position: 'absolute', left: 0, right: 0, top: 70, textAlign: 'center'}}>
-            <Big at={S(56.13) + 8} text="複雑さ ＝ 工夫の跡" color={ORANGE} size={84} />
-          </div>
-        ) : null}
-        {f >= S(56.14) ? (
-          <Pop at={S(56.14) + 6} style={{position: 'absolute', left: 0, right: 0, top: 170, textAlign: 'center', fontSize: 52, color: RED}}>
-            呪文 ＝ メーカーの努力の歴史
-          </Pop>
-        ) : null}
       </div>
     </Card>
   );
