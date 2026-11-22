@@ -760,7 +760,7 @@ const PachiBoard: React.FC = () => {
   );
   const needle = interpolate(doki, [0, 1], [-80, 80]) + (doki > 0.98 ? Math.sin(f * 3) * 4 : 0);
   return (
-    <div style={{position: 'absolute', left: 960 - 380, top: 40, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -900}px`, scale: '0.84', transformOrigin: '50% 0', zIndex: 3}}>
+    <div style={{position: 'absolute', left: 870 - 380, top: 40, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -900}px`, scale: '0.9', transformOrigin: '50% 0', zIndex: 3}}>
       {/* アンテナ */}
       <div style={{position: 'absolute', left: 560, top: -46, width: 8, height: 56, background: '#6a7088', rotate: '12deg'}} />
       <div style={{position: 'absolute', left: 562, top: -66, width: 26, height: 26, borderRadius: '50%', background: powered && Math.floor(f / 8) % 2 ? RED : '#7a2a2a', boxShadow: powered && Math.floor(f / 8) % 2 ? '0 0 20px #ff4040' : 'none'}} />
@@ -770,7 +770,7 @@ const PachiBoard: React.FC = () => {
         <div style={{position: 'absolute', left: 104 - 4, top: 102 - 78, width: 8, height: 80, background: '#1b1f33', borderRadius: 4, transformOrigin: '4px 78px', rotate: `${needle}deg`}} />
         <div style={{position: 'absolute', left: 92, top: 90, width: 24, height: 24, borderRadius: '50%', background: '#1b1f33'}} />
         <div style={{position: 'absolute', left: 0, right: 0, top: 122, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 26, color: BLUE_DEEP}}>ドキドキ計測</div>
-        <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: 24, color: doki > 0.9 ? RED : '#3a4470'}}>{Math.round(doki * 100)}%</div>
+        <div style={{position: 'absolute', left: 0, right: 0, top: 150, textAlign: 'center', fontFamily: 'monospace', fontWeight: 900, fontSize: 30, color: doki > 0.9 ? RED : '#3a4470'}}>{Math.round(doki * 100)}%</div>
       </div>
       <div style={{position: 'absolute', left: -32, top: 160, width: 40, height: 14, background: '#5a6078', borderRadius: 7}} />
       {/* 右：脳汁タンク */}
@@ -782,7 +782,7 @@ const PachiBoard: React.FC = () => {
               return <div key={i} style={{position: 'absolute', left: 16 + ((i * 37) % 90), bottom: `${t * (8 + (rensa / 12) * 82)}%`, width: 12, height: 12, borderRadius: '50%', border: '3px solid rgba(255,255,255,0.8)'}} />;
             })
           : null}
-        <div style={{position: 'absolute', left: 0, right: 0, top: 10, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 24, color: BLUE_DEEP}}>脳汁</div>
+        <div style={{position: 'absolute', left: 0, right: 0, top: 10, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 30, color: BLUE_DEEP}}>脳汁</div>
       </div>
       <div style={{position: 'absolute', left: 742, top: 210, width: 52, height: 14, background: '#5a6078', borderRadius: 7}} />
       {/* 筐体 */}
@@ -894,8 +894,8 @@ const PachiBoard: React.FC = () => {
         {String(rensa).padStart(2, '0')} 連
       </div>
       <div style={{position: 'absolute', left: 310, top: 652, width: 390, height: 56, borderRadius: 10, background: 'linear-gradient(#d7b45a,#9a7a28)', border: '3px solid #6a5418', fontFamily: JP, fontWeight: 900, color: '#3a2a08', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', lineHeight: 1.1}}>
-        <div style={{fontSize: 16, letterSpacing: 4}}>BAKU WORKS 試作機 BKP-01</div>
-        <div style={{fontSize: 24}}>パチンコ演出再現機</div>
+        <div style={{fontSize: 18, letterSpacing: 3}}>BAKU WORKS 試作機 BKP-01</div>
+        <div style={{fontSize: 28}}>パチンコ演出再現機</div>
       </div>
       {/* 起動レバー（右側） */}
       <div style={{position: 'absolute', left: 742, top: 470, width: 26, height: 26, borderRadius: '50%', background: '#4a5068'}} />
@@ -911,7 +911,7 @@ const PachiBoard: React.FC = () => {
           })
         : null}
       {/* 着地の土煙／起動の蒸気／最後のプスン */}
-      {[[land, 22, 760, 'rgba(230,230,240,0.8)'], [boot + 4, 30, -10, 'rgba(255,255,255,0.75)'], [puff, 50, -20, 'rgba(90,90,100,0.75)']].map(([at, len, y, c], k) =>
+      {[[land, 22, 760, 'rgba(230,230,240,0.8)'], [boot + 4, 30, 60, 'rgba(255,255,255,0.75)'], [puff, 50, 40, 'rgba(90,90,100,0.75)']].map(([at, len, y, c], k) =>
         f >= (at as number) && f < (at as number) + (len as number)
           ? Array.from({length: 6}).map((_, i) => {
               const t = (f - (at as number)) / (len as number);
@@ -926,7 +926,7 @@ const PachiBoard: React.FC = () => {
       {(f >= crash && f < crash + 30) || (f >= yaku59 && f < yaku59 + 26) ? <div style={{position: 'absolute', right: -160, top: 80, fontFamily: JP, fontWeight: 900, fontSize: 84, color: YELLOW, WebkitTextStroke: '9px #0b1f4d', paintOrder: 'stroke fill', rotate: '8deg'}}>ガシャーン！</div> : null}
       {f >= ijo58 && f < S(59) ? <div style={{position: 'absolute', right: -140, top: 260, border: `9px solid ${RED}`, color: RED, background: 'rgba(255,255,255,0.9)', borderRadius: 16, fontFamily: JP, fontWeight: 900, fontSize: 80, padding: '0 20px', rotate: '10deg', scale: `${interpolate(pop(f, ijo58, fps), [0, 1], [2.4, 1])}`}}>以上！</div> : null}
       {f >= S(62) && f < E(62) ? <div style={{position: 'absolute', left: -150, top: 300, fontFamily: JP, fontWeight: 900, fontSize: 96, color: '#ff5a8a', WebkitTextStroke: '9px white', paintOrder: 'stroke fill', scale: `${pop(f, S(62), fps)}`}}>本能！</div> : null}
-      {f >= migi && f < hoNone ? <div style={{position: 'absolute', left: 780, top: 400, fontFamily: JP, fontWeight: 900, fontSize: 46, color: '#ff5a8a', WebkitTextStroke: '7px white', paintOrder: 'stroke fill', rotate: '6deg'}}>脳汁ドバー</div> : null}
+      {f >= migi && f < hoNone ? <div style={{position: 'absolute', left: 780, top: 400, fontFamily: JP, fontWeight: 900, fontSize: 46, whiteSpace: 'nowrap', color: '#ff5a8a', WebkitTextStroke: '7px white', paintOrder: 'stroke fill', rotate: '6deg'}}>脳汁ドバー</div> : null}
       {f >= hoNone ? <div style={{position: 'absolute', left: -170, top: 430, fontFamily: JP, fontWeight: 900, fontSize: 52, color: '#9fb4ff', WebkitTextStroke: '7px #0b1f4d', paintOrder: 'stroke fill', rotate: '-6deg'}}>保留4個が<br />遠い……</div> : null}
       <div style={{position: 'absolute', left: 30, top: 716, fontFamily: JP, fontWeight: 700, fontSize: 22, color: '#2a3058'}}>※イメージです。実在の機種ではありません</div>
       {f >= S(67) ? (
