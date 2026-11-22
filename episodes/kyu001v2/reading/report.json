@@ -1,15 +1,15 @@
 [
  {
   "kind": "誤読",
-  "where": "セーギ",
-  "expect": "セーギ",
-  "reason": "台本は「セーギ」、聞こえたのは「マサヨシ」",
-  "level": "中",
-  "id": "k01-079",
+  "where": "デバ",
+  "expect": "デバ",
+  "reason": "台本は「デバ」、聞こえたのは「ネマ」",
+  "level": "低",
+  "id": "k01-098",
   "who": "nagi",
-  "text": "じゃあ、複雑さは正義？",
-  "asr": "じゃあ、複雑さは正義?",
-  "ratio": 0.72,
-  "audio": "episodes/kyu001v2/voices/k01-079.wav"
+  "text": "で、バク。今日の研究、どこまで進んだの？",
+  "asr": "ね、マク、今日の研究、どこまで進んだの?",
+  "ratio": 0.905,
+  "audio": "episodes/kyu001v2/voices/k01-098.wav"
  }
 ]

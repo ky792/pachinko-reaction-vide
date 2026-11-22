@@ -485,41 +485,51 @@
   "text": "そもそも勝ち負けだけが遊戯の勝ちちゃうやろ楽しめたらそれでええねん"
  },
  "k01-098": {
-  "sha1": "592d7cf0fd3ace6f00f9c2e4f873c2d04781c4fb",
+  "sha1": "8d9ce5fbe01d4edcfdc1a5e5f88e866112f00bf0",
   "model": "large-v3-turbo",
-  "text": "じゃあ今日は楽しめたの?"
+  "text": "ね、マク、今日の研究、どこまで進んだの?"
  },
  "k01-099": {
-  "sha1": "c4224ef2c7f58aeda77c8f82fc45af517ea8c6aa",
+  "sha1": "8220fb0171da03b17104cd2e391155d06dc86b93",
   "model": "large-v3-turbo",
-  "text": "くそ負けたわほんまに"
+  "text": "今日はほらスロットの複雑さを研究する日やったから"
  },
  "k01-100": {
-  "sha1": "b02dcfd4b02e11ff6b413356b2b6e0a5ff00ca23",
+  "sha1": "a146d9d7f6b19aa199508cbe5724720d9b106372",
   "model": "large-v3-turbo",
-  "text": "そっか…"
+  "text": "それ休憩室で喋ってただけだよね"
  },
  "k01-101": {
-  "sha1": "99d4af4e309875249c535c232cca972de8297c6a",
+  "sha1": "4e1607343471e3a5e5c033757b76b8ca15b22b64",
   "model": "large-v3-turbo",
-  "text": "明日勝つからな"
+  "text": "休憩も立派な研究のうちよ"
  },
  "k01-102": {
-  "sha1": "79439d0371f12a72e7fa289190c3366ea023029e",
+  "sha1": "da5cfc83e9744cc45bfeec7332984d667c7fd604",
   "model": "large-v3-turbo",
-  "text": "ほどほどにね"
+  "text": "朝からずっと休憩室にいたよね"
  },
  "k01-103": {
-  "sha1": "aea608620a56f86e9d8be6c650a273ce679473ce",
+  "sha1": "0f37c6b9055dfa99509c609e23f5ae12f8f101f1",
   "model": "large-v3-turbo",
-  "text": "ほな今回はこの辺でみんなはパチンコとスロットどっちのどこが好きや"
+  "text": "社長に報告しとかね"
  },
  "k01-104": {
+  "sha1": "a2f65eb840512971d385dad04ee4426573a666f4",
+  "model": "large-v3-turbo",
+  "text": "署長にだけはほんまに言わんといて"
+ },
+ "k01-105": {
+  "sha1": "aea608620a56f86e9d8be6c650a273ce679473ce",
+  "model": "large-v3-turbo",
+  "text": "ほな、今回はこの辺で?みんなはパチンコとスロット、どっちのどこが好きや?"
+ },
+ "k01-106": {
   "sha1": "41e805681d986c418c1e01b4919c7a80f0b7c714",
   "model": "large-v3-turbo",
   "text": "よかったらコメントで教えてねそれじゃあまた次回"
  },
- "k01-105": {
+ "k01-107": {
   "sha1": "d79a4f0a9e5188e26df4eb0ea00e20e6b08bc86d",
   "model": "large-v3-turbo",
   "text": "ほななー"
