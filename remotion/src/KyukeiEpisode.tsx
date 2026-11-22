@@ -41,6 +41,7 @@ type Line = {
   env: number[];
   punch?: boolean;
   silent?: boolean;
+  fx?: string;
   ochi?: boolean;
   fx?: string;
   key?: string[];
@@ -99,6 +100,7 @@ const Bust: React.FC<{who: Who}> = ({who}) => {
   const hop = speaking ? spring({frame: local, fps, config: {damping: 9, stiffness: 240}}) : 1;
   const strong = speaking && (line!.punch || ['excited', 'angry', 'surprised', 'despair'].includes(face));
   const hopY = speaking ? (1 - hop) * (strong ? 60 : 26) : 0;
+  const jolt = speaking && line!.fx === 'ギクッ！' && local < 14 ? Math.sin(local * 2.6) * (14 - local) * 1.6 : 0;
   const breathe = Math.sin(frame / 20 + (who === 'nagi' ? 0 : 2.1)) * 4;
   const enter = spring({frame: frame - (who === 'nagi' ? 2 : 8), fps, config: {damping: 15}});
   const s = SEAT[who];
@@ -113,7 +115,7 @@ const Bust: React.FC<{who: Who}> = ({who}) => {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'flex-end',
-        translate: `${(1 - enter) * dir * 520}px ${-env * 14 + hopY + breathe}px`,
+        translate: `${(1 - enter) * dir * 520 + jolt}px ${-env * 14 + hopY + breathe}px`,
         scale: `${(speaking ? 1 : 0.95) * (1 + env * 0.02)}`,
         transformOrigin: '50% 100%',
         filter: speaking
@@ -122,6 +124,35 @@ const Bust: React.FC<{who: Who}> = ({who}) => {
       }}
     >
       <Img src={staticFile(`kyu/${who}_${face}.png`)} style={{height: s.h, maxWidth: 640, objectFit: 'contain'}} />
+    </div>
+  );
+};
+
+// ───────────────────────── 無言の間の心の声（声は出さない。文字だけ）
+const SilentFx: React.FC = () => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const line = lineAt(frame);
+  if (!line || !line.silent || !line.fx) return null;
+  const t = frame - line.start;
+  const out = interpolate(frame, [line.end - 6, line.end + 2], [1, 0], clamp);
+  if (line.fx === 'ギクッ！') {
+    const sc = spring({frame: t, fps, config: {damping: 7, stiffness: 260}});
+    const sh = t < 16 ? Math.sin(t * 3) * (16 - t) * 0.9 : 0;
+    return (
+      <div style={{position: 'absolute', left: 1600 - 300 + sh, top: 330, width: 600, textAlign: 'center', opacity: out, scale: `${sc}`, rotate: '-9deg',
+        fontSize: 150, fontWeight: 900, color: '#ff6a2b', WebkitTextStroke: '10px white', paintOrder: 'stroke fill', textShadow: '0 10px 0 rgba(30,30,80,0.35)'}}>
+        ギクッ！
+      </div>
+    );
+  }
+  const chars = [...line.fx];
+  return (
+    <div style={{position: 'absolute', left: 1640 - 260, top: 470, width: 520, textAlign: 'center', opacity: out, rotate: '-4deg',
+      fontSize: 76, fontWeight: 900, color: '#5b6b9a', WebkitTextStroke: '8px white', paintOrder: 'stroke fill'}}>
+      {chars.map((c, i) => (
+        <span key={i} style={{opacity: interpolate(t, [4 + i * 5, 10 + i * 5], [0, 1], clamp)}}>{c}</span>
+      ))}
     </div>
   );
 };
@@ -210,6 +241,7 @@ const Room: React.FC = () => {
       <FxLayer />
       <Bust who="nagi" />
       <Bust who="baku" />
+      <SilentFx />
       <AbsoluteFill style={{background: 'rgba(8,14,40,0.55)', opacity: titleDim}} />
     </AbsoluteFill>
   );
@@ -902,6 +934,11 @@ export const KyukeiEpisode: React.FC = () => {
       {LINES.filter((l) => l.id).map((l) => (
         <Sequence key={l.id!} from={l.start} durationInFrames={l.end - l.start + 6}>
           <Audio src={staticFile(`kyu001/${l.id}.wav`)} />
+        </Sequence>
+      ))}
+      {LINES.filter((l) => l.fx === 'ギクッ！').map((l) => (
+        <Sequence key={`g${l.n}`} from={l.start} durationInFrames={30}>
+          <Audio src={staticFile('kyu/se_emphasis.wav')} volume={0.6} />
         </Sequence>
       ))}
       {LINES.filter((l) => l.punch).map((l) => (

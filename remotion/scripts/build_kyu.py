@@ -51,7 +51,7 @@ STEP = {'job': {27: 0, 28: 3, 31: 3.5, 33: 4, 35: 5}, 'job2': {46: 1, 47: 2, 49:
         'yuuri': {52: 1, 53: 2}}
 CHAPTERS = [(1, '①', 'ふとした疑問'), (19, '②', '当てるまでが長い'), (41, '③', '当たってからも複雑'), (57, '④', 'パチンコは単純だから強い'),
             (68, '⑤', '複雑さは正義？'), (86, '⑥', '勉強と遊び'), (92, '⑦', '結局、勝ってるの？')]
-SILENT_AFTER = {94: [('baku', 34, 'sweat'), ('nagi', 30, 'normal')], 100: [('baku', 40, 'sweat')]}
+SILENT_AFTER = {94: [('baku', 34, 'sweat'), ('nagi', 30, 'normal')], 100: [('baku', 56, 'surprised', 'ギクッ！')], 101: [('baku', 54, 'sweat', 'バレた……')]}  # 無言の間（声なし。文字と効果音だけ）
 
 
 def envelope(path):
@@ -93,9 +93,11 @@ for i, ln in enumerate(lines, 1):
     t += n + GAP
     if i == 2:
         title_at = t; t += TITLE_LEN
-    for who, d, face in SILENT_AFTER.get(i, []):
+    for who, d, face, *fx in SILENT_AFTER.get(i, []):
         if bgm_cut is None: bgm_cut = t
-        out.append({'id': None, 'n': i + 0.5, 'who': who, 'text': '……', 'face': face, 'start': t, 'end': t + d, 'env': [], 'silent': True})
+        item = {'id': None, 'n': i + 0.5, 'who': who, 'text': '……', 'face': face, 'start': t, 'end': t + d, 'env': [], 'silent': True}
+        if fx: item['fx'] = fx[0]
+        out.append(item)
         t += d + GAP
 end_card = t + 10
 total = end_card + END_CARD + TAIL
