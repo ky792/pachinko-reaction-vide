@@ -3860,7 +3860,8 @@ def _kentei(cv, t, fx):
         kn = ease_in_out(min(1, tl / 1.2))
         lay = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(lay)
         xe = x1 + (x2 - x1) * kn
-        d.rounded_rectangle((x1 + 6, y - 34, xe, y + 34), 16, fill=SHOUNIN_C + (235,))
+        if xe > x1 + 40:
+            d.rounded_rectangle((x1 + 6, y - 34, xe, y + 34), 16, fill=SHOUNIN_C + (235,))
         if kn > 0.9:   # 先は「…」（年数は言わない）
             for i in range(3):
                 d.ellipse((x2 + 20 + 26 * i, y - 7, x2 + 34 + 26 * i, y + 7), fill=SHOUNIN_C + (220,))
