@@ -1,145 +1,175 @@
 /* キャラクターデータ。UIはこのファイルの内容だけを読んで描画する。
- * 立ち絵を差し替えるときは portrait のパスを書き換える（または同じパスに画像を置く）。
- * 画像が無い・読めない場合は silhouette の設定からホログラムを自動生成する。 */
-window.NAV_DATA = {
-  axes: ['分析', '共感', '熱量', '刺激', '探究'],
-  expressions: { default: '通常', smile: '笑顔', serious: '真剣', special: '固有' },
+ *
+ * 画像の扱い（優先順）
+ *   1. portrait : 背景透過の単独立ち絵（未制作）。用意できたら
+ *                 { default: 'assets/navigators/halo/mio/default.png', smile: ..., serious: ..., special: ... } を入れる。
+ *   2. visual   : タイプ紹介キービジュアルからの「切り出し表示」。画像自体は加工せず、
+ *                 focus（顔の位置を画像幅・高さに対する%で）と zoom で見せる範囲を決める。
+ *                 w/h は元画像の解像度。キービジュアルは立ち絵の代わりではなく暫定表示。
+ *   3. silhouette : 画像が読めないときのホログラム（髪型・小物で描き分け）。
+ */
+(function () {
+  const KV = {
+    logic: { src: 'assets/navigators/logic.png', w: 1672, h: 941 },
+    halo: { src: 'assets/navigators/halo.png', w: 835, h: 316 },
+    ignite: { src: 'assets/navigators/ignite.png', w: 1672, h: 941 },
+    vex: { src: 'assets/navigators/vex.png', w: 1672, h: 941 },
+    echo: { src: 'assets/navigators/echo.png', w: 1672, h: 315 },
+  };
+  const visual = (type, focus, zoom) => Object.assign({}, KV[type], { focus, zoom });
 
-  types: [
-    {
-      id: 'logic', name: 'LOGIC', kana: 'ロジック', color: '#3B9BFF', emblem: 'hex',
-      tagline: '最短ルートは、データが知っている。',
-      traits: ['冷静', '分析的', '合理的'],
-      stats: [5, 2, 2, 1, 3],
-      studyStyle: ['弱点単元を自動で特定して集中演習', '正答率・解答時間を毎回グラフで振り返る', '試験日から逆算した学習計画'],
-      fitFor: '計画を立てて効率よく点を伸ばしたい人',
-      recommendPitch: '正答率が最も低い単元です。ここを上げるのが最短です。',
-      characters: {
-        m: {
-          id: 'rei', name: 'レイ', title: '戦略参謀',
-          bio: '模試データ数千件を一瞬で解析する参謀型AI。無駄を嫌い、合格までの最短手順だけを提示する。',
-          catch: '感情は後でいい。まず数字を見よう。',
-          silhouette: { hair: 'short', accessory: 'glasses' },
-          portrait: { default: 'assets/navigators/logic/rei/default.png', smile: 'assets/navigators/logic/rei/smile.png', serious: 'assets/navigators/logic/rei/serious.png', special: 'assets/navigators/logic/rei/special.png' },
-          lines: { morning: '朝の記憶定着率は高い。暗記系から始めよう。', day: '今日の弱点は二次関数。そこから潰そう。', night: '残り40分で演習2セット。計算上、今日の目標に届く。', match: '相手の序盤正答率は68%。最初の3問で主導権を取れる。' },
-        },
-        f: {
-          id: 'rize', name: 'リゼ', title: '解析オペレーター',
-          bio: 'ミスの傾向を細かく分類する解析特化AI。淡々とした口調の裏で、プレイヤーの記録を誰より丁寧に追っている。',
-          catch: '誤答パターン、3つに分類できました。',
-          silhouette: { hair: 'bob', accessory: 'visor' },
-          portrait: { default: 'assets/navigators/logic/rize/default.png', smile: 'assets/navigators/logic/rize/smile.png', serious: 'assets/navigators/logic/rize/serious.png', special: 'assets/navigators/logic/rize/special.png' },
-          lines: { morning: 'おはようございます。昨日の誤答から3問、復習を用意しました。', day: '符号ミスが2日連続です。今日はそこだけ確認しましょう。', night: '今日の正答率は78%。目標まであと1セットです。', match: '相手は時間切れが多い傾向。焦らず確実に。' },
-        },
-      },
-    },
-    {
-      id: 'halo', name: 'HALO', kana: 'ハロー', color: '#34D399', emblem: 'ring',
-      tagline: '昨日より一歩。それを毎日、一緒に。',
-      traits: ['優しい', '伴走型', '親身'],
-      stats: [2, 5, 3, 1, 2],
-      studyStyle: ['毎日少しずつ続ける習慣化サポート', '忘れかけた問題をタイミングよく復習', '小さな達成を記録してほめる'],
-      fitFor: '続けるのが苦手で、まず習慣を作りたい人',
-      recommendPitch: '3日前に解いた問題、そろそろ忘れる頃だよ。今なら定着する。',
-      characters: {
-        m: {
-          id: 'haru', name: 'ハル', title: '頼れる先輩',
-          bio: '落ち着いた声色で隣に座る先輩型AI。無理な詰め込みはさせず、一緒に計画を立てて最後まで付き合ってくれる。',
-          catch: '焦らなくていい。俺がペースを見てるから。',
-          silhouette: { hair: 'messy', accessory: 'headset' },
-          portrait: { default: 'assets/navigators/halo/haru/default.png', smile: 'assets/navigators/halo/haru/smile.png', serious: 'assets/navigators/halo/haru/serious.png', special: 'assets/navigators/halo/haru/special.png' },
-          lines: { morning: 'おはよう。12日連続だな。今日も軽めに始めよう。', day: '昨日の続きからいこう。計画どおり進んでるぞ。', night: 'よく頑張ったな。あと1問だけやって、今日は休もう。', match: 'いつもどおりでいい。お前の積み上げは本物だ。' },
-        },
-        f: {
-          id: 'mio', name: 'ミオ', title: '癒しのクラスメイト',
-          bio: '同じ教室にいるような距離感の寄り添い型AI。ちょっとした成長も見逃さず、いちばんに喜んでくれる。',
-          catch: 'きのうより1問多く解けてるよ。えらいね！',
-          silhouette: { hair: 'sideTail', accessory: 'flower' },
-          portrait: { default: 'assets/navigators/halo/mio/default.png', smile: 'assets/navigators/halo/mio/smile.png', serious: 'assets/navigators/halo/mio/serious.png', special: 'assets/navigators/halo/mio/special.png' },
-          lines: { morning: 'おはよう！今日も来てくれてうれしいな。', day: 'あとちょっとで今日の目標だよ。一緒にがんばろ！', night: 'おつかれさま。今日の自分、ちゃんとほめてあげてね。', match: '大丈夫、ずっと見てたもん。いつもの君でいこう！' },
+  window.NAV_DATA = {
+    axes: ['分析', '共感', '熱量', '刺激', '探究'],
+    expressions: { default: '通常', smile: '笑顔', serious: '真剣', special: '固有' },
+
+    types: [
+      {
+        id: 'logic', name: 'LOGIC', kana: 'ロジック', color: '#3D84FF', emblem: 'hex', keyVisual: KV.logic,
+        tagline: '分析で勝つ、知の戦略家。',
+        traits: ['論理的・分析的', '効率重視', '計画的に成長を導く'],
+        stats: [5, 2, 2, 1, 3],
+        studyStyle: ['弱点単元を特定して集中演習', '正答率・解答時間をグラフで振り返る', '試験日から逆算した学習計画'],
+        fitFor: '感情より数字で、効率よく点を伸ばしたい人',
+        recommendPitch: '正答率が最も低い単元です。ここを上げるのが最短です。',
+        characters: {
+          m: {
+            id: 'rei', name: 'レイ', romaji: 'REI', title: '知の戦略家',
+            bio: '眼鏡の奥で常に最適解を計算している参謀型ナビ。感情に流されず、合格までの最短手順だけを提示する。',
+            catch: '感情じゃなく、データで考えよう。',
+            visual: visual('logic', [41, 22], 1.75),
+            silhouette: { hair: 'short', accessory: 'glasses' },
+            portrait: null,
+            lines: { morning: '朝は記憶の定着率が高い。暗記系から始めよう。', day: '今日の弱点は二次関数。そこから潰そう。', night: '残り40分で演習2セット。計算上、今日の目標に届く。', match: '相手の序盤正答率は68%。最初の3問で主導権を取れる。' },
+          },
+          f: {
+            id: 'rize', name: 'リゼ', romaji: 'RIZE', title: '解析オペレーター',
+            bio: 'ホロタブレットで学習ログを読み解く解析特化ナビ。淡々とした口調の裏で、誰より丁寧に記録を追っている。',
+            catch: '誤答パターン、3つに分類できました。',
+            visual: visual('logic', [68, 37], 1.75),
+            silhouette: { hair: 'sideTail', accessory: 'none' },
+            portrait: null,
+            lines: { morning: 'おはようございます。昨日の誤答から3問、復習を用意しました。', day: '符号ミスが2日連続です。今日はそこだけ確認しましょう。', night: '今日の正答率は78%。目標まであと1セットです。', match: '相手は時間切れが多い傾向です。焦らず確実に。' },
+          },
         },
       },
-    },
-    {
-      id: 'ignite', name: 'IGNITE', kana: 'イグナイト', color: '#FF4B5C', emblem: 'star',
-      tagline: '考えるより先に、一問解け。',
-      traits: ['熱血', '情熱的', '行動的'],
-      stats: [1, 3, 5, 3, 1],
-      studyStyle: ['5分・10分の短時間タイムアタック', '連続正解で熱量ゲージを上げる', 'ランクマッチを連戦して実戦で覚える'],
-      fitFor: '机に向かうまでが重い、勢いで走りたい人',
-      recommendPitch: '10問タイムアタック、自己ベスト更新いけるぞ！',
-      characters: {
-        m: {
-          id: 'kaito', name: 'カイト', title: '熱血エース',
-          bio: '全国ランク戦を勝ち抜いてきたエース型AI。理屈より行動。迷っているプレイヤーの背中を全力で押す。',
-          catch: '止まってる時間がいちばんもったいねえ！',
-          silhouette: { hair: 'spiky', accessory: 'goggles' },
-          portrait: { default: 'assets/navigators/ignite/kaito/default.png', smile: 'assets/navigators/ignite/kaito/smile.png', serious: 'assets/navigators/ignite/kaito/serious.png', special: 'assets/navigators/ignite/kaito/special.png' },
-          lines: { morning: '朝イチの一問が一日を決める！いくぞ！', day: '3連勝中だ！今日も全力でランク上げにいくぞ！', night: '最後にもう一戦！今日を勝って終わろうぜ！', match: '開幕ダッシュだ！最初の一問で流れをつかめ！' },
-        },
-        f: {
-          id: 'akari', name: 'アカリ', title: '応援団長',
-          bio: 'テンション最大の応援型AI。どんな結果でも声を張って次の一歩をつくる、チームのムードメーカー。',
-          catch: 'ファイト！あと1問で記録更新だよ！',
-          silhouette: { hair: 'ponytail', accessory: 'band' },
-          portrait: { default: 'assets/navigators/ignite/akari/default.png', smile: 'assets/navigators/ignite/akari/smile.png', serious: 'assets/navigators/ignite/akari/serious.png', special: 'assets/navigators/ignite/akari/special.png' },
-          lines: { morning: 'おっはよー！今日も燃えていこう！', day: 'いい流れ来てる！このまま連続正解いっちゃお！', night: 'ラストスパート！あと10分だけ全力で！', match: '相手が格上？だからこそ燃えるんじゃん！' },
-        },
-      },
-    },
-    {
-      id: 'vex', name: 'VEX', kana: 'ヴェクス', color: '#A970FF', emblem: 'cross',
-      tagline: '負けたままで、満足？',
-      traits: ['挑発的', 'ライバル型', '刺激的'],
-      stats: [3, 1, 3, 5, 2],
-      studyStyle: ['ナビ自身がライバルとしてスコアで勝負', '同ランク帯の記録と常に比較', '負けた問題で即リベンジマッチ'],
-      fitFor: '負けず嫌いで、競争相手がいると燃える人',
-      recommendPitch: 'この単元、同ランク帯の平均より12点低いよ。放っておくの？',
-      characters: {
-        m: {
-          id: 'toma', name: 'トウマ', title: '不敵な天才',
-          bio: '全問題を解き終えて退屈している天才型AI。プレイヤーを「暇つぶしの相手」と呼ぶが、勝てば素直に認める。',
-          catch: '僕に勝てたら、少しは認めてあげるよ。',
-          silhouette: { hair: 'swept', accessory: 'earring' },
-          portrait: { default: 'assets/navigators/vex/toma/default.png', smile: 'assets/navigators/vex/toma/smile.png', serious: 'assets/navigators/vex/toma/serious.png', special: 'assets/navigators/vex/toma/special.png' },
-          lines: { morning: 'へえ、朝から来たんだ。眠そうな顔で勝てるの？', day: '昨日のスコア、僕なら半分の時間で出せるけど。', night: 'まだやるの？……まあ、付き合ってあげてもいい。', match: '相手はA−。格上だけど、まさか逃げないよね？' },
-        },
-        f: {
-          id: 'ruka', name: 'ルカ', title: '小悪魔ライバル',
-          bio: 'からかうのが趣味のライバル型AI。挑発の矛先はいつもスコアだけ。負けると本気で悔しがる。',
-          catch: 'ふーん、それで本気？かわいいね。',
-          silhouette: { hair: 'twin', accessory: 'horns' },
-          portrait: { default: 'assets/navigators/vex/ruka/default.png', smile: 'assets/navigators/vex/ruka/smile.png', serious: 'assets/navigators/vex/ruka/serious.png', special: 'assets/navigators/vex/ruka/special.png' },
-          lines: { morning: 'おはよ。今日こそ私のスコア、抜けるかな？', day: '連勝中？ふーん、まぐれじゃないなら証明してみて。', night: 'もう終わり？私はまだ余裕だけど。', match: '負けたら罰ゲームね。……冗談。半分だけ。' },
+      {
+        id: 'halo', name: 'HALO', kana: 'ハロ', color: '#4FD96B', emblem: 'ring', keyVisual: KV.halo,
+        tagline: 'ともに進む、やさしい伴走者。',
+        traits: ['やさしく親身', 'モチベーション維持', '継続をサポート'],
+        stats: [2, 5, 3, 1, 2],
+        studyStyle: ['毎日少しずつ続ける習慣化サポート', '忘れかけた問題をタイミングよく復習', '小さな達成を記録してほめる'],
+        fitFor: '続けるのが苦手で、まず習慣を作りたい人',
+        recommendPitch: '3日前に解いた問題、そろそろ忘れる頃だよ。今なら定着する。',
+        characters: {
+          m: {
+            id: 'haru', name: 'ハル', romaji: 'HARU', title: '手を差しのべる先輩',
+            bio: '首にヘッドホンをかけた、面倒見のいい先輩型ナビ。無理な詰め込みはさせず、隣で計画を立てて最後まで付き合う。',
+            catch: '焦らなくていい。俺がペースを見てるから。',
+            visual: visual('halo', [45, 25], 1.05),
+            silhouette: { hair: 'messy', accessory: 'headset' },
+            portrait: null,
+            lines: { morning: 'おはよう。12日連続だな。今日も軽めに始めよう。', day: '昨日の続きからいこう。計画どおり進んでるぞ。', night: 'よく頑張ったな。あと1問だけやって、今日は休もう。', match: 'いつもどおりでいい。お前の積み上げは本物だ。' },
+          },
+          f: {
+            id: 'mio', name: 'ミオ', romaji: 'MIO', title: '笑顔のクラスメイト',
+            bio: '三つ編みに白い花を挿した、寄り添い型ナビ。小さな成長も見逃さず、いちばんに笑って喜んでくれる。',
+            catch: '大丈夫、一緒にやればきっと伸びるよ！',
+            visual: visual('halo', [60, 33], 1.05),
+            silhouette: { hair: 'twin', accessory: 'flower' },
+            portrait: null,
+            lines: { morning: 'おはよう！今日も来てくれてうれしいな。', day: 'あとちょっとで今日の目標だよ。一緒にがんばろ！', night: 'おつかれさま。今日の自分、ちゃんとほめてあげてね。', match: '大丈夫、ずっと見てたもん。いつもの君でいこう！' },
+          },
         },
       },
-    },
-    {
-      id: 'echo', name: 'ECHO', kana: 'エコー', color: '#F5C04A', emblem: 'eye',
-      tagline: '答えの先にある「なぜ」へ。',
-      traits: ['知的', '探究的', '神秘的'],
-      stats: [4, 2, 1, 1, 5],
-      studyStyle: ['公式の成り立ちから理解する', '1問を深掘りして応用問題につなげる', '記述・論述で考えを言葉にする'],
-      fitFor: '暗記より「わかる」快感で伸びたい人',
-      recommendPitch: 'この問いは、昨日の三角比と同じ構造を持っています。',
-      characters: {
-        m: {
-          id: 'noel', name: 'ノエル', title: '書庫の賢者',
-          bio: '人類の知識を収めた電子書庫の管理者AI。丁寧な語り口で、公式の背後にある理屈を一つずつ解き明かす。',
-          catch: '覚える前に、なぜそうなるのかを見てみましょう。',
-          silhouette: { hair: 'longTied', accessory: 'monocle' },
-          portrait: { default: 'assets/navigators/echo/noel/default.png', smile: 'assets/navigators/echo/noel/smile.png', serious: 'assets/navigators/echo/noel/serious.png', special: 'assets/navigators/echo/noel/special.png' },
-          lines: { morning: 'おはようございます。今朝は定義の確認から始めましょう。', day: '昨日の解法、別の単元にも応用できますね。', night: '今日学んだことを、一文で説明できますか。', match: '問題文を最後まで読みましょう。答えは構造の中にあります。' },
-        },
-        f: {
-          id: 'sera', name: 'セラ', title: '星読みの巫女',
-          bio: '知の星図を読み解く神秘型AI。答えを教えず、問いを返して導く。言葉はいつも少しだけ詩的。',
-          catch: 'その答え、本当にあなたのものかしら？',
-          silhouette: { hair: 'longWavy', accessory: 'halo' },
-          portrait: { default: 'assets/navigators/echo/sera/default.png', smile: 'assets/navigators/echo/sera/smile.png', serious: 'assets/navigators/echo/sera/serious.png', special: 'assets/navigators/echo/sera/special.png' },
-          lines: { morning: '夜明けね。今日の星は、あなたに新しい問いを示しているわ。', day: '迷った問題ほど、深く刻まれるものよ。', night: '静かな夜は、考えるのにいちばん向いているわ。', match: '恐れないで。知は、戦うほどに澄んでいくの。' },
+      {
+        id: 'ignite', name: 'IGNITE', kana: 'イグナイト', color: '#FF3D5A', emblem: 'star', keyVisual: KV.ignite,
+        tagline: '情熱で伸ばす、熱血コーチ。',
+        traits: ['情熱', '行動力', '成長重視'],
+        stats: [1, 3, 5, 3, 1],
+        studyStyle: ['5分・10分の短時間タイムアタック', '連続正解で勢いをつける', 'ランクマッチを連戦して実戦で覚える'],
+        fitFor: '机に向かうまでが重い、勢いで走りたい人',
+        recommendPitch: '10問タイムアタック、自己ベスト更新いけるで！',
+        characters: {
+          m: {
+            id: 'kaito', name: 'カイト', romaji: 'KAITO', title: '熱血コーチ',
+            bio: '指をさして限界の先を示す、関西弁の熱血ナビ。理屈より行動。迷っている背中を全力で押してくる。',
+            catch: 'まだいけるやろ！限界は、もうちょい先や！',
+            visual: visual('ignite', [25, 21], 1.6),
+            silhouette: { hair: 'spiky', accessory: 'none' },
+            portrait: null,
+            lines: { morning: '朝イチの一問が一日を決めるんや！いくで！', day: '3連勝中やん！今日も全力でランク上げにいこか！', night: 'ラスト一戦！今日は勝って終わろうや！', match: '開幕ダッシュや！最初の一問で流れつかめ！' },
+          },
+          f: {
+            id: 'akari', name: 'アカリ', romaji: 'AKARI', title: 'てっぺん志望の相棒',
+            bio: 'ガッツポーズが似合う、負けず嫌いの熱血ナビ。目標はいつも一番上。一緒に走って、一緒に悔しがってくれる。',
+            catch: 'やるからには、一番上までいこうよ！',
+            visual: visual('ignite', [50, 34], 1.6),
+            silhouette: { hair: 'sideTail', accessory: 'band' },
+            portrait: null,
+            lines: { morning: 'おはよ！今日も一番上目指していこう！', day: 'いい流れ来てる！このまま連続正解いっちゃお！', night: 'ラストスパート！あと10分だけ全力で！', match: '相手が格上？だからこそ燃えるんじゃん！' },
+          },
         },
       },
-    },
-  ],
-};
+      {
+        id: 'vex', name: 'VEX', kana: 'ヴェックス', color: '#A266FF', emblem: 'cross', keyVisual: KV.vex,
+        tagline: '挑発×競争心。',
+        traits: ['ライバル', '刺激', '成長加速'],
+        stats: [3, 1, 3, 5, 2],
+        studyStyle: ['ナビ自身がライバルとしてスコアで勝負', '同ランク帯の記録と常に比較', '負けた問題で即リベンジマッチ'],
+        fitFor: '煽られると燃える、負けず嫌いな人',
+        recommendPitch: 'この単元、同ランク帯の平均より12点低いけど。放っとくの？',
+        characters: {
+          m: {
+            id: 'toma', name: 'トウマ', romaji: 'TOUMA', title: '毒舌のライバル',
+            bio: 'ヘッドホンと指輪がトレードマークの生意気なナビ。口は悪いが、本気で君の成長を望んでいる。',
+            catch: '…まだその程度？マジで受験する気あんの？',
+            expressionLabels: { default: '通常', smile: '挑発', serious: '本気' },
+            visual: visual('vex', [18, 19], 1.6),
+            silhouette: { hair: 'swept', accessory: 'earring' },
+            portrait: null,
+            lines: { morning: '朝から来たんだ。眠そうな顔で勝てんの？', day: '昨日のスコア、半分の時間で出せるけど？', night: 'まだやんの？……ま、付き合ってやるよ。', match: '相手はA−。格上だけど、まさか逃げないよな？' },
+          },
+          f: {
+            id: 'ruka', name: 'ルカ', romaji: 'RUKA', title: 'からかい上手のライバル',
+            bio: 'お団子ヘアとチョーカーの小悪魔系ナビ。からかうのが趣味だけど、負けると本気で悔しがる。たまに照れる。',
+            catch: 'ふーん、やるじゃん？…でも、次は絶対負けないから。',
+            expressionLabels: { default: '通常', smile: 'からかい', special: '照れ（レア）' },
+            visual: visual('vex', [85, 28], 1.95),
+            silhouette: { hair: 'twin', accessory: 'earring' },
+            portrait: null,
+            lines: { morning: 'おはよ。今日こそ私のスコア、抜けるかな？', day: '連勝中？ふーん、まぐれじゃないなら証明してみて。', night: 'もう終わり？私はまだ余裕だけど。', match: '負けたら罰ゲームね。……冗談。半分だけ。' },
+          },
+        },
+      },
+      {
+        id: 'echo', name: 'ECHO', kana: 'エコー', color: '#EBB740', emblem: 'eye', keyVisual: KV.echo,
+        tagline: '知の深淵から、新たな視点を。',
+        traits: ['博学・探究心', '多角的な思考', '新しい視点の提示'],
+        stats: [4, 2, 1, 1, 5],
+        studyStyle: ['公式の成り立ちから理解する', '1問を深掘りして応用問題につなげる', '別解・記述で考えを言葉にする'],
+        fitFor: '暗記より「わかる」快感で伸びたい人',
+        recommendPitch: 'この問い、昨日の三角比と同じ構造をしています。',
+        characters: {
+          m: {
+            id: 'noel', name: 'ノエル', romaji: 'NOEL', title: '書を携えた哲学者',
+            bio: '黄金の星図が浮かぶ本を手にした、物静かな哲学者型ナビ。丁寧な語り口で、公式の背後にある理屈を一つずつ解き明かす。',
+            catch: '覚える前に、なぜそうなるのかを見てみましょう。',
+            visual: visual('echo', [44, 30], 1.05),
+            silhouette: { hair: 'messy', accessory: 'none' },
+            portrait: null,
+            lines: { morning: 'おはようございます。今朝は定義の確認から始めましょう。', day: '昨日の解法は、別の単元にも通じていますね。', night: '今日学んだことを、一文で説明できますか。', match: '問題文を最後まで。答えは構造の中にあります。' },
+          },
+          f: {
+            id: 'sera', name: 'セラ', romaji: 'SERA', title: '好奇心の探究者',
+            bio: '頬杖をついて考えを転がす、遊び心のある探究型ナビ。答えを教えるより、君の考え方そのものを面白がって深掘りする。',
+            catch: '…面白いね。その考え方、もっと深掘りしてみようか。',
+            visual: visual('echo', [65, 33], 1.05),
+            silhouette: { hair: 'sideTail', accessory: 'flower' },
+            portrait: null,
+            lines: { morning: 'おはよ。今日はどんな「なんで？」が見つかるかな。', day: 'その間違い、実はいい線いってるよ。どこで分かれたと思う？', night: '寝る前に一個だけ。今日いちばん不思議だったことは？', match: '勝ち負けもいいけど、知らない問題に会えるのが楽しみだね。' },
+          },
+        },
+      },
+    ],
+  };
+})();

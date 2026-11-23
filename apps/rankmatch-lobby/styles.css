@@ -96,10 +96,11 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;paddin
 .portrait--stage{position:absolute;left:50%;bottom:0;transform:translateX(-50%);height:92%;aspect-ratio:200/280;max-width:100%;animation:rise .5s cubic-bezier(.2,.8,.2,1)}
 @keyframes rise{from{opacity:0;transform:translate(-50%,16px)}}
 .stage__pad{position:absolute;left:50%;bottom:-14px;width:70%;height:40px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(var(--theme),transparent 70%);opacity:.5;filter:blur(6px)}
-.stage__tagline{position:absolute;right:12px;top:14px;max-width:46%;text-align:right;font-weight:700;font-size:13px;line-height:1.5;color:var(--holo-hi)}
+.stage__tagline{position:absolute;right:12px;top:14px;max-width:64%;text-align:right;font-weight:700;font-size:13px;line-height:1.5;color:var(--holo-hi)}
 .gender{position:absolute;left:12px;right:12px;bottom:12px;display:grid;grid-template-columns:1fr 1fr;background:rgba(6,10,20,.75);border:1px solid var(--line-2);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.gender__btn{padding:10px 6px;font-weight:700;font-size:14px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
-.gender__btn span{font-size:12px;opacity:.8}
+.gender__btn{padding:7px 10px;font-weight:700;font-size:14px;color:var(--muted);display:flex;align-items:center;gap:10px;min-width:0}
+.gender__txt{display:grid;line-height:1.2;text-align:left}
+.gender__txt small{font-size:10px;font-weight:500;opacity:.75}
 .gender__btn[aria-pressed="true"]{color:#05080F;background:var(--theme)}
 .profile{display:grid;gap:12px;min-width:0}
 .profile__head{display:grid;gap:6px}
@@ -131,7 +132,7 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;paddin
 .contract__inner{display:grid;justify-items:center;gap:6px;text-align:center;padding:0 24px}
 .contract__inner b{font-family:var(--f-body);font-weight:900;font-size:40px;line-height:1}
 .contract__inner p{margin:0;color:var(--holo-hi);font-weight:700}
-.portrait--fx{width:min(220px,50vw);aspect-ratio:200/280;animation:rise .6s cubic-bezier(.2,.8,.2,1)}
+.portrait--fx{width:min(240px,60vw);aspect-ratio:3/4;animation:kvIn .6s cubic-bezier(.2,.8,.2,1);border:1px solid var(--theme);box-shadow:0 0 50px var(--t-40)}
 .contract .eyebrow{color:var(--theme);letter-spacing:.3em;margin-top:8px}
 @keyframes fadeIn{from{opacity:0}}
 
@@ -219,6 +220,28 @@ button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;paddin
 .bnav__item{display:grid;justify-items:center;gap:2px;font-size:10px;color:var(--dim);padding:4px 0}
 .bnav__item svg{width:22px;height:22px}
 .bnav__item[aria-current="page"]{color:var(--theme)}
+
+/* ---------- キービジュアル切り出し（data の focus / zoom で範囲を決める） ---------- */
+.portrait[data-kind="kv"]{container-type:size;overflow:hidden;background:var(--panel-solid)}
+.portrait[data-kind="kv"] .portrait__holo,.portrait[data-kind="stand"] .portrait__holo{display:none}
+.portrait__kv{position:absolute;max-width:none;--z:calc(var(--zb) * var(--zm,1));
+  --h:calc(max(100cqh, 100cqw / var(--ar)) * var(--z));--w:calc(var(--h) * var(--ar));
+  height:var(--h);width:var(--w);
+  left:clamp(calc(100cqw - var(--w)), calc(50cqw - var(--w) * var(--fx) / 100), 0px);
+  top:clamp(calc(100cqh - var(--h)), calc(var(--ay,32cqh) - var(--h) * var(--fy) / 100), 0px)}
+.portrait[data-kind="kv"]::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px),linear-gradient(180deg,rgba(6,10,20,.25),transparent 22%,transparent 58%,rgba(6,10,20,.92))}
+@keyframes kvIn{from{opacity:0;transform:scale(1.04)}}
+.portrait--stage[data-kind="kv"]{inset:0;transform:none;height:100%;width:100%;max-width:none;aspect-ratio:auto;animation:kvIn .5s cubic-bezier(.2,.8,.2,1)}
+.portrait--home[data-kind="kv"]{inset:0;right:0;transform:none;height:100%;width:100%;max-width:none;aspect-ratio:auto;--ay:30cqh}
+.portrait--face{width:38px;height:38px;flex:none;border-radius:50%;overflow:hidden;--zm:2.5;--ay:50cqh;border:1px solid var(--t-line)}
+.portrait--face[data-kind="kv"]::after{display:none}
+.portrait--face .sil{filter:none}
+.gender__btn[aria-pressed="true"] .portrait--face{border-color:#05080F}
+.me__avatar .portrait--face{width:100%;height:100%;border-radius:0;border:0}
+.me__emb{display:none}
+.stage__tagline,.navstage__plate{z-index:2;text-shadow:0 1px 3px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.7)}
+.profile__romaji{font-family:var(--f-disp);font-size:14px;font-weight:500;letter-spacing:.2em;color:var(--muted)}
 
 /* ---------- ≥ 900px：ロビー型 ---------- */
 @media (min-width:900px){

@@ -61,14 +61,25 @@
     </svg>`;
   }
 
-  /* 立ち絵：画像があれば画像、無ければシルエット。差し替えは data 側のパスだけで完結する */
+  /* 立ち絵：portrait（単独立ち絵）→ visual（キービジュアル切り出し）→ シルエット の順で表示。
+   * どれを使うかは data 側だけで決まり、コンポーネントは画像パスを知らない。 */
   function Portrait({ char, expr = 'default', cls = '' }) {
-    const src = (char.portrait && (char.portrait[expr] || char.portrait.default)) || '';
-    return `<figure class="portrait ${cls}" data-char="${esc(char.id)}" data-expr="${esc(expr)}">
-      <div class="portrait__holo">${Silhouette(char.silhouette || {})}</div>
-      ${src ? `<img class="portrait__img" src="${esc(src)}" data-fallback="${esc(src !== char.portrait.default ? char.portrait.default || '' : '')}" alt="${esc(char.name)}" loading="lazy" onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.dataset.fallback=''}else{this.remove()}">` : ''}
+    const stand = char.portrait && (char.portrait[expr] || char.portrait.default);
+    const v = char.visual;
+    let media = '', kind = 'holo';
+    if (stand) {
+      kind = 'stand';
+      const fb = stand !== char.portrait.default ? char.portrait.default || '' : '';
+      media = `<img class="portrait__img" src="${esc(stand)}" data-fallback="${esc(fb)}" alt="${esc(char.name)}" onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.dataset.fallback=''}else{this.closest('.portrait').dataset.kind='holo';this.remove()}">`;
+    } else if (v && v.src) {
+      kind = 'kv';
+      media = `<img class="portrait__kv" src="${esc(v.src)}" alt="${esc(char.name)}" style="--ar:${v.w / v.h};--fx:${v.focus[0]};--fy:${v.focus[1]};--zb:${v.zoom || 1}" onerror="this.closest('.portrait').dataset.kind='holo';this.remove()">`;
+    }
+    return `<figure class="portrait ${cls}" data-kind="${kind}" data-char="${esc(char.id)}" data-expr="${esc(expr)}">
+      <div class="portrait__holo">${Silhouette(char.silhouette || {})}</div>${media}
     </figure>`;
   }
+  const exprLabel = (data, char, expr) => (char.expressionLabels && char.expressionLabels[expr]) || data.expressions[expr] || '';
 
   /* ---------- 選択画面 ---------- */
   const TypeTabs = (types, activeId) => `<div class="typetabs" role="tablist" aria-label="ナビゲータータイプ">
@@ -78,7 +89,7 @@
   </div>`;
 
   const GenderToggle = (type, g) => `<div class="gender" role="group" aria-label="性別">
-    ${['m', 'f'].map((k) => `<button class="gender__btn" data-gender="${k}" aria-pressed="${k === g}"><span>${k === 'm' ? '♂' : '♀'}</span>${esc(type.characters[k].name)}</button>`).join('')}
+    ${['m', 'f'].map((k) => `<button class="gender__btn" data-gender="${k}" aria-pressed="${k === g}">${Portrait({ char: type.characters[k], cls: 'portrait--face' })}<span class="gender__txt"><b>${esc(type.characters[k].name)}</b><small>${k === 'm' ? '男性' : '女性'}</small></span></button>`).join('')}
   </div>`;
 
   const StatBars = (axes, stats) => `<div class="stats">${axes.map((a, i) => `<div class="stat"><span>${a}</span><i class="stat__bar">${Array.from({ length: 5 }, (_, k) => `<b class="${k < stats[i] ? 'on' : ''}"></b>`).join('')}</i><em>${stats[i]}</em></div>`).join('')}</div>`;
@@ -86,7 +97,7 @@
   const NavigatorProfile = (data, type, char) => `<div class="profile">
     <header class="profile__head">
       <span class="tag">${Emblem(type.emblem)}${type.name}<small>${type.kana}</small></span>
-      <h2 class="profile__name">${esc(char.name)}<small>${esc(char.title)}</small></h2>
+      <h2 class="profile__name">${esc(char.name)}<span class="profile__romaji">${esc(char.romaji || '')}</span><small>${esc(char.title)}</small></h2>
       <p class="profile__catch">「${esc(char.catch)}」</p>
     </header>
     <p class="profile__bio">${esc(char.bio)}</p>
@@ -105,7 +116,7 @@
   /* ---------- ホーム ---------- */
   const TopBar = (p, type, char) => `<header class="topbar">
     <button class="me" data-action="change-nav" aria-label="ナビを変更">
-      <span class="me__avatar">${Emblem(type.emblem)}</span>
+      <span class="me__avatar">${Portrait({ char, cls: 'portrait--face' })}<span class="me__emb">${Emblem(type.emblem)}</span></span>
       <span class="me__text"><b>${esc(p.name)}</b><small>${esc(p.id)} · NAV ${esc(char.name)}</small></span>
     </button>
     <div class="wallet"><span><i class="dot coin"></i>${num(p.coins)}</span><span><i class="dot gem"></i>${num(p.crystals)}</span></div>
@@ -168,7 +179,7 @@
   </section>`;
 
   const Dialogue = (data, char, line, expr) => `<div class="dialogue" aria-live="polite">
-    <span class="dialogue__name">${esc(char.name)}<em>${esc(data.expressions[expr] || '')}</em></span>
+    <span class="dialogue__name">${esc(char.name)}<em>${esc(exprLabel(data, char, expr))}</em></span>
     <p>${esc(line)}</p>
   </div>`;
 
