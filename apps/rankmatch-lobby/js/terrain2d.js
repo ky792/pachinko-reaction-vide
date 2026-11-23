@@ -39,9 +39,9 @@
       for (let i = 0; i < a.length; i += 4) {
         const r = a[i], g = a[i + 1], b = a[i + 2], al = a[i + 3]; if (!al) continue;
         if (al > 200) { const p = i / 4, x = p % w, y = (p / w) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-        const key = Math.min(r, b) - g; // マゼンタらしさ
-        if (key < 50 || Math.abs(r - b) > 90) continue;
-        const k = Math.min(1, (key - 50) / 90), lum = Math.max(r, b);
+        const key = Math.min(r, b) - g; // マゼンタらしさ（白と混ざった淡いピンクも拾う）
+        if (key < 22 || r - b > 90 || b - r > 150) continue; // 青寄りの紫（発光の芯）も拾う
+        const k = Math.min(1, (key - 22) / 70), lum = Math.max(r, b);
         o[i] = o[i + 1] = o[i + 2] = lum; o[i + 3] = al * k; found = true;
         const gray = 150 + lum * 0.4; a[i] = a[i] * (1 - k) + gray * k; a[i + 1] = a[i + 1] * (1 - k) + gray * k; a[i + 2] = a[i + 2] * (1 - k) + gray * k;
       }
