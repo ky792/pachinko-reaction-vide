@@ -385,7 +385,9 @@
     }
     const siteOf = (i) => sites.find((s) => s.i === i);
     function intro() { if (reduce) return; introT = 1; first = false; cam.z = 0.55; cam.x = W / 2; cam.y = H * 0.2; }
+    let spotI = null;
     function focus(i) { focusI = i; }
+    function spot(i) { spotI = i; } // 指定した陣地以外を暗くする（マイ陣地の編集用）
 
     function burst(x, y, color, count, speed, up) {
       const ps = []; for (let k = 0; k < count; k++) { const a = Math.random() * Math.PI * 2, s = speed * (0.3 + Math.random()); ps.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s * 0.6 - up * Math.random() }); }
@@ -425,7 +427,8 @@
       const team = css(s.col), owned = s.state === 'me' || s.state === 'op' || s.state === 'own', active = s.state === 'active', calm = s.state === 'own';
       const d = makeDraw(g, s.cx, s.cy, s.u); d.team = team;
       const C = { body: hex(s.MP.body), page: hex(s.MP.page), acc: team }, L = s.L, base = s.base;
-      g.save(); if (s.dim) g.globalAlpha = 0.42;
+      s.fade = s.fade == null ? 1 : s.fade + ((spotI == null || spotI === s.i ? 1 : 0.28) - s.fade) * 0.12;
+      g.save(); g.globalAlpha = (s.dim ? 0.42 : 1) * s.fade;
       // 光の柱（奥）
       const beam = calm ? 0 : owned ? 0.3 : active ? 0.2 + Math.sin(t * 6) * 0.12 : 0;
       if (beam > 0) { const bw = s.u * 0.5, gr = g.createLinearGradient(0, s.cy - s.u * 9, 0, s.cy); gr.addColorStop(0, css(s.col, 0)); gr.addColorStop(1, css(s.col, beam)); g.fillStyle = gr; g.fillRect(s.cx - bw, s.cy - s.u * 9, bw * 2, s.u * 9); }
@@ -495,7 +498,7 @@
     raf = requestAnimationFrame(frame);
 
     function destroy() { alive = false; cancelAnimationFrame(raf); ac.abort(); canvas.remove(); if (live === api) live = null; }
-    const api = { canvas, resize, setState, destroy, intro, focus, clash, capture, key: keyOf(order, colors, look) };
+    const api = { canvas, resize, setState, destroy, intro, focus, spot, clash, capture, key: keyOf(order, colors, look) };
     if (live && live !== api) live.destroy();
     live = api;
     return api;

@@ -45,12 +45,29 @@
   };
   function Swatch(it) {
     const hex = (n) => '#' + n.toString(16).padStart(6, '0');
+    if (it.art) return `<span class="sw sw--art"><img src="${esc(it.art)}" alt="" loading="lazy" onerror="this.remove()"></span>`;
     if (it.kind === 'material' && it.p) return `<span class="sw sw--mat"><i style="background:${hex(it.p.body)}"></i><i style="background:${hex(it.p.page)}"></i></span>`;
     if (it.kind === 'fx' && it.p) return `<span class="sw sw--fx">${it.p.glyphs ? it.p.glyphs.slice(0, 3).map((g) => `<b>${esc(g)}</b>`).join('') : it.p.colors.slice(0, 4).map((c) => `<i style="background:${hex(c)}"></i>`).join('')}</span>`;
     if (it.kind === 'flag' && it.p) return `<span class="sw sw--flag" style="background:${it.p.bg};border-color:${it.p.alt}"><i style="background:${it.p.alt}"></i></span>`;
     return `<span class="sw"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${KIND_ICON[it.kind] || KIND_ICON.skin}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>`;
   }
 
+  /* 選択中の科目の装備一覧。行をタップでそのタブへ */
+  function Loadout(p) {
+    const L = lookOf(p, st.preview), o = L.per[st.subject], name = (id) => { const it = item(id); return it ? it.name : '—'; };
+    const pv = (id) => st.preview.some((en) => parse(en).it && parse(en).it.id === id);
+    const row = (tab, label, val, ids) => `<button class="lo-row ${st.tab === tab ? 'is-on' : ''}" data-tab="${tab}"><span class="lo-k">${label}</span><span class="lo-v">${val}</span>${ids.some(pv) ? '<em>試着中</em>' : ''}</button>`;
+    const gs = [0, 1, 2].map((k) => (o.garden[k] ? `<i>${esc(name(o.garden[k]))}</i>` : '<i class="empty">空き</i>')).join('');
+    return `<section class="mb-loadout" aria-label="${esc(st.subject)}の陣地の装備">
+      ${row('skin', '建物', esc(name(L.skins[st.subject])), [L.skins[st.subject]])}
+      ${row('material', '素材', esc(name(o.material)), [o.material])}
+      ${row('base', '台座', esc(name(o.base)), [o.base])}
+      ${row('garden', `庭 ${o.garden.length}/3`, `<span class="lo-g">${gs}</span>`, o.garden)}
+      ${row('fx', 'エフェクト', esc(name(o.fx)), [o.fx])}
+      ${row('orbit', '周回', esc(name(o.orbit)), [o.orbit])}
+      ${row('flag', '旗（共通）', esc(name(L.flag)) + (L.flag !== 'flag_none' ? `「${esc(L.flagText)}」` : ''), [L.flag])}
+    </section>`;
+  }
   function Card(it) {
     const h = have(it), eq = isEq(it), pv = st.preview.includes(entry(it, st.subject));
     const tag = eq ? '<span class="mb-c__st eq">装備中</span>' : h ? '<span class="mb-c__st own">所持</span>' : it.unlock ? `<span class="mb-c__st lock">実績 ${Math.min(counter(it.unlock.type), it.unlock.value)}/${it.unlock.value}</span>` : `<span class="mb-c__st price"><i class="dot gem"></i>${it.price}</span>`;
@@ -81,10 +98,17 @@
       <header class="m-head"><button class="link" data-action="mb-exit">← ホーム</button><span class="eyebrow">MY TERRITORY · ${ownedN}/${total}</span></header>
       <div class="mb-top"><h1 class="m-title">マイ陣地</h1><button class="mb-wallet" data-action="mb-shop"><i class="dot gem"></i><b>${p.crystals.toLocaleString('ja-JP')}</b><span>＋購入</span></button></div>
       <p class="a-lede">あなたに挑む相手の画面に、この見た目で表示されます。<b>強さには一切影響しません</b>。陣地の色は相棒ナビの色で固定です。</p>
-      <div class="a-3d mb-3d"><span class="a-3d__hint">ドラッグで回転</span></div>
+      <div class="mb-stick">
+      <div class="mb-subjbar" role="tablist" aria-label="編集する陣地">${KN.SUBJECTS.map((s) => { const sk = item(lookOf(p, st.preview).skins[s]); return `<button role="tab" data-subj="${s}" aria-selected="${s === st.subject && !st.overview}"><b>${s}</b><small>${esc(sk ? sk.name : '')}</small></button>`; }).join('')}</div>
+      <div class="a-3d mb-3d">
+        <div class="mb-view"><button data-view="one" aria-pressed="${!st.overview}">寄って見る</button><button data-view="all" aria-pressed="${!!st.overview}">5つ並べて見る</button></div>
+        ${st.overview ? '' : `<span class="mb-3d__label">${esc(st.subject)}の陣地</span>`}
+        <span class="a-3d__hint">ドラッグで回転</span>
+      </div>
+      </div>
+      ${Loadout(p)}
       <div class="mb-tabs" role="tablist">${cat.kinds.map(([k, l]) => `<button role="tab" data-tab="${k}" aria-selected="${k === kind}">${l}</button>`).join('')}</div>
-      ${kind !== 'flag' && kind !== 'set' ? `<div class="mb-subjects">${KN.SUBJECTS.map((s) => `<button data-subj="${s}" aria-pressed="${s === st.subject}">${s}</button>`).join('')}</div>
-        ${PER.includes(kind) ? `<div class="mb-scope"><span><b>${esc(st.subject)}</b>の陣地を編集中</span><button class="link" data-action="mb-allsub">この${esc(cat.kinds.find((k) => k[0] === kind)[1])}を全科目に適用</button></div>` : ''}` : ''}
+      ${PER.includes(kind) ? `<div class="mb-scope"><span><b>${esc(st.subject)}</b>の${esc(cat.kinds.find((k) => k[0] === kind)[1])}を選択中</span><button class="link" data-action="mb-allsub">全科目に同じものを適用</button></div>` : kind === 'flag' ? '<div class="mb-scope"><span>旗は<b>5つの陣地すべて</b>に共通です</span></div>' : ''}
       ${kind === 'set' ? `<ul class="mb-sets">${cat.sets.map(SetCard).join('')}</ul>` : `
         <div class="mb-filter">${[['all', 'すべて'], ['new', '未所持'], ['own', '所持']].map(([k, l]) => `<button data-filter="${k}" aria-pressed="${k === st.filter}">${l}</button>`).join('')}
           <span class="muted">${kind === 'garden' ? `庭は${cat.gardenMax}つまで配置` : '未所持はタップで試着'}</span></div>
@@ -130,7 +154,7 @@
     if (!t3) { host.hidden = true; return; }
     host.appendChild(t3.canvas); t3.resize();
     t3.setState(KN.SUBJECTS.map(() => 'own'), null);
-    const fo = st.focusSubject; t3.focus(fo ? KN.SUBJECTS.indexOf(fo) : null);
+    const i = KN.SUBJECTS.indexOf(st.subject); t3.focus(st.overview ? null : i); if (t3.spot) t3.spot(st.overview ? null : i);
   }
 
   /* シリーズは全科目に。科目の小物はそれぞれ自分の科目に置く */
@@ -148,12 +172,13 @@
   function onClick(ev) {
     const b = ev.target.closest('button'); if (!b || !st) return;
     const d = b.dataset;
-    if (d.tab) { st.tab = d.tab; st.filter = 'all'; st.focusSubject = d.tab === 'flag' || d.tab === 'set' ? null : st.subject; draw(); return; }
-    if (d.subj) { st.subject = d.subj; st.focusSubject = d.subj; draw(); return; }
+    if (d.tab) { st.tab = d.tab; st.filter = 'all'; if (d.tab === 'flag' || d.tab === 'set') st.overview = true; draw(); return; }
+    if (d.subj) { st.subject = d.subj; st.overview = false; draw(); return; }
+    if (d.view) { st.overview = d.view === 'all'; draw(); return; }
     if (d.filter) { st.filter = d.filter; draw(); return; }
     if (d.item) {
       const it = item(d.item), e = P().cos.equip, en = entry(it, st.subject), sub = it.kind === 'skin' ? it.subject : st.subject;
-      st.focusSubject = it.kind === 'flag' ? null : sub; st.pvSet = null;
+      st.pvSet = null;
       if (have(it)) {
         const o = slot(e, st.subject);
         if (it.kind === 'garden' && o.garden.includes(it.id)) o.garden = o.garden.filter((x) => x !== it.id); else applyTo(e, it, st.subject);
@@ -164,7 +189,7 @@
       }
       draw(); return;
     }
-    if (d.tryset) { const s = C().sets.find((x) => x.name === d.tryset); st.preview = setEntries(s); st.pvSet = s.name; st.focusSubject = null; draw(); return; }
+    if (d.tryset) { const s = C().sets.find((x) => x.name === d.tryset); st.preview = setEntries(s); st.pvSet = s.name; st.overview = true; draw(); return; }
     if (d.buyset) { const s = C().sets.find((x) => x.name === d.buyset); st.sheet = { type: 'buy', ids: setEntries(s), off: s.off }; draw(); return; }
     if (d.pack) {
       const k = C().packs.find((x) => x.id === d.pack);
@@ -180,7 +205,7 @@
       case 'mb-allsub': {
         const e = P().cos.equip, src = slot(e, st.subject)[st.tab];
         KN.SUBJECTS.forEach((sub) => { slot(e, sub)[st.tab] = Array.isArray(src) ? src.slice() : src; });
-        ctx.save(); ctx.toast(`${st.subject}と同じ設定を全科目に適用しました`); st.focusSubject = null; draw(); break;
+        ctx.save(); ctx.toast(`${st.subject}と同じ設定を全科目に適用しました`); st.overview = true; draw(); break;
       }
       case 'mb-flag': { const v = (root.querySelector('#flag-text').value || '').trim().slice(0, 4); const e = P().cos.equip; e.flagText = v; if (e.flag === 'flag_none') e.flag = 'flag_plain'; ctx.save(); ctx.toast('旗を更新しました'); draw(); break; }
       case 'mb-exit': unmount(); ctx.exit(); break;
@@ -189,7 +214,7 @@
   const onResize = () => { if (t3) t3.resize(); };
   function mount(r, c) {
     unmount(); root = r; ctx = c;
-    st = { tab: 'skin', subject: KN.SUBJECTS[0], focusSubject: KN.SUBJECTS[0], filter: 'all', preview: [], pvSet: null, sheet: c.openShop ? { type: 'shop' } : null };
+    st = { tab: 'skin', subject: KN.SUBJECTS[0], overview: false, filter: 'all', preview: [], pvSet: null, sheet: c.openShop ? { type: 'shop' } : null };
     root.addEventListener('click', onClick); window.addEventListener('resize', onResize);
     draw();
   }
