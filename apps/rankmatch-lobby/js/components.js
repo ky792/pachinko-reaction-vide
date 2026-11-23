@@ -159,12 +159,40 @@
     <button class="btn btn--sub" data-action="study">この単元を始める</button>
   </section>`;
 
-  const MatchCTA = (m) => `<button class="match" data-action="match">
+  const ArenaCTA = (p, power) => {
+    const t = p.tickets, can = t.now > 0, dl = p.defenseLog || [];
+    return `<button class="match ${can ? '' : 'is-empty'}" data-action="match">
     <span class="match__glow" aria-hidden="true"></span>
-    <span class="match__label">RANK MATCH</span>
-    <span class="match__title">ランクマッチ開始</span>
-    <span class="match__meta"><i class="live"></i>${num(m.queue)}人が対戦待ち · ${esc(m.subject)} · 想定 ${esc(m.estOpponent)}</span>
+    <span class="match__label">RANK MATCH · 非同期PvP</span>
+    <span class="match__title">${can ? 'ランクマッチに挑戦' : '挑戦権を回復しよう'}</span>
+    <span class="match__meta"><span class="tix">${Array.from({ length: t.max }, (_, k) => `<i class="${k < t.now ? 'on' : ''}"></i>`).join('')}</span>挑戦権 ${t.now}/${t.max} · 学力 ${num(power)} · 防衛 ${dl.filter((d) => d.win).length}勝${dl.filter((d) => !d.win).length}敗</span>
   </button>`;
+  };
+
+  /* 学力ステータス：5科目のレーダー＋科目別の戦力。科目タップで演習へ */
+  function StatsCard(stats, focus, power) {
+    const S = Object.keys(stats), cx = 70, cy = 70, R = 54, MAX = 300;
+    const pt = (i, r) => { const a = -Math.PI / 2 + (i * 2 * Math.PI) / S.length; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; };
+    const poly = (f) => S.map((s, i) => pt(i, f(s)).map((v) => v.toFixed(1)).join(',')).join(' ');
+    return `<section class="stats-card holo-panel" aria-label="学力ステータス">
+      <div class="missions__head"><span class="eyebrow">学力ステータス ＝ 対戦の戦力</span><span class="muted">防衛の主戦場 ★${esc(focus)}</span></div>
+      <div class="stats-card__body">
+        <svg class="radar" viewBox="0 0 140 140" aria-hidden="true">
+          ${[1, 0.66, 0.33].map((k) => `<polygon points="${poly(() => R * k)}" class="radar__grid"/>`).join('')}
+          ${S.map((s, i) => { const [x, y] = pt(i, R); return `<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" class="radar__grid"/>`; }).join('')}
+          <polygon points="${poly((s) => (R * power(stats[s])) / MAX)}" class="radar__val"/>
+          ${S.map((s, i) => { const [x, y] = pt(i, R + 10); return `<text x="${x.toFixed(1)}" y="${(y + 3).toFixed(1)}" class="radar__lbl">${s.slice(0, 1)}</text>`; }).join('')}
+        </svg>
+        <ul class="stats-list">${S.map((s) => `<li><button data-action="train" data-subject="${esc(s)}"><span class="s">${esc(s)}${s === focus ? '<i>★</i>' : ''}</span><b>${power(stats[s])}</b><span class="ax"><i style="--v:${stats[s].speed}%"></i><i style="--v:${stats[s].acc}%"></i><i style="--v:${stats[s].app}%"></i></span></button></li>`).join('')}</ul>
+      </div>
+      <p class="stats-card__foot"><span class="k"><i></i>速さ</span><span class="k"><i></i>正確さ</span><span class="k"><i></i>応用</span><span>科目をタップで演習</span></p>
+    </section>`;
+  }
+
+  const DefenseLog = (log, focus) => `<section class="missions holo-panel defense" aria-label="防衛記録">
+    <div class="missions__head"><span class="eyebrow">防衛記録</span><span class="muted">あなたの防衛データに挑戦した人</span></div>
+    <ul>${log.map((d) => `<li class="def ${d.win ? 'ok' : 'ng'}"><span class="def__r">${d.win ? '防衛' : '突破'}</span><span class="def__n"><b>${esc(d.name)}</b><small>${esc(d.rank)} · ${esc(d.ago)}</small></span><span class="def__s">${esc(d.score)}</span><span class="def__rp">${d.rp > 0 ? '+' : ''}${d.rp}</span></li>`).join('')}</ul>
+  </section>`;
 
   const MissionList = (ms) => `<section class="missions holo-panel" aria-label="ミッション">
     <div class="missions__head"><span class="eyebrow">MISSIONS</span><span class="muted">${ms.filter((m) => m.done || m.progress >= m.total).length}/${ms.length} 達成</span></div>
@@ -188,5 +216,5 @@
       .map(([l, d, on]) => `<button class="bnav__item" ${on ? 'aria-current="page"' : ''} ${l === 'ナビ' ? 'data-action="change-nav"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>${l}</button>`).join('')}
   </nav>`;
 
-  window.UI = { esc, Emblem, Portrait, TypeTabs, GenderToggle, NavigatorProfile, TopBar, RankCard, LevelCard, TodayCard, RecommendCard, MatchCTA, MissionList, Dialogue, BottomNav };
+  window.UI = { esc, Emblem, Portrait, TypeTabs, GenderToggle, NavigatorProfile, TopBar, RankCard, LevelCard, TodayCard, RecommendCard, ArenaCTA, StatsCard, DefenseLog, MissionList, Dialogue, BottomNav };
 })();

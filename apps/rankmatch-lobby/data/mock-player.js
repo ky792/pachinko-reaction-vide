@@ -26,7 +26,22 @@ window.MOCK_PLAYER = {
     accuracy: 54, questions: 10, minutes: 12,
     rewardExp: 180,
   },
-  match: { queue: 1287, estOpponent: 'B+〜A−', subject: '数学' },
+  match: { subject: '数学' },
+  /* 学力ステータス：科目ごとに 速さ / 正確さ / 応用（0〜100）。演習で伸び、対戦（自動戦闘）の戦力になる */
+  stats: {
+    国語: { speed: 61, acc: 77, app: 56 },
+    数学: { speed: 72, acc: 69, app: 63 },
+    英語: { speed: 57, acc: 66, app: 59 },
+    理科: { speed: 66, acc: 71, app: 52 },
+    社会: { speed: 69, acc: 79, app: 47 },
+  },
+  focus: '社会', // 防衛時の主戦場
+  tickets: { now: 3, max: 5 },
+  defenseLog: [
+    { name: 'ミナト', rank: 'B+', win: true, score: '3-1', rp: 8, ago: '2時間前' },
+    { name: 'コハル', rank: 'A−', win: false, score: '2-3', rp: -6, ago: '5時間前' },
+    { name: 'レン', rank: 'B', win: true, score: '3-0', rp: 5, ago: '昨日' },
+  ],
   missions: [
     { id: 'm1', kind: 'DAILY', title: 'ランクマッチを3戦する', progress: 1, total: 3, reward: '120 EXP' },
     { id: 'm2', kind: 'DAILY', title: '数学で5問連続正解', progress: 3, total: 5, reward: '50 コイン' },
