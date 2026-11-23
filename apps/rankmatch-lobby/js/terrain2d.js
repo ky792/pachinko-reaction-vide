@@ -8,6 +8,7 @@
   const item = (id) => CAT().items.find((x) => x.id === id);
   const NEUTRAL = '#3C4870';
   const ISO_X = 0.866, ISO_Y = 0.5;
+  const ART_ANCHOR = 240 / 1024; // 建物の絵（1024×1536）：台座の中心は下端から 240px
 
   /* ---------- 色ユーティリティ ---------- */
   const hex = (n) => (typeof n === 'number' ? '#' + n.toString(16).padStart(6, '0') : n);
@@ -23,12 +24,48 @@
     if (!IMG[path]) { const im = new Image(); im.onerror = () => { im.failed = true; }; im.src = path; IMG[path] = im; }
     const im = IMG[path]; return im.complete && !im.failed && im.naturalWidth ? im : null;
   }
+  /* マゼンタ（#FF00FF）で塗られた部分を「持ち主の色」として抜き出す。
+   * 本体はその部分を明るい無彩色に置き換え、マスクには陰影（明るさ）と強さを残す。1回だけ処理してキャッシュ */
+  const KEYED = {};
+  function keyed(im) {
+    if (KEYED[im.src]) return KEYED[im.src];
+    const w = im.naturalWidth, h = im.naturalHeight, base = document.createElement('canvas'), mask = document.createElement('canvas');
+    base.width = mask.width = w; base.height = mask.height = h;
+    const bg = base.getContext('2d'), mg = mask.getContext('2d'); bg.drawImage(im, 0, 0);
+    let found = false;
+    try {
+      const src = bg.getImageData(0, 0, w, h), m = mg.createImageData(w, h), a = src.data, o = m.data;
+      for (let i = 0; i < a.length; i += 4) {
+        const r = a[i], g = a[i + 1], b = a[i + 2], al = a[i + 3]; if (!al) continue;
+        const key = Math.min(r, b) - g; // マゼンタらしさ
+        if (key < 50 || Math.abs(r - b) > 90) continue;
+        const k = Math.min(1, (key - 50) / 90), lum = Math.max(r, b);
+        o[i] = o[i + 1] = o[i + 2] = lum; o[i + 3] = al * k; found = true;
+        const gray = 150 + lum * 0.4; a[i] = a[i] * (1 - k) + gray * k; a[i + 1] = a[i + 1] * (1 - k) + gray * k; a[i + 2] = a[i + 2] * (1 - k) + gray * k;
+      }
+      bg.putImageData(src, 0, 0); mg.putImageData(m, 0, 0);
+    } catch (e) { /* 別オリジンなどで読めない場合はそのまま */ }
+    return (KEYED[im.src] = { base, mask: found ? mask : null });
+  }
   const TINT = {};
-  function tinted(mask, color) {
-    const k = mask.src + color; if (TINT[k]) return TINT[k];
-    const c = document.createElement('canvas'); c.width = mask.naturalWidth; c.height = mask.naturalHeight;
-    const g = c.getContext('2d'); g.drawImage(mask, 0, 0); g.globalCompositeOperation = 'source-in'; g.fillStyle = color; g.fillRect(0, 0, c.width, c.height);
+  function tinted(mask, color, id) {
+    const k = id + color; if (TINT[k]) return TINT[k];
+    const c = document.createElement('canvas'); c.width = mask.width || mask.naturalWidth; c.height = mask.height || mask.naturalHeight;
+    const g = c.getContext('2d'); g.drawImage(mask, 0, 0);
+    g.globalCompositeOperation = 'multiply'; g.fillStyle = color; g.fillRect(0, 0, c.width, c.height);
+    g.globalCompositeOperation = 'destination-in'; g.drawImage(mask, 0, 0);
     return (TINT[k] = c);
+  }
+  /* 本番の絵を描く：本体 → 持ち主の色（陰影つき）→ うっすら発光 */
+  function drawArt(g, im, sep, x, y, w, h, color, id) {
+    const K = keyed(im);
+    g.drawImage(K.base, x, y, w, h);
+    const m = sep ? sep : K.mask;
+    if (m) {
+      const tm = tinted(m, color, id + (sep ? 'sep' : 'key'));
+      g.drawImage(tm, x, y, w, h);
+      g.save(); g.globalCompositeOperation = 'lighter'; g.globalAlpha = 0.35; g.drawImage(tm, x, y, w, h); g.restore();
+    }
   }
 
   /* ---------- 描画ヘルパー（陣地ごとのローカル座標 → 画面） ----------
@@ -149,7 +186,7 @@
       if (b.water) { const [px, py] = d.P(0, -0.05, 0); g.beginPath(); g.ellipse(px, py, 3.0 * d.u * 1.22, 3.0 * d.u * 0.61, 0, 0, Math.PI * 2); const gr = g.createRadialGradient(px, py, 1, px, py, 3 * d.u * 1.22); gr.addColorStop(0, 'rgba(60,120,180,.0)'); gr.addColorStop(0.5, 'rgba(60,120,180,.55)'); gr.addColorStop(1, 'rgba(60,120,180,0)'); g.fillStyle = gr; g.fill(); const k = (t * 0.4) % 1; d.ring(0, -0.05, 0, 2.0 + k * 0.9, `rgba(190,224,255,${0.5 * (1 - k)})`, 1.2); }
       if (b.float) { const top = hexPts(d, 1.7, -0.3); const [ax, ay] = d.P(0, -2.3, 0); g.beginPath(); g.moveTo(top[2][0], top[2][1]); g.lineTo(top[3][0], top[3][1]); g.lineTo(top[4][0], top[4][1]); g.lineTo(top[5][0], top[5][1]); g.lineTo(ax, ay); g.closePath(); g.fillStyle = '#3e4352'; g.fill(); g.beginPath(); g.moveTo(top[0][0], top[0][1]); g.lineTo(top[1][0], top[1][1]); g.lineTo(top[2][0], top[2][1]); g.lineTo(ax, ay); g.closePath(); g.fillStyle = '#2c303c'; g.fill(); for (let k = 0; k < 4; k++) { const a = t * 0.2 + (k / 4) * Math.PI * 2; d.gem(Math.cos(a) * 2.4, -0.6 + k * 0.2, Math.sin(a) * 2.4, 0.16, '#5a6070', a); } }
       const bart = b.art ? img(b.art) : null;
-      if (bart) { const w = d.u * 4.4, h = (w * bart.naturalHeight) / bart.naturalWidth, [cx0, cy0] = d.P(0, 0, 0); g.drawImage(bart, cx0 - w / 2, cy0 - h / 2, w, h); }
+      if (bart) { const w = d.u * 4.6, h = (w * bart.naturalHeight) / bart.naturalWidth, [cx0, cy0] = d.P(0, 0, 0); drawArt(g, bart, null, cx0 - w / 2, cy0 - h / 2, w, h, team, b.art); }
       // 側面（手前3面）と上面
       const top = hexPts(d, 1.8, 0.0), bot = hexPts(d, 1.95, -0.42);
       if (!bart) {
@@ -178,7 +215,7 @@
   function drawGarden(d, p, x, z, t, it) {
     const g = d.g;
     const gart = it && it.art ? img(it.art) : null;
-    if (gart) { const w = d.u * 0.9, h = (w * gart.naturalHeight) / gart.naturalWidth, [px, py] = d.P(x, 0, z); g.drawImage(gart, px - w / 2, py - h, w, h); return; }
+    if (gart) { const w = d.u * 1.1, h = (w * gart.naturalHeight) / gart.naturalWidth, [px, py] = d.P(x, 0, z); drawArt(g, gart, null, px - w / 2, py - h + w * 0.08, w, h, d.team || '#ffffff', it.id); return; }
     switch (p.type) {
       case 'tree': d.rod([x, 0, z], [x, 0.5, z], 0.07, hex(p.trunk)); if (p.shape === 'pine') [0.32, 0.26, 0.18].forEach((r, k) => d.cone(x, 0.4 + k * 0.2, z, r, 0.35, p.leaf)); else [[0, 0.62, 0, 0.3], [0.16, 0.52, 0.1, 0.22], [-0.15, 0.55, -0.05, 0.22]].forEach(([dx, y, dz, r]) => d.ball(x + dx, y, z + dz, r, p.leaf)); break;
       case 'bamboo': for (let k = 0; k < 4; k++) { const dx = (k % 2) * 0.14 - 0.07, dz = k > 1 ? 0.1 : -0.1, h = 0.9 + k * 0.12; d.rod([x + dx, 0, z + dz], [x + dx, h, z + dz], 0.05, '#5fa860'); } break;
@@ -347,7 +384,7 @@
     function drawSite(s, t, dt) {
       s.col = mix(s.col, s.target, 0.08);
       const team = css(s.col), owned = s.state === 'me' || s.state === 'op' || s.state === 'own', active = s.state === 'active', calm = s.state === 'own';
-      const d = makeDraw(g, s.cx, s.cy, s.u);
+      const d = makeDraw(g, s.cx, s.cy, s.u); d.team = team;
       const C = { body: hex(MP.body), page: hex(MP.page), acc: team };
       g.save(); if (s.dim) g.globalAlpha = 0.42;
       // 光の柱（奥）
@@ -366,7 +403,7 @@
       const sk = item(s.skin), art = sk && sk.art ? img(sk.art) : null;
       const sc = 1 + Math.sin(s.pop * Math.PI) * 0.25;
       g.save(); g.translate(s.cx, s.cy); g.scale(sc, sc); g.translate(-s.cx, -s.cy);
-      if (art) { const w = s.u * 3.6, h = (w * art.naturalHeight) / art.naturalWidth, y0 = s.cy - h + w * (160 / 1024); g.drawImage(art, s.cx - w / 2, y0, w, h); const m = sk.artTeam ? img(sk.artTeam) : null; if (m) { g.globalCompositeOperation = 'lighter'; g.drawImage(tinted(m, team), s.cx - w / 2, y0, w, h); g.globalCompositeOperation = 'source-over'; } }
+      if (art) { const w = s.u * 3.6, h = (w * art.naturalHeight) / art.naturalWidth, y0 = s.cy - h + w * ART_ANCHOR; const m = sk.artTeam ? img(sk.artTeam) : null; drawArt(g, art, m, s.cx - w / 2, y0, w, h, team, sk.id); }
       else (SKIN[s.skin] || SKIN[DEFAULT_SKIN[s.subject]])(d, C, t + s.i);
       g.restore();
       drawBase(d, base, team, t, C, true);
