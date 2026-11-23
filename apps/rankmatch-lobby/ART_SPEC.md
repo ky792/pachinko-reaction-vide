@@ -33,7 +33,7 @@
 - 別ファイルのマスク（`{id}_team.png`、光らせる部分だけ白・ほかは透明）も引き続き使える。`data/art-manifest.js` の `team` に登録すると、マゼンタより優先される。
 
 ## 4. 登録手順
-1. 画像を上の置き場所に、ID どおりのファイル名で置く（例：`assets/territory/skins/skin_ja_goju.png`）。
+1. 届いた PNG を `python3 tools/clean_art.py 入力.png assets/territory/skins/skin_ja_goju.webp` で背景を抜きつつ WebP にして置く（配信は WebP。PNG の約8分の1）。
 2. `data/art-manifest.js` の該当する配列に ID を足す。マスクがあれば `team` にも足す。
 3. 画面を開き直すと絵が入れ替わる。登録していない ID は仮の絵のまま（存在しない画像を読みに行かない）。
 

@@ -65,7 +65,8 @@ def clean(src_path, dst_path, tol=8, seeds=(), smooth=False):
             elif cls[i] == 2 and smooth: op[x, y] = (0, 0, 0, 0)
             elif cls[i] == 2: op[x, y] = (255, 0, 255, int(max(0, min(1, (min(r, b) - g - 6) / 70)) * (0 if smooth else 140)))
             else: op[x, y] = (r, g, b, 255)
-    out.save(dst_path)
+    if dst_path.endswith('.webp'): out.save(dst_path, 'WEBP', quality=88, method=6, exact=True)  # 配信用は WebP
+    else: out.save(dst_path)
     return cls.count(1) / len(cls)
 
 if __name__ == '__main__':

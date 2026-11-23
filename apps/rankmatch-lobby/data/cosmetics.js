@@ -137,8 +137,8 @@
   const DIR = { skin: 'skins', base: 'bases', garden: 'garden' };
   items.forEach((it) => {
     if (!(ART[it.kind] || []).includes(it.id)) return;
-    it.art = `assets/territory/${DIR[it.kind]}/${it.id}.png`;
-    if ((ART.team || []).includes(it.id)) it.artTeam = `assets/territory/${DIR[it.kind]}/${it.id}_team.png`;
+    it.art = `assets/territory/${DIR[it.kind]}/${it.id}.webp`;
+    if ((ART.team || []).includes(it.id)) it.artTeam = `assets/territory/${DIR[it.kind]}/${it.id}_team.webp`;
   });
 
   window.COSMETICS = {
