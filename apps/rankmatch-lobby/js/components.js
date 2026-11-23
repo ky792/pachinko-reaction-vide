@@ -119,7 +119,7 @@
       <span class="me__avatar">${Portrait({ char, cls: 'portrait--face' })}<span class="me__emb">${Emblem(type.emblem)}</span></span>
       <span class="me__text"><b>${esc(p.name)}</b><small>${esc(p.id)} · NAV ${esc(char.name)}</small></span>
     </button>
-    <div class="wallet"><span><i class="dot coin"></i>${num(p.coins)}</span><span><i class="dot gem"></i>${num(p.crystals)}</span></div>
+    <div class="wallet"><span><i class="dot coin"></i>${num(p.coins)}</span><button data-action="shop" aria-label="クリスタルを購入"><i class="dot gem"></i>${num(p.crystals)}<b>＋</b></button></div>
   </header>`;
 
   const RankCard = (r, season) => `<section class="rank holo-panel" aria-label="現在ランク">
@@ -212,8 +212,8 @@
   </div>`;
 
   const BottomNav = () => `<nav class="bnav" aria-label="メニュー">
-    ${[['ホーム', 'M3 11l9-8 9 8v10h-6v-6H9v6H3z', true], ['学習', 'M4 5h7v14H4zM13 5h7v14h-7z'], ['対戦', 'M5 3l7 7-2 2-7-7zM19 3l-7 7 2 2 7-7zM3 21l6-6M21 21l-6-6'], ['ランキング', 'M4 20V10h4v10zM10 20V4h4v16zM16 20v-7h4v7z'], ['ナビ', 'M12 3a5 5 0 110 10 5 5 0 010-10zM4 21c1-4 4-6 8-6s7 2 8 6']]
-      .map(([l, d, on]) => `<button class="bnav__item" ${on ? 'aria-current="page"' : ''} ${l === 'ナビ' ? 'data-action="change-nav"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>${l}</button>`).join('')}
+    ${[['ホーム', 'M3 11l9-8 9 8v10h-6v-6H9v6H3z', true], ['学習', 'M4 5h7v14H4zM13 5h7v14h-7z'], ['対戦', 'M5 3l7 7-2 2-7-7zM19 3l-7 7 2 2 7-7zM3 21l6-6M21 21l-6-6'], ['マイ陣地', 'M12 2l9 5v10l-9 5-9-5V7zM12 7v10M7.5 9.5l9 5M16.5 9.5l-9 5'], ['ナビ', 'M12 3a5 5 0 110 10 5 5 0 010-10zM4 21c1-4 4-6 8-6s7 2 8 6']]
+      .map(([l, d, on]) => `<button class="bnav__item" ${on ? 'aria-current="page"' : ''} ${l === 'ナビ' ? 'data-action="change-nav"' : l === 'マイ陣地' ? 'data-action="base"' : l === '対戦' ? 'data-action="match"' : l === '学習' ? 'data-action="train"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>${l}</button>`).join('')}
   </nav>`;
 
   window.UI = { esc, Emblem, Portrait, TypeTabs, GenderToggle, NavigatorProfile, TopBar, RankCard, LevelCard, TodayCard, RecommendCard, ArenaCTA, StatsCard, DefenseLog, MissionList, Dialogue, BottomNav };

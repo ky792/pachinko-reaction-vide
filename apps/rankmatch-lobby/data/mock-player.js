@@ -4,7 +4,7 @@ window.MOCK_PLAYER = {
   id: 'SR-20481',
   season: { name: 'SEASON 03', week: 6, daysLeft: 11 },
   coins: 2340,
-  crystals: 85,
+  crystals: 420,
   rank: {
     tier: 'B', division: '+', label: 'B+',
     rp: 1482, nextTier: 'A−', nextAt: 1600, floor: 1300,

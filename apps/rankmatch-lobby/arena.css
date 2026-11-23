@@ -339,3 +339,51 @@ i.bar{display:block;font-style:normal}
   .su__s,.su__c{display:none}
   .a-ex li{grid-template-columns:6.6em 2.2em auto 2.2em 1fr}
 }
+
+/* ---------- my territory / shop ---------- */
+.wallet button{display:flex;align-items:center;gap:5px;padding:4px 8px;background:var(--panel);border:1px solid var(--t-line);font-family:var(--f-num);font-size:12px}
+.wallet button b{color:var(--theme);font-size:11px}
+.mb-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.mb-wallet{display:flex;align-items:center;gap:6px;padding:6px 10px;border:1px solid var(--t-line);background:var(--panel-solid);font-family:var(--f-num)}
+.mb-wallet b{font-size:16px}.mb-wallet span{font-family:var(--f-body);font-size:11px;font-weight:700;color:var(--theme)}
+.mb-3d{height:clamp(240px,40vh,380px)}
+.mb-tabs{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line)}
+.mb-tabs button{padding:10px 4px;font-weight:700;font-size:13px;color:var(--muted)}
+.mb-tabs button[aria-selected="true"]{color:#05080F;background:var(--theme)}
+.mb-subjects{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.mb-subjects button{padding:8px 0;border:1px solid var(--line);background:var(--panel-solid);font-weight:700;font-size:13px;color:var(--muted)}
+.mb-subjects button[aria-pressed="true"]{border-color:var(--theme);color:var(--fg);background:var(--t-20)}
+.mb-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mb-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid var(--line);background:var(--panel)}
+.mb-item.is-eq{border-color:var(--theme);background:var(--t-10)}
+.mb-item__main{display:grid;gap:3px;min-width:0}
+.mb-item__main b{font-size:15px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mb-item__main small{font-size:11.5px;color:var(--muted)}
+.mb-unlock{color:var(--warn)!important}.mb-unlock.ok{color:var(--ok)!important}
+.rar{font-style:normal;font-family:var(--f-disp);font-size:9.5px;letter-spacing:.12em;padding:1px 6px;border:1px solid currentColor}
+.rar.epic{color:#D9A7FF}.rar.rare{color:#7FD8FF}
+.mb-item__act .btn{width:auto;padding:8px 14px;font-size:13px}
+.mb-buy{display:flex;gap:6px;align-items:center;font-family:var(--f-num)!important}
+.mb-eq{font-size:11px;font-weight:700;padding:3px 10px;background:var(--theme);color:#05080F}
+.mb-flag__row{display:flex;gap:8px}
+.mb-flag__row input{flex:1;min-width:0;padding:10px 12px;font:inherit;font-size:16px;font-weight:700;color:var(--fg);background:var(--panel-solid);border:1px solid var(--line-2)}
+.mb-flag__row input:focus{outline:2px solid var(--theme);outline-offset:0}
+.mb-flag__row .btn{width:auto}
+.mb-sheet{position:fixed;inset:0;z-index:80;display:grid;align-items:end;justify-items:center;background:rgba(3,5,10,.7);padding:0 max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));animation:fadeIn .2s}
+.mb-sheet__box{width:100%;max-width:520px;display:grid;gap:10px;padding:18px;background:var(--panel-solid);border:1px solid var(--t-line);box-shadow:0 -10px 40px rgba(0,0,0,.5);animation:pop .25s ease-out}
+.mb-sheet__box h2{font-family:var(--f-body);font-weight:900;font-size:19px}
+.mb-sheet__box p{margin:0;font-size:13px;color:var(--muted)}
+.mb-price{display:grid;grid-template-columns:auto 1fr auto 1fr;gap:6px 10px;align-items:center;padding:10px;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+.mb-price b{font-family:var(--f-num);font-size:18px;color:var(--fg);display:flex;align-items:center;gap:6px}
+.mb-note{color:var(--holo-hi)!important}
+.mb-short{color:#FF6B7A!important;font-weight:700}
+.mb-proto{color:var(--warn)!important;font-weight:700}
+.mb-packs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mb-packs button{width:100%;display:grid;gap:4px;justify-items:center;padding:12px 6px;border:1px solid var(--line-2);background:var(--panel)}
+.mb-packs button:hover{border-color:var(--theme)}
+.mb-packs .g{display:flex;align-items:center;gap:6px;font-family:var(--f-num)}
+.mb-packs .g b{font-size:20px}
+.mb-packs .g em{font-style:normal;font-family:var(--f-body);font-size:10px;color:var(--ok)}
+.mb-packs .y{font-weight:700;font-size:13px}
+.mb-limits{font-size:11.5px;padding:8px 10px;border-left:2px solid var(--warn);background:color-mix(in oklab,var(--warn) 10%,transparent);display:grid;gap:2px}
+.mb-limits b{font-size:11px;color:var(--warn)}

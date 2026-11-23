@@ -15,6 +15,8 @@
   const now = () => Date.now() + (P.dayShift || 0) * KN.DAY;
   function initKnowledge() {
     if (!P.K) { P.K = KN.synth(P.stats, 7, now()); P.qr = {}; P.dayShift = 0; }
+    if (!P.cos) P.cos = clone(window.COSMETICS.defaults);
+    if (!P.achv) P.achv = { train: 0, duel: 0 };
     refreshStats();
   }
   const refreshStats = () => { P.stats = KN.subjectStats(P.K, now()); };
@@ -64,6 +66,7 @@
 
   /* 演習の結果（知識データは1問ごとに recordAnswer で更新済み）：挑戦権・EXP・学習量・ミッション */
   function applyTraining(g) {
+    P.achv.train += 1;
     P.tickets.now = Math.min(P.tickets.max, P.tickets.now + 1);
     addExp(g.correct * 15 + 60);
     addStudy(g.seconds, g.total, g.correct);
@@ -156,9 +159,10 @@
     refreshStats();
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
-    window.Battle.unmount(); window.Training.unmount();
+    window.Battle.unmount(); window.Training.unmount(); window.MyBase.unmount();
     if ((route === 'arena' || route === 'match') && state.confirmed) {
       window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, overturn, recordAnswer,
+        achieve: (k) => { P.achv[k] = (P.achv[k] || 0) + 1; savePlayer(); },
         train: (s, u) => { state.trainSubject = s; state.trainUnits = u || []; go('train'); } }));
       return;
     }
@@ -166,6 +170,11 @@
       window.Training.mount(root, Object.assign(base, { bank: window.QUESTION_BANK, subject: state.trainSubject || P.recommend.subject, focusUnits: state.trainUnits || [],
         now, myK: () => P.K, recordAnswer, applyTraining, arena: () => go('arena') }));
       state.trainUnits = [];
+      return;
+    }
+    if (route === 'base' && state.confirmed) {
+      window.MyBase.mount(root, { player: P, type: type(), char: char(), catalog: window.COSMETICS, save: savePlayer, toast, openShop: state.openShop, exit: () => go('home') });
+      state.openShop = false;
       return;
     }
     if (route === 'stats' && state.confirmed) {
@@ -214,6 +223,8 @@
       case 'talk': state.lineIdx++; setDialogue(currentLine(), state.lineIdx % 2 ? 'smile' : 'default'); break;
       case 'match': go('arena'); break;
       case 'train': state.trainSubject = b.dataset.subject || P.recommend.subject; state.trainUnits = b.dataset.units ? b.dataset.units.split('|') : []; go('train'); break;
+      case 'base': go('base'); break;
+      case 'shop': state.openShop = true; go('base'); break;
       case 'stats': state.statsSubject = b.dataset.subject || state.statsSubject; go('stats'); break;
       case 'advance': P.dayShift = (P.dayShift || 0) + 3; refreshStats(); savePlayer(); render(); toast('3日経過：復習していない単元の定着が下がりました'); break;
       case 'reset': P = clone(window.MOCK_PLAYER); initKnowledge(); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;

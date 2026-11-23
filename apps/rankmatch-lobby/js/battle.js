@@ -327,8 +327,9 @@
   /* 3Dマップ：キャンバスは1つを使い回し、再描画のたびに新しい置き場所へ移す */
   function attach3d() {
     const host = root.querySelector('.a-3d'); if (!host || !b.op) return;
-    const key = b.op.order.join() + ctx.type.color + b.oc;
-    if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain3D ? window.Terrain3D.create(b.op.order, { me: ctx.type.color, op: b.oc }) : null; }
+    const colors = { me: ctx.type.color, op: b.oc }, look = Object.assign({ flag: b.op.name }, b.op.look || {});
+    const key = window.Terrain3D ? window.Terrain3D.keyOf(b.op.order, colors, look) : '';
+    if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain3D ? window.Terrain3D.create(b.op.order, colors, look) : null; }
     if (!t3) { host.hidden = true; return; }
     host.appendChild(t3.canvas); t3.resize();
     const upto = b.phase === 'battle' ? (b.areaDone ? b.ai + 1 : b.ai) : b.phase === 'plan' ? -1 : 5;
@@ -452,7 +453,7 @@
     const sum = (arr) => arr.reduce((s, x) => s + (x.time == null ? RULE.duelSec : x.time), 0);
     d.win = mc > oc || (mc === oc && sum(d.me) < sum(d.op));
     b.duelUsed = true;
-    if (d.win) overturn(d.subject);
+    if (d.win) { overturn(d.subject); if (ctx.achieve) ctx.achieve('duel'); }
     b.phase = 'duelres'; draw();
   }
   function overturn(subject) {
