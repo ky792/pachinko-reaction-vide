@@ -357,13 +357,46 @@
     const fx = [];
     const stars = Array.from({ length: 60 }, () => [Math.random(), Math.random() * 0.6, Math.random()]);
 
+    /* 大きな島（フィールド）の上に、陣地を弧状に離して配置する。
+     * 島のローカル座標（陣地の単位 u）で円周上に置き、左手前 → 奥 → 右手前の順に進む（相手の防衛順）。手前の中央は広場への入口 */
+    /* 手前・奥を交互にしたジグザグで、左から右へ（第1陣→第5陣）。画面上の位置から島の座標を逆算する */
+    const FIELD_R = 8.4, FIELD_Y = -0.42;
+    let F = { x: 0, y: 0, u: 10 };
     function layout() {
-      const u = Math.min(W / 19, H / 6.2);
+      const u = Math.min(W / 21, H / 15);
+      F = { x: W / 2, y: H / 2 + u * 0.9, u };
+      const fd = makeDraw(g, F.x, F.y, u);
       sites.forEach((s) => {
-        const tt = n > 1 ? s.i / (n - 1) - 0.5 : 0, depth = 1 - Math.abs(tt) * 2;
-        s.cx = W * 0.5 + tt * (W - u * 4.4); s.cy = H * 0.66 - depth * H * 0.07; s.u = u * (1 - depth * 0.1);
+        const sx = (n > 1 ? s.i / (n - 1) - 0.5 : 0) * 14.4, sy = s.i % 2 ? -2.2 : 1.2; // 画面上の位置（u 単位）
+        const a = sx / ISO_X, b = sy / ISO_Y; s.wx = (a + b) / 2; s.wz = (b - a) / 2;
+        const [px, py] = fd.P(s.wx, 0, s.wz); s.cx = px; s.cy = py; s.u = u;
       });
       sites.sort((a, b) => a.cy - b.cy);
+    }
+    /* 島：厚みのある六角形の大地、内側の光る縁、格子、中央の広場、広場から各陣地への道 */
+    function drawField(t) {
+      const d = makeDraw(g, F.x, F.y, F.u), team = rgb(colors.op), Y = FIELD_Y;
+      const top = hexPts(d, FIELD_R, Y), bot = hexPts(d, FIELD_R + 0.3, Y - 0.9);
+      [[0, 1], [1, 2], [5, 0]].forEach(([i, j], k) => d.poly([top[i], top[j], bot[j], bot[i]], css(shade([24, 32, 58], -0.15 * k)), 'rgba(5,8,15,.7)', 1));
+      const [cx, cy] = d.P(0, Y, 0), gr = g.createRadialGradient(cx, cy, 0, cx, cy, FIELD_R * F.u * 1.3);
+      gr.addColorStop(0, css(mix([30, 40, 72], team, 0.12))); gr.addColorStop(1, 'rgb(18,24,44)');
+      d.poly(top, gr, 'rgba(5,8,15,.7)', 1);
+      // 格子（島の上だけ）
+      g.save(); g.beginPath(); top.forEach((p, i) => (i ? g.lineTo(p[0], p[1]) : g.moveTo(p[0], p[1]))); g.closePath(); g.clip();
+      g.strokeStyle = 'rgba(120,150,220,.10)'; g.lineWidth = 1;
+      for (let k = -9; k <= 9; k++) { d.rod([k, Y, -9], [k, Y, 9], 0.012, 'rgba(120,150,220,.10)'); d.rod([-9, Y, k], [9, Y, k], 0.012, 'rgba(120,150,220,.10)'); }
+      g.restore();
+      // 縁の光
+      g.save(); g.shadowColor = css(team); g.shadowBlur = 12; d.poly(hexPts(d, FIELD_R - 0.35, Y), null, css(team, 0.55), 2); g.restore();
+      // 道：第1陣から第5陣へ順につなぐ。光の粒が進む向きに流れる
+      const route = sites.slice().sort((a, b) => a.i - b.i);
+      for (let k = 0; k + 1 < route.length; k++) {
+        const A = [route[k].wx, Y, route[k].wz], B = [route[k + 1].wx, Y, route[k + 1].wz];
+        d.rod(A, B, 0.7, 'rgba(70,90,140,.55)'); d.rod(A, B, 0.09, css(team, 0.5));
+        for (let j = 0; j < 2; j++) { const f = (t * 0.4 + j / 2 + k * 0.17) % 1, [px, py] = d.P(A[0] + (B[0] - A[0]) * f, Y, A[2] + (B[2] - A[2]) * f); g.fillStyle = css(team, 0.95 * Math.sin(f * Math.PI)); g.beginPath(); g.arc(px, py, Math.max(1.5, F.u * 0.08), 0, Math.PI * 2); g.fill(); }
+      }
+      // 入口（手前の縁）
+      const [gx, gy] = d.P(FIELD_R * 0.62, Y, FIELD_R * 0.62); g.save(); g.translate(gx, gy); g.scale(1, 0.5); g.strokeStyle = css(team, 0.7); g.lineWidth = 2; g.beginPath(); g.arc(0, 0, F.u * 0.9, 0, Math.PI * 2); g.stroke(); g.rotate(t * 0.4); g.beginPath(); for (let k = 0; k < 6; k++) { const aa = (k / 6) * Math.PI * 2; g.lineTo(Math.cos(aa) * F.u * 0.55, Math.sin(aa) * F.u * 0.55); } g.closePath(); g.stroke(); g.restore();
     }
     function resize() {
       const host = canvas.parentElement; if (!host) return;
@@ -478,7 +511,7 @@
       const t = reduce ? 0 : (now - T0) / 1000;
       // カメラ
       const fs = focusI == null ? null : siteOf(focusI);
-      if (fs) { camT.z = Math.max(1.4, Math.min(2.5, (W * 0.55) / (fs.u * 5.2), (H * 0.8) / (fs.u * 6.2))); camT.x = fs.cx; camT.y = fs.cy - fs.u * 1.7; }
+      if (fs) { camT.z = Math.max(1.4, Math.min(3.2, (W * 0.6) / (fs.u * 5.2), (H * 0.82) / (fs.u * 6.4))); camT.x = fs.cx; camT.y = fs.cy - fs.u * 1.9; }
       else { camT.z = 1; camT.x = W / 2 - panX; camT.y = H / 2; }
       if (first) { Object.assign(cam, camT); first = false; }
       if (introT > 0) introT = Math.max(0, introT - dt * 0.6);
@@ -491,6 +524,7 @@
       g.save(); g.translate(W / 2, H / 2); g.scale(cam.z, cam.z); g.translate(-cam.x, -cam.y);
       g.strokeStyle = 'rgba(60,80,130,.28)'; g.lineWidth = 1 / cam.z; const gu = Math.min(W / 19, H / 6.2) * 1.4, gy = H * 0.66;
       for (let k = -14; k <= 14; k++) { g.beginPath(); g.moveTo(W / 2 + k * gu * ISO_X * 2 - 20 * gu * ISO_X, gy - 20 * gu * ISO_Y + gu * 2); g.lineTo(W / 2 + k * gu * ISO_X * 2 + 20 * gu * ISO_X, gy + 20 * gu * ISO_Y + gu * 2); g.stroke(); g.beginPath(); g.moveTo(W / 2 + k * gu * ISO_X * 2 + 20 * gu * ISO_X, gy - 20 * gu * ISO_Y + gu * 2); g.lineTo(W / 2 + k * gu * ISO_X * 2 - 20 * gu * ISO_X, gy + 20 * gu * ISO_Y + gu * 2); g.stroke(); }
+      drawField(t);
       sites.forEach((s) => drawSite(s, t, dt));
       for (let k = fx.length - 1; k >= 0; k--) if (!fx[k].draw(dt)) fx.splice(k, 1);
       g.restore();
