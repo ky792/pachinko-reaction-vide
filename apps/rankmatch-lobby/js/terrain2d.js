@@ -408,7 +408,7 @@
       const C = { body: hex(MP.body), page: hex(MP.page), acc: team };
       g.save(); if (s.dim) g.globalAlpha = 0.42;
       // 光の柱（奥）
-      const beam = calm ? 0.05 : owned ? 0.3 : active ? 0.2 + Math.sin(t * 6) * 0.12 : 0;
+      const beam = calm ? 0 : owned ? 0.3 : active ? 0.2 + Math.sin(t * 6) * 0.12 : 0;
       if (beam > 0) { const bw = s.u * 0.5, gr = g.createLinearGradient(0, s.cy - s.u * 9, 0, s.cy); gr.addColorStop(0, css(s.col, 0)); gr.addColorStop(1, css(s.col, beam)); g.fillStyle = gr; g.fillRect(s.cx - bw, s.cy - s.u * 9, bw * 2, s.u * 9); }
       drawBase(d, base, team, t, C, false);
       const back = (z, x) => x + z < 0;

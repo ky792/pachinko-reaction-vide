@@ -62,7 +62,8 @@ def clean(src_path, dst_path, tol=8, seeds=(), smooth=False):
         for x in range(W):
             i = y * W + x; r, g, b = px[x, y]
             if cls[i] == 1: op[x, y] = (0, 0, 0, 0)
-            elif cls[i] == 2: op[x, y] = (255, 0, 255, int(max(0, min(1, (min(r, b) - g - 6) / 70)) * 140))
+            elif cls[i] == 2 and smooth: op[x, y] = (0, 0, 0, 0)
+            elif cls[i] == 2: op[x, y] = (255, 0, 255, int(max(0, min(1, (min(r, b) - g - 6) / 70)) * (0 if smooth else 140)))
             else: op[x, y] = (r, g, b, 255)
     out.save(dst_path)
     return cls.count(1) / len(cls)
