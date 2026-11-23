@@ -119,7 +119,7 @@ AUDIT_SCHEMA = {
 
 # ---------- 共通 ----------
 def load_state():
-    out = subprocess.run(["node", str(HERE / "dump_bank.js")], cwd=ROOT, capture_output=True, text=True, check=True)
+    out = subprocess.run(["node", str(HERE / "dump_bank.js"), "--base"], cwd=ROOT, capture_output=True, text=True, check=True)
     d = json.loads(out.stdout)
     units = []
     for subject, fields in d["curriculum"].items():
@@ -149,7 +149,7 @@ def norm(s):
 
 def cnorm(s):
     """選択肢の比較用：大文字小文字・小数点は区別する（Aa と AA、1.4 と 14 は別物）。"""
-    return re.sub(r"\s", "", unicodedata.normalize("NFKC", s))
+    return re.sub(r"\s", "", unicodedata.normalize("NFC", s))  # NFKC だと 3ⁿ と 3n が同じになる
 
 
 def qid(subject, q):
@@ -173,6 +173,18 @@ def needs(bank, units, gen_counts=None):
         have += gen_counts.get(unit_key(u), 0)
         rows.append({**u, "have": have, "need": max(0, TARGET[u["weight"]] - have)})
     return sorted(rows, key=lambda r: (-r["weight"], -r["need"], r["subject"]))
+
+
+def pending_counts(bank):
+    """書き出し前の下書き数（すでに data/ に入った id と fail は数えない）。"""
+    in_bank = {q["id"] for q in bank}
+    failed = {v["id"] for v in read_json(WORK / "verified.json", []) if v["status"] == "fail"}
+    out = {}
+    for d in read_jsonl(WORK / "drafts.jsonl"):
+        if d["id"] not in in_bank and d["id"] not in failed:
+            k = d["subject"] + "/" + d["unit"]
+            out[k] = out.get(k, 0) + 1
+    return out
 
 
 def cost(kind, n, batch=True):
@@ -262,11 +274,7 @@ def cid_safe(s):
 # ---------- plan ----------
 def cmd_plan(a):
     bank, units = load_state()
-    drafts = read_jsonl(WORK / "drafts.jsonl")
-    gc = {}
-    for d in drafts:
-        gc[d["subject"] + "/" + d["unit"]] = gc.get(d["subject"] + "/" + d["unit"], 0) + 1
-    rows = needs(bank, units, gc)
+    rows = needs(bank, units, pending_counts(bank))
     total = sum(r["need"] for r in rows)
     print(f"{'科目':<4} {'単元':<14} ★  既存(+下書き) 不足")
     for r in rows:
@@ -314,10 +322,7 @@ def split_counts(n):
 def cmd_generate(a):
     bank, units = load_state()
     drafts = read_jsonl(WORK / "drafts.jsonl")
-    gc = {}
-    for d in drafts:
-        k = d["subject"] + "/" + d["unit"]
-        gc[k] = gc.get(k, 0) + 1
+    gc = pending_counts(bank)
     cands = read_json(WORK / "retire_candidates.json", [])
     rows = needs(bank, units, gc)
     # 差し替え候補の分も作る（その単元で retire される数だけ上乗せ）
