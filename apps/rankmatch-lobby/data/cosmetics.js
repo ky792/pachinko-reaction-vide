@@ -69,21 +69,21 @@
 
   /* ---- 科目の小物（その科目らしい庭の小物。どの陣地にも置けるが、その科目を選ぶと先頭に並ぶ） ---- */
   [
-    ['国語', 'gd_ja_suzuri', '硯と筆', 'common', { type: 'suzuri' }, '筆が立てかけられた石の硯'],
-    ['国語', 'gd_ja_scroll', '巻物の台', 'rare', { type: 'scroll' }, '広げた巻物を載せた台'],
-    ['国語', 'gd_ja_tanzaku', '短冊の笹', 'rare', { type: 'tanzaku' }, '短冊が揺れる笹飾り'],
+    ['国語', 'gd_ja_suzuri', '書見台と筆', 'common', { type: 'suzuri' }, '開いた本を載せた書見台と、筆を挿した筆立て'],
+    ['国語', 'gd_ja_scroll', '巻物と和綴じ本', 'rare', { type: 'scroll' }, '桜柄の巻物と積み重ねた本'],
+    ['国語', 'gd_ja_tanzaku', '桜の鉢植え', 'rare', { type: 'tree', leaf: 0xffb7d0, trunk: 0x6a4a3a, shape: 'round' }, '装甲の鉢に植えた桜の枝'],
     ['数学', 'gd_ma_compass', 'コンパスと定規', 'common', { type: 'compass' }, '大きなコンパスと三角定規'],
     ['数学', 'gd_ma_abacus', 'そろばん', 'rare', { type: 'abacus' }, '立てかけた大きなそろばん'],
-    ['数学', 'gd_ma_solids', '立体模型', 'rare', { type: 'solids' }, '円錐・立方体・球の模型'],
-    ['英語', 'gd_en_mailbox', '郵便ポスト', 'common', { type: 'mailbox' }, '丸い頭の郵便ポスト'],
-    ['英語', 'gd_en_dict', '辞書の山', 'rare', { type: 'dict' }, '分厚い辞書の積み重ね'],
+    ['数学', 'gd_ma_solids', '多面体模型', 'rare', { type: 'solids' }, '台座の上の正多面体の骨組み模型'],
+    ['英語', 'gd_en_mailbox', 'ヘッドセットと洋書', 'common', { type: 'dict' }, 'リスニング用のヘッドセットと洋書'],
+    ['英語', 'gd_en_dict', '環の地球儀', 'rare', { type: 'globe' }, '光る環が巡る地球儀'],
     ['英語', 'gd_en_sign', '道しるべ', 'rare', { type: 'sign' }, '矢印の看板が何枚もついた柱'],
     ['理科', 'gd_sc_microscope', '顕微鏡', 'common', { type: 'microscope' }, '卓上の光学顕微鏡'],
     ['理科', 'gd_sc_tubes', '試験管立て', 'rare', { type: 'tubes' }, '色つきの液体が入った試験管'],
-    ['理科', 'gd_sc_fossil', 'アンモナイトの化石', 'rare', { type: 'fossil' }, '岩に埋まった大きなアンモナイト'],
-    ['社会', 'gd_so_map', '地図台', 'common', { type: 'maptable' }, '古地図を広げた台'],
-    ['社会', 'gd_so_armor', '甲冑', 'rare', { type: 'armor' }, '台に飾られた鎧兜'],
-    ['社会', 'gd_so_cannon', '古い大砲', 'rare', { type: 'cannon' }, '車輪のついた青銅の大砲'],
+    ['理科', 'gd_sc_fossil', 'DNAと分子模型', 'rare', { type: 'fossil' }, 'DNAの二重らせんと分子模型'],
+    ['社会', 'gd_so_map', '地図と羅針盤', 'common', { type: 'maptable' }, '広げた地図と羅針盤'],
+    ['社会', 'gd_so_armor', '列柱と兜', 'rare', { type: 'armor' }, '古代の列柱と兜の遺物'],
+    ['社会', 'gd_so_cannon', '正義の天秤', 'rare', { type: 'cannon' }, '公民の象徴、正義の天秤'],
   ].forEach(([subject, id, name, rarity, p, desc]) => add('garden', id, name, rarity, { subject, p, desc, set: '科目の小物' }));
 
   /* ---- エフェクト（1つ） ---- */
