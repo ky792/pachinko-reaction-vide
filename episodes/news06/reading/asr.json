@@ -1,0 +1,357 @@
+{
+ "01_hairi-001": {
+  "sha1": "155c5071cf4dacbfc7dd954226abc15b141fd42f",
+  "model": "large-v3-turbo",
+  "text": "視聴者の皆さんこんばんは"
+ },
+ "01_hairi-002": {
+  "sha1": "05ff22a704566389a13866e7104f883883cc3f22",
+  "model": "large-v3-turbo",
+  "text": "パチンコ店が代を入れ替える時、警察に払うお金が安くなるらしいで。"
+ },
+ "01_hairi-003": {
+  "sha1": "284f2414c8be4b5250a2bb3437d0c1f0b89384c3",
+  "model": "large-v3-turbo",
+  "text": "2026年11月6日、警察庁が区営法の施行例を変える案を出して、意見の募集を始めた。"
+ },
+ "01_hairi-004": {
+  "sha1": "17a098033f2b2b0a8b83297ddbe95706d84e4c78",
+  "model": "large-v3-turbo",
+  "text": "遊戯機の認定と入れ替えの承認の手数料を下げる中身"
+ },
+ "01_hairi-005": {
+  "sha1": "160b1c8c15edcf01bf5a38ee5a5bfe4be08634de",
+  "model": "large-v3-turbo",
+  "text": "え?入れ替えて警察にお金払ってやってたん?"
+ },
+ "01_hairi-006": {
+  "sha1": "77ccec78f8257e0829773f5ca781556097ddc04c",
+  "model": "large-v3-turbo",
+  "text": "そう打つ側からはまず見えない手続き"
+ },
+ "01_hairi-007": {
+  "sha1": "b7bc2ae1f43031ae86ce18d72e0cc9dd2f83eb9e",
+  "model": "large-v3-turbo",
+  "text": "問いは2つなんで台を変えるだけで警察の証人がいるんか"
+ },
+ "01_hairi-008": {
+  "sha1": "b0ab64669df9cf0a2937beefa2edf55d63edff08",
+  "model": "large-v3-turbo",
+  "text": "ほんで安くなったら何が変わるんか"
+ },
+ "01_hairi-009": {
+  "sha1": "ed0298fa8b586a836c2e0889f8bf82e7c2df2c92",
+  "model": "large-v3-turbo",
+  "text": "警察庁の資料と協会紙の記事をもとに整理していく"
+ },
+ "02_keii-001": {
+  "sha1": "a448a8d5475c4540764ca11defd4cb3e53cb6323",
+  "model": "large-v3-turbo",
+  "text": "変わるのは都道府県が手数料を決めるときの標準の額"
+ },
+ "02_keii-002": {
+  "sha1": "418005b179c9a7adb8b932da62fb77ad844b6c36",
+  "model": "large-v3-turbo",
+  "text": "標準?全国で同じ値段ちゃうの?"
+ },
+ "02_keii-003": {
+  "sha1": "fc0c21635a60545ddd1b8b89d4a6251dc8f62818",
+  "model": "large-v3-turbo",
+  "text": "実際の額は都道府県が条例で決める。その目安を国が政令で決めてる。"
+ },
+ "02_keii-004": {
+  "sha1": "13dff19500d8d4dc13cae46283bd7d1880acf9ce",
+  "model": "large-v3-turbo",
+  "text": "まず入れ替えの承認。今は1回5200円に、1台ごとに40円。"
+ },
+ "02_keii-005": {
+  "sha1": "a76cc52a08e640c07338cdffd1d19fdf2ec00947",
+  "model": "large-v3-turbo",
+  "text": "パンネは3900円に、1台ごとに30円になる。"
+ },
+ "02_keii-006": {
+  "sha1": "489e17fd4cbe56fb912127ee0ac0eeba6cd82186",
+  "model": "large-v3-turbo",
+  "text": "1台ごとにちゃんと値段ついてるんや"
+ },
+ "02_keii-007": {
+  "sha1": "fe0e9495635be083590949f87c1b73fc7584e1a4",
+  "model": "large-v3-turbo",
+  "text": "もう一つが認定。4340円は3030円になる。"
+ },
+ "02_keii-008": {
+  "sha1": "21ebfd8b4463b2d8e7881e40b681817574c4023f",
+  "model": "large-v3-turbo",
+  "text": "認定って何を認めてもらうん?"
+ },
+ "02_keii-009": {
+  "sha1": "0d805a059b9a832b73a6b5d42c4d15d214558121",
+  "model": "large-v3-turbo",
+  "text": "タイの形式の検定は3年で期限が切れる。"
+ },
+ "02_keii-010": {
+  "sha1": "d7db86ca6144e193f272956fcf71314c3ca45b82",
+  "model": "large-v3-turbo",
+  "text": "期限が切れても同じ台を置きたいなら店が公安委員会の認定を受ける"
+ },
+ "02_keii-011": {
+  "sha1": "1c9985a73e386956378d4f850ee2b9629c2240ea",
+  "model": "large-v3-turbo",
+  "text": "ほな、古い台が長いこと島に残ってるのは認定のおかげなんか。"
+ },
+ "02_keii-012": {
+  "sha1": "1b68fd4b9d75c87abbe47a7cfd071600f2beb89d",
+  "model": "large-v3-turbo",
+  "text": "そういう題もあるってこと認定にも期限はあるけどね"
+ },
+ "02_keii-013": {
+  "sha1": "d8e55ee9699593482b00d8f363dc14728ed4439b",
+  "model": "large-v3-turbo",
+  "text": "意見の募集は2026年12月5日まで、施行は2027年4月1日からと言わん。"
+ },
+ "02_keii-014": {
+  "sha1": "098ffcb4bfcc3c17f40179f716bbc2b826a97b9f",
+  "model": "large-v3-turbo",
+  "text": "案ってことはまだ決まりやないやな"
+ },
+ "02_keii-015": {
+  "sha1": "59d05954e369e2b5962af2d20131b0591d138ceb",
+  "model": "large-v3-turbo",
+  "text": "そう意見を聞いてから決める"
+ },
+ "03_shikumi-001": {
+  "sha1": "81ba357bad8e7cbd827701a733ba41b12682701a",
+  "model": "large-v3-turbo",
+  "text": "で?なんで代を変えるだけで警察の証人がいるん?"
+ },
+ "03_shikumi-002": {
+  "sha1": "31ebe2dbf027fd0bc894e9283c34035848dca5fa",
+  "model": "large-v3-turbo",
+  "text": "空営法で台の入れ替えは前もって公安委員会の承認を受ける決まり"
+ },
+ "03_shikumi-003": {
+  "sha1": "744401663db71546344672f370b123c69fe05ca4",
+  "model": "large-v3-turbo",
+  "text": "信頼なら限定に通った照明の写しとメーカーの保証書を出す"
+ },
+ "03_shikumi-004": {
+  "sha1": "224b0225e9fdf17c15102d9d9bb4a12a618bd9c7",
+  "model": "large-v3-turbo",
+  "text": "保証書って家電みたいやな"
+ },
+ "03_shikumi-005": {
+  "sha1": "544f0a49e823d138b2e149d042bd311ed0bcecb3",
+  "model": "large-v3-turbo",
+  "text": "中身が検定に通ったものと同じだってメーカーが保証する書類?"
+ },
+ "03_shikumi-006": {
+  "sha1": "55829ece213953fa498b4637cfa0c19895ef4e22",
+  "model": "large-v3-turbo",
+  "text": "その上で警察の人が店に来ておいただいを確かめる実地調査っていう"
+ },
+ "03_shikumi-007": {
+  "sha1": "37a3f9735b2f41e6e27a22ccb5b21fbdfd8b900d",
+  "model": "large-v3-turbo",
+  "text": "なんでわざわざ見に来るん?"
+ },
+ "03_shikumi-008": {
+  "sha1": "87426dbc947252e8c9ddc8117dce3b27bc307000",
+  "model": "large-v3-turbo",
+  "text": "不正改造を防ぐためクリア基盤をいじったダイを犯せない"
+ },
+ "03_shikumi-009": {
+  "sha1": "74c16a8b9de160565fd09ae263dd491e72ddad89",
+  "model": "large-v3-turbo",
+  "text": "その実地調査を一部省く方針を、2025年11月に教会団体が各県に伝えている。"
+ },
+ "03_shikumi-010": {
+  "sha1": "d391dc13b5347d9d4d8f068c3916821edbe6dad2",
+  "model": "large-v3-turbo",
+  "text": "一部の件で試したら特に支障がなかったらしい"
+ },
+ "03_shikumi-011": {
+  "sha1": "4fefe574739fac967289ce776ee3c4474708006b",
+  "model": "large-v3-turbo",
+  "text": "見に来る回数が減ったら警察の手間も減るわけか"
+ },
+ "03_shikumi-012": {
+  "sha1": "b02ddec76b21de490ffea454c98e809768e8f4ba",
+  "model": "large-v3-turbo",
+  "text": "そう、案の理由も人件費と物件費が軽くなるからって書いてある"
+ },
+ "03_shikumi-013": {
+  "sha1": "d286aef8dbd57a32a608c677c37c93d869241dbc",
+  "model": "large-v3-turbo",
+  "text": "手数料って結局人が動く手間代なんや"
+ },
+ "03_shikumi-014": {
+  "sha1": "3b2953f5bbcdf715905c2e88fac86b4cccbd776e",
+  "model": "large-v3-turbo",
+  "text": "ちなみに前の見直しでは客に上がってる"
+ },
+ "03_shikumi-015": {
+  "sha1": "54fa423e9e15e6dd687837d5ac3b21e229a7ee80",
+  "model": "large-v3-turbo",
+  "text": "2012年の案例、入れ替えの承認は3400円から5200円。認定は2720円から4340円になった。"
+ },
+ "03_shikumi-016": {
+  "sha1": "e1adf4be7e6e3dd2be73fa1088d20c75cb81e6f1",
+  "model": "large-v3-turbo",
+  "text": "あげた時はなんでやったん?"
+ },
+ "03_shikumi-017": {
+  "sha1": "40628459e652ff366d3407aa5e2b01d027a2c2dd",
+  "model": "large-v3-turbo",
+  "text": "検定の期限入れで認定の手続きが増えるからって説明だった"
+ },
+ "04_kawaru-001": {
+  "sha1": "c05e28b14ceae14a502334b2e7b0d371095d7304",
+  "model": "large-v3-turbo",
+  "text": "で、うちら宇都川には何が変わるん?"
+ },
+ "04_kawaru-002": {
+  "sha1": "d58e837e0e22e394b3424f490e6fc209704b0e3e",
+  "model": "large-v3-turbo",
+  "text": "正直手数料の分はほとんど変わらない"
+ },
+ "04_kawaru-003": {
+  "sha1": "df92dabe9d3153dcd6c4818a0913a3add907e3b5",
+  "model": "large-v3-turbo",
+  "text": "20代入れ替えても6000円は4500円、1回で1500円安くなるだけ。"
+ },
+ "04_kawaru-004": {
+  "sha1": "9beb1282b11d879b400f95c1a216ad58c0baf1b7",
+  "model": "large-v3-turbo",
+  "text": "1500円ってうちやったら座って10分で解けるわ"
+ },
+ "04_kawaru-005": {
+  "sha1": "d189cb6bf379d3e26fb58ec0480fb935ce3b5294",
+  "model": "large-v3-turbo",
+  "text": "店の経営がそれで楽になる額じゃないね"
+ },
+ "04_kawaru-006": {
+  "sha1": "0a6c784bb6e31002b66736f2442b59c364548d98",
+  "model": "large-v3-turbo",
+  "text": "変わるとしたら実地調査が省かれて入れ替えが早く済むことだろうね"
+ },
+ "04_kawaru-007": {
+  "sha1": "93967a548a2710ec941f4511be4a1cac66bac0f9",
+  "model": "large-v3-turbo",
+  "text": "今日開始にも設置から営業開始までの時間差が縮まって記事が出てる"
+ },
+ "04_kawaru-008": {
+  "sha1": "2a82fc26942b2da9ee2bb320ea7ae1588914f26a",
+  "model": "large-v3-turbo",
+  "text": "入れ替えの日に店が閉まってる時間も身近なるんかな"
+ },
+ "04_kawaru-009": {
+  "sha1": "c74a2c0f87fc1aa028a42e2b3b7d78dcd31e4525",
+  "model": "large-v3-turbo",
+  "text": "そこはケンゴとのやり方したい"
+ },
+ "04_kawaru-010": {
+  "sha1": "46fd18156e2cdee3c910136c03d31ad8bdc94f0f",
+  "model": "large-v3-turbo",
+  "text": "でも見に来るのが減ったらズルする店が出へん?"
+ },
+ "04_kawaru-011": {
+  "sha1": "ab8b6a7c89023e51dd4c595662f24cc1fd9fa470",
+  "model": "large-v3-turbo",
+  "text": "そこは警察庁も念を押したらしい不正改造を見逃したら既成の根っこが揺らぐって"
+ },
+ "04_kawaru-012": {
+  "sha1": "d73a967b7f060a5b8c07cc0eeea7ff2451ee3118",
+  "model": "large-v3-turbo",
+  "text": "楽にする代わりにちゃんとやれよってことやな"
+ },
+ "04_kawaru-013": {
+  "sha1": "f000566594d6943df8582b435e98ebf554a0e33a",
+  "model": "large-v3-turbo",
+  "text": "意見の募集って、うちらでも出せるん?"
+ },
+ "04_kawaru-014": {
+  "sha1": "27b01ec08d9340897a7a528172ec63641984aa1a",
+  "model": "large-v3-turbo",
+  "text": "イーガボのホームから誰でも出せる締め切りは2026年12月5日"
+ },
+ "04_kawaru-015": {
+  "sha1": "e2b5dbc14bc96f7a677252f23481fe8fd9477dcd",
+  "model": "large-v3-turbo",
+  "text": "ほな手数料より台の値段下げてって書いとくわ"
+ },
+ "04_kawaru-016": {
+  "sha1": "3319e3fa748ecdd983f8b461d0aabbd8fca2ffbd",
+  "model": "large-v3-turbo",
+  "text": "それはこの案の話じゃない"
+ },
+ "05_matome-001": {
+  "sha1": "5d95802609ec11d2c6eb63c8b49f04c26736ac48",
+  "model": "large-v3-turbo",
+  "text": "まとめ、2026年11月6日、警察庁が遊戯機の認定と入れ替えの承認の手数料を下げる案を出した。"
+ },
+ "05_matome-002": {
+  "sha1": "4a6b0a0381a4d28c3636cb44d86ecf6528a1c80b",
+  "model": "large-v3-turbo",
+  "text": "1つ目の答え、不正改造を防ぐために入れ替えは前もって、公安委員会の証人がいる決まりやから。"
+ },
+ "05_matome-003": {
+  "sha1": "a70e6eae85b913af2a6cc5ce17d6ba48dc0c33e1",
+  "model": "large-v3-turbo",
+  "text": "2つ目の答え変わることは3つや"
+ },
+ "05_matome-004": {
+  "sha1": "9bb759d31ab1ec83052ecc82b6421cbe31b36e15",
+  "model": "large-v3-turbo",
+  "text": "一つ入れ替えの承認は5200円と1台40円が3900円と1台30円に"
+ },
+ "05_matome-005": {
+  "sha1": "396ba1527139d42d41a6c5e8d4af24eef1ef41bd",
+  "model": "large-v3-turbo",
+  "text": "2つ認定は4340円が3030円に"
+ },
+ "05_matome-006": {
+  "sha1": "ff9c9d0e1cfc33e4ed88aeebda346630e09f2fea",
+  "model": "large-v3-turbo",
+  "text": "3つ、その裏で警察が見せに来る実地調査を一部省く"
+ },
+ "05_matome-007": {
+  "sha1": "d2a430653d02ae7176668c5a6e117dddc089e070",
+  "model": "large-v3-turbo",
+  "text": "宇津川の財布にはほとんど響かない。響くのは警察と店の手間の方。"
+ },
+ "05_matome-008": {
+  "sha1": "84fe9e4abee7a78a14cde1e1e482b8859d5aae6e",
+  "model": "large-v3-turbo",
+  "text": "ほなうちの財布に響くニュースも早よ持ってきて"
+ },
+ "05_matome-009": {
+  "sha1": "a12d6e914bb32ddc8e592a2a9bbfc0fac6664cef",
+  "model": "large-v3-turbo",
+  "text": "それは多分悪い方で来る"
+ },
+ "99_ed-001": {
+  "sha1": "286697afa0a4a37556aa602f09fa47b031b9bbc8",
+  "model": "large-v3-turbo",
+  "text": "ここまで見てくれてありがとう"
+ },
+ "99_ed-002": {
+  "sha1": "69233cac9d24a815b36044b155efc427204f2735",
+  "model": "large-v3-turbo",
+  "text": "忍大入れ替えの日、店で気づいたことある?コメントで教えてよ!"
+ },
+ "99_ed-003": {
+  "sha1": "2da5ae820510802215e3362695bc71c47c6cb68d",
+  "model": "large-v3-turbo",
+  "text": "よかったら高評価とチャンネル登録お願いします"
+ },
+ "99_ed-004": {
+  "sha1": "4e7b9001d3bcb0ce32e5470238b25d8b33883e3d",
+  "model": "large-v3-turbo",
+  "text": "ほな、またな。"
+ },
+ "99_ed-005": {
+  "sha1": "8e423e9b242bcd4753aeaeb7a4f34c9569f01406",
+  "model": "large-v3-turbo",
+  "text": "また次回おやすみ"
+ }
+}
