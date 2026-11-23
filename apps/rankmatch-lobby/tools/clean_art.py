@@ -12,7 +12,8 @@
 import sys, collections
 from PIL import Image
 
-def clean(src_path, dst_path, tol=8, seeds=()):
+def clean(src_path, dst_path, tol=8, seeds=(), smooth=False):
+    """smooth=True: 市松模様のない、なめらかなグラデーション背景向け。色相を問わず、隣と近い色だけをたどる"""
     src = Image.open(src_path).convert('RGB'); W, H = src.size; px = src.load()
     def neutral(c, t=30): r, g, b = c; return max(r, g, b) - min(r, g, b) <= t
     def bright_neutral(c): return min(c) >= 222 and max(c) - min(c) <= 12
@@ -30,7 +31,8 @@ def clean(src_path, dst_path, tol=8, seeds=()):
         x, y, prev = q.popleft(); i = y * W + x
         if seen[i]: continue
         c = px[x, y]
-        ok = bright_neutral(c) or ((neutral(c) or pinkish(c)) and (prev is None or close(c, prev)))
+        if smooth: ok = prev is None or close(c, prev)
+        else: ok = bright_neutral(c) or ((neutral(c) or pinkish(c)) and (prev is None or close(c, prev)))
         if not ok: continue
         seen[i] = 1; cls[i] = 2 if pinkish(c) and not bright_neutral(c) else 1
         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
@@ -39,7 +41,7 @@ def clean(src_path, dst_path, tol=8, seeds=()):
     # 建物に囲まれて残った市松模様の塊（2色が混在する明るい塊）も消す
     vis = bytearray(W * H)
     light = lambda c: min(c) >= 236 and max(c) - min(c) <= 8
-    for y in range(H):
+    for y in (range(H) if not smooth else ()):
         for x in range(W):
             i = y * W + x
             if cls[i] or vis[i] or not light(px[x, y]): continue
