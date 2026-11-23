@@ -32,6 +32,8 @@
       delete e.decos;
     }
     Object.keys(D0.equip).forEach((k) => { if (e[k] == null) e[k] = clone(D0.equip[k]); });
+    /* 科目ごとの見た目（素材・台座・庭・エフェクト・周回物）。旧データは共通の設定を全科目にコピー */
+    if (!e.per) { e.per = {}; KN.SUBJECTS.forEach((sub) => { e.per[sub] = { material: e.material, base: e.base, garden: (e.garden || []).slice(), fx: e.fx, orbit: e.orbit }; }); }
   }
   const refreshStats = () => { P.stats = KN.subjectStats(P.K, now()); };
   initKnowledge();

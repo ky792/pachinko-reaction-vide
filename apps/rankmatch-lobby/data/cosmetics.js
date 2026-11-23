@@ -67,6 +67,25 @@
     ['gd_telescope', '望遠鏡', 'rare', { type: 'telescope' }, '星空'],
   ].forEach(([id, name, rarity, p, set]) => add('garden', id, name, rarity, { p, set, unlock: id === 'gd_shelf' ? { type: 'train', value: 1, label: '演習を1セット' } : undefined }));
 
+  /* ---- 科目の小物（その科目らしい庭の小物。どの陣地にも置けるが、その科目を選ぶと先頭に並ぶ） ---- */
+  [
+    ['国語', 'gd_ja_suzuri', '硯と筆', 'common', { type: 'suzuri' }, '筆が立てかけられた石の硯'],
+    ['国語', 'gd_ja_scroll', '巻物の台', 'rare', { type: 'scroll' }, '広げた巻物を載せた台'],
+    ['国語', 'gd_ja_tanzaku', '短冊の笹', 'rare', { type: 'tanzaku' }, '短冊が揺れる笹飾り'],
+    ['数学', 'gd_ma_compass', 'コンパスと定規', 'common', { type: 'compass' }, '大きなコンパスと三角定規'],
+    ['数学', 'gd_ma_abacus', 'そろばん', 'rare', { type: 'abacus' }, '立てかけた大きなそろばん'],
+    ['数学', 'gd_ma_solids', '立体模型', 'rare', { type: 'solids' }, '円錐・立方体・球の模型'],
+    ['英語', 'gd_en_mailbox', '郵便ポスト', 'common', { type: 'mailbox' }, '丸い頭の郵便ポスト'],
+    ['英語', 'gd_en_dict', '辞書の山', 'rare', { type: 'dict' }, '分厚い辞書の積み重ね'],
+    ['英語', 'gd_en_sign', '道しるべ', 'rare', { type: 'sign' }, '矢印の看板が何枚もついた柱'],
+    ['理科', 'gd_sc_microscope', '顕微鏡', 'common', { type: 'microscope' }, '卓上の光学顕微鏡'],
+    ['理科', 'gd_sc_tubes', '試験管立て', 'rare', { type: 'tubes' }, '色つきの液体が入った試験管'],
+    ['理科', 'gd_sc_fossil', 'アンモナイトの化石', 'rare', { type: 'fossil' }, '岩に埋まった大きなアンモナイト'],
+    ['社会', 'gd_so_map', '地図台', 'common', { type: 'maptable' }, '古地図を広げた台'],
+    ['社会', 'gd_so_armor', '甲冑', 'rare', { type: 'armor' }, '台に飾られた鎧兜'],
+    ['社会', 'gd_so_cannon', '古い大砲', 'rare', { type: 'cannon' }, '車輪のついた青銅の大砲'],
+  ].forEach(([subject, id, name, rarity, p, desc]) => add('garden', id, name, rarity, { subject, p, desc, set: '科目の小物' }));
+
   /* ---- エフェクト（1つ） ---- */
   [
     ['fx_none', 'なし', null, null],
@@ -110,7 +129,7 @@
   ].forEach(([id, name, rarity, p, set]) => add('flag', id, name, rarity || 'common', { p, set, free: !rarity }));
 
   /* ---- シリーズ（まとめ買い 20% 引き） ---- */
-  const SETS = { 和の陣: '日本の美をまとった陣地', サイバー: '光と回路の近未来陣地', 星空: '夜空を映す天体の陣地', 学び舎: '本と黒板に囲まれた学びの陣地' };
+  const SETS = { 科目の小物: '各科目らしい小物15点（科目ごとに配置）', 和の陣: '日本の美をまとった陣地', サイバー: '光と回路の近未来陣地', 星空: '夜空を映す天体の陣地', 学び舎: '本と黒板に囲まれた学びの陣地' };
   const sets = Object.entries(SETS).map(([name, desc]) => ({ name, desc, items: items.filter((i) => i.set === name).map((i) => i.id), off: 0.2 }));
 
   /* 本番の絵：data/art-manifest.js に登録された ID だけ画像を読む（未登録はコードで描く仮の絵）。ART_SPEC.md 参照 */

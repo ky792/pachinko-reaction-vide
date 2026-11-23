@@ -248,6 +248,21 @@
       case 'board': d.rod([x - 0.3, 0, z], [x - 0.3, 0.4, z], 0.03, '#6a4a3a'); d.rod([x + 0.3, 0, z], [x + 0.3, 0.4, z], 0.03, '#6a4a3a'); d.box(x, 0.38, z, 0.7, 0.45, 0.04, '#1f3a2e'); d.glyph(p.text || '∫', x, 0.6, z + 0.03, 0.18, '#f4f4f0', false); break;
       case 'globe': d.cyl(x, 0, z, 0.12, 0.3, '#6a4a3a'); d.ball(x, 0.5, z, 0.2, '#3a7ab8'); d.ring(x, 0.5, z, 0.24, '#c9a86a', 1.2, 0, Math.PI * 2, 1.6); break;
       case 'server': d.box(x, 0, z, 0.34, 0.9, 0.3, '#1b1f2a'); for (let k = 0; k < 6; k++) if (Math.sin(t * 6 + k * 2.3) > -0.3) d.box(x, 0.15 + k * 0.13, z + 0.155, 0.2, 0.025, 0.01, '#8fe8ff', { line: false }); break;
+      case 'suzuri': d.box(x, 0, z, 0.5, 0.1, 0.32, '#2a2d36'); d.box(x - 0.05, 0.1, z, 0.3, 0.02, 0.2, '#101218', { line: false }); d.rod([x + 0.12, 0.1, z + 0.05], [x + 0.32, 0.7, z - 0.05], 0.05, '#6a4a3a'); d.rod([x + 0.12, 0.1, z + 0.05], [x + 0.15, 0.2, z + 0.03], 0.07, '#111'); break;
+      case 'scroll': d.box(x, 0, z, 0.55, 0.3, 0.3, '#6a4a3a'); d.box(x, 0.3, z, 0.6, 0.02, 0.34, '#f2ead8'); d.cyl(x - 0.3, 0.32, z, 0.04, 0.05, '#8a2a2a'); d.cyl(x + 0.3, 0.32, z, 0.04, 0.05, '#8a2a2a'); d.glyph('文', x, 0.36, z + 0.05, 0.14, '#222', false); break;
+      case 'tanzaku': d.rod([x, 0, z], [x, 1.1, z], 0.05, '#5fa860'); { const cols = ['#e8584a', '#f0c040', '#4a8ad8', '#e8e8e8', '#7ac060']; for (let k = 0; k < 5; k++) { const yy = 0.45 + k * 0.13, xx = x + (k % 2 ? 0.14 : -0.14), sw = Math.sin(t * 2 + k) * 0.03; d.box(xx + sw, yy, z, 0.06, 0.18, 0.01, cols[k], { line: false }); } } break;
+      case 'compass': d.rod([x, 0.75, z], [x - 0.2, 0, z], 0.04, '#c9d2ec'); d.rod([x, 0.75, z], [x + 0.2, 0, z], 0.04, '#c9d2ec'); d.ball(x, 0.78, z, 0.05, '#e6c36a'); d.poly([d.P(x + 0.25, 0, z + 0.2), d.P(x + 0.55, 0, z + 0.2), d.P(x + 0.25, 0.45, z + 0.2)], 'rgba(200,230,255,.55)', 'rgba(5,8,15,.5)'); break;
+      case 'abacus': d.box(x, 0, z, 0.6, 0.42, 0.06, '#6a4a3a'); for (let r = 0; r < 4; r++) for (let k = 0; k < 6; k++) d.ball(x - 0.22 + k * 0.09, 0.08 + r * 0.09, z + 0.04, 0.03, r === 1 ? '#c9a86a' : '#3a2a20'); break;
+      case 'solids': d.box(x - 0.2, 0, z + 0.05, 0.22, 0.22, 0.22, '#eef2ff'); d.cone(x + 0.15, 0, z - 0.05, 0.14, 0.35, '#c9d2ec'); d.ball(x + 0.05, 0.12, z + 0.25, 0.12, '#dfe4ee'); break;
+      case 'mailbox': d.cyl(x, 0, z, 0.06, 0.25, '#3a3f4c'); d.cyl(x, 0.25, z, 0.18, 0.5, '#c8302a'); d.ball(x, 0.78, z, 0.18, '#c8302a'); d.box(x, 0.6, z + 0.17, 0.16, 0.03, 0.02, '#111', { line: false }); break;
+      case 'dict': ['#2a4a7a', '#7a2a2a', '#2a6a4a', '#5a4a2a'].forEach((c, k) => d.box(x + (k % 2) * 0.04, k * 0.14, z, 0.42, 0.13, 0.3, c)); break;
+      case 'sign': d.rod([x, 0, z], [x, 1.0, z], 0.05, '#6a4a3a'); [[0.85, 1], [0.68, -1], [0.51, 1]].forEach(([yy, dir]) => d.poly([d.P(x, yy, z), d.P(x + 0.4 * dir, yy, z), d.P(x + 0.48 * dir, yy - 0.06, z), d.P(x + 0.4 * dir, yy - 0.12, z), d.P(x, yy - 0.12, z)], '#e8dcc0', 'rgba(5,8,15,.6)')); break;
+      case 'microscope': d.box(x, 0, z, 0.36, 0.06, 0.28, '#3a3f4c'); d.rod([x - 0.1, 0.06, z], [x - 0.1, 0.5, z], 0.06, '#dfe4ee'); d.rod([x - 0.1, 0.5, z], [x + 0.08, 0.72, z], 0.1, '#eef2ff'); d.box(x + 0.02, 0.18, z, 0.2, 0.03, 0.18, '#3a3f4c'); break;
+      case 'tubes': d.box(x, 0, z, 0.5, 0.18, 0.14, '#c9d2ec'); ['#4ad890', '#e8584a', '#4a8ad8', '#f0c040'].forEach((c, k) => { const xx = x - 0.18 + k * 0.12; d.cyl(xx, 0.08, z, 0.04, 0.42, 'rgba(220,235,255,.6)'); d.cyl(xx, 0.08, z, 0.035, 0.2, c, { line: false }); }); break;
+      case 'fossil': d.ball(x, 0.15, z, 0.3, '#8a8478'); { const [px, py] = d.P(x, 0.2, z + 0.25); g.beginPath(); for (let k = 0; k < 40; k++) { const a = k * 0.35, r = 0.015 * d.u * k * 0.5; g.lineTo(px + Math.cos(a) * r, py + Math.sin(a) * r * 0.9); } g.strokeStyle = '#d8cfb8'; g.lineWidth = 2; g.stroke(); } break;
+      case 'maptable': [-0.22, 0.22].forEach((dx) => d.rod([x + dx, 0, z], [x + dx, 0.38, z], 0.04, '#6a4a3a')); d.box(x, 0.38, z, 0.62, 0.05, 0.4, '#6a4a3a'); d.box(x, 0.43, z, 0.56, 0.01, 0.34, '#e8dcb0', { line: false }); d.glyph('⌖', x, 0.46, z, 0.16, '#8a5a2a', false); break;
+      case 'armor': d.box(x, 0, z, 0.36, 0.12, 0.3, '#2a2d36'); d.box(x, 0.12, z, 0.3, 0.4, 0.2, '#3a2a2a'); d.box(x, 0.18, z + 0.11, 0.26, 0.28, 0.02, '#8a2a2a', { line: false }); d.ball(x, 0.65, z, 0.13, '#2a2d36'); d.poly([d.P(x - 0.18, 0.72, z), d.P(x, 0.95, z), d.P(x + 0.18, 0.72, z)], '#c9a86a', 'rgba(5,8,15,.6)'); break;
+      case 'cannon': [-0.16, 0.16].forEach((dz) => d.ring(x - 0.05, 0.14, z + dz, 0.14, '#5a4030', 3, 0, Math.PI * 2, 1.6)); d.rod([x - 0.25, 0.22, z], [x + 0.4, 0.4, z], 0.16, '#8a6a3a'); d.ball(x - 0.27, 0.21, z, 0.07, '#6a4a2a'); break;
       case 'telescope': [0, 2.1, 4.2].forEach((a) => d.rod([x, 0.45, z], [x + Math.cos(a) * 0.2, 0, z + Math.sin(a) * 0.2], 0.025, '#dfe4ee')); d.rod([x - 0.15, 0.4, z], [x + 0.3, 0.75, z], 0.1, '#3a3f4c'); break;
     }
   }
@@ -326,15 +341,19 @@
     const ac = new AbortController(), sig = { signal: ac.signal };
     let W = 300, H = 200, DPR = 1, raf = 0, alive = true, focusI = null, introT = 0, panX = 0, drag = null, first = true;
     const cam = { x: 0, y: 0, z: 1 }, camT = { x: 0, y: 0, z: 1 };
-    const material = item(look.material);
-    const MP = (material && material.p) || { body: 0xc9d2ec, page: 0xeef2ff };
     const n = order.length;
-    const sites = order.map((subject, i) => ({
-      subject, i, state: 'pending', col: rgb(NEUTRAL), target: rgb(NEUTRAL), pop: 0, dim: 0,
-      skin: (look.skins && look.skins[subject]) || DEFAULT_SKIN[subject],
-      amb: makeAmbient(look.fx), mark: false,
-    }));
-    const baseItem = item(look.base), base = Object.assign({}, BASES[look.base] || BASES.base_std, baseItem && baseItem.art ? { art: baseItem.art } : {});
+    /* 科目ごとの見た目：look.per[科目] があればそれを、なければ共通の値を使う（旧形式もそのまま読める） */
+    const lookFor = (subject) => Object.assign({}, look, (look.per && look.per[subject]) || {});
+    const sites = order.map((subject, i) => {
+      const L = lookFor(subject), material = item(L.material), baseItem = item(L.base);
+      return {
+        subject, i, state: 'pending', col: rgb(NEUTRAL), target: rgb(NEUTRAL), pop: 0, dim: 0, L,
+        skin: (look.skins && look.skins[subject]) || DEFAULT_SKIN[subject],
+        MP: (material && material.p) || { body: 0xc9d2ec, page: 0xeef2ff },
+        base: Object.assign({}, BASES[L.base] || BASES.base_std, baseItem && baseItem.art ? { art: baseItem.art } : {}),
+        amb: makeAmbient(L.fx), mark: false,
+      };
+    });
     const fx = [];
     const stars = Array.from({ length: 60 }, () => [Math.random(), Math.random() * 0.6, Math.random()]);
 
@@ -405,18 +424,18 @@
       s.col = mix(s.col, s.target, 0.08);
       const team = css(s.col), owned = s.state === 'me' || s.state === 'op' || s.state === 'own', active = s.state === 'active', calm = s.state === 'own';
       const d = makeDraw(g, s.cx, s.cy, s.u); d.team = team;
-      const C = { body: hex(MP.body), page: hex(MP.page), acc: team };
+      const C = { body: hex(s.MP.body), page: hex(s.MP.page), acc: team }, L = s.L, base = s.base;
       g.save(); if (s.dim) g.globalAlpha = 0.42;
       // 光の柱（奥）
       const beam = calm ? 0 : owned ? 0.3 : active ? 0.2 + Math.sin(t * 6) * 0.12 : 0;
       if (beam > 0) { const bw = s.u * 0.5, gr = g.createLinearGradient(0, s.cy - s.u * 9, 0, s.cy); gr.addColorStop(0, css(s.col, 0)); gr.addColorStop(1, css(s.col, beam)); g.fillStyle = gr; g.fillRect(s.cx - bw, s.cy - s.u * 9, bw * 2, s.u * 9); }
       drawBase(d, base, team, t, C, false);
       const back = (z, x) => x + z < 0;
-      (look.garden || []).slice(0, 3).forEach((id, k) => { const it = item(id); if (it && back(SLOTS[k][1], SLOTS[k][0])) drawGarden(d, it.p, SLOTS[k][0], SLOTS[k][1], t, it); });
+      (L.garden || []).slice(0, 3).forEach((id, k) => { const it = item(id); if (it && back(SLOTS[k][1], SLOTS[k][0])) drawGarden(d, it.p, SLOTS[k][0], SLOTS[k][1], t, it); });
       if (look.flag && look.flag !== 'flag_none') drawFlag(d, look.flag, look.flagText, t, team);
       drawAmbient(d, s.amb, t, false);
       // 周回物（奥半分）
-      const orb = item(look.orbit), op = orb && orb.p;
+      const orb = item(L.orbit), op = orb && orb.p;
       const orbPos = (k) => { const a = t * 0.35 + (k / op.n) * Math.PI * 2; return [Math.cos(a) * op.r, 1.5 + Math.sin(t * 1.4 + k) * 0.2, Math.sin(a) * op.r]; };
       if (op && op.shape !== 'halo') for (let k = 0; k < op.n; k++) { const [x, y, z] = orbPos(k); if (x + z < 0) drawOrbiter(d, op.shape, x, y, z, t, k, team); }
       // 建物（本番の絵があれば絵、なければ仮の絵）
@@ -433,7 +452,7 @@
       else (SKIN[s.skin] || SKIN[DEFAULT_SKIN[s.subject]])(d, C, t + s.i);
       g.restore();
       drawBase(d, base, team, t, C, true);
-      (look.garden || []).slice(0, 3).forEach((id, k) => { const it = item(id); if (it && !back(SLOTS[k][1], SLOTS[k][0])) drawGarden(d, it.p, SLOTS[k][0], SLOTS[k][1], t, it); });
+      (L.garden || []).slice(0, 3).forEach((id, k) => { const it = item(id); if (it && !back(SLOTS[k][1], SLOTS[k][0])) drawGarden(d, it.p, SLOTS[k][0], SLOTS[k][1], t, it); });
       if (op && op.shape !== 'halo') for (let k = 0; k < op.n; k++) { const [x, y, z] = orbPos(k); if (x + z >= 0) drawOrbiter(d, op.shape, x, y, z, t, k, team); }
       if (op && op.shape === 'halo') { g.save(); g.shadowColor = team; g.shadowBlur = 12; d.ring(0, 3.05 + Math.sin(t) * 0.08, 0, 1.5, team, 3); d.ring(0, 3.05 + Math.sin(t) * 0.08, 0, 1.2, team, 1.4); g.restore(); }
       drawAmbient(d, s.amb, t, true);

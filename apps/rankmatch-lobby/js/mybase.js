@@ -14,18 +14,29 @@
   const counter = (type) => { const p = P(); return type === 'streak' ? p.today.streakDays : type === 'solved' ? p.achv.solved || 0 : p.achv[type] || 0; };
   const unlocked = (it) => !!it.unlock && counter(it.unlock.type) >= it.unlock.value;
   const have = (it) => P().cos.owned.includes(it.id) || unlocked(it);
-  const isEq = (it, e = P().cos.equip) => it.kind === 'skin' ? e.skins[it.subject] === it.id : it.kind === 'garden' ? e.garden.includes(it.id) : e[it.kind] === it.id;
+  /* 科目ごとに変えられる種類（建物は科目固定、旗は全陣地共通） */
+  const PER = ['material', 'base', 'garden', 'fx', 'orbit'];
+  const slot = (e, s) => e.per[s];
+  const isEq = (it, e = P().cos.equip) => it.kind === 'skin' ? e.skins[it.subject] === it.id : it.kind === 'flag' ? e.flag === it.id : it.kind === 'garden' ? slot(e, st.subject).garden.includes(it.id) : slot(e, st.subject)[it.kind] === it.id;
 
-  function applyTo(e, it) {
-    if (it.kind === 'skin') e.skins[it.subject] = it.id;
-    else if (it.kind === 'garden') { if (!e.garden.includes(it.id)) { e.garden.push(it.id); if (e.garden.length > C().gardenMax) e.garden.shift(); } }
-    else e[it.kind] = it.id;
+  /* s: 科目名、または '*'（全科目） */
+  function applyTo(e, it, s) {
+    if (it.kind === 'skin') { e.skins[it.subject] = it.id; return; }
+    if (it.kind === 'flag') { e.flag = it.id; return; }
+    (s === '*' ? KN.SUBJECTS : [s]).forEach((sub) => {
+      const o = slot(e, sub);
+      if (it.kind === 'garden') { if (!o.garden.includes(it.id)) { o.garden.push(it.id); if (o.garden.length > C().gardenMax) o.garden.shift(); } }
+      else o[it.kind] = it.id;
+    });
   }
-  /* 3D 用の見た目（試着中のアイテムを重ねる）。対戦では相手の防衛データとして同じ形式を使う */
+  /* 試着・購入の対象は「ID@科目」で持つ。科目の小物は自分の科目、シリーズは全科目 */
+  const entry = (it, s) => `${it.id}@${it.kind === 'skin' ? it.subject : s}`;
+  const parse = (en) => { const [id, s] = en.split('@'); return { it: item(id), s }; };
+  /* 描画用の見た目（試着中のアイテムを重ねる）。対戦では相手の防衛データとして同じ形式を使う */
   function lookOf(p, preview) {
     const e = JSON.parse(JSON.stringify(p.cos.equip));
-    (preview || []).forEach((id) => { const it = item(id); if (it) applyTo(e, it); });
-    return { skins: e.skins, material: e.material, base: e.base, garden: e.garden, fx: e.fx, orbit: e.orbit, flag: e.flag, flagText: e.flagText || p.name };
+    (preview || []).forEach((en) => { const { it, s } = parse(en); if (it) applyTo(e, it, s); });
+    return { skins: e.skins, per: e.per, flag: e.flag, flagText: e.flagText || p.name };
   }
 
   const KIND_ICON = {
@@ -41,10 +52,10 @@
   }
 
   function Card(it) {
-    const h = have(it), eq = isEq(it), pv = st.preview.includes(it.id);
+    const h = have(it), eq = isEq(it), pv = st.preview.includes(entry(it, st.subject));
     const tag = eq ? '<span class="mb-c__st eq">装備中</span>' : h ? '<span class="mb-c__st own">所持</span>' : it.unlock ? `<span class="mb-c__st lock">実績 ${Math.min(counter(it.unlock.type), it.unlock.value)}/${it.unlock.value}</span>` : `<span class="mb-c__st price"><i class="dot gem"></i>${it.price}</span>`;
     return `<li><button class="mb-c ${eq ? 'is-eq' : ''} ${pv ? 'is-pv' : ''} r-${it.rarity}" data-item="${it.id}">
-      ${Swatch(it)}<span class="mb-c__n">${esc(it.name)}</span><span class="mb-c__r">${C().rarity[it.rarity]}${it.set ? ` · ${esc(it.set)}` : ''}</span>${tag}
+      ${Swatch(it)}<span class="mb-c__n">${esc(it.name)}</span><span class="mb-c__r">${C().rarity[it.rarity]}${it.subject && it.kind === 'garden' ? ` · ${esc(it.subject)}の小物` : it.set ? ` · ${esc(it.set)}` : ''}</span>${tag}
     </button></li>`;
   }
 
@@ -62,8 +73,9 @@
   function view() {
     const p = P(), cat = C(), kind = st.tab;
     let list = cat.items.filter((it) => it.kind === kind && (kind !== 'skin' || it.subject === st.subject));
+    if (kind === 'garden') { const rank = (it) => (it.subject === st.subject ? 0 : it.subject ? 2 : 1); list = list.slice().sort((a, b) => rank(a) - rank(b)); }
     if (st.filter === 'own') list = list.filter(have); if (st.filter === 'new') list = list.filter((i) => !have(i));
-    const pvItems = st.preview.map(item).filter((i) => i && !have(i)), pvCost = pvItems.reduce((x, i) => x + i.price, 0);
+    const pvItems = [...new Set(st.preview.map((en) => parse(en).it))].filter((i) => i && !have(i)), pvCost = pvItems.reduce((x, i) => x + i.price, 0);
     const total = cat.items.length, ownedN = cat.items.filter(have).length;
     return `<div class="screen screen--match"><div class="match-screen phase-base ${pvItems.length ? 'has-pv' : ''}">
       <header class="m-head"><button class="link" data-action="mb-exit">← ホーム</button><span class="eyebrow">MY TERRITORY · ${ownedN}/${total}</span></header>
@@ -71,7 +83,8 @@
       <p class="a-lede">あなたに挑む相手の画面に、この見た目で表示されます。<b>強さには一切影響しません</b>。陣地の色は相棒ナビの色で固定です。</p>
       <div class="a-3d mb-3d"><span class="a-3d__hint">ドラッグで回転</span></div>
       <div class="mb-tabs" role="tablist">${cat.kinds.map(([k, l]) => `<button role="tab" data-tab="${k}" aria-selected="${k === kind}">${l}</button>`).join('')}</div>
-      ${kind === 'skin' ? `<div class="mb-subjects">${KN.SUBJECTS.map((s) => `<button data-subj="${s}" aria-pressed="${s === st.subject}">${s}</button>`).join('')}</div>` : ''}
+      ${kind !== 'flag' && kind !== 'set' ? `<div class="mb-subjects">${KN.SUBJECTS.map((s) => `<button data-subj="${s}" aria-pressed="${s === st.subject}">${s}</button>`).join('')}</div>
+        ${PER.includes(kind) ? `<div class="mb-scope"><span><b>${esc(st.subject)}</b>の陣地を編集中</span><button class="link" data-action="mb-allsub">この${esc(cat.kinds.find((k) => k[0] === kind)[1])}を全科目に適用</button></div>` : ''}` : ''}
       ${kind === 'set' ? `<ul class="mb-sets">${cat.sets.map(SetCard).join('')}</ul>` : `
         <div class="mb-filter">${[['all', 'すべて'], ['new', '未所持'], ['own', '所持']].map(([k, l]) => `<button data-filter="${k}" aria-pressed="${k === st.filter}">${l}</button>`).join('')}
           <span class="muted">${kind === 'garden' ? `庭は${cat.gardenMax}つまで配置` : '未所持はタップで試着'}</span></div>
@@ -86,7 +99,7 @@
   function Sheet() {
     const p = P(), cat = C();
     if (st.sheet.type === 'buy') {
-      const its = st.sheet.ids.map(item).filter((i) => !have(i)), sum = its.reduce((x, i) => x + i.price, 0), price = st.sheet.off ? Math.round(sum * (1 - st.sheet.off)) : sum, short = p.crystals < price;
+      const its = [...new Set(st.sheet.ids.map((en) => parse(en).it))].filter((i) => i && !have(i)), sum = its.reduce((x, i) => x + i.price, 0), price = st.sheet.off ? Math.round(sum * (1 - st.sheet.off)) : sum, short = p.crystals < price;
       return `<div class="mb-sheet" role="dialog" aria-modal="true" aria-labelledby="mb-sheet-t"><div class="mb-sheet__box">
         <h2 id="mb-sheet-t">${its.length === 1 ? esc(its[0].name) + 'を購入' : `${its.length}点をまとめて購入`}</h2>
         ${its.length > 1 ? `<p>${its.map((i) => esc(i.name)).join('・')}</p>` : `<p>${esc(its[0].desc || '')}</p>`}
@@ -120,12 +133,14 @@
     const fo = st.focusSubject; t3.focus(fo ? KN.SUBJECTS.indexOf(fo) : null);
   }
 
-  function buyNow(ids, off) {
-    const its = ids.map(item).filter((i) => !have(i)), sum = its.reduce((x, i) => x + i.price, 0), price = off ? Math.round(sum * (1 - off)) : sum;
+  /* シリーズは全科目に。科目の小物はそれぞれ自分の科目に置く */
+  const setEntries = (s) => s.items.map((id) => { const it = item(id); return entry(it, it.subject || '*'); });
+  function buyNow(entries, off) {
+    const its = [...new Set(entries.map((en) => parse(en).it))].filter((i) => i && !have(i)), sum = its.reduce((x, i) => x + i.price, 0), price = off ? Math.round(sum * (1 - off)) : sum;
     if (P().crystals < price) return false;
     P().crystals -= price;
-    its.forEach((i) => { P().cos.owned.push(i.id); applyTo(P().cos.equip, i); });
-    ids.forEach((id) => { const i = item(id); if (i && have(i)) applyTo(P().cos.equip, i); });
+    its.forEach((i) => P().cos.owned.push(i.id));
+    entries.forEach((en) => { const { it, s } = parse(en); if (it && have(it)) applyTo(P().cos.equip, it, s); });
     ctx.save(); ctx.toast(its.length === 1 ? `${its[0].name}を購入して装備しました` : `${its.length}点を購入して装備しました`);
     return true;
   }
@@ -133,22 +148,24 @@
   function onClick(ev) {
     const b = ev.target.closest('button'); if (!b || !st) return;
     const d = b.dataset;
-    if (d.tab) { st.tab = d.tab; st.filter = 'all'; st.focusSubject = d.tab === 'skin' ? st.subject : null; draw(); return; }
+    if (d.tab) { st.tab = d.tab; st.filter = 'all'; st.focusSubject = d.tab === 'flag' || d.tab === 'set' ? null : st.subject; draw(); return; }
     if (d.subj) { st.subject = d.subj; st.focusSubject = d.subj; draw(); return; }
     if (d.filter) { st.filter = d.filter; draw(); return; }
     if (d.item) {
-      const it = item(d.item), e = P().cos.equip;
-      st.focusSubject = it.kind === 'skin' ? it.subject : null; st.pvSet = null;
+      const it = item(d.item), e = P().cos.equip, en = entry(it, st.subject), sub = it.kind === 'skin' ? it.subject : st.subject;
+      st.focusSubject = it.kind === 'flag' ? null : sub; st.pvSet = null;
       if (have(it)) {
-        if (it.kind === 'garden' && e.garden.includes(it.id)) e.garden = e.garden.filter((x) => x !== it.id); else applyTo(e, it);
-        st.preview = st.preview.filter((x) => x !== it.id); ctx.save();
+        const o = slot(e, st.subject);
+        if (it.kind === 'garden' && o.garden.includes(it.id)) o.garden = o.garden.filter((x) => x !== it.id); else applyTo(e, it, st.subject);
+        st.preview = st.preview.filter((x) => x !== en); ctx.save();
       } else {
-        st.preview = st.preview.includes(it.id) ? st.preview.filter((x) => x !== it.id) : st.preview.filter((x) => { const o = item(x); return !(o.kind === it.kind && it.kind !== 'garden' && (it.kind !== 'skin' || o.subject === it.subject)); }).concat(it.id);
+        const same = (x) => { const q = parse(x); return q.it.kind === it.kind && it.kind !== 'garden' && (q.s === sub || q.s === '*'); };
+        st.preview = st.preview.includes(en) ? st.preview.filter((x) => x !== en) : st.preview.filter((x) => !same(x)).concat(en);
       }
       draw(); return;
     }
-    if (d.tryset) { const s = C().sets.find((x) => x.name === d.tryset); st.preview = s.items.slice(); st.pvSet = s.name; st.focusSubject = null; draw(); return; }
-    if (d.buyset) { const s = C().sets.find((x) => x.name === d.buyset); st.sheet = { type: 'buy', ids: s.items, off: s.off }; draw(); return; }
+    if (d.tryset) { const s = C().sets.find((x) => x.name === d.tryset); st.preview = setEntries(s); st.pvSet = s.name; st.focusSubject = null; draw(); return; }
+    if (d.buyset) { const s = C().sets.find((x) => x.name === d.buyset); st.sheet = { type: 'buy', ids: setEntries(s), off: s.off }; draw(); return; }
     if (d.pack) {
       const k = C().packs.find((x) => x.id === d.pack);
       P().crystals += k.crystals; ctx.save(); ctx.toast(`${k.crystals}クリスタルを追加しました（試作・決済なし）`);
@@ -160,6 +177,11 @@
       case 'mb-pv-clear': st.preview = []; st.pvSet = null; draw(); break;
       case 'mb-pv-buy': { const s = st.pvSet && C().sets.find((x) => x.name === st.pvSet); st.sheet = { type: 'buy', ids: st.preview.slice(), off: s ? s.off : 0 }; draw(); break; }
       case 'mb-confirm': if (buyNow(st.sheet.ids, st.sheet.off)) { st.preview = []; st.pvSet = null; } st.sheet = null; draw(); break;
+      case 'mb-allsub': {
+        const e = P().cos.equip, src = slot(e, st.subject)[st.tab];
+        KN.SUBJECTS.forEach((sub) => { slot(e, sub)[st.tab] = Array.isArray(src) ? src.slice() : src; });
+        ctx.save(); ctx.toast(`${st.subject}と同じ設定を全科目に適用しました`); st.focusSubject = null; draw(); break;
+      }
       case 'mb-flag': { const v = (root.querySelector('#flag-text').value || '').trim().slice(0, 4); const e = P().cos.equip; e.flagText = v; if (e.flag === 'flag_none') e.flag = 'flag_plain'; ctx.save(); ctx.toast('旗を更新しました'); draw(); break; }
       case 'mb-exit': unmount(); ctx.exit(); break;
     }
