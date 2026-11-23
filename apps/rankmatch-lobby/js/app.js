@@ -2,12 +2,27 @@
 (function () {
   const D = window.NAV_DATA, UI = window.UI;
   const root = document.getElementById('app');
-  const KEY = 'rankmatch-lobby:v1', PKEY = 'rankmatch-lobby:player:v2';
+  const KEY = 'rankmatch-lobby:v1', PKEY = 'rankmatch-lobby:player:v3';
 
   /* プレイヤー：mock を初期値に、対戦結果を localStorage に積み上げる（試作用） */
   const clone = (o) => JSON.parse(JSON.stringify(o));
-  let P = (() => { try { const s = JSON.parse(localStorage.getItem(PKEY) || 'null'); return s && s.stats ? s : clone(window.MOCK_PLAYER); } catch (e) { return clone(window.MOCK_PLAYER); } })();
+  let P = (() => { try { const s = JSON.parse(localStorage.getItem(PKEY) || 'null'); return s && s.K ? s : clone(window.MOCK_PLAYER); } catch (e) { return clone(window.MOCK_PLAYER); } })();
   const savePlayer = () => { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} };
+
+  /* 知識データ：単元ごとの実力・定着度。学力ステータスはここから毎回計算する */
+  const KN = window.Knowledge;
+  KN.setBank(window.QUESTION_BANK);
+  const now = () => Date.now() + (P.dayShift || 0) * KN.DAY;
+  function initKnowledge() {
+    if (!P.K) { P.K = KN.synth(P.stats, 7, now()); P.qr = {}; P.dayShift = 0; }
+    refreshStats();
+  }
+  const refreshStats = () => { P.stats = KN.subjectStats(P.K, now()); };
+  initKnowledge();
+  const opCache = {};
+  const opK = (o) => opCache[o.id] || (opCache[o.id] = KN.synth(o.stats, KN.hash(o.id), Date.now(), 0.15));
+  const opStats = (o) => KN.subjectStats(opK(o), Date.now());
+  function recordAnswer(q, ans) { const d = KN.update(P.K, q, ans, now(), P.qr); refreshStats(); savePlayer(); return d; }
 
   /* ランク帯：RP からラベル・次ランク・ゲージ位置を求める */
   const TIERS = [['C', 0], ['B−', 700], ['B', 1000], ['B+', 1300], ['A−', 1600], ['A', 1900], ['A+', 2200], ['S', 2500]];
@@ -38,17 +53,23 @@
     return { before, after: rankView(P.rank.rp) };
   }
 
-  /* 演習の結果：学力ステータスの成長・挑戦権回復・学習量 */
+  /* 直接対決で試合が逆転したとき：負けのRPを取り消して勝ちのRPを付ける */
+  function overturn(r) {
+    const start = P.rank.rp - r.from;
+    P.rank.rp = Math.max(0, P.rank.rp - r.from + r.to);
+    P.rank.winStreak += 1;
+    savePlayer();
+    return { before: rankView(start), after: rankView(P.rank.rp) };
+  }
+
+  /* 演習の結果（知識データは1問ごとに recordAnswer で更新済み）：挑戦権・EXP・学習量・ミッション */
   function applyTraining(g) {
-    const st = P.stats[g.subject], before = Object.assign({}, st);
-    ['speed', 'acc', 'app'].forEach((k) => { st[k] = Math.min(100, st[k] + g.gain[k]); });
     P.tickets.now = Math.min(P.tickets.max, P.tickets.now + 1);
     addExp(g.correct * 15 + 60);
     addStudy(g.seconds, g.total, g.correct);
     P.missions.forEach((ms) => { if (ms.id === 'm2' && g.subject === '数学') ms.progress = Math.max(ms.progress, Math.min(ms.total, g.maxStreak)); });
     if (g.weakUnit) Object.assign(P.recommend, { subject: g.subject, unit: g.weakUnit, accuracy: Math.round((g.correct / g.total) * 100) });
     savePlayer();
-    return { before, after: Object.assign({}, st) };
   }
 
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
@@ -124,7 +145,7 @@
           <div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>
           ${UI.RecommendCard(P.recommend, t, c)}
         </div>
-        <div class="lobby__side">${UI.DefenseLog(P.defenseLog, P.focus)}${UI.MissionList(P.missions)}<button class="reset" data-action="reset">試作データをリセット</button></div>
+        <div class="lobby__side">${UI.DefenseLog(P.defenseLog, P.focus)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
       </div>
       ${UI.BottomNav()}
     </div>`;
@@ -132,15 +153,19 @@
 
   function render() {
     applyTheme(type());
+    refreshStats();
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
     window.Battle.unmount(); window.Training.unmount();
     if ((route === 'arena' || route === 'match') && state.confirmed) {
-      window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, applyBattle, train: (s) => { state.trainSubject = s; go('train'); } }));
+      window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, overturn, recordAnswer,
+        train: (s, u) => { state.trainSubject = s; state.trainUnits = u || []; go('train'); } }));
       return;
     }
     if (route === 'train' && state.confirmed) {
-      window.Training.mount(root, Object.assign(base, { bank: window.QUESTION_BANK, subject: state.trainSubject || P.recommend.subject, applyTraining, arena: () => go('arena') }));
+      window.Training.mount(root, Object.assign(base, { bank: window.QUESTION_BANK, subject: state.trainSubject || P.recommend.subject, focusUnits: state.trainUnits || [],
+        now, myK: () => P.K, recordAnswer, applyTraining, arena: () => go('arena') }));
+      state.trainUnits = [];
       return;
     }
     if (route === 'home' && state.confirmed) renderHome(); else renderSelect();
@@ -182,8 +207,9 @@
       case 'back-home': go('home'); break;
       case 'talk': state.lineIdx++; setDialogue(currentLine(), state.lineIdx % 2 ? 'smile' : 'default'); break;
       case 'match': go('arena'); break;
-      case 'train': state.trainSubject = b.dataset.subject || P.recommend.subject; go('train'); break;
-      case 'reset': P = clone(window.MOCK_PLAYER); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;
+      case 'train': state.trainSubject = b.dataset.subject || P.recommend.subject; state.trainUnits = []; go('train'); break;
+      case 'advance': P.dayShift = (P.dayShift || 0) + 3; refreshStats(); savePlayer(); render(); toast('3日経過：復習していない単元の定着が下がりました'); break;
+      case 'reset': P = clone(window.MOCK_PLAYER); initKnowledge(); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;
       case 'study': state.trainSubject = P.recommend.subject; go('train'); break;
       case 'claim': b.replaceWith(Object.assign(document.createElement('span'), { className: 'mission__reward got', textContent: '受取済' })); toast('報酬を受け取りました'); break;
     }
