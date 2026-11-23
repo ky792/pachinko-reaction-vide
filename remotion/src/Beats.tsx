@@ -691,17 +691,17 @@ const PachiFlow: React.FC = () => {
             const active = i === cur;
             return (
               <React.Fragment key={x.no}>
-                <div style={{position: 'absolute', left: nodeX(i), top: 70, width: 200, height: 200, borderRadius: 26, background: x.c, color: 'white', scale: `${sc}`, boxShadow: active ? `0 0 0 8px ${YELLOW}, 0 10px 24px rgba(0,0,0,0.25)` : '0 8px 18px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 10}}>
+                <div style={{position: 'absolute', left: nodeX(i) - 4, top: 70, width: 212, height: 210, borderRadius: 26, background: x.c, color: 'white', scale: `${sc}`, boxShadow: active ? `0 0 0 8px ${YELLOW}, 0 10px 24px rgba(0,0,0,0.25)` : '0 8px 18px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 6}}>
                   <div style={{width: 46, height: 46, borderRadius: '50%', background: 'white', color: x.c, fontSize: 32, fontWeight: 900, lineHeight: '46px'}}>{x.no}</div>
-                  <div style={{fontSize: 46, fontWeight: 900, marginTop: 6}}>{x.t}</div>
-                  <div style={{fontSize: 24, lineHeight: 1.2, marginTop: 4}}>{x.d}</div>
+                  <div style={{fontSize: 42, fontWeight: 900, marginTop: 6, whiteSpace: 'nowrap'}}>{x.t}</div>
+                  <div style={{fontSize: 23, lineHeight: 1.2, marginTop: 4}}>{x.d}</div>
                 </div>
                 {i < 3 ? <div style={{position: 'absolute', left: nodeX(i) + 204, top: 150, fontSize: 40, color: BLUE_DEEP, opacity: f >= steps[i + 1].at ? 1 : 0}}>▶</div> : null}
               </React.Fragment>
             );
           })}
           {/* 連チャンのくり返し（下の矢印） */}
-          <div style={{position: 'absolute', left: nodeX(2) + 100, top: 272, width: 238, height: 50, borderBottom: `6px solid ${RED}`, borderLeft: `6px solid ${RED}`, borderRight: `6px solid ${RED}`, borderRadius: '0 0 24px 24px', opacity: f >= loopAt ? 1 : 0}}>
+          <div style={{position: 'absolute', left: nodeX(2) + 100, top: 282, width: 238, height: 50, borderBottom: `6px solid ${RED}`, borderLeft: `6px solid ${RED}`, borderRight: `6px solid ${RED}`, borderRadius: '0 0 24px 24px', opacity: f >= loopAt ? 1 : 0}}>
             <div style={{position: 'absolute', left: -14, top: -16, color: RED, fontSize: 30}}>▲</div>
             <div style={{position: 'absolute', left: 0, right: 0, top: 56, textAlign: 'center', fontSize: 28, color: RED, fontWeight: 900}}>くり返し</div>
           </div>
