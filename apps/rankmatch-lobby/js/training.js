@@ -1,5 +1,5 @@
 /* 演習：解いた結果で知識データ（単元ごとの実力・定着度・速さ）を更新する。
- *  時間無制限・調べてOK。調べて正解すれば正確さと定着は伸びる（時間がかかったぶん速さは伸びにくい）。
+ *  時間無制限。カンニング（調べながら解く）は検知も禁止もしない（黙認）。画面でも推奨はしない。
  *  出題は「忘れかけ・未学習・対戦で押し負けた単元」を優先。
  * ctx = { D, bank, player, type, char, subject, focusUnits, now(), myK(), recordAnswer(q, ans) → 単元の変化,
  *         applyTraining(summary), arena(), exit() } */
@@ -22,7 +22,7 @@
     return `<div class="match-screen phase-lobby">
     <header class="m-head"><button class="link" data-action="exit">← ホーム</button><span class="eyebrow">TRAINING</span></header>
     <h1 class="m-title">演習</h1>
-    <p class="a-lede">解いた結果が<b>知識データ</b>になり、そのまま対戦の戦力になります。<b>時間無制限・調べてOK</b>。1セット終えると挑戦権が1回復します。</p>
+    <p class="a-lede">解いた結果が<b>知識データ</b>になり、そのまま対戦の戦力になります。時間制限はありません。1セット終えると挑戦権が1回復します。</p>
     <section class="m-panel">
       <h2 class="panel__title">科目を選ぶ</h2>
       <div class="t-subjects">${KN.SUBJECTS.map((s) => `<button class="t-subject" data-subject="${s}" aria-pressed="${s === t.subject}"><b>${s}</b><span>${window.Battle.power(st[s])}</span><small>範囲${pct(st[s].coverage)}%${st[s].fading ? ` · 忘${st[s].fading}` : ''}</small></button>`).join('')}</div>
@@ -32,7 +32,7 @@
       <ul>
         <li><b>正確さ</b>：単元ごとの実力。自分より難しい問題に正解すると大きく上がり、簡単な問題を落とすと下がる</li>
         <li><b>定着</b>：時間が経つと下がり、解き直すと戻る。間隔をあけて正解するほど長持ちする</li>
-        <li><b>速さ</b>：正解までの時間（調べると伸びにくい）</li>
+        <li><b>速さ</b>：正解までの時間</li>
         <li><b>範囲</b>：手を付けた単元の割合。未学習の単元は対戦で弱点になる</li>
       </ul>
       ${t.focusUnits.length ? `<p class="t-focus">優先して出題：${t.focusUnits.map((u) => `<b>${esc(u)}</b>`).join('・')}</p>` : '<p class="muted">忘れかけ・未学習の単元から優先して出題します。</p>'}
@@ -66,7 +66,7 @@
           <span class="opp">${esc(q.unit)}：正答予測 ${a.delta.before.p == null ? '—' : pct(a.delta.before.p) + '%'} → <b class="${a.delta.before.p == null || a.delta.after.p >= a.delta.before.p ? 'up' : 'down'}">${pct(a.delta.after.p)}%</b></span></div>
         <p class="m-reveal__exp"><b>解説</b>${esc(q.explain)}</p>
         <button class="btn btn--main js-next" data-action="next">${t.i + 1 >= t.qs.length ? '結果を見る' : '次の問題'}<kbd>Enter</kbd></button>
-      </section>` : '<p class="t-hint">わからなければ調べてOK。調べて解いた問題も記憶に残ります。</p>'}
+      </section>` : ''}
       ${NavLine(ctx, t.navLine, t.navExpr)}
     </div>`;
   }
