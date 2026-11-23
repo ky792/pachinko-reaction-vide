@@ -11,15 +11,49 @@
 
   /* 知識データ：単元ごとの実力・定着度。学力ステータスはここから毎回計算する */
   const KN = window.Knowledge;
-  KN.setBank(window.QUESTION_BANK);
+  window.remapBank(window.QUESTION_BANK);
+  /* 選択科目（理科・社会）。選んだ科目の単元だけが陣地・出題の対象になる */
+  const EL = window.ELECTIVES;
+  function fixElectives() {
+    P.electives = P.electives || {};
+    Object.keys(EL).forEach((s) => {
+      const ok = (P.electives[s] || []).filter((t) => EL[s].options.includes(t));
+      P.electives[s] = ok.length >= EL[s].min && ok.length <= EL[s].max ? ok : EL[s].def.slice();
+    });
+  }
+  const applyCurriculum = () => KN.setCurriculum(window.curriculumFor(P.electives), window.QUESTION_BANK, window.CURRICULUM);
+  fixElectives();
+  applyCurriculum();
   const now = () => Date.now() + (P.dayShift || 0) * KN.DAY;
   function initKnowledge() {
     if (!P.K) { P.K = KN.synth(P.stats, 7, now()); P.qr = {}; P.dayShift = 0; }
+    migrateUnits();
     if (!P.cos) P.cos = clone(window.COSMETICS.defaults);
     migrateCos();
     if (!P.achv) P.achv = { train: 0, duel: 0 };
     if (!P.defense) P.defense = { order: KN.SUBJECTS.slice(), focus: P.focus || KN.SUBJECTS[0] };
     refreshStats();
+  }
+  /* 旧カリキュラムの単元の学習記録を新しい単元へ移す（統合先に記録があれば、解いた回数が多い方を残す） */
+  function migrateUnits() {
+    const M = window.UNIT_REMAP, U = P.K.units;
+    Object.keys(M).forEach((k) => {
+      if (!U[k]) return;
+      const to = M[k] && k.split('/')[0] + '/' + M[k];
+      if (to && (!U[to] || (U[to].n || 0) < (U[k].n || 0))) U[to] = U[k];
+      delete U[k];
+    });
+  }
+  function setElective(s, track) {
+    const cur = P.electives[s], e = EL[s];
+    let next = cur.includes(track) ? cur.filter((t) => t !== track) : cur.concat(track);
+    if (next.length > e.max) next = next.slice(next.length - e.max); // 上限を超えたら古い選択を外す
+    if (next.length < e.min) return false;
+    P.electives[s] = next;
+    applyCurriculum();
+    Object.keys(opCache).forEach((k) => delete opCache[k]);
+    refreshStats(); savePlayer();
+    return true;
   }
   /* 旧形式（decos）の装備を新形式へ移行し、無料アイテムを所持に加える */
   function migrateCos() {
@@ -214,7 +248,7 @@
     }
     if (route === 'stats' && state.confirmed) {
       const subj = state.statsSubject || P.recommend.subject;
-      root.innerHTML = window.StatsView.render({ player: P, K: P.K, now: now(), subject: subj });
+      root.innerHTML = window.StatsView.render({ player: P, K: P.K, now: now(), subject: subj, electives: P.electives });
       return;
     }
     if (route === 'home' && state.confirmed) renderHome(); else renderSelect();
@@ -251,6 +285,7 @@
     if (b.dataset.type) { state.typeId = b.dataset.type; render(); return; }
     if (b.dataset.gender) { state.gender = b.dataset.gender; render(); return; }
     if (b.dataset.statsSubject) { state.statsSubject = b.dataset.statsSubject; render(); window.scrollTo(0, 0); return; }
+    if (b.dataset.elective) { setElective(b.dataset.electiveSubject, b.dataset.elective); render(); return; }
     switch (b.dataset.action) {
       case 'confirm': state.confirmed = true; state.lineIdx = 0; persist(); confirmFx(); break;
       case 'change-nav': go('select'); break;

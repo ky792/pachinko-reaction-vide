@@ -32,12 +32,13 @@
 
   /* カリキュラム（科目 › 分野 › 単元）。問題がある単元だけが計算対象（ready）。 */
   let UNITS = {}, FIELDS = {}, META = {};
-  function setCurriculum(curr, bank) {
+  /* curr は選択科目を反映したカリキュラム、all は全体（選択外の科目の単元を「その他」に入れないため） */
+  function setCurriculum(curr, bank, all) {
     UNITS = {}; FIELDS = {}; META = {};
     const has = new Set(bank.map((q) => q.subject + '/' + q.unit));
     SUBJECTS.forEach((s) => {
-      const fields = (curr[s] || []).map((f) => ({ field: f.field, units: f.units.map((u) => ({ name: u.name, weight: u.weight || 1, ready: has.has(s + '/' + u.name) })) }));
-      const known = new Set(fields.flatMap((f) => f.units.map((u) => u.name)));
+      const fields = (curr[s] || []).map((f) => ({ field: f.field, track: f.track, units: f.units.map((u) => ({ name: u.name, weight: u.weight || 1, ready: has.has(s + '/' + u.name) })) }));
+      const known = new Set(((all || curr)[s] || []).flatMap((f) => f.units.map((u) => u.name)));
       const extra = [...new Set(bank.filter((q) => q.subject === s && !known.has(q.unit)).map((q) => q.unit))];
       if (extra.length) fields.push({ field: 'その他', units: extra.map((name) => ({ name, weight: 1, ready: true })) });
       FIELDS[s] = fields;
@@ -46,7 +47,8 @@
     });
     return UNITS;
   }
-  const setBank = (bank) => setCurriculum(window.CURRICULUM || {}, bank);
+  const setBank = (bank) => setCurriculum(window.curriculumFor ? window.curriculumFor() : window.CURRICULUM || {}, bank, window.CURRICULUM);
+  const inScope = (q) => (UNITS[q.subject] || []).includes(q.unit); // 選んだ科目の単元か
   const meta = (s, u) => META[s + '/' + u] || { field: 'その他', weight: 1, ready: true };
   /* 出題頻度で重み付けした単元の抽選（対戦で押し合う単元） */
   function weightedUnit(s, r, exclude) {
@@ -155,7 +157,7 @@
   /* 出題：実力に合った難しさ・推定が荒い単元・忘れかけ・未学習・指定単元を優先。最近解いた問題は避け、1単元に偏らない */
   function pickQuestions(K, bank, subject, n, now, focusUnits, seed, qr) {
     const r = rng(seed || Date.now()), fu = focusUnits || [], seen = K.seen || {};
-    const scored = bank.filter((q) => q.subject === subject).map((q) => {
+    const scored = bank.filter((q) => q.subject === subject && inScope(q)).map((q) => {
       const u = K.units[key(q.subject, q.unit)], learned = u && u.n;
       const pc = GUESS + (1 - GUESS) * prob(learned ? u.r : STD - 150, qRating(qr, q));
       const info = pc * (1 - pc) * 4;                 // 正答確率が五分五分に近いほど情報が多い（0〜1）
@@ -196,5 +198,5 @@
     return K;
   }
 
-  window.Knowledge = { confOf, sdOf, DAY, SUBJECTS, setBank, setCurriculum, units: () => UNITS, fields: () => FIELDS, meta, weightedUnit, unitDetail, fieldStats, REF, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
+  window.Knowledge = { confOf, sdOf, DAY, SUBJECTS, setBank, setCurriculum, inScope, units: () => UNITS, fields: () => FIELDS, meta, weightedUnit, unitDetail, fieldStats, REF, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
 })();

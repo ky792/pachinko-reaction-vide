@@ -10,4 +10,5 @@ ctx.window.window = ctx.window;
 vm.createContext(ctx);
 for (const f of files) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), ctx, { filename: f });
 const w = ctx.window;
-process.stdout.write(JSON.stringify({ files, bank: w.QUESTION_BANK, curriculum: w.CURRICULUM }));
+if (w.remapBank) w.remapBank(w.QUESTION_BANK); // 旧単元名を新カリキュラムへ
+process.stdout.write(JSON.stringify({ files, bank: w.QUESTION_BANK, curriculum: w.CURRICULUM, remap: w.UNIT_REMAP || {} }));

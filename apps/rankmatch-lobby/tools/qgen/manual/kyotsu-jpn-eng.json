@@ -1,0 +1,37 @@
+{
+"国語": [
+ ["小説読解", 1, "「彼は試合に負けた夜、黙って何時間もボールを蹴り続けた。」から読み取れる心情は？", ["悔しさを行動にぶつけている", "勝ったことを喜んでいる", "サッカーに飽きている", "早く眠りたいと思っている"], "負けた夜に黙って蹴り続ける行動に、言葉にできない悔しさが表れている。"],
+ ["小説読解", 2, "「雨が上がり、雲の切れ間から光が差した。彼女は傘をたたみ、ゆっくりと歩き出した。」この情景描写が暗示するものは？", ["心が晴れて前向きになっていく", "悲しみがさらに深まっていく", "怒りがこみ上げてくる", "疲れて動けなくなっている"], "雨上がりの光と、傘をたたんで歩き出す動作が心情の変化と重なる。"],
+ ["小説読解", 2, "「『もういいよ』と兄は笑ったが、手の中の手紙は握りつぶされていた。」から読み取れることは？", ["笑顔の裏で強い感情を抑えている", "本当に何とも思っていない", "手紙の内容に満足している", "弟をからかって楽しんでいる"], "言葉や表情と手の動きのずれから本心を読む。"],
+ ["小説読解", 2, "「時計の針の音だけが、部屋に響いていた。」という描写が効果的に表しているものは？", ["部屋の静けさや重苦しい沈黙", "時計が壊れかけていること", "部屋がにぎやかなこと", "時間に余裕があること"], "小さな音だけが聞こえることで、静けさが強調される。"],
+ ["小説読解", 3, "語り手が「僕」の一人称小説で、一般に直接は語ることができないものは？", ["他の登場人物の心の中", "「僕」自身の気持ち", "「僕」が見た景色", "「僕」がとった行動"], "他人の心情は、言動や様子から「僕」が推し量る形で書かれる。"],
+ ["小説読解", 3, "「母はいつものように『いってらっしゃい』と言った。その『いつものように』が、今朝はなぜか胸にしみた。」から読み取れる心情は？", ["当たり前の日常の大切さに気づいた", "母の言葉に腹を立てた", "母の声の調子が変だと思った", "出かけるのが面倒になった"], "毎日の言葉が特別に感じられたことに、日常のありがたさへの気づきがある。"],
+
+ ["漢文の句法", 1, "返り点の「一・二点」の働きは？", ["二字以上へだてて上に返って読む", "一字だけ上に返って読む", "返らずにそのまま読む", "二字を続けて音読みする"], "一字だけ返るのはレ点。"],
+ ["漢文の句法", 2, "「不亦〜乎」（また〜ずや）の句法が表すのは？", ["詠嘆", "反語", "疑問", "限定"], "「なんと〜ではないか」。『論語』の「亦楽しからずや」。"],
+ ["漢文の句法", 2, "再読文字「当」の読み方と意味は？", ["まさニ〜ベシ（当然〜すべきだ）", "まさニ〜ントす（今にも〜しようとする）", "よろシク〜ベシ（〜するのがよい）", "なホ〜ノごとシ（ちょうど〜のようだ）"], "「将」「且」はまさニ〜ントす、「宜」はよろシク〜ベシ。"],
+ ["漢文の句法", 2, "再読文字「猶」の読み方は？", ["なホ〜ノごとシ", "いまダ〜ず", "すべかラク〜ベシ", "まさニ〜ベシ"], "「ちょうど〜のようだ」という比況。"],
+ ["漢文の句法", 2, "漢文の「所以」（ゆゑん）の意味は？", ["理由・手段", "場所", "時間", "人物"], "「〜する所以」で「〜する理由・方法」。"],
+ ["漢文の句法", 3, "「莫大於〜」（〜より大なるは莫し）の意味は？", ["〜より大きなものはない", "〜は大きくない", "〜は大きいだろうか", "〜より小さなものはない"], "比較を使った最上級の表現。〜が最も大きい。"],
+
+ ["文学史", 1, "随筆『方丈記』の作者は？", ["鴨長明", "吉田兼好", "清少納言", "紀貫之"], "鎌倉時代初期の随筆。吉田兼好は『徒然草』、紀貫之は『土佐日記』。"],
+ ["文学史", 1, "小説『舞姫』の作者は？", ["森鷗外", "夏目漱石", "芥川龍之介", "太宰治"], "ドイツ留学の経験をもとにした作品。"],
+
+ ["四字熟語", 2, "「付和雷同」の意味は？", ["自分の考えがなく、すぐ他人に同調すること", "周りの人と心を一つにして協力すること", "雷が鳴るように大きな声で騒ぐこと", "他人の考えに強く反対し続けること"], "「付和」は他人の意見にすぐ従うこと。"]
+],
+"英語": [
+ ["掲示・広告の読み取り", 1, "Read: \"SALE! All T-shirts 30% off. This weekend only (Sat & Sun).\" A T-shirt is usually 2,000 yen. How much is it on Saturday?", ["1,400 yen", "600 yen", "1,700 yen", "2,000 yen"], "30% 引きなので 2,000 × 0.7。600 円は値引きされる額。"],
+ ["掲示・広告の読み取り", 1, "Read: \"Lost: a black umbrella with a white handle, left in Room 204 on Tuesday. Please call 555-0123.\" What is this notice for?", ["To find a lost umbrella", "To sell an umbrella", "To announce a class in Room 204", "To ask people to bring umbrellas"], "Lost は「なくしました」の掲示。"],
+ ["掲示・広告の読み取り", 1, "Read: \"Membership: Basic $5/month (gym only). Premium $12/month (gym + pool + one free class a week).\" Which is true?", ["Premium members can use the pool.", "Basic members can use the pool.", "Premium costs $5 a month.", "Basic members get free classes."], "プールと無料クラスは Premium のみ。"],
+ ["掲示・広告の読み取り", 2, "Read: \"Museum hours: 9:00–17:00 (last entry 16:30). Closed on Mondays.\" Which is true?", ["You cannot enter at 4:45 p.m.", "The museum is open on Mondays.", "You can enter until 5 p.m.", "The museum opens at 10 a.m."], "最終入館は 16:30。"],
+ ["掲示・広告の読み取り", 2, "Read: \"Airport bus: every 20 minutes from 6:00 to 9:00, then every 30 minutes.\" How many buses leave from 6:00 up to (but not including) 7:00?", ["3", "2", "4", "6"], "6:00、6:20、6:40 の 3 本。"],
+ ["掲示・広告の読み取り", 2, "Read: \"Cooking class: 3,000 yen per person. Students get a 500 yen discount. Bring an apron.\" Two students join. How much do they pay in total?", ["5,000 yen", "6,000 yen", "5,500 yen", "2,500 yen"], "1 人 2,500 円 × 2 人。"],
+ ["掲示・広告の読み取り", 2, "Read: \"Volunteers wanted! Beach clean-up, July 10, 8–11 a.m. Gloves and drinks provided. Wear a hat.\" What should volunteers bring themselves?", ["A hat", "Gloves", "Drinks", "Nothing at all"], "手袋と飲み物は用意される（provided）。帽子は各自。"],
+ ["掲示・広告の読み取り", 2, "Read: \"The library will be closed from December 29 to January 3. Books due during this period can be returned on January 4 without a late fee.\" A book is due on December 30. Which is true?", ["It can be returned on January 4 with no fee.", "It must be returned by December 28.", "A late fee is charged on January 4.", "The library is open on January 2."], "休館中が期限の本は 1 月 4 日に返せば延滞料なし。"],
+ ["掲示・広告の読み取り", 3, "Read: \"Tickets: Adults $10, Children (under 12) $6, Family pack (2 adults + 2 children) $28.\" How much does a family of 2 adults and 2 children save with the family pack?", ["$4", "$2", "$6", "$8"], "通常は 10 × 2 + 6 × 2 = 32 ドル。32 − 28。"],
+ ["掲示・広告の読み取り", 3, "Read: \"Workshops — Mon: Drawing, Wed: Pottery, Fri: Photography. Each starts at 4 p.m. and lasts 90 minutes.\" When does the pottery workshop end?", ["5:30 p.m. on Wednesday", "4:00 p.m. on Wednesday", "5:30 p.m. on Monday", "6:00 p.m. on Friday"], "陶芸（Pottery）は水曜。16 時から 90 分。"],
+
+ ["主語と動詞の一致", 2, "Either you or he (   ) to go.", ["has", "have", "are", "were"], "either A or B は B（he）に動詞を合わせる。"],
+ ["主語と動詞の一致", 3, "Ten years (   ) a long time to wait.", ["is", "are", "were", "be"], "時間・距離・金額をひとまとまりとして考えるときは単数扱い。"]
+]
+}

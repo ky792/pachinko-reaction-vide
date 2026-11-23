@@ -24,7 +24,16 @@
     </li>`;
   }
 
-  function render({ player, K, now, subject }) {
+  /* 選択科目（理科・社会のみ）：選んだ科目の単元だけが陣地と出題の対象 */
+  function Electives(subject, electives) {
+    const e = window.ELECTIVES[subject]; if (!e) return '';
+    const cur = electives[subject] || [];
+    const rule = e.min === e.max ? `${e.min}科目を選ぶ` : `${e.min}〜${e.max}科目を選ぶ`;
+    return `<section class="holo-panel sv-elect"><div class="sv-elect__head"><b>${esc(e.label)}の選択科目</b><span class="muted">${rule}。選んだ科目の単元だけが陣地と出題の対象になります</span></div>
+      <div class="sv-elect__opts">${e.options.map((t) => `<button class="sv-chip" data-elective="${esc(t)}" data-elective-subject="${esc(subject)}" aria-pressed="${cur.includes(t)}">${esc(t)}</button>`).join('')}</div></section>`;
+  }
+
+  function render({ player, K, now, subject, electives }) {
     const S = player.stats, st = S[subject], fields = KN.fieldStats(K, subject, now);
     const all = fields.flatMap((f) => f.units).filter((u) => u.status !== 'soon');
     const fading = all.filter((u) => u.status === 'fading').map((u) => u.unit);
@@ -33,6 +42,7 @@
       <header class="m-head"><button class="link" data-action="back-home">← ホーム</button><span class="eyebrow">学力詳細</span></header>
       <h1 class="m-title">知識データ</h1>
       <div class="sv-tabs">${KN.SUBJECTS.map((s) => `<button class="sv-tab" data-stats-subject="${s}" aria-pressed="${s === subject}"><b>${s}</b><span>${window.Battle.power(S[s])}</span></button>`).join('')}</div>
+      ${Electives(subject, electives || {})}
       <section class="holo-panel sv-sum">
         <div class="sv-sum__axes">${[['正確さ', st.acc], ['速さ', st.speed], ['応用', st.app]].map(([k, v]) => `<div class="sv-ax"><span>${k}</span><i class="bar"><b style="width:${v}%"></b></i><b>${v}</b></div>`).join('')}</div>
         <div class="sv-sum__kv">

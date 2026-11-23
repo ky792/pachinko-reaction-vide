@@ -30,11 +30,12 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 WORK = HERE / "work"
+REMAP = {}  # 旧単元 → 新単元（data/curriculum.js の UNIT_REMAP）
 MODEL = os.environ.get("QGEN_MODEL", "claude-opus-5-5")
 PREFIX = {"国語": "j", "数学": "m", "英語": "e", "理科": "s", "社会": "x"}
 TARGET = {3: 16, 2: 10, 1: 6}          # 単元の目標問題数（★ごと）
 PER_CALL = 8                           # 1リクエストで作る最大問数
-LONG_UNITS = {"評論読解", "小説読解", "長文読解"}
+LONG_UNITS = {"評論読解", "小説読解", "長文読解", "掲示・広告の読み取り"}
 # 1問あたりの概算トークン（思考込み）。料金は Opus 5.5 の $4/$20 per MTok、Batches は半額。
 EST = {"gen": (1500 / PER_CALL + 200, 900), "verify": (450, 700), "audit": (300, 400)}
 PRICE = (4.0, 20.0)
@@ -126,6 +127,8 @@ def load_state():
         for f in fields:
             for u in f["units"]:
                 units.append({"subject": subject, "field": f["field"], "unit": u["name"], "weight": u["weight"]})
+    global REMAP
+    REMAP = d.get("remap", {})
     return d["bank"], units
 
 
@@ -388,6 +391,11 @@ def cmd_ingest(a):
     with open(WORK / "drafts.jsonl", "a", encoding="utf-8") as f:
         for subject, rows in src.items():
             for unit, diff, q, choices, explain in rows:
+                k = f"{subject}/{unit}"
+                if k in REMAP:
+                    if REMAP[k] is None:
+                        continue  # 共通テストで問われないので外した単元
+                    unit = REMAP[k]
                 u = info.get((subject, unit))
                 if not u:
                     sys.exit(f"カリキュラムにない単元: {subject}/{unit}")
