@@ -660,6 +660,68 @@ const Comments: React.FC = () => {
   );
 };
 
+// 58〜59：パチンコのゲームフロー（図解。BKP-01は左に寄せて動かしたまま）
+const PachiFlow: React.FC = () => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const from = S(58) - 6,
+    to = E(59) + 8;
+  const steps = [
+    {at: M(58, 0.04), no: '1', t: '通常時', d: 'ヘソを狙う', c: BLUE},
+    {at: M(58, 0.26), no: '2', t: '抽選', d: '図柄がそろえば当たり', c: '#18a957'},
+    {at: M(58, 0.48), no: '3', t: 'RUSH', d: '右打ちで出玉', c: ORANGE},
+    {at: M(58, 0.68), no: '4', t: '連チャン', d: 'RUSH中にまた当たる', c: RED},
+  ];
+  const cur = steps.filter((x) => f >= x.at).length - 1;
+  const nodeX = (i: number) => 20 + i * 238;
+  const loopAt = M(58, 0.8),
+    backAt = M(58, 0.9),
+    cmpAt = S(59) + 6;
+  const tokX = cur < 0 ? -60 : nodeX(cur) + 100 + (cur >= 3 && f >= loopAt ? Math.sin((f - loopAt) / 6) * 120 - 120 : 0);
+  return (
+    <div style={{position: 'absolute', inset: 0, translate: '330px 0', zIndex: 3}}>
+      <Card from={from} to={to} look="board" title="パチンコのゲームフロー" width={1000}>
+        <div style={{position: 'relative', height: 470}}>
+          {/* RUSH終了で通常へ（上の点線） */}
+          <div style={{position: 'absolute', left: 120, top: 18, width: 3 * 238 - 20, height: 46, borderTop: `5px dashed #8a93a8`, borderLeft: `5px dashed #8a93a8`, borderRight: `5px dashed #8a93a8`, borderRadius: '20px 20px 0 0', opacity: f >= backAt ? 1 : 0}}>
+            <div style={{position: 'absolute', left: 0, right: 0, top: -40, textAlign: 'center', fontSize: 28, color: '#6a7088'}}>RUSHが終わったら通常時へ</div>
+          </div>
+          {steps.map((x, i) => {
+            const sc = pop(f, x.at, fps);
+            const active = i === cur;
+            return (
+              <React.Fragment key={x.no}>
+                <div style={{position: 'absolute', left: nodeX(i), top: 70, width: 200, height: 200, borderRadius: 26, background: x.c, color: 'white', scale: `${sc}`, boxShadow: active ? `0 0 0 8px ${YELLOW}, 0 10px 24px rgba(0,0,0,0.25)` : '0 8px 18px rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: 10}}>
+                  <div style={{width: 46, height: 46, borderRadius: '50%', background: 'white', color: x.c, fontSize: 32, fontWeight: 900, lineHeight: '46px'}}>{x.no}</div>
+                  <div style={{fontSize: 46, fontWeight: 900, marginTop: 6}}>{x.t}</div>
+                  <div style={{fontSize: 24, lineHeight: 1.2, marginTop: 4}}>{x.d}</div>
+                </div>
+                {i < 3 ? <div style={{position: 'absolute', left: nodeX(i) + 204, top: 150, fontSize: 40, color: BLUE_DEEP, opacity: f >= steps[i + 1].at ? 1 : 0}}>▶</div> : null}
+              </React.Fragment>
+            );
+          })}
+          {/* 連チャンのくり返し（下の矢印） */}
+          <div style={{position: 'absolute', left: nodeX(2) + 100, top: 272, width: 238, height: 50, borderBottom: `6px solid ${RED}`, borderLeft: `6px solid ${RED}`, borderRight: `6px solid ${RED}`, borderRadius: '0 0 24px 24px', opacity: f >= loopAt ? 1 : 0}}>
+            <div style={{position: 'absolute', left: -14, top: -16, color: RED, fontSize: 30}}>▲</div>
+            <div style={{position: 'absolute', left: 0, right: 0, top: 56, textAlign: 'center', fontSize: 28, color: RED, fontWeight: 900}}>くり返し</div>
+          </div>
+          {/* 玉のコマ */}
+          {cur >= 0 ? <div style={{position: 'absolute', left: tokX - 18, top: 40, width: 36, height: 36, borderRadius: '50%', background: BALL, boxShadow: '0 4px 8px rgba(0,0,0,0.35)', translate: `0 ${Math.abs(Math.sin(f / 4)) * -10}px`}} /> : null}
+          {/* スロットとくらべる */}
+          {f >= cmpAt ? (
+            <div style={{position: 'absolute', left: 0, right: 0, top: 380, display: 'flex', alignItems: 'center', gap: 10, opacity: interpolate(f, [cmpAt, cmpAt + 10], [0, 1], clamp)}}>
+              <div style={{fontSize: 28, color: '#6a7088', whiteSpace: 'nowrap'}}>スロットだと…</div>
+              {['通常', '高確', 'CZ', '前兆', 'AT', '上乗せ', '…'].map((t, i) => (
+                <div key={t} style={{fontSize: 26, color: '#6a7088', background: '#e7e9f0', borderRadius: 12, padding: '4px 12px', scale: `${pop(f, cmpAt + i * 3, fps)}`}}>{t}</div>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </Card>
+    </div>
+  );
+};
+
 // ───────── 発明品：パチンコ演出再現機 BKP-01（57.01〜67）
 // バクが休憩室に持ち込んだ自作マシン。落ちてくる→レバーで起動→盤面が点く→演出を再現→最後はプスン……
 const BALL = 'radial-gradient(circle at 30% 30%, white, #9aa6b8 60%, #5d6678)';
@@ -760,9 +822,11 @@ const PachiBoard: React.FC = () => {
       <div style={{position: 'absolute', left: 22, top: 22, width: 16, height: 16, borderRadius: '50%', background: '#c8a24a'}} />
     </div>
   );
+  // 図解（パチンコのゲームフロー）を出している間は左に寄る
+  const side = interpolate(f, [S(58) - 12, S(58)], [0, 1], clamp) * interpolate(f, [E(59) + 2, E(59) + 14], [1, 0], clamp);
   const needle = interpolate(doki, [0, 1], [-80, 80]) + (doki > 0.98 ? Math.sin(f * 3) * 4 : 0);
   return (
-    <div style={{position: 'absolute', left: 870 - 380, top: 40, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -900}px`, scale: '0.9', transformOrigin: '50% 0', zIndex: 3}}>
+    <div style={{position: 'absolute', left: 870 - 380 - side * 470, top: 40 + side * 40, width: 760, height: 760, opacity: outP, translate: `${shake}px ${(1 - inS) * -900}px`, scale: `${0.9 - side * 0.32}`, transformOrigin: '50% 0', zIndex: 3}}>
       {/* アンテナ */}
       <div style={{position: 'absolute', left: 560, top: -46, width: 8, height: 56, background: '#6a7088', rotate: '12deg'}} />
       <div style={{position: 'absolute', left: 562, top: -66, width: 26, height: 26, borderRadius: '50%', background: powered && Math.floor(f / 8) % 2 ? RED : '#7a2a2a', boxShadow: powered && Math.floor(f / 8) % 2 ? '0 0 20px #ff4040' : 'none'}} />
@@ -979,6 +1043,7 @@ export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
   {from: S(56.03) - 4, to: E(56.10) + 6, el: <History />},
   {from: S(56.11) - 4, to: E(56.14) + 6, el: <Stairs />},
   {from: S(57.01) - 4, to: E(67) + 6, el: <PachiBoard />},
+  {from: S(58) - 6, to: E(59) + 8, el: <PachiFlow />},
   {from: S(68) - 4, to: E(69) + 6, el: <Choice />},
   {from: S(77) - 4, to: E(78) + 6, el: <Hint />},
   {from: S(79) - 4, to: E(81) + 6, el: <Justice />},

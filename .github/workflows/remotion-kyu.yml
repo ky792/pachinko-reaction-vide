@@ -17,7 +17,7 @@ concurrency:
 
 env:
   COMP: Kyu001
-  STILLS: "10307 10368 10400 10425 10460 11600"
+  STILLS: "10370 10440 10475 10620"
 
 jobs:
   stills:
