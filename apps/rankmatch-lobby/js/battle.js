@@ -18,27 +18,28 @@
   const strongest = (stats) => pick(stats, (x, y) => x > y);
   const weakest = (stats) => pick(stats, (x, y) => x < y);
 
-  /* 陣地ごとの補正。notes は画面に出す「発動した効果」 */
-  function modifiers(side, enemy, subject, idx, lost) {
+  /* 陣地ごとの補正。ナビのタイプは強さに一切影響しない（主戦場のみ。全員が同じ条件で選べる） */
+  function modifiers(side, subject) {
     const m = { speed: 1, acc: 1, app: 1 }, notes = [];
-    const all = (k, label) => { AXES.forEach((a) => (m[a] *= k)); notes.push(label); };
-    if (subject === side.focus) all(RULE.focus, '主戦場 +10%');
-    switch (side.navType) {
-      case 'logic': if (subject === weakest(side.stats)) all(1.12, '最適配分 +12%'); break;
-      case 'halo': if (lost >= 1) all(1.06, '立て直し +6%'); break;
-      case 'ignite': if (idx < 2) { m.speed *= 1.3; notes.push('先手必勝 速さ+30%'); } break;
-      case 'echo': m.app *= 1.12; notes.push('多角思考 応用+12%'); break;
-    }
-    if (enemy.navType === 'vex' && subject === strongest(side.stats)) all(0.88, '狙い撃ち −12%');
+    if (subject === side.focus) { AXES.forEach((a) => (m[a] *= RULE.focus)); notes.push('主戦場 +10%'); }
     return { m, notes };
   }
+
+  /* ナビの提案：同じ情報を、性格ごとの視点で読むだけ。どの提案もプレイヤーが自由に選べる選択肢の一つ */
+  const ADVICE = {
+    logic: (me, op) => op.order.reduce((best, s) => (winRate(Object.assign({}, me, { focus: s }), op, 200) > winRate(Object.assign({}, me, { focus: best }), op, 200) ? s : best)),
+    halo: (me) => weakest(me.stats),
+    ignite: (me, op) => op.order[0],
+    vex: (me, op) => strongest(op.stats),
+    echo: (me, op) => op.order.reduce((best, s) => (Math.abs(power(me.stats[s]) - power(op.stats[s])) < Math.abs(power(me.stats[best]) - power(op.stats[best])) ? s : best)),
+  };
 
   function resolveBattle(me, op, seed) {
     const r = mulberry32(seed);
     const areas = []; let myW = 0, opW = 0;
     op.order.forEach((subject, idx) => {
       if (myW >= RULE.toWin || opW >= RULE.toWin) { areas.push({ subject, skipped: true }); return; }
-      const mm = modifiers(me, op, subject, idx, opW), om = modifiers(op, me, subject, idx, myW);
+      const mm = modifiers(me, subject), om = modifiers(op, subject);
       let gauge = 0; const ex = [];
       AXES.forEach((axis) => {
         const a = me.stats[subject][axis] * mm.m[axis] * (1 + (r() - 0.5) * RULE.variance);
@@ -112,9 +113,12 @@
 
   function PlanView(b, ctx) {
     const o = b.op, n = navOf(ctx.D, o.nav), mt = ctx.type;
-    const me = { stats: ctx.player.stats, navType: mt.id, focus: b.focus };
-    const rate = winRate(me, { stats: o.stats, navType: o.nav.type, focus: o.focus, order: o.order });
-    const line = fmt(ctx.char.battleLines.start, { rate, focus: b.focus });
+    const me = { stats: ctx.player.stats, focus: b.focus };
+    const op = { stats: o.stats, focus: o.focus, order: o.order };
+    const rates = {}; o.order.forEach((s) => { rates[s] = winRate(Object.assign({}, me, { focus: s }), op, 300); });
+    const rate = rates[b.focus] != null ? rates[b.focus] : winRate(me, op, 300);
+    const sug = ADVICE[mt.id](me, op);
+    const line = fmt(ctx.char.battleLines.start, { rate: rates[sug], focus: sug });
     return `<div class="match-screen phase-plan" style="--oc:${b.oc}">
       <header class="m-head"><button class="link" data-action="back">← 相手を選び直す</button><span class="eyebrow">作戦</span></header>
       <div class="a-vs">
@@ -123,7 +127,7 @@
         <div class="a-vs__side op">${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--vs portrait--op' })}<b>${esc(o.name)}</b><small>${esc(o.rank)} · 学力 ${totalPower(o.stats).toLocaleString('ja-JP')}</small></div>
       </div>
       <section class="m-panel">
-        <h2 class="panel__title">陣地と戦力（相手の防衛順）</h2>
+        <h2 class="panel__title">主戦場を選ぶ（相手の防衛順）</h2>
         <div class="a-compare">${o.order.map((s, k) => {
           const a = power(ctx.player.stats[s]), c = power(o.stats[s]);
           return `<button class="a-row ${s === b.focus ? 'is-focus' : ''}" data-focus="${s}" aria-pressed="${s === b.focus}">
@@ -131,16 +135,17 @@
             <span class="v me">${a}</span>
             <span class="duel"><i class="l" style="width:${(a / (a + c)) * 100}%"></i></span>
             <span class="v op">${c}</span>
-            <span class="adv ${a > c ? 'up' : a < c ? 'down' : ''}">${a > c ? '優勢' : a < c ? '劣勢' : '互角'}</span>
+            <span class="wr ${s === sug ? 'sug' : ''}">${rates[s]}%</span>
           </button>`;
         }).join('')}</div>
-        <p class="muted">タップで<b>主戦場（★ 全能力 +10%）</b>を選択。◆は相手の主戦場。</p>
+        <p class="muted">右端は<b>その科目を主戦場（★ 全能力 +10%）にしたときの勝率</b>。◆は相手の主戦場。</p>
       </section>
-      <section class="a-tactics">
-        <div class="a-tac me"><span class="eyebrow">あなたのナビ戦術</span><b>${UI.Emblem(mt.emblem)}${esc(mt.tactic.name)}</b><small>${esc(mt.tactic.desc)}</small></div>
-        <div class="a-tac op"><span class="eyebrow">相手のナビ戦術</span><b>${UI.Emblem(n.type.emblem)}${esc(n.type.tactic.name)}</b><small>${esc(n.type.tactic.desc)}</small></div>
+      <section class="a-advice">
+        <div class="a-advice__head"><span class="eyebrow">${esc(ctx.char.name)}の提案</span><b>${UI.Emblem(mt.emblem)}${esc(mt.advice.name)}</b><small>${esc(mt.advice.desc)}</small></div>
+        ${b.focus === sug ? '<span class="a-advice__on">採用中</span>' : `<button class="btn btn--sub" data-focus="${esc(sug)}">${esc(sug)}を主戦場にする</button>`}
       </section>
       ${NavLine(ctx, line, 'serious')}
+      <p class="a-fair">ナビのタイプは対戦の強さに影響しません。勝敗を決めるのは学力と主戦場の選択だけです。</p>
       <button class="btn btn--main" data-action="fight">挑戦権を1つ使って開戦</button>
     </div>`;
   }
@@ -231,8 +236,8 @@
 
   function fight() {
     if (ctx.player.tickets.now <= 0) return;
-    const me = { stats: ctx.player.stats, navType: ctx.type.id, focus: b.focus };
-    const op = { stats: b.op.stats, navType: b.op.nav.type, focus: b.op.focus, order: b.op.order };
+    const me = { stats: ctx.player.stats, focus: b.focus };
+    const op = { stats: b.op.stats, focus: b.op.focus, order: b.op.order };
     b.res = resolveBattle(me, op, Math.floor(Math.random() * 1e9));
     b.analysis = analyze(b.res);
     b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.res.win ? b.op.reward.win : b.op.reward.lose, focus: b.focus, opName: b.op.name });

@@ -24,7 +24,7 @@
 
     types: [
       {
-        id: 'logic', tactic: { name: '最適配分', desc: '自分の最も弱い科目の全能力 +12%' }, specialLabel: '思案', name: 'LOGIC', kana: 'ロジック', color: '#3D84FF', emblem: 'hex', keyVisual: KV.logic,
+        id: 'logic', advice: { name: '勝率最大化', desc: '勝率予測が最も高くなる陣地を、数字で選んで提案する' }, specialLabel: '思案', name: 'LOGIC', kana: 'ロジック', color: '#3D84FF', emblem: 'hex', keyVisual: KV.logic,
         tagline: '分析で勝つ、知の戦略家。',
         traits: ['論理的・分析的', '効率重視', '計画的に成長を導く'],
         stats: [5, 2, 2, 1, 3],
@@ -57,7 +57,7 @@
         },
       },
       {
-        id: 'halo', tactic: { name: '立て直し', desc: '陣地を1つでも落としたら、以降の陣地で全能力 +6%' }, specialLabel: '励まし', name: 'HALO', kana: 'ハロ', color: '#4FD96B', emblem: 'ring', keyVisual: KV.halo,
+        id: 'halo', advice: { name: '苦手を支える', desc: '自分の一番苦手な科目を主戦場にして、取りこぼしを防ぐ' }, specialLabel: '励まし', name: 'HALO', kana: 'ハロ', color: '#4FD96B', emblem: 'ring', keyVisual: KV.halo,
         tagline: 'ともに進む、やさしい伴走者。',
         traits: ['やさしく親身', 'モチベーション維持', '継続をサポート'],
         stats: [2, 5, 3, 1, 2],
@@ -90,7 +90,7 @@
         },
       },
       {
-        id: 'ignite', tactic: { name: '先手必勝', desc: '最初の2陣地で「速さ」+30%' }, specialLabel: '檄', name: 'IGNITE', kana: 'イグナイト', color: '#FF3D5A', emblem: 'star', keyVisual: KV.ignite,
+        id: 'ignite', advice: { name: '先鋒で流れをつかむ', desc: '最初に戦う陣地を主戦場にして、勢いをつける' }, specialLabel: '檄', name: 'IGNITE', kana: 'イグナイト', color: '#FF3D5A', emblem: 'star', keyVisual: KV.ignite,
         tagline: '情熱で伸ばす、熱血コーチ。',
         traits: ['情熱', '行動力', '成長重視'],
         stats: [1, 3, 5, 3, 1],
@@ -123,7 +123,7 @@
         },
       },
       {
-        id: 'vex', tactic: { name: '狙い撃ち', desc: '相手の最も強い科目で、相手の全能力 −12%' }, specialLabel: '本気', name: 'VEX', kana: 'ヴェックス', color: '#A266FF', emblem: 'cross', keyVisual: KV.vex,
+        id: 'vex', advice: { name: '得意を折る', desc: '相手が一番自信のある科目を主戦場にして、正面から崩す' }, specialLabel: '本気', name: 'VEX', kana: 'ヴェックス', color: '#A266FF', emblem: 'cross', keyVisual: KV.vex,
         tagline: '挑発×競争心。',
         traits: ['ライバル', '刺激', '成長加速'],
         stats: [3, 1, 3, 5, 2],
@@ -160,7 +160,7 @@
         },
       },
       {
-        id: 'echo', tactic: { name: '多角思考', desc: 'すべての陣地で「応用」+12%' }, specialLabel: '思索', name: 'ECHO', kana: 'エコー', color: '#EBB740', emblem: 'eye', keyVisual: KV.echo,
+        id: 'echo', advice: { name: '拮抗点を読む', desc: '戦力が最も拮抗している陣地を主戦場にして、勝負を分ける' }, specialLabel: '思索', name: 'ECHO', kana: 'エコー', color: '#EBB740', emblem: 'eye', keyVisual: KV.echo,
         tagline: '知の深淵から、新たな視点を。',
         traits: ['博学・探究心', '多角的な思考', '新しい視点の提示'],
         stats: [4, 2, 1, 1, 5],

@@ -102,7 +102,7 @@
     </header>
     <p class="profile__bio">${esc(char.bio)}</p>
     <section class="panel">
-      <h3 class="panel__title">性格</h3>
+      <h3 class="panel__title">性格<small class="panel__note">対戦の強さには影響しません</small></h3>
       <div class="chips">${type.traits.map((t) => `<span class="chip">${esc(t)}</span>`).join('')}</div>
       ${StatBars(data.axes, type.stats)}
     </section>
