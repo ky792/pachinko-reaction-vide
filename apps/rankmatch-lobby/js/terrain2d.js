@@ -12,7 +12,13 @@
 
   /* ---------- 色ユーティリティ ---------- */
   const hex = (n) => (typeof n === 'number' ? '#' + n.toString(16).padStart(6, '0') : n);
-  function rgb(c) { c = hex(c).replace('#', ''); return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)]; }
+  function rgb(c) {
+    if (Array.isArray(c)) return c;
+    c = hex(c);
+    const m = /^rgba?\(([^)]+)\)/.exec(c); // 'rgba(r,g,b,a)' 形式（持ち主の色）も読む
+    if (m) return m[1].split(',').slice(0, 3).map(Number);
+    c = c.replace('#', ''); return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)];
+  }
   const css = (a, al = 1) => `rgba(${a[0] | 0},${a[1] | 0},${a[2] | 0},${al})`;
   const mix = (a, b, k) => [a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, a[2] + (b[2] - a[2]) * k];
   const shade = (a, k) => (k >= 0 ? mix(a, [255, 255, 255], k) : mix(a, [0, 0, 0], -k));
