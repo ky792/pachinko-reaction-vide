@@ -24,7 +24,7 @@
 
     types: [
       {
-        id: 'logic', name: 'LOGIC', kana: 'ロジック', color: '#3D84FF', emblem: 'hex', keyVisual: KV.logic,
+        id: 'logic', specialLabel: '思案', name: 'LOGIC', kana: 'ロジック', color: '#3D84FF', emblem: 'hex', keyVisual: KV.logic,
         tagline: '分析で勝つ、知の戦略家。',
         traits: ['論理的・分析的', '効率重視', '計画的に成長を導く'],
         stats: [5, 2, 2, 1, 3],
@@ -38,6 +38,7 @@
             catch: '感情じゃなく、データで考えよう。',
             visual: visual('logic', [41, 22], 1.75),
             silhouette: { hair: 'short', accessory: 'glasses' },
+            matchLines: { correct: '正解。{t}秒、悪くない。', wrong: '誤答。{unit}の確認が要るな。次で取り返せる。', streak: '{n}問連続。正答ペースが相手を上回った。', timeout: '時間切れだ。迷ったら消去法で2択まで絞れ。', win: '勝率予測を上回った。データは君の成長を示している。', lose: '敗因は明確だ。明確なら、直せる。' },
             portrait: null,
             lines: { morning: '朝は記憶の定着率が高い。暗記系から始めよう。', day: '今日の弱点は二次関数。そこから潰そう。', night: '残り40分で演習2セット。計算上、今日の目標に届く。', match: '相手の序盤正答率は68%。最初の3問で主導権を取れる。' },
           },
@@ -47,13 +48,14 @@
             catch: '誤答パターン、3つに分類できました。',
             visual: visual('logic', [68, 37], 1.75),
             silhouette: { hair: 'sideTail', accessory: 'none' },
+            matchLines: { correct: '正解です。{t}秒。', wrong: '誤答です。{unit}、記録に残しておきますね。', streak: '{n}問連続正解。このリズムを維持してください。', timeout: '時間切れです。次は8秒を目安に判断しましょう。', win: '勝利です。今日の解析データ、少しうれしい結果です。', lose: '負けです。でも誤答の傾向ははっきりしました。対策できます。' },
             portrait: null,
             lines: { morning: 'おはようございます。昨日の誤答から3問、復習を用意しました。', day: '符号ミスが2日連続です。今日はそこだけ確認しましょう。', night: '今日の正答率は78%。目標まであと1セットです。', match: '相手は時間切れが多い傾向です。焦らず確実に。' },
           },
         },
       },
       {
-        id: 'halo', name: 'HALO', kana: 'ハロ', color: '#4FD96B', emblem: 'ring', keyVisual: KV.halo,
+        id: 'halo', specialLabel: '励まし', name: 'HALO', kana: 'ハロ', color: '#4FD96B', emblem: 'ring', keyVisual: KV.halo,
         tagline: 'ともに進む、やさしい伴走者。',
         traits: ['やさしく親身', 'モチベーション維持', '継続をサポート'],
         stats: [2, 5, 3, 1, 2],
@@ -67,6 +69,7 @@
             catch: '焦らなくていい。俺がペースを見てるから。',
             visual: visual('halo', [45, 25], 1.05),
             silhouette: { hair: 'messy', accessory: 'headset' },
+            matchLines: { correct: 'いいぞ、その調子だ。', wrong: '気にするな。{unit}はあとで一緒に見直そう。', streak: '{n}問連続か。積み上げが出てるな。', timeout: '時間切れか。焦らなくていい、次だ。', win: 'よくやったな。毎日の積み上げが勝たせたんだ。', lose: '悔しいな。でも、今日解けた問題は確実に増えてる。' },
             portrait: null,
             lines: { morning: 'おはよう。12日連続だな。今日も軽めに始めよう。', day: '昨日の続きからいこう。計画どおり進んでるぞ。', night: 'よく頑張ったな。あと1問だけやって、今日は休もう。', match: 'いつもどおりでいい。お前の積み上げは本物だ。' },
           },
@@ -76,13 +79,14 @@
             catch: '大丈夫、一緒にやればきっと伸びるよ！',
             visual: visual('halo', [60, 33], 1.05),
             silhouette: { hair: 'twin', accessory: 'flower' },
+            matchLines: { correct: 'やった！正解だよ！', wrong: '惜しい〜！{unit}、あとで一緒にやろうね。', streak: '{n}問連続！すごいすごい！', timeout: 'あっ、時間切れ…でも大丈夫、次いこ！', win: '勝ったー！がんばってきたの、ちゃんと出てたよ！', lose: '悔しいね…。でも、最後まで解いたのえらいよ。' },
             portrait: null,
             lines: { morning: 'おはよう！今日も来てくれてうれしいな。', day: 'あとちょっとで今日の目標だよ。一緒にがんばろ！', night: 'おつかれさま。今日の自分、ちゃんとほめてあげてね。', match: '大丈夫、ずっと見てたもん。いつもの君でいこう！' },
           },
         },
       },
       {
-        id: 'ignite', name: 'IGNITE', kana: 'イグナイト', color: '#FF3D5A', emblem: 'star', keyVisual: KV.ignite,
+        id: 'ignite', specialLabel: '檄', name: 'IGNITE', kana: 'イグナイト', color: '#FF3D5A', emblem: 'star', keyVisual: KV.ignite,
         tagline: '情熱で伸ばす、熱血コーチ。',
         traits: ['情熱', '行動力', '成長重視'],
         stats: [1, 3, 5, 3, 1],
@@ -96,6 +100,7 @@
             catch: 'まだいけるやろ！限界は、もうちょい先や！',
             visual: visual('ignite', [25, 21], 1.6),
             silhouette: { hair: 'spiky', accessory: 'none' },
+            matchLines: { correct: 'よっしゃ！その勢いや！', wrong: 'まだまだ！次で取り返したらええ！', streak: '{n}連続！止まらんなあ！', timeout: '時間切れ！迷ったら飛び込め！', win: '勝ったで！お前の熱がスコアに出たな！', lose: '負けは燃料や！もう一戦いくで！' },
             portrait: null,
             lines: { morning: '朝イチの一問が一日を決めるんや！いくで！', day: '3連勝中やん！今日も全力でランク上げにいこか！', night: 'ラスト一戦！今日は勝って終わろうや！', match: '開幕ダッシュや！最初の一問で流れつかめ！' },
           },
@@ -105,13 +110,14 @@
             catch: 'やるからには、一番上までいこうよ！',
             visual: visual('ignite', [50, 34], 1.6),
             silhouette: { hair: 'sideTail', accessory: 'band' },
+            matchLines: { correct: 'ナイス！その調子！', wrong: 'ドンマイ！次は取ろう！', streak: '{n}問連続！このまま一番上まで！', timeout: '時間切れ〜！次はもっと速く！', win: '勝ったー！次はもっと上のランクいこうよ！', lose: 'くやしー！でも次は絶対勝てる！' },
             portrait: null,
             lines: { morning: 'おはよ！今日も一番上目指していこう！', day: 'いい流れ来てる！このまま連続正解いっちゃお！', night: 'ラストスパート！あと10分だけ全力で！', match: '相手が格上？だからこそ燃えるんじゃん！' },
           },
         },
       },
       {
-        id: 'vex', name: 'VEX', kana: 'ヴェックス', color: '#A266FF', emblem: 'cross', keyVisual: KV.vex,
+        id: 'vex', specialLabel: '本気', name: 'VEX', kana: 'ヴェックス', color: '#A266FF', emblem: 'cross', keyVisual: KV.vex,
         tagline: '挑発×競争心。',
         traits: ['ライバル', '刺激', '成長加速'],
         stats: [3, 1, 3, 5, 2],
@@ -126,6 +132,8 @@
             expressionLabels: { default: '通常', smile: '挑発', serious: '本気' },
             visual: visual('vex', [18, 19], 1.6),
             silhouette: { hair: 'swept', accessory: 'earring' },
+            matchLines: { correct: 'へえ、それくらいは解けるんだ。', wrong: '…マジで？{unit}、基礎からやり直せば？', streak: '{n}連続？…まぐれじゃないなら続けてみなよ。', timeout: '時間切れとか。考えてる間に相手は進んでるけど。', win: '…ま、今日のところは認めてやるよ。', lose: 'その程度で終わる気？次は勝てよ。' },
+            matchExpr: { wrong: 'smile', timeout: 'smile', lose: 'serious' },
             portrait: null,
             lines: { morning: '朝から来たんだ。眠そうな顔で勝てんの？', day: '昨日のスコア、半分の時間で出せるけど？', night: 'まだやんの？……ま、付き合ってやるよ。', match: '相手はA−。格上だけど、まさか逃げないよな？' },
           },
@@ -136,13 +144,15 @@
             expressionLabels: { default: '通常', smile: 'からかい', special: '照れ（レア）' },
             visual: visual('vex', [85, 28], 1.95),
             silhouette: { hair: 'twin', accessory: 'earring' },
+            matchLines: { correct: 'ふーん、やるじゃん？', wrong: 'あれれ〜？{unit}、苦手なんだ？', streak: '{n}問連続……ちょっとだけ、すごいかも。', timeout: 'ぼーっとしてた？かわいいね。', win: '……べ、別に。おめでと。', lose: 'あーあ、負けちゃった。次はちゃんと勝ってよね。' },
+            matchExpr: { wrong: 'smile', timeout: 'smile', win: 'special' },
             portrait: null,
             lines: { morning: 'おはよ。今日こそ私のスコア、抜けるかな？', day: '連勝中？ふーん、まぐれじゃないなら証明してみて。', night: 'もう終わり？私はまだ余裕だけど。', match: '負けたら罰ゲームね。……冗談。半分だけ。' },
           },
         },
       },
       {
-        id: 'echo', name: 'ECHO', kana: 'エコー', color: '#EBB740', emblem: 'eye', keyVisual: KV.echo,
+        id: 'echo', specialLabel: '思索', name: 'ECHO', kana: 'エコー', color: '#EBB740', emblem: 'eye', keyVisual: KV.echo,
         tagline: '知の深淵から、新たな視点を。',
         traits: ['博学・探究心', '多角的な思考', '新しい視点の提示'],
         stats: [4, 2, 1, 1, 5],
@@ -156,6 +166,7 @@
             catch: '覚える前に、なぜそうなるのかを見てみましょう。',
             visual: visual('echo', [44, 30], 1.05),
             silhouette: { hair: 'messy', accessory: 'none' },
+            matchLines: { correct: '正解です。考え方の筋が通っていますね。', wrong: '惜しいですね。{unit}の定義に戻ってみましょう。', streak: '{n}問連続。理解が線でつながってきました。', timeout: '時間切れです。条件を一つずつ拾う練習をしましょう。', win: '見事です。勝利は理解の深さの証明ですね。', lose: '負けにも意味があります。どこで迷ったかを一緒に辿りましょう。' },
             portrait: null,
             lines: { morning: 'おはようございます。今朝は定義の確認から始めましょう。', day: '昨日の解法は、別の単元にも通じていますね。', night: '今日学んだことを、一文で説明できますか。', match: '問題文を最後まで。答えは構造の中にあります。' },
           },
@@ -165,6 +176,7 @@
             catch: '…面白いね。その考え方、もっと深掘りしてみようか。',
             visual: visual('echo', [65, 33], 1.05),
             silhouette: { hair: 'sideTail', accessory: 'flower' },
+            matchLines: { correct: '正解。…ね、なんでそう思ったの？', wrong: 'へえ、そっちを選んだんだ。{unit}、ちょっと深掘りしてみよっか。', streak: '{n}問連続。面白くなってきたね。', timeout: '時間切れ。考えすぎちゃった？それも悪くないよ。', win: '勝ったね。でも、いちばん面白かった問題はどれ？', lose: '負けちゃったね。間違えた問題、実は宝の山だよ。' },
             portrait: null,
             lines: { morning: 'おはよ。今日はどんな「なんで？」が見つかるかな。', day: 'その間違い、実はいい線いってるよ。どこで分かれたと思う？', night: '寝る前に一個だけ。今日いちばん不思議だったことは？', match: '勝ち負けもいいけど、知らない問題に会えるのが楽しみだね。' },
           },
@@ -172,4 +184,9 @@
       },
     ],
   };
+  /* 表情ラベル：キャラ固有 > タイプ固有（special）> 共通 */
+  window.NAV_DATA.types.forEach((t) => ['m', 'f'].forEach((g) => {
+    const c = t.characters[g];
+    c.expressionLabels = Object.assign({ special: t.specialLabel }, c.expressionLabels || {});
+  }));
 })();

@@ -1,8 +1,40 @@
 /* 状態管理・ルーティング・イベント。表示はすべて UI.* に委ねる。 */
 (function () {
-  const D = window.NAV_DATA, P = window.MOCK_PLAYER, UI = window.UI;
+  const D = window.NAV_DATA, UI = window.UI;
   const root = document.getElementById('app');
-  const KEY = 'rankmatch-lobby:v1';
+  const KEY = 'rankmatch-lobby:v1', PKEY = 'rankmatch-lobby:player:v1';
+
+  /* プレイヤー：mock を初期値に、対戦結果を localStorage に積み上げる（試作用） */
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  let P = (() => { try { const s = JSON.parse(localStorage.getItem(PKEY) || 'null'); return s && s.rank ? s : clone(window.MOCK_PLAYER); } catch (e) { return clone(window.MOCK_PLAYER); } })();
+  const savePlayer = () => { try { localStorage.setItem(PKEY, JSON.stringify(P)); } catch (e) {} };
+
+  /* ランク帯：RP からラベル・次ランク・ゲージ位置を求める */
+  const TIERS = [['C', 0], ['B−', 700], ['B', 1000], ['B+', 1300], ['A−', 1600], ['A', 1900], ['A+', 2200], ['S', 2500]];
+  function rankView(rp) {
+    let i = 0; while (i + 1 < TIERS.length && rp >= TIERS[i + 1][1]) i++;
+    const floor = TIERS[i][1], nx = TIERS[i + 1];
+    return { label: TIERS[i][0], rp, floor, next: nx ? nx[0] : null, nextAt: nx ? nx[1] : rp, pct: nx ? Math.round(((rp - floor) / (nx[1] - floor)) * 100) : 100 };
+  }
+  const rankCardData = () => { const v = rankView(P.rank.rp); return Object.assign({}, P.rank, { label: v.label, nextTier: v.next || '—', nextAt: v.nextAt, floor: v.floor }); };
+
+  function applyResult(r) {
+    const before = rankView(P.rank.rp);
+    P.rank.rp = Math.max(0, P.rank.rp + r.rp);
+    P.rank.winStreak = r.win ? P.rank.winStreak + 1 : 0;
+    P.rank.nationalPos = Math.max(1, P.rank.nationalPos - (r.win ? 37 + r.correct * 3 : -24));
+    const L = P.level; L.exp += r.exp;
+    while (L.exp >= L.next) { L.exp -= L.next; L.lv++; L.next = Math.round(L.next * 1.08 / 10) * 10; }
+    const T = P.today; T.solved += r.total; T.correct += r.correct; T.minutes += Math.max(1, Math.ceil(r.seconds / 60));
+    P.missions.forEach((ms) => {
+      if (ms.id === 'm1') ms.progress = Math.min(ms.total, ms.progress + 1);
+      if (ms.id === 'm2' && r.subject === '数学') ms.progress = Math.max(ms.progress, Math.min(ms.total, r.maxStreak));
+      if (ms.id === 'm3') ms.progress = Math.min(ms.total, T.minutes);
+    });
+    if (r.weakUnit) Object.assign(P.recommend, { subject: r.weakSubject, unit: r.weakUnit, accuracy: Math.round((r.correct / r.total) * 100) });
+    savePlayer();
+    return { before, after: rankView(P.rank.rp) };
+  }
 
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
   const saved = load();
@@ -71,12 +103,12 @@
           ${UI.Dialogue(D, c, currentLine(), state.expr)}
         </div>
         <div class="lobby__main">
-          ${UI.RankCard(P.rank, P.season)}
+          ${UI.RankCard(rankCardData(), P.season)}
           ${UI.MatchCTA(P.match)}
           <div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>
           ${UI.RecommendCard(P.recommend, t, c)}
         </div>
-        <div class="lobby__side">${UI.MissionList(P.missions)}</div>
+        <div class="lobby__side">${UI.MissionList(P.missions)}<button class="reset" data-action="reset">試作データをリセット</button></div>
       </div>
       ${UI.BottomNav()}
     </div>`;
@@ -85,6 +117,12 @@
   function render() {
     applyTheme(type());
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
+    if (route === 'match' && state.confirmed) {
+      window.Match.mount(root, { D, bank: window.QUESTION_BANK, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label,
+        defaultSubject: P.match.subject, applyResult, exit: () => go('home') });
+      return;
+    }
+    window.Match.unmount();
     if (route === 'home' && state.confirmed) renderHome(); else renderSelect();
   }
 
@@ -123,7 +161,8 @@
       case 'change-nav': go('select'); break;
       case 'back-home': go('home'); break;
       case 'talk': state.lineIdx++; setDialogue(currentLine(), state.lineIdx % 2 ? 'smile' : 'default'); break;
-      case 'match': setDialogue(char().lines.match, 'serious'); toast('マッチング中… （試作のため対戦画面は未実装）'); break;
+      case 'match': go('match'); break;
+      case 'reset': P = clone(window.MOCK_PLAYER); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;
       case 'study': toast(P.recommend.unit + ' を開始（試作）'); break;
       case 'claim': b.replaceWith(Object.assign(document.createElement('span'), { className: 'mission__reward got', textContent: '受取済' })); toast('報酬を受け取りました'); break;
     }
