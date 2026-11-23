@@ -32,11 +32,13 @@
     const w = im.naturalWidth, h = im.naturalHeight, base = document.createElement('canvas'), mask = document.createElement('canvas');
     base.width = mask.width = w; base.height = mask.height = h;
     const bg = base.getContext('2d'), mg = mask.getContext('2d'); bg.drawImage(im, 0, 0);
-    let found = false;
+    let found = false, box = { x0: 0, y0: 0, x1: w, y1: h };
     try {
       const src = bg.getImageData(0, 0, w, h), m = mg.createImageData(w, h), a = src.data, o = m.data;
+      let x0 = w, y0 = h, x1 = 0, y1 = 0;
       for (let i = 0; i < a.length; i += 4) {
         const r = a[i], g = a[i + 1], b = a[i + 2], al = a[i + 3]; if (!al) continue;
+        if (al > 200) { const p = i / 4, x = p % w, y = (p / w) | 0; if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
         const key = Math.min(r, b) - g; // マゼンタらしさ
         if (key < 50 || Math.abs(r - b) > 90) continue;
         const k = Math.min(1, (key - 50) / 90), lum = Math.max(r, b);
@@ -44,8 +46,9 @@
         const gray = 150 + lum * 0.4; a[i] = a[i] * (1 - k) + gray * k; a[i + 1] = a[i + 1] * (1 - k) + gray * k; a[i + 2] = a[i + 2] * (1 - k) + gray * k;
       }
       bg.putImageData(src, 0, 0); mg.putImageData(m, 0, 0);
+      if (x1 > x0) box = { x0, y0, x1, y1 };
     } catch (e) { /* 別オリジンなどで読めない場合はそのまま */ }
-    return (KEYED[im.src] = { base, mask: found ? mask : null });
+    return (KEYED[im.src] = { base, mask: found ? mask : null, box });
   }
   const TINT = {};
   function tinted(mask, color, id) {
@@ -403,7 +406,13 @@
       const sk = item(s.skin), art = sk && sk.art ? img(sk.art) : null;
       const sc = 1 + Math.sin(s.pop * Math.PI) * 0.25;
       g.save(); g.translate(s.cx, s.cy); g.scale(sc, sc); g.translate(-s.cx, -s.cy);
-      if (art) { const w = s.u * 3.6, h = (w * art.naturalHeight) / art.naturalWidth, y0 = s.cy - h + w * ART_ANCHOR; const m = sk.artTeam ? img(sk.artTeam) : null; drawArt(g, art, m, s.cx - w / 2, y0, w, h, team, sk.id); }
+      if (art) {
+        // 絵の中身の範囲を検出し、横幅・高さが台座に収まるよう拡縮して、足元を台座の中心に合わせる
+        const K = keyed(art), B = K.box, cw = B.x1 - B.x0, ch = B.y1 - B.y0;
+        const k = Math.min((s.u * 3.1) / cw, (s.u * 5.4) / ch), w = art.naturalWidth * k, h = art.naturalHeight * k;
+        const x0 = s.cx - ((B.x0 + B.x1) / 2) * k, y0 = s.cy + s.u * 0.55 - B.y1 * k;
+        const m = sk.artTeam ? img(sk.artTeam) : null; drawArt(g, art, m, x0, y0, w, h, team, sk.id);
+      }
       else (SKIN[s.skin] || SKIN[DEFAULT_SKIN[s.subject]])(d, C, t + s.i);
       g.restore();
       drawBase(d, base, team, t, C, true);
