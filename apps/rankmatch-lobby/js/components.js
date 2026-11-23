@@ -183,9 +183,9 @@
           <polygon points="${poly((s) => (R * power(stats[s])) / MAX)}" class="radar__val"/>
           ${S.map((s, i) => { const [x, y] = pt(i, R + 10); return `<text x="${x.toFixed(1)}" y="${(y + 3).toFixed(1)}" class="radar__lbl">${s.slice(0, 1)}</text>`; }).join('')}
         </svg>
-        <ul class="stats-list">${S.map((s) => `<li><button data-action="train" data-subject="${esc(s)}"><span class="s">${esc(s)}${s === focus ? '<i>★</i>' : ''}<small>範囲${Math.round((stats[s].coverage || 0) * 100)}%${stats[s].fading ? `<em>忘${stats[s].fading}</em>` : ''}</small></span><b>${power(stats[s])}</b><span class="ax"><i style="--v:${stats[s].speed}%"></i><i style="--v:${stats[s].acc}%"></i><i style="--v:${stats[s].app}%"></i></span></button></li>`).join('')}</ul>
+        <ul class="stats-list">${S.map((s) => `<li><button data-action="stats" data-subject="${esc(s)}"><span class="s">${esc(s)}${s === focus ? '<i>★</i>' : ''}<small>範囲${Math.round((stats[s].coverage || 0) * 100)}%${stats[s].fading ? `<em>忘${stats[s].fading}</em>` : ''}</small></span><b>${power(stats[s])}</b><span class="ax"><i style="--v:${stats[s].speed}%"></i><i style="--v:${stats[s].acc}%"></i><i style="--v:${stats[s].app}%"></i></span></button></li>`).join('')}</ul>
       </div>
-      <p class="stats-card__foot"><span class="k"><i></i>速さ</span><span class="k"><i></i>正確さ</span><span class="k"><i></i>応用</span><span>科目をタップで演習</span></p>
+      <p class="stats-card__foot"><span class="k"><i></i>速さ</span><span class="k"><i></i>正確さ</span><span class="k"><i></i>応用</span><span>科目をタップで単元ごとの詳細</span></p>
     </section>`;
   }
 

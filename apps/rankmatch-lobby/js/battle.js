@@ -23,9 +23,8 @@
 
   function resolveArea(me, op, subject, idx, r, now) {
     const units = KN.units()[subject] || [];
-    const u1 = units[Math.floor(r() * units.length)];
-    let u2 = units[Math.floor(r() * units.length)];
-    if (units.length > 1) while (u2 === u1) u2 = units[Math.floor(r() * units.length)];
+    const u1 = KN.weightedUnit(subject, r);
+    const u2 = units.length > 1 ? KN.weightedUnit(subject, r, u1) : u1;
     const fm = me.focus === subject ? RULE.focus : 1, fo = op.focus === subject ? RULE.focus : 1;
     const vr = () => 1 + (r() - 0.5) * RULE.variance;
     const raw = [
@@ -37,7 +36,7 @@
     const ex = raw.map((e) => {
       const a = e.a * fm * vr(), b = e.b * fo * vr(), d = (a - b) * RULE.push;
       gauge = Math.max(-100, Math.min(100, gauge + d));
-      return { axis: e.axis, unit: e.unit, a: Math.round(a), b: Math.round(b), d: Math.round(d), gauge: Math.round(gauge) };
+      return { axis: e.axis, unit: e.unit, field: e.unit ? KN.meta(subject, e.unit).field : null, a: Math.round(a), b: Math.round(b), d: Math.round(d), gauge: Math.round(gauge) };
     });
     const notesMe = me.focus === subject ? ['主戦場 +10%'] : [], notesOp = op.focus === subject ? ['主戦場 +10%'] : [];
     return { subject, idx, ex, gauge: Math.round(gauge), win: gauge > 0 || (gauge === 0 && ex[0].a >= ex[0].b), notesMe, notesOp };
@@ -102,7 +101,7 @@
     if (!f) return h;
     if (f.kind === 'start') h += `<div class="fx fx-start"><b>BATTLE START</b><span><em class="me">${esc(ctx.player.name)}</em> VS <em class="op">${esc(b.op.name)}</em></span></div>`;
     if (f.kind === 'area') h += `<div class="fx fx-area"><small>第${f.idx + 1}陣</small><b>${esc(f.subject)}</b></div>`;
-    if (f.kind === 'ex') { const e = f.e; h += `<div class="fx fx-ex ${e.d >= 0 ? 'up' : 'down'}"><span class="fx-ex__ax">${esc(e.unit || '科目全体')} · ${AXL[e.axis]}</span><span class="fx-ex__vs"><b class="a">${e.a}</b><i>VS</i><b class="b">${e.b}</b></span><span class="fx-ex__d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}${Math.abs(e.d) >= 25 ? '<em>CRITICAL</em>' : ''}</span></div>`; }
+    if (f.kind === 'ex') { const e = f.e; h += `<div class="fx fx-ex ${e.d >= 0 ? 'up' : 'down'}"><span class="fx-ex__ax">${e.unit ? esc(e.field) + ' › ' + esc(e.unit) : '科目全体'} · ${AXL[e.axis]}</span><span class="fx-ex__vs"><b class="a">${e.a}</b><i>VS</i><b class="b">${e.b}</b></span><span class="fx-ex__d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}${Math.abs(e.d) >= 25 ? '<em>CRITICAL</em>' : ''}</span><span class="fx-ex__why">${esc(explain(e, f.subject, b, ctx))}</span></div>`; }
     if (f.kind === 'cap') h += `<div class="fx fx-cap ${f.win ? 'me' : 'op'}"><b>${f.win ? '陣地確保' : '陥落'}</b><small>${esc(f.subject)}</small></div>`;
     return h;
   };
@@ -172,7 +171,22 @@
     </div>`;
   }
 
-  const exLabel = (e) => `<span class="ax"><small>${esc(e.unit || '科目全体')}</small>${AXL[e.axis]}</span>`;
+  const exLabel = (e) => `<span class="ax"><small>${e.unit ? esc(e.field) + ' › ' + esc(e.unit) : '科目全体'}</small>${AXL[e.axis]}</span>`;
+  /* 押し合いの解説：なぜ押した／押されたかを、両者の単元データから説明する */
+  const pc = (x) => Math.round(x * 100) + '%';
+  function explain(e, subject, b, ctx) {
+    if (e.axis === 'app') return `★2以上の問題での実力 ${e.d >= 0 ? 'で上回った' : 'で下回った'}`;
+    const now = ctx.now(), A = KN.unitDetail(b.me().K, subject, e.unit, now), B = KN.unitDetail(b.opSide().K, subject, e.unit, now);
+    const win = e.d >= 0, flip = (x) => ((win ? x < 0 : x > 0) ? '（揺らぎで逆転）' : '');
+    if (A.status === 'new' && B.status === 'new') return '両者とも未学習。運の勝負';
+    if (A.status === 'new') return 'あなたはこの単元が未学習。弱点を突かれた';
+    if (B.status === 'new') return '相手はこの単元が未学習。弱点を突いた';
+    if (e.axis === 'speed') return `解答の速さ ${A.sec}秒 vs ${B.sec}秒${flip(B.sec - A.sec)}`;
+    const dp = A.p - B.p, dR = A.R - B.R;
+    if (Math.abs(dR) > 0.25 && Math.abs(dR) > Math.abs(dp)) return `定着度の差 ${pc(A.R)} vs ${pc(B.R)}${flip(dR)}`;
+    if (Math.abs(dp) > 0.06) return `正答予測 ${pc(A.p)} vs ${pc(B.p)}${flip(dp)}`;
+    return `ほぼ互角（正答予測 ${pc(A.p)} vs ${pc(B.p)}）`;
+  }
 
   function BattleView(b, ctx) {
     const res = b.res, n = navOf(ctx.D, b.op.nav);
@@ -193,7 +207,7 @@
         <div class="a-notes">${area.notesMe.map((x) => `<span class="me">${esc(x)}</span>`).join('')}${area.notesOp.map((x) => `<span class="op">相手：${esc(x)}</span>`).join('')}</div>
         <ol class="a-ex">${area.ex.map((e, k) => {
           if (k >= shown.length) return `<li class="wait">${exLabel(e)}<span class="dots">· · ·</span></li>`;
-          return `<li class="${e.d >= 0 ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}</span></li>`;
+          return `<li class="${e.d >= 0 ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}</span><span class="why">${esc(explain(e, area.subject, b, ctx))}</span></li>`;
         }).join('')}</ol>
       </section>
       ${NavLine(ctx, b.line, b.expr)}
@@ -223,7 +237,8 @@
       <section class="r-review holo-panel">
         <div class="missions__head"><span class="eyebrow">戦況分析</span>${an.mvp ? `<span class="muted">MVP陣地：<b>${esc(an.mvp)}</b></span>` : ''}</div>
         ${an.lost.length ? `<ul class="a-why">${an.lost.map((l) => `<li>
-            <span><b>${esc(l.subject)}</b>：${l.unit ? `<b class="u">${esc(l.unit)}</b>の` : ''}${AXL[l.axis]}で押し負け <em>${l.a} vs ${l.b}</em></span>
+            <span><b>${esc(l.subject)}</b>：${l.unit ? `<b class="u">${esc(KN.meta(l.subject, l.unit).field)} › ${esc(l.unit)}</b>の` : ''}${AXL[l.axis]}で押し負け <em>${l.a} vs ${l.b}</em>
+              ${l.unit ? (() => { const A = KN.unitDetail(b.me().K, l.subject, l.unit, ctx.now()), B = KN.unitDetail(b.opSide().K, l.subject, l.unit, ctx.now()); const f = (d) => (d.status === 'new' ? '未学習' : `正答予測${pc(d.p)}・定着${pc(d.R)}・${d.sec}秒`); return `<small class="a-why__cmp"><span class="me">あなた ${f(A)}</span><span class="op">相手 ${f(B)}</span></small>`; })() : ''}</span>
             <span class="a-why__btns">
               ${b.duelUsed ? '' : `<button class="btn btn--duel" data-duel="${esc(l.subject)}">直接対決</button>`}
               <button class="btn btn--sub" data-action="train" data-subject="${esc(l.subject)}" data-units="${esc(l.units.join('|'))}">演習</button>
@@ -367,7 +382,7 @@
     }
     if (b.ei < 3) { // 押し合い
       const e = area.ex[b.ei]; b.ei++;
-      b.fx = { kind: 'ex', e }; b.shake = Math.abs(e.d) >= 25 && !reduce();
+      b.fx = { kind: 'ex', e, subject: area.subject }; b.shake = Math.abs(e.d) >= 25 && !reduce();
       if (t3) t3.clash(b.ai, e);
       show(); schedule(); return;
     }

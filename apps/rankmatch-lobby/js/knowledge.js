@@ -30,11 +30,31 @@
   const rng = (a) => () => { a |= 0; a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
   const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return h >>> 0; };
 
-  let UNITS = {};
-  function setBank(bank) {
-    UNITS = {};
-    bank.forEach((q) => { (UNITS[q.subject] = UNITS[q.subject] || []); if (!UNITS[q.subject].includes(q.unit)) UNITS[q.subject].push(q.unit); });
+  /* カリキュラム（科目 › 分野 › 単元）。問題がある単元だけが計算対象（ready）。 */
+  let UNITS = {}, FIELDS = {}, META = {};
+  function setCurriculum(curr, bank) {
+    UNITS = {}; FIELDS = {}; META = {};
+    const has = new Set(bank.map((q) => q.subject + '/' + q.unit));
+    SUBJECTS.forEach((s) => {
+      const fields = (curr[s] || []).map((f) => ({ field: f.field, units: f.units.map((u) => ({ name: u.name, weight: u.weight || 1, ready: has.has(s + '/' + u.name) })) }));
+      const known = new Set(fields.flatMap((f) => f.units.map((u) => u.name)));
+      const extra = [...new Set(bank.filter((q) => q.subject === s && !known.has(q.unit)).map((q) => q.unit))];
+      if (extra.length) fields.push({ field: 'その他', units: extra.map((name) => ({ name, weight: 1, ready: true })) });
+      FIELDS[s] = fields;
+      UNITS[s] = [];
+      fields.forEach((f) => f.units.forEach((u) => { META[s + '/' + u.name] = { field: f.field, weight: u.weight, ready: u.ready }; if (u.ready) UNITS[s].push(u.name); }));
+    });
     return UNITS;
+  }
+  const setBank = (bank) => setCurriculum(window.CURRICULUM || {}, bank);
+  const meta = (s, u) => META[s + '/' + u] || { field: 'その他', weight: 1, ready: true };
+  /* 出題頻度で重み付けした単元の抽選（対戦で押し合う単元） */
+  function weightedUnit(s, r, exclude) {
+    const list = (UNITS[s] || []).filter((u) => u !== exclude);
+    const tot = list.reduce((x, u) => x + meta(s, u).weight, 0);
+    let v = r() * tot;
+    for (const u of list) { v -= meta(s, u).weight; if (v <= 0) return u; }
+    return list[list.length - 1];
   }
   const key = (s, u) => s + '/' + u;
   const retention = (u, now) => (!u || !u.n ? 0 : Math.exp(-Math.max(0, now - u.last) / DAY / u.S));
@@ -49,29 +69,48 @@
     return 100 * clamp01(1.5 - u.ratio) * (0.6 + 0.4 * p);
   }
 
+  /* 単元ひとつの詳細（学力詳細画面・バトル解説用） */
+  function unitDetail(K, s, unit, now) {
+    const m = meta(s, unit), u = K.units[key(s, unit)];
+    if (!m.ready) return Object.assign({ unit, status: 'soon', n: 0 }, m);
+    if (!u || !u.n) return Object.assign({ unit, status: 'new', n: 0, p: null, R: 0, sec: null }, m);
+    const R = retention(u, now), p = prob(u.r, STD);
+    const status = R < 0.6 ? 'fading' : p < 0.55 ? 'weak' : p >= 0.8 && R >= 0.8 ? 'strong' : 'ok';
+    return Object.assign({ unit, status, n: u.n, p, R, sec: +(u.ratio * REF[2]).toFixed(1), S: u.S }, m);
+  }
+
+  /* 科目ステータス：出題頻度で重み付け */
+  function aggregate(K, s, names, now) {
+    let acc = 0, w = 0, sp = 0, spW = 0, rSum = 0, done = 0, fading = 0, cov = 0;
+    names.forEach((unit) => {
+      const wt = meta(s, unit).weight, u = K.units[key(s, unit)];
+      w += wt;
+      if (!u || !u.n) { acc += 0.15 * wt; return; }
+      const R = retention(u, now), p = prob(u.r, STD);
+      done++; cov += wt; rSum += R; if (R < 0.6) fading++;
+      acc += p * (0.5 + 0.5 * R) * wt;
+      sp += clamp01(1.5 - u.ratio) * (0.6 + 0.4 * p) * wt; spW += wt;
+    });
+    return { acc: w ? (100 * acc) / w : 0, speed: spW ? (100 * sp) / spW : 20, coverage: w ? cov / w : 0, meanR: done ? rSum / done : 0, fading, learned: done, units: names.length };
+  }
   function subjectStats(K, now) {
     const out = {};
     SUBJECTS.forEach((s) => {
-      const list = UNITS[s] || [];
-      let acc = 0, sp = 0, spN = 0, rSum = 0, done = 0, fading = 0;
-      list.forEach((unit) => {
-        const u = K.units[key(s, unit)];
-        if (!u || !u.n) { acc += 0.15; return; }
-        const R = retention(u, now);
-        done++; rSum += R; if (R < 0.6) fading++;
-        acc += prob(u.r, STD) * (0.5 + 0.5 * R);
-        sp += clamp01(1.5 - u.ratio) * (0.6 + 0.4 * prob(u.r, STD)); spN++;
-      });
-      const meanR = done ? rSum / done : 0;
+      const g = aggregate(K, s, UNITS[s] || [], now);
       out[s] = {
-        acc: Math.round((100 * acc) / Math.max(1, list.length)),
-        speed: Math.round(spN ? (100 * sp) / spN : 20),
-        app: Math.round(100 * prob(K.app[s] != null ? K.app[s] : APP - 200, APP) * (0.5 + 0.5 * meanR)),
-        coverage: list.length ? done / list.length : 0,
-        retention: meanR, fading, units: list.length, learned: done,
+        acc: Math.round(g.acc), speed: Math.round(g.speed),
+        app: Math.round(100 * prob(K.app[s] != null ? K.app[s] : APP - 200, APP) * (0.5 + 0.5 * g.meanR)),
+        coverage: g.coverage, retention: g.meanR, fading: g.fading, units: g.units, learned: g.learned,
       };
     });
     return out;
+  }
+  function fieldStats(K, s, now) {
+    return (FIELDS[s] || []).map((f) => {
+      const ready = f.units.filter((u) => u.ready).map((u) => u.name);
+      const g = aggregate(K, s, ready, now);
+      return { field: f.field, acc: Math.round(g.acc), speed: Math.round(g.speed), coverage: g.coverage, fading: g.fading, ready: ready.length, units: f.units.map((u) => unitDetail(K, s, u.name, now)) };
+    });
   }
 
   /* 1問解いたときの更新。before/after は画面表示用 */
@@ -99,7 +138,7 @@
     const fu = focusUnits || [];
     return bank.filter((q) => q.subject === subject).map((q) => {
       const u = K.units[key(q.subject, q.unit)];
-      const pri = (u && u.n ? 1 - retention(u, now) : 0.8) + (fu.includes(q.unit) ? 2 : 0) + r() * 0.35;
+      const pri = (u && u.n ? 1 - retention(u, now) : 0.8) + meta(q.subject, q.unit).weight * 0.12 + (fu.includes(q.unit) ? 2 : 0) + r() * 0.35;
       return { q, pri };
     }).sort((a, b) => b.pri - a.pri).slice(0, n).map((x) => x.q);
   }
@@ -128,5 +167,5 @@
     return K;
   }
 
-  window.Knowledge = { DAY, SUBJECTS, setBank, units: () => UNITS, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
+  window.Knowledge = { DAY, SUBJECTS, setBank, setCurriculum, units: () => UNITS, fields: () => FIELDS, meta, weightedUnit, unitDetail, fieldStats, REF, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
 })();

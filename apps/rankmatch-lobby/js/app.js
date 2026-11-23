@@ -168,6 +168,11 @@
       state.trainUnits = [];
       return;
     }
+    if (route === 'stats' && state.confirmed) {
+      const subj = state.statsSubject || P.recommend.subject;
+      root.innerHTML = window.StatsView.render({ player: P, K: P.K, now: now(), subject: subj });
+      return;
+    }
     if (route === 'home' && state.confirmed) renderHome(); else renderSelect();
   }
 
@@ -201,13 +206,15 @@
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.type) { state.typeId = b.dataset.type; render(); return; }
     if (b.dataset.gender) { state.gender = b.dataset.gender; render(); return; }
+    if (b.dataset.statsSubject) { state.statsSubject = b.dataset.statsSubject; render(); window.scrollTo(0, 0); return; }
     switch (b.dataset.action) {
       case 'confirm': state.confirmed = true; state.lineIdx = 0; persist(); confirmFx(); break;
       case 'change-nav': go('select'); break;
       case 'back-home': go('home'); break;
       case 'talk': state.lineIdx++; setDialogue(currentLine(), state.lineIdx % 2 ? 'smile' : 'default'); break;
       case 'match': go('arena'); break;
-      case 'train': state.trainSubject = b.dataset.subject || P.recommend.subject; state.trainUnits = []; go('train'); break;
+      case 'train': state.trainSubject = b.dataset.subject || P.recommend.subject; state.trainUnits = b.dataset.units ? b.dataset.units.split('|') : []; go('train'); break;
+      case 'stats': state.statsSubject = b.dataset.subject || state.statsSubject; go('stats'); break;
       case 'advance': P.dayShift = (P.dayShift || 0) + 3; refreshStats(); savePlayer(); render(); toast('3日経過：復習していない単元の定着が下がりました'); break;
       case 'reset': P = clone(window.MOCK_PLAYER); initKnowledge(); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;
       case 'study': state.trainSubject = P.recommend.subject; go('train'); break;
