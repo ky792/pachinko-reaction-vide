@@ -73,7 +73,8 @@
       media = `<img class="portrait__img" src="${esc(stand)}" data-fallback="${esc(fb)}" alt="${esc(char.name)}" onerror="if(this.dataset.fallback){this.src=this.dataset.fallback;this.dataset.fallback=''}else{this.closest('.portrait').dataset.kind='holo';this.remove()}">`;
     } else if (v && v.src) {
       kind = 'kv';
-      media = `<img class="portrait__kv" src="${esc(v.src)}" alt="${esc(char.name)}" style="--ar:${v.w / v.h};--fx:${v.focus[0]};--fy:${v.focus[1]};--zb:${v.zoom || 1}" onerror="this.closest('.portrait').dataset.kind='holo';this.remove()">`;
+      const vsrc = (v.expr && v.expr[expr]) || v.src; // 表情差分があればその絵
+      media = `<img class="portrait__kv" src="${esc(vsrc)}" alt="${esc(char.name)}" style="--ar:${v.w / v.h};--fx:${v.focus[0]};--fy:${v.focus[1]};--zb:${v.zoom || 1}" onerror="this.closest('.portrait').dataset.kind='holo';this.remove()">`;
     }
     return `<figure class="portrait ${cls}" data-kind="${kind}" data-char="${esc(char.id)}" data-expr="${esc(expr)}">
       <div class="portrait__holo">${Silhouette(char.silhouette || {})}</div>${media}

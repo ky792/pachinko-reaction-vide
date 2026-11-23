@@ -18,7 +18,9 @@
   };
   const visual = (type, focus, zoom) => Object.assign({}, KV[type], { focus, zoom });
   /* 立ち絵カード（10人の立ち絵シートから切り出したもの）。focus は顔の位置（%） */
-  const char = (id, focus, zoom) => ({ src: `assets/navigators/chars/${id}.png`, w: 295, h: 500, focus, zoom });
+  /* 表情差分：smile（笑顔）・special（固有）。serious（真剣）は通常の絵で代用 */
+  const char = (id, focus, zoom) => ({ src: `assets/navigators/chars/${id}.png`, w: 295, h: 500, focus, zoom,
+    expr: { smile: `assets/navigators/chars/${id}_smile.png`, special: `assets/navigators/chars/${id}_special.png` } });
 
   window.NAV_DATA = {
     axes: ['分析', '共感', '熱量', '刺激', '探究'],
