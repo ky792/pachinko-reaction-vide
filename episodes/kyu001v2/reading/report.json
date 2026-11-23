@@ -70,12 +70,12 @@
   "expect": "シーゼット",
   "reason": "台本の「シーゼット」が聞こえない",
   "level": "中",
-  "id": "k01-092",
+  "id": "k01-094",
   "who": "baku",
   "text": "強レア役引いて、高確上がって、CZ入って、最終ゲームで突破。",
   "asr": "強レア薬引いて、口角上がって、CZ入って、最終ゲームで突破!",
   "ratio": 0.93,
-  "audio": "episodes/kyu001v2/voices/k01-092.wav"
+  "audio": "episodes/kyu001v2/voices/k01-094.wav"
  },
  {
   "kind": "誤読",
@@ -83,12 +83,12 @@
   "expect": "セーギ",
   "reason": "台本は「セーギ」、聞こえたのは「マサヨシ」",
   "level": "中",
-  "id": "k01-101",
+  "id": "k01-103",
   "who": "nagi",
   "text": "じゃあ、複雑さは正義？",
   "asr": "じゃあ、複雑さは正義?",
   "ratio": 0.72,
-  "audio": "episodes/kyu001v2/voices/k01-101.wav"
+  "audio": "episodes/kyu001v2/voices/k01-103.wav"
  },
  {
   "kind": "誤読",
@@ -226,12 +226,12 @@
   "expect": "トノ",
   "reason": "台本は「トノ」、聞こえたのは「パモ」",
   "level": "低",
-  "id": "k01-090",
+  "id": "k01-092",
   "who": "nagi",
   "text": "じゃあバクは、スロットの複雑さは好きなの？ 嫌いなの？",
   "asr": "じゃあ僕はスロッパも複雑さは好きなの?嫌いなの?",
   "ratio": 0.885,
-  "audio": "episodes/kyu001v2/voices/k01-090.wav"
+  "audio": "episodes/kyu001v2/voices/k01-092.wav"
  },
  {
   "kind": "誤読",
@@ -239,12 +239,12 @@
   "expect": "バク",
   "reason": "台本は「バク」、聞こえたのは「マコ」",
   "level": "低",
-  "id": "k01-116",
+  "id": "k01-118",
   "who": "nagi",
   "text": "そんなに詳しいなら、バクはスロットで、かなり勝ってるんだろうね。",
   "asr": "そんなに詳しいならマコはスロットでかなり勝ってるんだろうね",
   "ratio": 0.933,
-  "audio": "episodes/kyu001v2/voices/k01-116.wav"
+  "audio": "episodes/kyu001v2/voices/k01-118.wav"
  },
  {
   "kind": "誤読",
@@ -252,11 +252,11 @@
   "expect": "ュー",
   "reason": "台本は「ュー」、聞こえたのは「ョ」",
   "level": "低",
-  "id": "k01-122",
+  "id": "k01-124",
   "who": "nagi",
   "text": "……ん？ 今日は、修理してたんじゃないの？",
   "asr": "ん?今日は処理してたんじゃないの?",
   "ratio": 0.914,
-  "audio": "episodes/kyu001v2/voices/k01-122.wav"
+  "audio": "episodes/kyu001v2/voices/k01-124.wav"
  }
 ]
