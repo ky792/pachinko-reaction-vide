@@ -16,15 +16,29 @@
   function initKnowledge() {
     if (!P.K) { P.K = KN.synth(P.stats, 7, now()); P.qr = {}; P.dayShift = 0; }
     if (!P.cos) P.cos = clone(window.COSMETICS.defaults);
+    migrateCos();
     if (!P.achv) P.achv = { train: 0, duel: 0 };
     refreshStats();
+  }
+  /* 旧形式（decos）の装備を新形式へ移行し、無料アイテムを所持に加える */
+  function migrateCos() {
+    const D0 = window.COSMETICS.defaults, e = P.cos.equip, MAP = { deco_flag: 'flag_plain', deco_lantern: 'orb_lantern', deco_petals: 'fx_sakura', deco_halo: 'orb_halo' };
+    P.cos.owned = [...new Set(P.cos.owned.map((id) => MAP[id] || id).concat(D0.owned))];
+    if (e.decos) {
+      e.flag = e.decos.includes('deco_flag') ? 'flag_plain' : 'flag_none';
+      e.fx = e.decos.includes('deco_petals') ? 'fx_sakura' : 'fx_none';
+      e.orbit = e.decos.includes('deco_halo') ? 'orb_halo' : e.decos.includes('deco_lantern') ? 'orb_lantern' : 'orb_none';
+      if (typeof e.flag === 'string' && P.cos.equip.flagText == null) e.flagText = '';
+      delete e.decos;
+    }
+    Object.keys(D0.equip).forEach((k) => { if (e[k] == null) e[k] = clone(D0.equip[k]); });
   }
   const refreshStats = () => { P.stats = KN.subjectStats(P.K, now()); };
   initKnowledge();
   const opCache = {};
   const opK = (o) => opCache[o.id] || (opCache[o.id] = KN.synth(o.stats, KN.hash(o.id), Date.now(), 0.15));
   const opStats = (o) => KN.subjectStats(opK(o), Date.now());
-  function recordAnswer(q, ans) { const d = KN.update(P.K, q, ans, now(), P.qr); refreshStats(); savePlayer(); return d; }
+  function recordAnswer(q, ans) { P.achv.solved = (P.achv.solved || 0) + 1; const d = KN.update(P.K, q, ans, now(), P.qr); refreshStats(); savePlayer(); return d; }
 
   /* ランク帯：RP からラベル・次ランク・ゲージ位置を求める */
   const TIERS = [['C', 0], ['B−', 700], ['B', 1000], ['B+', 1300], ['A−', 1600], ['A', 1900], ['A+', 2200], ['S', 2500]];
