@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>まおうぐんの日々</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="res clock"><span id="dayicon">☀</span><span id="clock">1日目 06:00</span></div>
+    <div class="res" title="資金">💰<b id="gold">0</b></div>
+    <div class="res" title="食料">🍖<b id="food">0</b><small id="foodDelta"></small></div>
+    <div class="res" title="魔物の数 / 収容数">👾<b id="pop">0/4</b></div>
+    <div class="speed">
+      <button data-speed="0" title="一時停止 (Space)">⏸</button>
+      <button data-speed="1" title="通常" class="on">▶</button>
+      <button data-speed="3" title="高速">⏩</button>
+    </div>
+  </header>
+  <div id="statusline"><span id="goal"></span><span id="expedition"></span></div>
+  <div id="stage">
+    <canvas id="game"></canvas>
+    <div id="buildhint" class="hidden"></div>
+    <div id="info" class="hidden"></div>
+  </div>
+  <div id="log"></div>
+  <nav id="actions">
+    <button data-build="house"><span>🏠 住居</span><small>40G</small></button>
+    <button data-build="farm"><span>🌾 農場</span><small>50G</small></button>
+    <button data-build="training"><span>🎯 訓練場</span><small>70G</small></button>
+    <button id="btnList"><span>📜 魔物一覧</span><small>&nbsp;</small></button>
+    <button id="btnRaid" class="raid"><span>⚔ 侵略</span><small>村へ出撃</small></button>
+  </nav>
+</div>
+
+<div id="modal" class="hidden"><div class="modal-body" id="modalBody"></div></div>
+
+<div id="battle" class="hidden">
+  <div class="battle-box">
+    <div class="battle-head"><span id="battleTitle">⚔ 人間の村で戦闘中</span>
+      <span class="bbtns"><button id="bFast">⏩ 早送り</button><button id="bSkip">⏭ 結果へ</button></span></div>
+    <canvas id="bcv"></canvas>
+    <div id="battleResult" class="hidden"></div>
+  </div>
+</div>
+
+<div id="title" class="">
+  <div class="title-box">
+    <h1>まおうぐんの日々</h1>
+    <p class="sub">弱小魔王軍 育成・侵略シミュレーション</p>
+    <ul>
+      <li>魔物たちは自分で <b>食べ・眠り・働き・鍛える</b>。</li>
+      <li><b>住居</b>に空きがあって<b>食料</b>に余裕があれば、子どもが生まれる。</li>
+      <li><b>農場</b>で食料、<b>訓練場</b>で強さ。育てた部隊で<b>人間の村</b>を侵略しよう。</li>
+      <li>ゴブリンは<b>夜</b>、オークは<b>昼</b>に強い。村を襲いすぎると反撃が来る…</li>
+    </ul>
+    <p class="goalline">目標：村の抵抗力を 0 にして支配する（10〜15分ほど）</p>
+    <button id="btnStart">魔王として目覚める</button>
+    <p class="hint">操作：魔物をクリック／タップで詳細。建物ボタン → マップをタップで建設。</p>
+  </div>
+</div>
+
+<script src="sprites.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
