@@ -244,4 +244,41 @@
 .a-3d:active{cursor:grabbing}
 .a-3d .t3d-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .a-3d__hint{position:absolute;right:8px;bottom:6px;z-index:1;font-size:10px;color:var(--dim);pointer-events:none}
-.phase-battle .a-3d{height:clamp(200px,32vh,300px)}
+.phase-battle .a-3d{height:clamp(270px,46vh,460px)}
+
+/* ---------- battle FX overlay ---------- */
+.a-3d .fx,.a-3d .fx-tug{position:absolute;z-index:2;pointer-events:none}
+.fx-tug{left:12px;right:12px;bottom:12px;height:10px;background:var(--oc);box-shadow:0 0 12px rgba(0,0,0,.6)}
+.fx-tug i{position:absolute;inset:0 auto 0 0;background:var(--theme);transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.fx-tug span{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1px;background:#fff;box-shadow:0 0 10px #fff;transition:left .6s cubic-bezier(.2,.8,.2,1)}
+.fx-start{inset:0;display:grid;place-content:center;justify-items:center;gap:6px;background:radial-gradient(ellipse at center,rgba(6,10,20,.65),transparent 70%);animation:fxFade 1.8s ease forwards}
+.fx-start b{font-family:var(--f-disp);font-style:italic;font-weight:700;font-size:clamp(30px,9vw,54px);letter-spacing:.08em;color:#fff;text-shadow:0 0 24px var(--theme);animation:fxSlam .5s cubic-bezier(.2,1.4,.4,1)}
+.fx-start span{font-weight:900;font-size:14px;letter-spacing:.1em;animation:fxUp .5s .2s both}
+.fx-start .me{color:var(--theme);font-style:normal}.fx-start .op{color:var(--oc);font-style:normal}
+.fx-area{left:50%;top:14px;transform:translateX(-50%);display:grid;justify-items:center;animation:fxFade 1s ease forwards}
+.fx-area small{font-family:var(--f-num);font-size:11px;letter-spacing:.2em;color:var(--muted)}
+.fx-area b{font-family:var(--f-body);font-weight:900;font-size:clamp(28px,8vw,44px);text-shadow:0 0 18px rgba(0,0,0,.8);animation:fxSlam .4s cubic-bezier(.2,1.4,.4,1)}
+.fx-ex{left:0;right:0;top:12px;display:grid;justify-items:center;gap:2px;animation:fxFade 1.15s ease forwards}
+.fx-ex__ax{font-size:12px;font-weight:700;padding:2px 10px;background:rgba(6,10,20,.75);border:1px solid var(--line-2)}
+.fx-ex__vs{display:flex;align-items:baseline;gap:10px;font-family:var(--f-num);text-shadow:0 0 14px rgba(0,0,0,.9)}
+.fx-ex__vs b{font-size:clamp(28px,8vw,42px);line-height:1}
+.fx-ex__vs .a{color:var(--theme);animation:fxInL .35s cubic-bezier(.2,1.2,.4,1)}
+.fx-ex__vs .b{color:var(--oc);animation:fxInR .35s cubic-bezier(.2,1.2,.4,1)}
+.fx-ex__vs i{font-style:italic;font-family:var(--f-disp);font-size:14px;color:#fff}
+.fx-ex__d{font-weight:900;font-size:14px;text-shadow:0 0 10px rgba(0,0,0,.9);display:flex;gap:8px;align-items:center;animation:fxUp .3s .25s both}
+.fx-ex.up .fx-ex__d{color:var(--theme)}.fx-ex.down .fx-ex__d{color:var(--oc)}
+.fx-ex__d em{font-style:italic;font-family:var(--f-disp);font-size:12px;padding:1px 8px;background:#fff;color:#05080F;animation:fxSlam .3s .3s both}
+.fx-cap{inset:0;display:grid;place-content:center;justify-items:center;animation:fxFade 1.9s ease forwards}
+.fx-cap b{font-family:var(--f-body);font-weight:900;font-size:clamp(40px,13vw,72px);padding:4px 22px;border:5px solid currentColor;transform:rotate(-8deg);background:rgba(6,10,20,.55);text-shadow:0 0 20px currentColor;animation:fxStamp .45s cubic-bezier(.2,1.6,.4,1)}
+.fx-cap small{margin-top:8px;font-weight:900;font-size:14px;color:#fff;text-shadow:0 0 8px #000}
+.fx-cap.me{color:var(--theme)}.fx-cap.op{color:var(--oc)}
+.a-3d.shake{animation:fxShake .4s cubic-bezier(.36,.07,.19,.97)}
+.cutin--battle{top:auto;bottom:16%}
+@keyframes fxFade{0%,75%{opacity:1}100%{opacity:0}}
+@keyframes fxSlam{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes fxStamp{0%{transform:rotate(-8deg) scale(2.6);opacity:0}100%{transform:rotate(-8deg) scale(1);opacity:1}}
+@keyframes fxUp{0%{transform:translateY(8px);opacity:0}100%{transform:none;opacity:1}}
+@keyframes fxInL{0%{transform:translateX(-60px);opacity:0}100%{transform:none;opacity:1}}
+@keyframes fxInR{0%{transform:translateX(60px);opacity:0}100%{transform:none;opacity:1}}
+@keyframes fxShake{10%,90%{transform:translate(-2px,1px)}20%,80%{transform:translate(4px,-2px)}30%,50%,70%{transform:translate(-6px,2px)}40%,60%{transform:translate(6px,-1px)}}
+@media (prefers-reduced-motion:reduce){.a-3d .fx{animation:none!important}.a-3d .fx *{animation:none!important}}

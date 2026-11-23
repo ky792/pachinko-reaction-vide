@@ -95,7 +95,17 @@
     if (k === upto && b.phase === 'battle') st = 'active';
     return st;
   };
-  const Map3D = (hint) => `<div class="a-3d" aria-hidden="false"><span class="a-3d__hint">${hint || 'ドラッグで回転'}</span></div>`;
+  const Map3D = (hint, inner = '', cls = '') => `<div class="a-3d ${cls}"><span class="a-3d__hint">${hint || 'ドラッグで回転'}</span>${inner}</div>`;
+  /* バトル中に3Dの上へ重ねる演出（再描画のたびに新しい要素になるので、CSSアニメが毎回再生される） */
+  function FxLayer(b, ctx, g) {
+    const f = b.fx; let h = `<div class="fx-tug"><i style="width:${50 + g / 2}%"></i><span style="left:${50 + g / 2}%"></span></div>`;
+    if (!f) return h;
+    if (f.kind === 'start') h += `<div class="fx fx-start"><b>BATTLE START</b><span><em class="me">${esc(ctx.player.name)}</em> VS <em class="op">${esc(b.op.name)}</em></span></div>`;
+    if (f.kind === 'area') h += `<div class="fx fx-area"><small>第${f.idx + 1}陣</small><b>${esc(f.subject)}</b></div>`;
+    if (f.kind === 'ex') { const e = f.e; h += `<div class="fx fx-ex ${e.d >= 0 ? 'up' : 'down'}"><span class="fx-ex__ax">${esc(e.unit || '科目全体')} · ${AXL[e.axis]}</span><span class="fx-ex__vs"><b class="a">${e.a}</b><i>VS</i><b class="b">${e.b}</b></span><span class="fx-ex__d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}${Math.abs(e.d) >= 25 ? '<em>CRITICAL</em>' : ''}</span></div>`; }
+    if (f.kind === 'cap') h += `<div class="fx fx-cap ${f.win ? 'me' : 'op'}"><b>${f.win ? '陣地確保' : '陥落'}</b><small>${esc(f.subject)}</small></div>`;
+    return h;
+  };
   const Tiles = (b, res, upto) => `<div class="a-tiles">${b.op.order.map((s, k) => {
     const a = res && res.areas[k];
     const st = tileState(b, res, upto, k);
@@ -166,7 +176,7 @@
 
   function BattleView(b, ctx) {
     const res = b.res, n = navOf(ctx.D, b.op.nav);
-    const area = res.areas[b.ai], shown = area && area.ex ? area.ex.slice(0, b.ei) : [];
+    const area = res.areas[b.ai], shown = area && area.ex ? area.ex.slice(0, Math.max(0, b.ei)) : [];
     const g = shown.length ? shown[shown.length - 1].gauge : 0;
     const done = res.areas.slice(0, b.ai + (b.areaDone ? 1 : 0)).filter((a) => !a.skipped);
     return `<div class="match-screen phase-battle" style="--oc:${b.oc}">
@@ -175,7 +185,7 @@
         <span class="dash">陣地</span>
         <div class="op"><b>${done.filter((a) => !a.win).length}</b><span>${esc(b.op.name)}</span>${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--op' })}</div>
       </div>
-      ${Map3D()}
+      ${Map3D(' ', FxLayer(b, ctx, g), b.shake ? 'shake' : '')}
       ${Tiles(b, res, b.areaDone ? b.ai + 1 : b.ai)}
       <section class="a-arena ${b.areaDone ? (area.win ? 'won' : 'lost') : ''}">
         <div class="a-arena__head"><span class="eyebrow">第${b.ai + 1}陣</span><h2>${esc(area.subject)}</h2>${b.areaDone ? `<span class="a-capture">${area.win ? '陣地確保' : '陣地を奪われた'}</span>` : ''}</div>
@@ -334,24 +344,49 @@
     b.res = resolveBattle(b.me(), b.opSide(), Math.floor(Math.random() * 1e9), ctx.now());
     b.rpNow = b.res.win ? b.op.reward.win : b.op.reward.lose;
     b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus });
-    b.phase = 'battle'; b.ai = 0; b.ei = 0; b.areaDone = false; b.line = ctx.char.catch; b.expr = 'serious';
-    draw(); schedule();
+    b.phase = 'battle'; b.ai = 0; b.ei = -1; b.areaDone = false; b.line = ctx.char.catch; b.expr = 'serious';
+    b.fx = { kind: 'start' };
+    show();
+    if (t3) { t3.intro(); t3.focus(null); }
+    clearTimeout(timer); timer = setTimeout(step, reduce() ? 300 : b.fast ? 900 : 1900);
   }
-  function schedule() { clearTimeout(timer); const base = reduce() ? 250 : b.fast ? 380 : 800; timer = setTimeout(step, b.areaDone ? base * 1.6 : base); }
+  /* 1回分の描画。演出（fx・揺れ）はその描画でだけ再生する */
+  function show() { draw(); b.fx = null; b.shake = false; }
+  function schedule(mult = 1) { clearTimeout(timer); const base = reduce() ? 300 : b.fast ? 520 : 1150; timer = setTimeout(step, base * mult); }
   function step() {
     const area = b.res.areas[b.ai];
     if (b.areaDone) {
-      b.ai++; b.ei = 0; b.areaDone = false;
+      b.ai++; b.ei = -1; b.areaDone = false;
       if (b.ai >= b.res.areas.length || b.res.areas[b.ai].skipped) { finish(); return; }
-      draw(); schedule(); return;
+      return step();
     }
-    if (b.ei < 3) { b.ei++; draw(); schedule(); return; }
+    if (b.ei < 0) { // 陣地に入る：カメラを寄せる
+      b.ei = 0; b.fx = { kind: 'area', idx: b.ai, subject: area.subject };
+      if (t3) t3.focus(b.ai);
+      show(); schedule(0.9); return;
+    }
+    if (b.ei < 3) { // 押し合い
+      const e = area.ex[b.ei]; b.ei++;
+      b.fx = { kind: 'ex', e }; b.shake = Math.abs(e.d) >= 25 && !reduce();
+      if (t3) t3.clash(b.ai, e);
+      show(); schedule(); return;
+    }
     b.areaDone = true;
     b.line = fmt(ctx.char.battleLines[area.win ? 'areaWin' : 'areaLose'], { subject: area.subject });
     b.expr = area.win ? 'smile' : 'special';
-    draw(); schedule();
+    b.fx = { kind: 'cap', win: area.win, subject: area.subject };
+    if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
+    show(); navCut(area.win ? '陣地確保' : '陥落', b.line, b.expr);
+    schedule(1.8);
   }
-  function finish() { stop(); b.phase = 'result'; draw(); }
+  function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); }
+  function navCut(title, line, expr) {
+    if (reduce()) return;
+    document.querySelectorAll('.cutin').forEach((x) => x.remove());
+    const el = document.createElement('div'); el.className = 'cutin cutin--battle';
+    el.innerHTML = `${UI.Portrait({ char: ctx.char, expr, cls: 'portrait--cut' })}<div class="cutin__txt"><strong>${esc(title)}</strong><small>${esc(line)}</small></div>`;
+    document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
+  }
 
   function animateResult() {
     const rp = root.querySelector('.js-rp'), g = root.querySelector('.js-gauge'); if (!rp) return;
@@ -435,7 +470,7 @@
       case 'refresh': b.cands = candidates(); draw(); break;
       case 'back': b.phase = 'pick'; draw(); break;
       case 'fight': fight(); break;
-      case 'speed': b.fast = !b.fast; draw(); schedule(); break;
+      case 'speed': b.fast = !b.fast; draw(); break;
       case 'skip': finish(); break;
       case 'again': drop3d(); b = { phase: 'pick', cands: candidates(), fast: b.fast }; draw(); break;
       case 'duel-cancel': b.phase = 'result'; draw(); break;
@@ -459,7 +494,7 @@
     root.addEventListener('click', onClick); document.addEventListener('keydown', onKey); window.addEventListener('resize', onResize);
     draw();
   }
-  function unmount() { stop(); drop3d(); window.removeEventListener('resize', onResize); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); b = null; root = null; }
+  function unmount() { stop(); drop3d(); document.querySelectorAll('.cutin').forEach((x) => x.remove()); window.removeEventListener('resize', onResize); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); b = null; root = null; }
 
   window.Battle = { mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
 })();
