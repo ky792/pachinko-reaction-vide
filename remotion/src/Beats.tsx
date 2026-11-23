@@ -729,7 +729,7 @@ const PachiBoard: React.FC = () => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const from = S(57.01) - 4,
-    to = E(67) + 6;
+    to = E(67.02) + 6;
   const land = from + 16;
   const inS = spring({frame: f - from, fps, config: {damping: 11, stiffness: 120}});
   const outP = interpolate(f, [to - 8, to], [1, 0], clamp);
@@ -1042,7 +1042,7 @@ export const BEATS: {from: number; to: number; el: React.ReactNode}[] = [
   {from: S(55) - 4, to: E(56) + 6, el: <Bulb />},
   {from: S(56.03) - 4, to: E(56.10) + 6, el: <History />},
   {from: S(56.11) - 4, to: E(56.14) + 6, el: <Stairs />},
-  {from: S(57.01) - 4, to: E(67) + 6, el: <PachiBoard />},
+  {from: S(57.01) - 4, to: E(67.02) + 6, el: <PachiBoard />},
   {from: S(58) - 6, to: E(59) + 8, el: <PachiFlow />},
   {from: S(68) - 4, to: E(69) + 6, el: <Choice />},
   {from: S(77) - 4, to: E(78) + 6, el: <Hint />},
@@ -1074,7 +1074,7 @@ export const beatSounds = (): {at: number; src: string; vol: number}[] => {
   out.push({at: Math.round(M(57.01, 0.82)) + 30, src: 'px_pass', vol: 0.35});
   {
     const ready = Math.round(M(57.01, 0.82)) + 34,
-      puff = E(67) + 6 - 56;
+      puff = E(67.02) + 6 - 56;
     for (let c0 = ready; c0 + 150 < puff; c0 += 210) out.push({at: c0 + 150, src: 'se_emphasis', vol: 0.28});
     out.push({at: puff, src: 'px_fail', vol: 0.35});
   }
