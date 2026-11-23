@@ -502,3 +502,17 @@ i.bar{display:block;font-style:normal}
 .df-sum span.f{color:var(--holo-hi)}
 .df-sum i{font-style:normal;color:var(--dim)}
 .df-sum em{margin-left:auto;font-style:normal;font-size:11px;color:var(--theme)}
+
+/* ---------- estimate confidence ---------- */
+.su{grid-template-columns:minmax(0,1.5fr) 5.2em minmax(0,1fr) 3.2em minmax(0,1fr) 3.4em 2.6em auto}
+.su__m .bar s{position:absolute;top:-2px;bottom:-2px;background:var(--t-20);border-left:1px solid var(--t-line);border-right:1px solid var(--t-line)}
+.su__m .bar b{z-index:1}
+.su__cf{font-size:10px;font-weight:700;text-align:center}
+.cf-low{color:var(--warn)}.cf-mid{color:var(--muted)}.cf-high{color:var(--ok)}
+.sv-sum__kv{grid-template-columns:repeat(4,1fr)}
+.t-units small{font-size:9.5px}
+@media (max-width:520px){
+  .su{grid-template-columns:minmax(0,1fr) 4.6em auto;grid-template-areas:"n chip go" "p p cf" "r r r"}
+  .su__cf{grid-area:cf}
+  .sv-sum__kv{grid-template-columns:repeat(2,1fr)}
+}

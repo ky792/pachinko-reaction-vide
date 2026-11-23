@@ -188,7 +188,8 @@
     if (e.axis === 'speed') return `解答の速さ ${A.sec}秒 vs ${B.sec}秒${flip(B.sec - A.sec)}`;
     const dp = A.p - B.p, dR = A.R - B.R;
     if (Math.abs(dR) > 0.25 && Math.abs(dR) > Math.abs(dp)) return `定着度の差 ${pc(A.R)} vs ${pc(B.R)}${flip(dR)}`;
-    if (Math.abs(dp) > 0.06) return `正答予測 ${pc(A.p)} vs ${pc(B.p)}${flip(dp)}`;
+    const rough = A.conf.level === 'low' || B.conf.level === 'low' ? '（推定はまだ荒い）' : '';
+    if (Math.abs(dp) > 0.06) return `正答予測 ${pc(A.p)} vs ${pc(B.p)}${flip(dp)}${rough}`;
     return `ほぼ互角（正答予測 ${pc(A.p)} vs ${pc(B.p)}）`;
   }
 
@@ -421,7 +422,7 @@
   function duelOpen(subject) {
     const area = b.res.areas.find((a) => a.subject === subject && !a.skipped);
     const focusUnits = area ? area.ex.filter((e) => e.unit).map((e) => e.unit) : [];
-    const qs = KN.pickQuestions(ctx.myK(), ctx.bank, subject, RULE.duelQ, ctx.now(), focusUnits).map((q) => {
+    const qs = KN.pickQuestions(ctx.myK(), ctx.bank, subject, RULE.duelQ, ctx.now(), focusUnits, null, ctx.player.qr).map((q) => {
       const order = q.choices.map((_, i) => i).sort(() => Math.random() - 0.5);
       return Object.assign({}, q, { choices: order.map((i) => q.choices[i]), answer: order.indexOf(q.answer) });
     });

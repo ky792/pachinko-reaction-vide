@@ -58,6 +58,14 @@
   }
   const key = (s, u) => s + '/' + u;
   const retention = (u, now) => (!u || !u.n ? 0 : Math.exp(-Math.max(0, now - u.last) / DAY / u.S));
+  /* 推定の確かさ：sd は実力レーティングの不確かさ（大きいほど荒い）。解くほど小さくなる */
+  const SD0 = 350, SDMIN = 100;
+  const sdOf = (u) => (!u || !u.n ? SD0 : u.sd != null ? u.sd : Math.max(SDMIN, SD0 * Math.pow(0.85, u.n)));
+  function confOf(u) {
+    const sd = sdOf(u), level = sd > 240 ? 'low' : sd > 150 ? 'mid' : 'high';
+    return { sd, level, label: { low: '荒い', mid: 'ふつう', high: '確か' }[level], v: 1 - (sd - SDMIN) / (SD0 - SDMIN) };
+  }
+  const RECENT = 3 * DAY; // この期間内の同じ問題の正解は「答えを覚えている」可能性が高いので、ほとんど数えない
   const qRating = (qr, q) => (qr && qr[q.id] != null ? qr[q.id] : QR0[q.difficulty]);
 
   /* 単元の強さ（対戦の押し合いに使う） */
@@ -73,25 +81,26 @@
   function unitDetail(K, s, unit, now) {
     const m = meta(s, unit), u = K.units[key(s, unit)];
     if (!m.ready) return Object.assign({ unit, status: 'soon', n: 0 }, m);
-    if (!u || !u.n) return Object.assign({ unit, status: 'new', n: 0, p: null, R: 0, sec: null }, m);
+    if (!u || !u.n) return Object.assign({ unit, status: 'new', n: 0, p: null, R: 0, sec: null, conf: confOf(null) }, m);
     const R = retention(u, now), p = prob(u.r, STD);
     const status = R < 0.6 ? 'fading' : p < 0.55 ? 'weak' : p >= 0.8 && R >= 0.8 ? 'strong' : 'ok';
-    return Object.assign({ unit, status, n: u.n, p, R, sec: +(u.ratio * REF[2]).toFixed(1), S: u.S }, m);
+    const c = confOf(u), lo = prob(u.r - c.sd, STD), hi = prob(u.r + c.sd, STD);
+    return Object.assign({ unit, status, n: u.n, p, lo, hi, conf: c, R, sec: +(u.ratio * REF[2]).toFixed(1), S: u.S }, m);
   }
 
   /* 科目ステータス：出題頻度で重み付け */
   function aggregate(K, s, names, now) {
-    let acc = 0, w = 0, sp = 0, spW = 0, rSum = 0, done = 0, fading = 0, cov = 0;
+    let acc = 0, w = 0, sp = 0, spW = 0, rSum = 0, done = 0, fading = 0, cov = 0, cf = 0;
     names.forEach((unit) => {
       const wt = meta(s, unit).weight, u = K.units[key(s, unit)];
-      w += wt;
+      w += wt; cf += confOf(u).v * wt;
       if (!u || !u.n) { acc += 0.15 * wt; return; }
       const R = retention(u, now), p = prob(u.r, STD);
       done++; cov += wt; rSum += R; if (R < 0.6) fading++;
       acc += p * (0.5 + 0.5 * R) * wt;
       sp += clamp01(1.5 - u.ratio) * (0.6 + 0.4 * p) * wt; spW += wt;
     });
-    return { acc: w ? (100 * acc) / w : 0, speed: spW ? (100 * sp) / spW : 20, coverage: w ? cov / w : 0, meanR: done ? rSum / done : 0, fading, learned: done, units: names.length };
+    return { conf: w ? cf / w : 0, acc: w ? (100 * acc) / w : 0, speed: spW ? (100 * sp) / spW : 20, coverage: w ? cov / w : 0, meanR: done ? rSum / done : 0, fading, learned: done, units: names.length };
   }
   function subjectStats(K, now) {
     const out = {};
@@ -100,7 +109,7 @@
       out[s] = {
         acc: Math.round(g.acc), speed: Math.round(g.speed),
         app: Math.round(100 * prob(K.app[s] != null ? K.app[s] : APP - 200, APP) * (0.5 + 0.5 * g.meanR)),
-        coverage: g.coverage, retention: g.meanR, fading: g.fading, units: g.units, learned: g.learned,
+        conf: g.conf, coverage: g.coverage, retention: g.meanR, fading: g.fading, units: g.units, learned: g.learned,
       };
     });
     return out;
@@ -116,31 +125,51 @@
   /* 1問解いたときの更新。before/after は画面表示用 */
   function update(K, q, ans, now, qr) {
     const k = key(q.subject, q.unit);
-    const u = K.units[k] && K.units[k].n ? K.units[k] : { n: 0, r: STD - 150, S: 1, ratio: 1.3, last: now };
+    K.subj = K.subj || {};
+    const sr = K.subj[q.subject] != null ? K.subj[q.subject] : STD; // 科目全体の実力（新しい単元の出発点に使う）
+    const u = K.units[k] && K.units[k].n ? K.units[k] : { n: 0, r: sr, sd: SD0 * 0.85, S: 1, ratio: 1.3, last: now };
     const before = { p: u.n ? prob(u.r, STD) : null, R: retention(u, now), n: u.n };
     const qrat = qRating(qr, q), s = ans.correct ? 1 : 0;
     const expect = GUESS + (1 - GUESS) * prob(u.r, qrat);
-    const kf = Math.max(16, 56 / (1 + u.n * 0.15));
+    K.seen = K.seen || {};
+    const recent = K.seen[q.id] != null && now - K.seen[q.id] < RECENT; // 最近解いた同じ問題
+    const sd = sdOf(u);
+    let kf = Math.max(16, sd * 0.45); // 不確かなうちは大きく動かし、確かになるほど小さく
+    if (recent && ans.correct) kf *= 0.25; // 覚えた答えでの正解はほとんど数えない
     u.r += kf * (s - expect);
-    if (qr) qr[q.id] = qrat - 10 * (s - expect);
+    if (!(recent && ans.correct)) K.subj[q.subject] = sr + 18 * (s - (GUESS + (1 - GUESS) * prob(sr, qrat)));
+    // 解いた数が少ない単元は、科目全体の実力に少し寄せる（極端な推定を防ぐ）
+    if (u.n < 6) u.r += (K.subj[q.subject] - u.r) * 0.12;
+    u.sd = Math.max(SDMIN, sd * (recent ? 0.98 : 0.9));
+    K.seen[q.id] = now;
+    if (qr && !recent) qr[q.id] = qrat - 4 * (s - expect); // 問題の難しさは全員の解答で少しずつ調整（本番はサーバーで集計）
     const gap = u.n ? Math.max(0, now - u.last) / DAY : 0;
     u.S = ans.correct ? (u.n ? Math.min(60, u.S * (1.25 + 0.75 * Math.min(1, gap / u.S))) : 1.5) : Math.max(1, u.S * 0.6);
     if (ans.correct && ans.time != null) u.ratio = u.ratio * 0.65 + (ans.time / REF[q.difficulty]) * 0.35;
     u.last = now; u.n++;
     K.units[k] = u;
     if (q.difficulty >= 2) { const ra = K.app[q.subject] != null ? K.app[q.subject] : APP - 200; K.app[q.subject] = ra + 24 * (s - (GUESS + (1 - GUESS) * prob(ra, qrat))); }
-    return { unit: q.unit, subject: q.subject, before, after: { p: prob(u.r, STD), R: 1, n: u.n } };
+    return { unit: q.unit, subject: q.subject, before, recent, after: { p: prob(u.r, STD), R: 1, n: u.n, conf: confOf(u) } };
   }
 
-  /* 出題：忘れかけ・未学習・指定単元を優先 */
-  function pickQuestions(K, bank, subject, n, now, focusUnits, seed) {
-    const r = rng(seed || Date.now());
-    const fu = focusUnits || [];
-    return bank.filter((q) => q.subject === subject).map((q) => {
-      const u = K.units[key(q.subject, q.unit)];
-      const pri = (u && u.n ? 1 - retention(u, now) : 0.8) + meta(q.subject, q.unit).weight * 0.12 + (fu.includes(q.unit) ? 2 : 0) + r() * 0.35;
+  /* 出題：実力に合った難しさ・推定が荒い単元・忘れかけ・未学習・指定単元を優先。最近解いた問題は避け、1単元に偏らない */
+  function pickQuestions(K, bank, subject, n, now, focusUnits, seed, qr) {
+    const r = rng(seed || Date.now()), fu = focusUnits || [], seen = K.seen || {};
+    const scored = bank.filter((q) => q.subject === subject).map((q) => {
+      const u = K.units[key(q.subject, q.unit)], learned = u && u.n;
+      const pc = GUESS + (1 - GUESS) * prob(learned ? u.r : STD - 150, qRating(qr, q));
+      const info = pc * (1 - pc) * 4;                 // 正答確率が五分五分に近いほど情報が多い（0〜1）
+      const unsure = sdOf(u) / SD0;                   // 推定が荒い単元ほど優先
+      const age = seen[q.id] == null ? Infinity : now - seen[q.id];
+      const repeat = age < DAY ? -2 : age < RECENT ? -0.8 : 0;
+      const pri = (learned ? 1 - retention(u, now) : 0.6) * 0.8 + info * 0.9 + unsure * 0.6 + meta(q.subject, q.unit).weight * 0.12
+        + (fu.includes(q.unit) ? 2 : 0) + repeat + r() * 0.3;
       return { q, pri };
-    }).sort((a, b) => b.pri - a.pri).slice(0, n).map((x) => x.q);
+    }).sort((a, b) => b.pri - a.pri);
+    const out = [], per = {}, cap = Math.max(2, Math.ceil(n / 3));
+    scored.forEach(({ q }) => { if (out.length < n && (per[q.unit] || 0) < cap) { out.push(q); per[q.unit] = (per[q.unit] || 0) + 1; } });
+    scored.forEach(({ q }) => { if (out.length < n && !out.includes(q)) out.push(q); });
+    return out;
   }
 
   /* 相手の回答を学力データから予測（試作用。本番は相手が後で同じ問題を解く） */
@@ -167,5 +196,5 @@
     return K;
   }
 
-  window.Knowledge = { DAY, SUBJECTS, setBank, setCurriculum, units: () => UNITS, fields: () => FIELDS, meta, weightedUnit, unitDetail, fieldStats, REF, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
+  window.Knowledge = { confOf, sdOf, DAY, SUBJECTS, setBank, setCurriculum, units: () => UNITS, fields: () => FIELDS, meta, weightedUnit, unitDetail, fieldStats, REF, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
 })();

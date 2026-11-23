@@ -75,7 +75,7 @@
     const s = t.subject, b = t.before[s], a = ctx.player.stats[s];
     const sum = ['speed', 'acc', 'app'].reduce((x, k) => x + (a[k] - b[k]), 0);
     const correct = t.answers.filter((x) => x.correct).length;
-    const units = {}; t.answers.forEach((x) => { const u = units[x.delta.unit] || (units[x.delta.unit] = { before: x.delta.before, after: x.delta.after, ok: 0, n: 0 }); u.after = x.delta.after; u.n++; if (x.correct) u.ok++; });
+    const units = {}; t.answers.forEach((x) => { const u = units[x.delta.unit] || (units[x.delta.unit] = { before: x.delta.before, after: x.delta.after, ok: 0, n: 0, memo: 0 }); u.after = x.delta.after; if (x.delta.recent && x.correct) u.memo++; u.n++; if (x.correct) u.ok++; });
     const line = sum > 0 ? fmt(ctx.char.battleLines.train, { subject: s, gain: sum }) : ctx.char.lines.night;
     return `<div class="match-screen phase-result is-win">
       <header class="r-head"><span class="eyebrow">TRAINING RESULT · ${esc(s)}</span><strong class="t-up">学力 ${sum >= 0 ? '+' : ''}${sum}</strong><span class="r-score">${correct}/${t.answers.length} 正解 · 範囲 ${pct(b.coverage)}% → ${pct(a.coverage)}%</span></header>
@@ -85,7 +85,7 @@
       </section>
       <section class="holo-panel r-review">
         <div class="missions__head"><span class="eyebrow">単元ごとの変化</span><span class="muted">正答予測 / 定着</span></div>
-        <ul class="t-units">${Object.entries(units).map(([u, x]) => `<li><span class="u">${esc(u)}</span><span class="r">${x.ok}/${x.n}</span><span class="p">${x.before.p == null ? '<em>新規</em>' : pct(x.before.p) + '%'} → <b>${pct(x.after.p)}%</b></span><span class="R">${pct(x.before.R)}% → <b>100%</b></span></li>`).join('')}</ul>
+        <ul class="t-units">${Object.entries(units).map(([u, x]) => `<li><span class="u">${esc(u)}</span><span class="r">${x.ok}/${x.n}${x.memo ? `<small title="最近解いた問題の正解は、実力の推定にほとんど数えません">（覚え${x.memo}）</small>` : ''}</span><span class="p">${x.before.p == null ? '<em>新規</em>' : pct(x.before.p) + '%'} → <b>${pct(x.after.p)}%</b>${x.after.conf ? `<small class="cf-${x.after.conf.level}"> 確かさ:${x.after.conf.label}</small>` : ''}</span><span class="R">${pct(x.before.R)}% → <b>100%</b></span></li>`).join('')}</ul>
       </section>
       ${NavLine(ctx, line, 'smile')}
       <div class="r-actions">
@@ -107,7 +107,7 @@
   function fresh(subject, units) { t = { phase: 'lobby', subject: KN.SUBJECTS.includes(subject) ? subject : '数学', focusUnits: units || [], qs: [], i: 0, answers: [], streak: 0, navLine: '', navExpr: 'default' }; }
   function start() {
     t.before = JSON.parse(JSON.stringify(ctx.player.stats));
-    t.qs = KN.pickQuestions(ctx.myK(), ctx.bank, t.subject, SET, ctx.now(), t.focusUnits).map((q) => {
+    t.qs = KN.pickQuestions(ctx.myK(), ctx.bank, t.subject, SET, ctx.now(), t.focusUnits, null, ctx.player.qr).map((q) => {
       const order = q.choices.map((_, i) => i).sort(() => Math.random() - 0.5);
       return Object.assign({}, q, { choices: order.map((i) => q.choices[i]), answer: order.indexOf(q.answer) });
     });
