@@ -192,10 +192,17 @@
   function drawBase(d, b, team, t, C, front) {
     const g = d.g;
     if (!front) {
+      const bart = b.art ? img(b.art) : null;
+      if (bart) {
+        // 絵の中身の範囲に合わせて、横幅を台座の幅にそろえ、上面の中心（中身の上から約38%）を陣地の中心に置く
+        const K = keyed(bart), B = K.box, cw = B.x1 - B.x0, ch = B.y1 - B.y0, k = (d.u * 4.3) / cw;
+        const [cx0, cy0] = d.P(0, 0, 0), x0 = cx0 - ((B.x0 + B.x1) / 2) * k, y0 = cy0 - (B.y0 + ch * 0.38) * k;
+        drawArt(g, bart, null, x0, y0, bart.naturalWidth * k, bart.naturalHeight * k, team, b.art);
+        return;
+      }
       if (b.water) { const [px, py] = d.P(0, -0.05, 0); g.beginPath(); g.ellipse(px, py, 3.0 * d.u * 1.22, 3.0 * d.u * 0.61, 0, 0, Math.PI * 2); const gr = g.createRadialGradient(px, py, 1, px, py, 3 * d.u * 1.22); gr.addColorStop(0, 'rgba(60,120,180,.0)'); gr.addColorStop(0.5, 'rgba(60,120,180,.55)'); gr.addColorStop(1, 'rgba(60,120,180,0)'); g.fillStyle = gr; g.fill(); const k = (t * 0.4) % 1; d.ring(0, -0.05, 0, 2.0 + k * 0.9, `rgba(190,224,255,${0.5 * (1 - k)})`, 1.2); }
       if (b.float) { const top = hexPts(d, 1.7, -0.3); const [ax, ay] = d.P(0, -2.3, 0); g.beginPath(); g.moveTo(top[2][0], top[2][1]); g.lineTo(top[3][0], top[3][1]); g.lineTo(top[4][0], top[4][1]); g.lineTo(top[5][0], top[5][1]); g.lineTo(ax, ay); g.closePath(); g.fillStyle = '#3e4352'; g.fill(); g.beginPath(); g.moveTo(top[0][0], top[0][1]); g.lineTo(top[1][0], top[1][1]); g.lineTo(top[2][0], top[2][1]); g.lineTo(ax, ay); g.closePath(); g.fillStyle = '#2c303c'; g.fill(); for (let k = 0; k < 4; k++) { const a = t * 0.2 + (k / 4) * Math.PI * 2; d.gem(Math.cos(a) * 2.4, -0.6 + k * 0.2, Math.sin(a) * 2.4, 0.16, '#5a6070', a); } }
-      const bart = b.art ? img(b.art) : null;
-      if (bart) { const w = d.u * 4.6, h = (w * bart.naturalHeight) / bart.naturalWidth, [cx0, cy0] = d.P(0, 0, 0); drawArt(g, bart, null, cx0 - w / 2, cy0 - h / 2, w, h, team, b.art); }
+
       // 側面（手前3面）と上面
       const top = hexPts(d, 1.8, 0.0), bot = hexPts(d, 1.95, -0.42);
       if (!bart) {
@@ -208,6 +215,7 @@
       if (b.snow) for (let k = 0; k < 7; k++) { const a = k * 0.9, [px, py] = d.P(Math.cos(a) * 1.35, 0.12, Math.sin(a) * 1.35); g.beginPath(); g.ellipse(px, py, 0.3 * d.u, 0.12 * d.u, 0, Math.PI, 0); g.fillStyle = '#ffffff'; g.fill(); }
       if (b.garden) { const [px, py] = d.P(1.0, 0.13, 0.65); g.beginPath(); g.ellipse(px, py, 0.5 * d.u, 0.25 * d.u, 0, 0, Math.PI * 2); g.fillStyle = '#3a6ea8'; g.fill(); }
     }
+    if (b.art && img(b.art)) return; // 本物の絵がある台座は、柱や縁もその絵に任せる
     // 角の柱（奥側は front=false、手前側は front=true で描く）
     for (let k = 0; k < 6; k++) {
       const a = (k / 6) * Math.PI * 2 + Math.PI / 6, x = Math.cos(a) * 1.72, z = Math.sin(a) * 1.72, isFront = x + z > 0;
