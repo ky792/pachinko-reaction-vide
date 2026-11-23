@@ -1,0 +1,8 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm": "bright_pop.wav",
+ "bgm_gain": 0.14,
+ "gap": 0.22,
+ "_note": "ニュース解説 第6回：警察庁の風営法施行令の改正案（2026年11月6日に意見募集開始）。遊技機の認定と入替の承認の手数料の引き下げ、その理由の実地調査の一部省略。ネタ帳 docs/research/weekly/2026-11-23.md、提案 docs/proposals/news06_script.md。声は garo_history と同じ設定。画像は使わない（図解カードと演出のみ）"
+}

@@ -1,0 +1,39 @@
+{
+ "aivis": {
+  "uuid": "a59cb814-0083-4369-8542-f51a29e72af7",
+  "name": "まお",
+  "styles": [
+   "からかい",
+   "ノーマル"
+  ],
+  "lines": [
+   "いやいや、ちょっと待ってや。それ絶対おかしいって！",
+   "出たー！これは激アツやで！",
+   "まあ、ええんちゃう？知らんけど。",
+   "なんでやねん、そんなん聞いてへんわ！",
+   "ほんまに？ほな、もう一回だけ回してみよか。"
+  ]
+ },
+ "sources": [
+  "voice_ab/vc_in/zephyr.m4a",
+  "voice_ab/vc_in/despina_lite.m4a",
+  "voice_ab/vc_in/kore_lite.m4a"
+ ],
+ "steps": 30,
+ "modes": [
+  {
+   "name": "speech"
+  },
+  {
+   "name": "f0auto",
+   "f0": true,
+   "auto": true
+  },
+  {
+   "name": "f0up7",
+   "f0": true,
+   "shift": 7
+  }
+ ],
+ "_try": 2
+}

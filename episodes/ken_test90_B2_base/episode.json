@@ -1,0 +1,6 @@
+{
+ "data": "../ken_full/data.json",
+ "data_patch": "data_patch.json",
+ "bgm_gain": 0.14,
+ "_note": "90秒品質検証。A＝元台本（本編 02_65 の北斗無双パート）、B＝改善版。ken_full の data.json は変更しない"
+}

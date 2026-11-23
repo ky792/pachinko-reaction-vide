@@ -1,0 +1,15 @@
+[
+ {
+  "id": "04_kawaru-015",
+  "who": "baku",
+  "kind": "辞書と違う",
+  "where": "台",
+  "expect": "ダイ",
+  "reason": "辞書の読み「ダイ」と違う（この行での OpenJTalk の読み：タイ）。バク（Irodori）は OpenJTalk を使わないので目安（文字起こしで確かめる）",
+  "level": "低",
+  "text": "ほな、手数料より、台の値段下げてって書いとくわ。",
+  "speech": "ほな、テスウリョウより、台の値段下げてって書いとくわ。",
+  "kana": "ホナ、テスーリョーヨリ、タイノネダンサゲテッテカイトクワ。",
+  "audio": "episodes/news06/voices/04_kawaru-015.wav"
+ }
+]

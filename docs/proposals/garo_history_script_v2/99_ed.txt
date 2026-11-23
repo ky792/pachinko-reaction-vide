@@ -1,0 +1,17 @@
+# ED：寸劇の形でしめる → ED曲＋ロゴ
+@chapter ed
+@bgm track bright_pop.wav
+@skit on
+@dir act=jump
+バク: 今日は、牙狼の18年ぜんぶ見たな！
+ナギ: 魔戒チャンスから、LTまで。
+@dir act=lean
+バク: 次に牙狼打つときは、剣の手応え、ちゃんと味わうで！
+ナギ: よかったら、高評価とチャンネル登録、お願いします。
+@dir act=hop
+バク: コメントで、みんなの思い出の牙狼も教えてや！
+@dir act=none
+ナギ: また次回。おやすみ。
+@skit off
+@song ending.wav gain=0.55 len=6
+@logo history.png 5.5

@@ -1,0 +1,422 @@
+{
+ "01_hairi-001": {
+  "sha1": "322118e1b12d51b8a5f0d091043c3e14dd26cd23",
+  "model": "large-v3-turbo",
+  "text": "視聴者のみなさん、こんばんは"
+ },
+ "01_hairi-002": {
+  "sha1": "7145acd2397a572beda82c4ea31be86a033e81aa",
+  "model": "large-v3-turbo",
+  "text": "パチンコの台にレベル1からレベル4までランクがつくことになったで"
+ },
+ "01_hairi-003": {
+  "sha1": "395e621cc824a8a4441868e9508c68b4a29b89f0",
+  "model": "large-v3-turbo",
+  "text": "2026年9月8日にメーカーの団体の日光組が発表した。"
+ },
+ "01_hairi-004": {
+  "sha1": "4851a44101902b57f3a062c7739ebd0745114e53",
+  "model": "large-v3-turbo",
+  "text": "2026年11月に出る台から順番に表示が始まる"
+ },
+ "01_hairi-005": {
+  "sha1": "f59b562e380c97b283ff60b1e0a88a5a94e27c09",
+  "model": "large-v3-turbo",
+  "text": "しかも通常時フラグ言う新しい仕組みも一緒に来るらしいで"
+ },
+ "01_hairi-006": {
+  "sha1": "62811870c4e2b72a6e856c22a25911eac7bd7ac1",
+  "model": "large-v3-turbo",
+  "text": "陣内の紹介はもう出回ってるからこの回は仕組みの側から見る"
+ },
+ "01_hairi-007": {
+  "sha1": "327d8e0151cdc77b559e61030b713436bd9cc5f3",
+  "model": "large-v3-turbo",
+  "text": "問いは2つ。なんでわざわざレベル分けするんか。"
+ },
+ "01_hairi-008": {
+  "sha1": "113115dc44d1e499c3caf116181c5cfe51e3dfe5",
+  "model": "large-v3-turbo",
+  "text": "ほんで、撃つ側は何が変わるんか"
+ },
+ "01_hairi-009": {
+  "sha1": "a47d3ed4d4880d91765e39f3ad9413fed07baccd",
+  "model": "large-v3-turbo",
+  "text": "発表の中身と業界紙の記事を元に整理していく"
+ },
+ "02_kimatta-001": {
+  "sha1": "8f10171c4efed52fa626809764b215844d3fdc5e",
+  "model": "large-v3-turbo",
+  "text": "発表したのは、日光組とタチスロの団体の日電卿、行動の記者会見。"
+ },
+ "02_kimatta-002": {
+  "sha1": "8b7024b28fa7c86a75f866c6157a971ccd1914cb",
+  "model": "large-v3-turbo",
+  "text": "メーカーが揃って会見って結構本気やん!"
+ },
+ "02_kimatta-003": {
+  "sha1": "d78a41f8fd9dcc890a8518be3c1662418bbd8f3e",
+  "model": "large-v3-turbo",
+  "text": "中身は2つ。4つのカテゴリと通常字フラグ。"
+ },
+ "02_kimatta-004": {
+  "sha1": "96d61bdb6ba7a78ccb30c848cba1e5de0675efa7",
+  "model": "large-v3-turbo",
+  "text": "レベル1がスーパーライト、レベル2がライト"
+ },
+ "02_kimatta-005": {
+  "sha1": "899add7daaffe7eb2afbdce25cdacbda379c66d0",
+  "model": "large-v3-turbo",
+  "text": "レベル3はミドルで、レベル4はハイ。"
+ },
+ "02_kimatta-006": {
+  "sha1": "0d248c255eee1d6114f3aafe356311c14a45696c",
+  "model": "large-v3-turbo",
+  "text": "アマデジ、ライトミドル、ミドル、ハイスペックみたいなもんか!"
+ },
+ "02_kimatta-007": {
+  "sha1": "2814ba917b6ad8abbaeacc1dded9dc2927dc5f7f",
+  "model": "large-v3-turbo",
+  "text": "近いけど確率だけでは決めない手玉とLTの有無も見て日光組が判定する"
+ },
+ "02_kimatta-008": {
+  "sha1": "2cc2da6d07b4ca44926b93573efbe206ff1ae499",
+  "model": "large-v3-turbo",
+  "text": "で1000匹の数字は出てるん?"
+ },
+ "02_kimatta-009": {
+  "sha1": "b92b39a54a92c786d2ad89a5a892b3c1892d9076",
+  "model": "large-v3-turbo",
+  "text": "具体的な基準の数字は公表されてない"
+ },
+ "02_kimatta-010": {
+  "sha1": "559604b14e9d17eb00f23599e9fcf9502b605190",
+  "model": "large-v3-turbo",
+  "text": "そこが一番知りたいとこやん"
+ },
+ "02_kimatta-011": {
+  "sha1": "125cff336ea1150bd056f98211644eef6ed8f5dc",
+  "model": "large-v3-turbo",
+  "text": "例だとエヴァのアスエの方向はレベル3LT付きのリートーキョーゴールはレベル4って紹介されてる"
+ },
+ "02_kimatta-012": {
+  "sha1": "26f4d0bacae64236dcf543d83364973e1edffac4",
+  "model": "large-v3-turbo",
+  "text": "グールがハイナンは撃った人みんな納得するわ"
+ },
+ "02_kimatta-013": {
+  "sha1": "9f6690cacf18f971ebb8bdb5a52c6298840ef192",
+  "model": "large-v3-turbo",
+  "text": "表示は星の数と色のロゴ、説明書の表紙や店のポスターに載る。"
+ },
+ "02_kimatta-014": {
+  "sha1": "24e204180007ba4bcd4daec25ed6c65f6c80c04b",
+  "model": "large-v3-turbo",
+  "text": "2027年2月以降に出る台は、表示が求められるって報じられてる。"
+ },
+ "02_kimatta-015": {
+  "sha1": "d9e278ca6136944e9d03e749cb59bf91541f614f",
+  "model": "large-v3-turbo",
+  "text": "ほな、昔の代はどうなるん?島の代、ほとんど昔の代やで!"
+ },
+ "02_kimatta-016": {
+  "sha1": "43dbde15514094986c9b7d3d12cba84e2262bd19",
+  "model": "large-v3-turbo",
+  "text": "過去の機種は日光組のサイトで区分を調べられるようにするって"
+ },
+ "02_kimatta-017": {
+  "sha1": "52ff08c74cd9aeebd4eb02bd64aea3d99d886cfd",
+  "model": "large-v3-turbo",
+  "text": "座る前にスマホで調べ、言うことか"
+ },
+ "03_naze-001": {
+  "sha1": "1ce585b4fd0384bed55d0bcad9e6eecc899f3e23",
+  "model": "large-v3-turbo",
+  "text": "理由として挙げられているのは3つ"
+ },
+ "03_naze-002": {
+  "sha1": "ff83964dc6195db685be411e09e4778965144038",
+  "model": "large-v3-turbo",
+  "text": "一つ目は、予算や時間に合わせて代を選びやすくするため。"
+ },
+ "03_naze-003": {
+  "sha1": "041f78e01909a662ae9a0f7e53706e3b029fd40e",
+  "model": "large-v3-turbo",
+  "text": "二つ目は依存の対策。性能を見えるようにしてのめり込みを防ぐ。"
+ },
+ "03_naze-004": {
+  "sha1": "69a1bd9187448168c265258b9fbc758c8aface6b",
+  "model": "large-v3-turbo",
+  "text": "3つ目が一番ホールっぽい話5人の対策"
+ },
+ "03_naze-005": {
+  "sha1": "5a8d7563cde6a11e6046d8b6cc9f8b757364a9a7",
+  "model": "large-v3-turbo",
+  "text": "5人って何を間違えるん?"
+ },
+ "03_naze-006": {
+  "sha1": "1392d3296800f2d01401f8aec581ff0114b57c46",
+  "model": "large-v3-turbo",
+  "text": "当たりは軽そうに見えるのに、手玉は取りにくい台がある。"
+ },
+ "03_naze-007": {
+  "sha1": "7764d97de11e5c3eb5d965481243aa65a583631b",
+  "model": "large-v3-turbo",
+  "text": "あるある軽いからって座ったらラッシュ入らんで単発ばっかりや"
+ },
+ "03_naze-008": {
+  "sha1": "8e0cb88b7bf67763ad2f43b5e8751388f83e8bee",
+  "model": "large-v3-turbo",
+  "text": "教会誌によるとアソパチの島に性能の違う台が勝ってるのが問題らしい"
+ },
+ "03_naze-009": {
+  "sha1": "bb787b555233fa0f80690a37bbe1b20ee527ac05",
+  "model": "large-v3-turbo",
+  "text": "アソパチの島やのに財布は全然遊ばせてくれへんやつな"
+ },
+ "03_naze-010": {
+  "sha1": "ac890b45c5d620a268e7e9a17cf4ab164e955d12",
+  "model": "large-v3-turbo",
+  "text": "背景にはコールの減り方もある"
+ },
+ "03_naze-011": {
+  "sha1": "a6d53f90e0a90afeab2ad2956d7456806660d68e",
+  "model": "large-v3-turbo",
+  "text": "ホールを経営する会社は、2016年の2492社から、2025年は1130社。"
+ },
+ "03_naze-012": {
+  "sha1": "aab82047e2cbda126423950235911843e0019572",
+  "model": "large-v3-turbo",
+  "text": "10年で半分以下って近所の店も消えるわけや"
+ },
+ "03_naze-013": {
+  "sha1": "3c393d65526df5611f3e09c99da2aeefa12e7d6d",
+  "model": "large-v3-turbo",
+  "text": "計算すると約55%減った帝国データバンクの調べって教会誌に載ってた"
+ },
+ "03_naze-014": {
+  "sha1": "404eb53d7b4c9f38adb5d75f396b2d85a16dc5ed",
+  "model": "large-v3-turbo",
+  "text": "けど売り上げはどうなん?"
+ },
+ "03_naze-015": {
+  "sha1": "82d544db6d575955ad5a2ab51a997be113920298",
+  "model": "large-v3-turbo",
+  "text": "総売上高は2025年で12兆433億円前の年より2.8%増えてる"
+ },
+ "03_naze-016": {
+  "sha1": "862e18733a7b65624f80335781bc63b7300bb9db",
+  "model": "large-v3-turbo",
+  "text": "会社は減ってんのに売り上げは増えてるんかい"
+ },
+ "03_naze-017": {
+  "sha1": "8f17b5b4bf313638bd1dff8a7f079d01cfd44995",
+  "model": "large-v3-turbo",
+  "text": "残った大きい会社にお客が集まってるんだろうね"
+ },
+ "03_naze-018": {
+  "sha1": "48fe572c37aa3c079cd704537e416982bb902b9e",
+  "model": "large-v3-turbo",
+  "text": "メーカ側はハイスペック機に偏りがちな流れを変えたいって説明してる"
+ },
+ "03_naze-019": {
+  "sha1": "8a21c3689b19ab5e3d09f94a05fdaa778570d750",
+  "model": "large-v3-turbo",
+  "text": "確かに寝台の島レベル4っぽいのばっかり並んでる気するわ"
+ },
+ "03_naze-020": {
+  "sha1": "780a23766a070d0a9ecc30a17e03876e5ef32b19",
+  "model": "large-v3-turbo",
+  "text": "日光組の理事長は優しくて楽しいパチンコを復活させたいと話してる"
+ },
+ "03_naze-021": {
+  "sha1": "ce35919bb2f31327258a076311a66a77b6e9b85a",
+  "model": "large-v3-turbo",
+  "text": "優しいパチンコほんまに来たらなくで"
+ },
+ "04_kawaru-001": {
+  "sha1": "1cccbc8f084c439b5b5889cf761de42905ee3cc7",
+  "model": "large-v3-turbo",
+  "text": "もう一つの数乗字フラグ。こっちは台の中身が変わる話。"
+ },
+ "04_kawaru-002": {
+  "sha1": "93080770266f74a74fd9c4abd5e40edca0bc37e1",
+  "model": "large-v3-turbo",
+  "text": "今までのパチンコは通常時はずっと同じ確率で抽選してた"
+ },
+ "04_kawaru-003": {
+  "sha1": "7692cbedbd1d7e04553b16bdbc88be1bcc706feb",
+  "model": "large-v3-turbo",
+  "text": "1回転ごとに毎回同じ抽選ってやつやな"
+ },
+ "04_kawaru-004": {
+  "sha1": "92f383761d8e6b94a0c57a1230afff599aa625a3",
+  "model": "large-v3-turbo",
+  "text": "通常字フラグは通常字の中にいくつかの状態を作れる仕組み"
+ },
+ "04_kawaru-005": {
+  "sha1": "c8f3917b37a9119f42ddae474fd12b67417eb649",
+  "model": "large-v3-turbo",
+  "text": "決まった回転数、チャンス目、ラッシュの終わり、そういうきっかけで状態が移る。"
+ },
+ "04_kawaru-006": {
+  "sha1": "b3b236fd2fdadb3e5c86fff6bdf084d273573ddf",
+  "model": "large-v3-turbo",
+  "text": "それスロットの広角とかゾーンみたいなもんやん"
+ },
+ "04_kawaru-007": {
+  "sha1": "ef26d489a2139919f79095e2cf617b40fca7085c",
+  "model": "large-v3-turbo",
+  "text": "近い。映った先で時短はつくかどうかもフラグで変えられる。"
+ },
+ "04_kawaru-008": {
+  "sha1": "b545605258ee23f5de2f40b21c81379b7f589ded",
+  "model": "large-v3-turbo",
+  "text": "単発で終わってもまだ次がある台が作れるってことか"
+ },
+ "04_kawaru-009": {
+  "sha1": "dd99f4def1720d06c31e6bffe7ed94fa922283e3",
+  "model": "large-v3-turbo",
+  "text": "発表では今までがっかりだった展開をチャンスに変える例が出てた。"
+ },
+ "04_kawaru-010": {
+  "sha1": "f99b7397d37ea90f689be948d81b6ff25d74e153",
+  "model": "large-v3-turbo",
+  "text": "ええ、話やん。何が問題なん?"
+ },
+ "04_kawaru-011": {
+  "sha1": "3a48fe376fd83b6084431dd156f8610dde7eb6ae",
+  "model": "large-v3-turbo",
+  "text": "教会の記事には心配する声もまとめられてる"
+ },
+ "04_kawaru-012": {
+  "sha1": "e5108ea1a01d33e2986048c98f3509dde96946b6",
+  "model": "large-v3-turbo",
+  "text": "一つは、古竜4つ消化したらやめられるっていうわかりやすさがなくなること。"
+ },
+ "04_kawaru-013": {
+  "sha1": "6ee73de03bef1ec4f0c4740a61e196fc5e452a00",
+  "model": "large-v3-turbo",
+  "text": "うわ、それ大きいわ辞めた代を次の人が当てるの一番腹立つやつやん"
+ },
+ "04_kawaru-014": {
+  "sha1": "c820d5d0a5d2d65b01fe2e6fba54766dc87148a7",
+  "model": "large-v3-turbo",
+  "text": "有利な状態まで何回転か押してる人の方が立ち回りやすくなる"
+ },
+ "04_kawaru-015": {
+  "sha1": "b48e0144166050a01af05f3d3bf65940c0b416d3",
+  "model": "large-v3-turbo",
+  "text": "知らん人が損する代やったらそれは優しくないで"
+ },
+ "04_kawaru-016": {
+  "sha1": "98f884ed5de23d708f56223310ea54c897e39953",
+  "model": "large-v3-turbo",
+  "text": "もう一つは、国や設定、仕組みが新しくても、そこは店の運用次第って指摘もある。"
+ },
+ "04_kawaru-017": {
+  "sha1": "6e6e8bbc39d2e9fa8115068be5c391902b1bf530",
+  "model": "large-v3-turbo",
+  "text": "結局そこやねん釘締めたらどんなフラグも遠いわ"
+ },
+ "04_kawaru-018": {
+  "sha1": "a4da9a6a477b76d16cc14835c1e2ec4329683875",
+  "model": "large-v3-turbo",
+  "text": "一方でメーカーの狙いは通常時に楽しみを作ってナイトな客を増やすこと。"
+ },
+ "04_kawaru-019": {
+  "sha1": "353b45b37a835def1b364a2eff478da025dfc6ec",
+  "model": "large-v3-turbo",
+  "text": "当たるまでの虚無の時間がちょっとでも減るなら歓迎やけどな"
+ },
+ "04_kawaru-020": {
+  "sha1": "08a9b7d88f5de83dafed2133270586cb9608bf68",
+  "model": "large-v3-turbo",
+  "text": "通常時フラグの最初の代は2026年12月に出るって報じられてる"
+ },
+ "04_kawaru-021": {
+  "sha1": "8299fe05ad614489a9dfd79b9233b985bf089248",
+  "model": "large-v3-turbo",
+  "text": "で、2027年2月は遊びやすいパッチンコパチスロも投入強化芸感。"
+ },
+ "04_kawaru-022": {
+  "sha1": "ead3131e07dd47726b486ebbf90c78cc97008903",
+  "model": "large-v3-turbo",
+  "text": "パチンコはレベル1とレベル2を優先して売るって"
+ },
+ "04_kawaru-023": {
+  "sha1": "526d36d50cb33b2802abb3e7d0e376ad356fc8b6",
+  "model": "large-v3-turbo",
+  "text": "ほな、2027年2月は店にライトな台が増えるかもしれんな。"
+ },
+ "04_kawaru-024": {
+  "sha1": "f14a5b5a0bae5422d9ea765e393db85473a07957",
+  "model": "large-v3-turbo",
+  "text": "買うかどうかは店が決めるそこは見てみないとわからない"
+ },
+ "04_kawaru-025": {
+  "sha1": "058dd7896581e17691a12d4d21c7ee4aa71a50eb",
+  "model": "large-v3-turbo",
+  "text": "研究所らしいずるい言い方や"
+ },
+ "05_matome-001": {
+  "sha1": "87f23b72995fa7e51961b3bd517b5a783a02bab1",
+  "model": "large-v3-turbo",
+  "text": "まとめ。新しい台にはレベル1からレベル4の表示がついていく。"
+ },
+ "05_matome-002": {
+  "sha1": "e9b932efe06bcfa8b9127ffc770dc2e621a837c5",
+  "model": "large-v3-turbo",
+  "text": "理由は、選びやすさ、依存の対策、個人の対策の3つ。"
+ },
+ "05_matome-003": {
+  "sha1": "782db5a9d2f24cf07986133040d846aec2acea6f",
+  "model": "large-v3-turbo",
+  "text": "通常時フラグで通常時にも状態の移り変わりが作れるようになる"
+ },
+ "05_matome-004": {
+  "sha1": "2f4f3c448cdb179f6688e7a5f5558dbe4fa59fa4",
+  "model": "large-v3-turbo",
+  "text": "1つ目の答え軽そうで出えへん大の表たんと違うを減らすため"
+ },
+ "05_matome-005": {
+  "sha1": "299f5287f387f0af81470b4bfdd4a36f7cd2d74e",
+  "model": "large-v3-turbo",
+  "text": "2つ目の答え大選びの目印は増えるけどやめ時は読みにくくなるかもな"
+ },
+ "05_matome-006": {
+  "sha1": "ced227396382d66cd8db0c1c472e2e276e781871",
+  "model": "large-v3-turbo",
+  "text": "ただ腰の数を見ても釘は見えない"
+ },
+ "05_matome-007": {
+  "sha1": "f714bbc899adedcdef0ad702253bdfed7cc78599",
+  "model": "large-v3-turbo",
+  "text": "最後に夢のない話すな!"
+ },
+ "99_ed-001": {
+  "sha1": "71794f77cdf8511ed6890d576f096e415b0164fc",
+  "model": "large-v3-turbo",
+  "text": "ここまで見てくれてありがとう"
+ },
+ "99_ed-002": {
+  "sha1": "70a322f73cb497417eeec4f532c8cb2764aa3090",
+  "model": "large-v3-turbo",
+  "text": "レベル表示、台選びに使う?コメントで教えてや!"
+ },
+ "99_ed-003": {
+  "sha1": "7502596d6b53a35276d91a32b90c368bc0c8b6a2",
+  "model": "large-v3-turbo",
+  "text": "よかったら高評価とチャンネル登録お願いします"
+ },
+ "99_ed-004": {
+  "sha1": "22c599fd995cf5f669995ef88f514af3616bbabb",
+  "model": "large-v3-turbo",
+  "text": "ほな、またな。"
+ },
+ "99_ed-005": {
+  "sha1": "680150056d8c561f3150e1d5d272339ed665acd2",
+  "model": "large-v3-turbo",
+  "text": "また次回おやすみ"
+ }
+}
