@@ -111,9 +111,9 @@
     root.innerHTML = view(); attach3d(); window.scrollTo(0, y);
   }
   function attach3d() {
-    const host = root.querySelector('.mb-3d'); if (!host || !window.Terrain3D) { if (host) host.hidden = true; return; }
-    const look = lookOf(P(), st.preview), colors = { me: ctx.type.color, op: ctx.type.color }, key = window.Terrain3D.keyOf(KN.SUBJECTS, colors, look);
-    if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain3D.create(KN.SUBJECTS, colors, look); }
+    const host = root.querySelector('.mb-3d'); if (!host || !window.Terrain) { if (host) host.hidden = true; return; }
+    const look = lookOf(P(), st.preview), colors = { me: ctx.type.color, op: ctx.type.color }, key = window.Terrain.keyOf(KN.SUBJECTS, colors, look);
+    if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain.create(KN.SUBJECTS, colors, look); }
     if (!t3) { host.hidden = true; return; }
     host.appendChild(t3.canvas); t3.resize();
     t3.setState(KN.SUBJECTS.map(() => 'own'), null);

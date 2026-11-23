@@ -328,8 +328,8 @@
   function attach3d() {
     const host = root.querySelector('.a-3d'); if (!host || !b.op) return;
     const colors = { me: ctx.type.color, op: b.oc }, look = Object.assign({ flag: b.op.name }, b.op.look || {});
-    const key = window.Terrain3D ? window.Terrain3D.keyOf(b.op.order, colors, look) : '';
-    if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain3D ? window.Terrain3D.create(b.op.order, colors, look) : null; }
+    const key = window.Terrain ? window.Terrain.keyOf(b.op.order, colors, look) : '';
+    if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain ? window.Terrain.create(b.op.order, colors, look) : null; }
     if (!t3) { host.hidden = true; return; }
     host.appendChild(t3.canvas); t3.resize();
     const upto = b.phase === 'battle' ? (b.areaDone ? b.ai + 1 : b.ai) : b.phase === 'plan' ? -1 : 5;

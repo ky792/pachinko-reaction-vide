@@ -113,6 +113,15 @@
   const SETS = { 和の陣: '日本の美をまとった陣地', サイバー: '光と回路の近未来陣地', 星空: '夜空を映す天体の陣地', 学び舎: '本と黒板に囲まれた学びの陣地' };
   const sets = Object.entries(SETS).map(([name, desc]) => ({ name, desc, items: items.filter((i) => i.set === name).map((i) => i.id), off: 0.2 }));
 
+  /* 本番の絵：data/art-manifest.js に登録された ID だけ画像を読む（未登録はコードで描く仮の絵）。ART_SPEC.md 参照 */
+  const ART = window.ART_MANIFEST || {};
+  const DIR = { skin: 'skins', base: 'bases', garden: 'garden' };
+  items.forEach((it) => {
+    if (!(ART[it.kind] || []).includes(it.id)) return;
+    it.art = `assets/territory/${DIR[it.kind]}/${it.id}.png`;
+    if ((ART.team || []).includes(it.id)) it.artTeam = `assets/territory/${DIR[it.kind]}/${it.id}_team.png`;
+  });
+
   window.COSMETICS = {
     items, sets,
     kinds: [['skin', '建物'], ['material', '素材'], ['base', '台座'], ['garden', '庭'], ['fx', 'エフェクト'], ['orbit', '周回'], ['flag', '旗'], ['set', 'シリーズ']],
