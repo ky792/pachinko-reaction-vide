@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>問題レビュー</title>
+<style>
+  :root { --bg:#0d1220; --panel:#151c2e; --line:#26304a; --text:#e6ebf5; --mute:#8a96b2; --ok:#3ecf8e; --warn:#f2b84b; --ng:#ff6b6b; --acc:#5aa9ff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:15px/1.6 system-ui, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  header { position:sticky; top:0; z-index:2; background:#0d1220ee; backdrop-filter:blur(6px); border-bottom:1px solid var(--line); padding:10px 16px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+  header h1 { font-size:16px; margin:0 8px 0 0; }
+  select, button, input[type=file] { font:inherit; color:var(--text); background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:6px 10px; }
+  button { cursor:pointer; }
+  button.primary { background:var(--acc); color:#04101f; border-color:var(--acc); font-weight:700; }
+  .count { color:var(--mute); font-size:13px; }
+  main { max-width:820px; margin:0 auto; padding:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--line); border-radius:12px; padding:14px 16px; margin-bottom:14px; }
+  .card.pass { border-left-color:var(--ok); } .card.flag { border-left-color:var(--warn); } .card.fail { border-left-color:var(--ng); }
+  .card.d-ok { opacity:.75; outline:2px solid var(--ok); } .card.d-ng { opacity:.45; }
+  .meta { display:flex; flex-wrap:wrap; gap:6px; font-size:12px; color:var(--mute); margin-bottom:6px; }
+  .chip { border:1px solid var(--line); border-radius:99px; padding:0 8px; }
+  .chip.pass { color:var(--ok); } .chip.flag { color:var(--warn); } .chip.fail { color:var(--ng); }
+  [contenteditable] { outline:none; border-radius:6px; padding:2px 4px; margin:0 -4px; }
+  [contenteditable]:focus { background:#0d1220; box-shadow:0 0 0 1px var(--acc); }
+  .q { font-size:16px; white-space:pre-wrap; margin:4px 0 10px; }
+  ol { margin:0 0 10px; padding-left:0; list-style:none; display:grid; gap:4px; }
+  ol li { display:flex; gap:8px; }
+  ol li b { width:1.6em; flex:none; text-align:center; border-radius:6px; }
+  ol li.correct b { background:var(--ok); color:#04101f; }
+  .explain { color:var(--mute); font-size:14px; }
+  .reasons { margin:8px 0 0; font-size:13px; color:var(--warn); }
+  .reasons.fail { color:var(--ng); }
+  .actions { display:flex; gap:8px; margin-top:10px; }
+  .actions button[aria-pressed=true].ok { background:var(--ok); color:#04101f; }
+  .actions button[aria-pressed=true].ng { background:var(--ng); color:#04101f; }
+  .empty { text-align:center; color:var(--mute); padding:60px 0; }
+  @media (max-width:520px) { header { padding:8px 16px; } main { padding:12px 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>問題レビュー</h1>
+  <input type="file" id="file" accept=".json">
+  <select id="fStatus"><option value="">検算：すべて</option><option value="pass">pass</option><option value="flag">flag</option><option value="fail">fail</option></select>
+  <select id="fDecision"><option value="todo">未判定</option><option value="">判定：すべて</option><option value="ok">採用</option><option value="ng">却下</option></select>
+  <select id="fUnit"><option value="">単元：すべて</option></select>
+  <button id="okAllPass">表示中の pass を採用</button>
+  <button class="primary" id="export">approved.json を書き出す</button>
+  <span class="count" id="count"></span>
+</header>
+<main id="list"><p class="empty">qgen.py verify が作った tools/qgen/work/verified.json を読み込んでください。<br>本文はクリックして直接直せます（正答は緑の行）。</p></main>
+<script>
+(() => {
+  const KEY = 'qgen-review:v1';
+  let items = [], state = {};
+  const load = () => { try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch { state = {}; } };
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const $ = (id) => document.getElementById(id);
+  load();
+
+  const cur = (it) => ({ ...it, ...(state[it.id]?.edit || {}) });
+  function visible() {
+    const s = $('fStatus').value, d = $('fDecision').value, u = $('fUnit').value;
+    return items.filter((it) => (!s || it.status === s) && (!u || `${it.subject}/${it.unit}` === u)
+      && (d === '' || (d === 'todo' ? !state[it.id]?.d : state[it.id]?.d === d)));
+  }
+  function render() {
+    const v = visible();
+    const ok = items.filter((it) => state[it.id]?.d === 'ok').length, ng = items.filter((it) => state[it.id]?.d === 'ng').length;
+    $('count').textContent = `表示 ${v.length} ／ 全 ${items.length}（採用 ${ok}・却下 ${ng}）`;
+    if (!items.length) return;
+    $('list').innerHTML = v.length ? v.map((raw) => {
+      const it = cur(raw), d = state[it.id]?.d || '';
+      const ch = [it.correct, ...it.wrong];
+      return `<article class="card ${it.status} ${d ? 'd-' + d : ''}" data-id="${esc(it.id)}">
+        <div class="meta"><span class="chip ${it.status}">${it.status}</span><span class="chip">${esc(it.subject)}／${esc(it.unit)}</span><span class="chip">難度${it.difficulty}</span><span class="chip">${esc(it.id)}</span>${it.check ? `<span class="chip">検算 ${esc(it.check.answer)}・確信${esc(it.check.confidence)}</span>` : ''}</div>
+        <div class="q" contenteditable data-f="q">${esc(it.q)}</div>
+        <ol>${ch.map((c, i) => `<li class="${i ? '' : 'correct'}"><b>${i ? '×' : '○'}</b><span contenteditable data-f="c${i}">${esc(c)}</span></li>`).join('')}</ol>
+        <div class="explain" contenteditable data-f="explain">${esc(it.explain)}</div>
+        ${it.reasons?.length ? `<p class="reasons ${it.status}">${it.reasons.map(esc).join(' ／ ')}${it.check?.note ? `<br>検算メモ：${esc(it.check.note)}` : ''}</p>` : it.check?.note ? `<p class="reasons">検算メモ：${esc(it.check.note)}</p>` : ''}
+        <div class="actions"><button class="ok" data-d="ok" aria-pressed="${d === 'ok'}">採用</button><button class="ng" data-d="ng" aria-pressed="${d === 'ng'}">却下</button></div>
+      </article>`;
+    }).join('') : '<p class="empty">この条件の問題はありません。</p>';
+  }
+
+  $('file').addEventListener('change', async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    items = JSON.parse(await f.text());
+    const units = [...new Set(items.map((it) => `${it.subject}/${it.unit}`))].sort();
+    $('fUnit').innerHTML = '<option value="">単元：すべて</option>' + units.map((u) => `<option>${esc(u)}</option>`).join('');
+    render();
+  });
+  ['fStatus', 'fDecision', 'fUnit'].forEach((id) => $(id).addEventListener('change', render));
+
+  $('list').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-d]'); if (!b) return;
+    const id = b.closest('.card').dataset.id, s = (state[id] ||= {});
+    s.d = s.d === b.dataset.d ? '' : b.dataset.d;
+    save(); render();
+  });
+  $('list').addEventListener('focusout', (e) => {
+    const el = e.target.closest('[data-f]'); if (!el) return;
+    const card = el.closest('.card'), id = card.dataset.id, raw = items.find((x) => x.id === id), s = (state[id] ||= {});
+    const it = cur(raw), f = el.dataset.f, val = el.textContent.trim();
+    const edit = (s.edit ||= {});
+    if (f === 'q' || f === 'explain') edit[f] = val;
+    else { const i = +f.slice(1); if (i === 0) edit.correct = val; else { const w = [...it.wrong]; w[i - 1] = val; edit.wrong = w; } }
+    save();
+  });
+  $('okAllPass').addEventListener('click', () => {
+    visible().filter((it) => it.status === 'pass' && !state[it.id]?.d).forEach((it) => { (state[it.id] ||= {}).d = 'ok'; });
+    save(); render();
+  });
+  $('export').addEventListener('click', () => {
+    const out = items.filter((it) => state[it.id]?.d === 'ok').map((raw) => {
+      const it = cur(raw);
+      return { id: it.id, subject: it.subject, unit: it.unit, difficulty: it.difficulty, q: it.q, correct: it.correct, wrong: it.wrong, explain: it.explain };
+    });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], { type: 'application/json' }));
+    a.download = 'approved.json'; a.click();
+  });
+})();
+</script>
+</body>
+</html>
