@@ -13,7 +13,7 @@
   /* ================= ルール（純関数） ================= */
   const SUBJECTS = KN.SUBJECTS;
   const AXL = { speed: '速さ', acc: '正確さ', app: '応用' };
-  const RULE = { focus: 1.10, variance: 0.36, push: 1.6, toWin: 3, duelQ: 5, duelSec: 30 };
+  const RULE = { gate: 1.12, momentum: 1.06, focus: 1.10, variance: 0.36, push: 1.6, toWin: 3, duelQ: 5, duelSec: 30 };
 
   const power = (st) => st.speed + st.acc + st.app;
   const totalPower = (S) => SUBJECTS.reduce((s, k) => s + power(S[k]), 0);
@@ -21,11 +21,16 @@
   const strongest = (S) => pick(S, (x, y) => x > y);
   const weakest = (S) => pick(S, (x, y) => x < y);
 
-  function resolveArea(me, op, subject, idx, r, now) {
+  /* mom: 直前の陣地を取った側（1＝攻め側、-1＝守り側、0＝なし） */
+  function resolveArea(me, op, subject, idx, r, now, mom = 0) {
     const units = KN.units()[subject] || [];
     const u1 = KN.weightedUnit(subject, r);
     const u2 = units.length > 1 ? KN.weightedUnit(subject, r, u1) : u1;
-    const fm = me.focus === subject ? RULE.focus : 1, fo = op.focus === subject ? RULE.focus : 1;
+    let fm = me.focus === subject ? RULE.focus : 1, fo = op.focus === subject ? RULE.focus : 1;
+    const notesMe = me.focus === subject ? ['主戦場 +10%'] : [], notesOp = op.focus === subject ? ['主戦場 +10%'] : [];
+    if (idx === 0) { fo *= RULE.gate; notesOp.push('城門 +12%'); }
+    if (mom > 0) { fm *= RULE.momentum; notesMe.push('勢い +6%'); }
+    if (mom < 0) { fo *= RULE.momentum; notesOp.push('勢い +6%'); }
     const vr = () => 1 + (r() - 0.5) * RULE.variance;
     const raw = [
       { axis: 'acc', unit: u1, a: KN.unitValue(me.K, subject, u1, 'acc', now), b: KN.unitValue(op.K, subject, u1, 'acc', now) },
@@ -38,16 +43,15 @@
       gauge = Math.max(-100, Math.min(100, gauge + d));
       return { axis: e.axis, unit: e.unit, field: e.unit ? KN.meta(subject, e.unit).field : null, a: Math.round(a), b: Math.round(b), d: Math.round(d), gauge: Math.round(gauge) };
     });
-    const notesMe = me.focus === subject ? ['主戦場 +10%'] : [], notesOp = op.focus === subject ? ['主戦場 +10%'] : [];
     return { subject, idx, ex, gauge: Math.round(gauge), win: gauge > 0 || (gauge === 0 && ex[0].a >= ex[0].b), notesMe, notesOp };
   }
 
   function resolveBattle(me, op, seed, now) {
-    const r = KN.rng(seed), areas = []; let myW = 0, opW = 0;
+    const r = KN.rng(seed), areas = []; let myW = 0, opW = 0, mom = 0;
     op.order.forEach((subject, idx) => {
       if (myW >= RULE.toWin || opW >= RULE.toWin) { areas.push({ subject, idx, skipped: true }); return; }
-      const a = resolveArea(me, op, subject, idx, r, now);
-      a.win ? myW++ : opW++; areas.push(a);
+      const a = resolveArea(me, op, subject, idx, r, now, mom);
+      a.win ? myW++ : opW++; mom = a.win ? 1 : -1; areas.push(a);
     });
     return { areas, myW, opW, win: myW >= RULE.toWin, seed };
   }
@@ -512,5 +516,5 @@
   }
   function unmount() { stop(); drop3d(); document.querySelectorAll('.cutin').forEach((x) => x.remove()); window.removeEventListener('resize', onResize); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); b = null; root = null; }
 
-  window.Battle = { mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
+  window.Battle = { RULE, mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
 })();

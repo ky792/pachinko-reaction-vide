@@ -18,6 +18,7 @@
     if (!P.cos) P.cos = clone(window.COSMETICS.defaults);
     migrateCos();
     if (!P.achv) P.achv = { train: 0, duel: 0 };
+    if (!P.defense) P.defense = { order: KN.SUBJECTS.slice(), focus: P.focus || KN.SUBJECTS[0] };
     refreshStats();
   }
   /* 旧形式（decos）の装備を新形式へ移行し、無料アイテムを所持に加える */
@@ -67,8 +68,21 @@
     P.focus = r.focus;
     addExp(r.win ? 120 : 50);
     P.missions.forEach((ms) => { if (ms.id === 'm1') ms.progress = Math.min(ms.total, ms.progress + 1); });
+    incomingAttack();
     savePlayer();
     return { before, after: rankView(P.rank.rp) };
+  }
+
+  /* 非同期PvP：誰かがあなたの防衛データに挑んだ結果（試作では自分の対戦のたびに1件シミュレーション） */
+  function incomingAttack() {
+    const os = window.OPPONENTS, o = os[Math.floor(Math.random() * os.length)];
+    const atk = { K: opK(o), S: opStats(o), focus: KN.SUBJECTS[Math.floor(Math.random() * 5)] };
+    const def = { K: P.K, S: P.stats, focus: P.defense.focus, order: P.defense.order };
+    const res = window.Battle.resolveBattle(atk, def, Math.floor(Math.random() * 1e9), now());
+    const win = !res.win, rp = win ? 5 : -6;
+    P.rank.rp = Math.max(0, P.rank.rp + rp);
+    P.defenseLog.unshift({ name: o.name, rank: o.rank, win, score: `${res.opW}-${res.myW}`, rp, ago: 'たった今', lost: res.areas.filter((a) => !a.skipped && a.win).map((a) => a.subject) });
+    P.defenseLog = P.defenseLog.slice(0, 6);
   }
 
   /* 直接対決で試合が逆転したとき：負けのRPを取り消して勝ちのRPを付ける */
@@ -164,7 +178,7 @@
           <div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>
           ${UI.RecommendCard(P.recommend, t, c)}
         </div>
-        <div class="lobby__side">${UI.DefenseLog(P.defenseLog, P.focus)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
+        <div class="lobby__side">${UI.DefenseLog(P.defenseLog, P.defense, window.Defense.rates(P.defense.order, P.defense.focus, { now, myK: () => P.K, player: P, opponents: window.OPPONENTS, opK, opStats }).avg)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
       </div>
       ${UI.BottomNav()}
     </div>`;
@@ -175,7 +189,7 @@
     refreshStats();
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
-    window.Battle.unmount(); window.Training.unmount(); window.MyBase.unmount();
+    window.Battle.unmount(); window.Training.unmount(); window.MyBase.unmount(); window.Defense.unmount();
     if ((route === 'arena' || route === 'match') && state.confirmed) {
       window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, overturn, recordAnswer,
         achieve: (k) => { P.achv[k] = (P.achv[k] || 0) + 1; savePlayer(); },
@@ -186,6 +200,11 @@
       window.Training.mount(root, Object.assign(base, { bank: window.QUESTION_BANK, subject: state.trainSubject || P.recommend.subject, focusUnits: state.trainUnits || [],
         now, myK: () => P.K, recordAnswer, applyTraining, arena: () => go('arena') }));
       state.trainUnits = [];
+      return;
+    }
+    if (route === 'defense' && state.confirmed) {
+      window.Defense.mount(root, { D, player: P, type: type(), char: char(), now, myK: () => P.K, opponents: window.OPPONENTS, opK, opStats,
+        look: () => window.MyBase.lookOf(P), save: savePlayer, toast, exit: () => go('home') });
       return;
     }
     if (route === 'base' && state.confirmed) {
@@ -240,6 +259,7 @@
       case 'match': go('arena'); break;
       case 'train': state.trainSubject = b.dataset.subject || P.recommend.subject; state.trainUnits = b.dataset.units ? b.dataset.units.split('|') : []; go('train'); break;
       case 'base': go('base'); break;
+      case 'defense': go('defense'); break;
       case 'shop': state.openShop = true; go('base'); break;
       case 'stats': state.statsSubject = b.dataset.subject || state.statsSubject; go('stats'); break;
       case 'advance': P.dayShift = (P.dayShift || 0) + 3; refreshStats(); savePlayer(); render(); toast('3日経過：復習していない単元の定着が下がりました'); break;

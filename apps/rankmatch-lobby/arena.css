@@ -467,3 +467,38 @@ i.bar{display:block;font-style:normal}
 .mb-c{grid-template-columns:52px 1fr}
 .mb-c .sw{width:52px;height:52px}
 @media (min-width:900px){.mb-3d{height:clamp(300px,48vh,480px)}}
+
+/* ---------- defense ---------- */
+.df-3d{height:clamp(220px,34vh,360px)}
+.df-rate{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.df-rate>div{display:grid;justify-items:center}
+.df-rate>div b{font-family:var(--f-num);font-size:38px;line-height:1;color:var(--holo-hi)}
+.df-rate>div small{font-size:14px}
+.df-rate>div em{font-style:normal;font-family:var(--f-num);font-weight:700;font-size:13px}
+.df-rate em.up{color:var(--ok)}.df-rate em.down{color:#FF6B7A}
+.df-rate ul{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.df-rate li{display:grid;grid-template-columns:5.5em 1fr 2.6em;gap:8px;align-items:center;font-size:12px}
+.df-rate li small{color:var(--muted);font-size:10px}
+.df-rate li .bar{height:5px}
+.df-rate li em{font-family:var(--f-num);text-align:right;font-style:normal}
+.df-list{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.df-list li{display:grid;grid-template-columns:4.4em 3.4em 1fr auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);background:var(--panel-solid)}
+.df-list li.is-focus{border-color:var(--theme);background:var(--t-10)}
+.df-role{font-size:11px;font-weight:700;color:var(--muted);display:grid;line-height:1.2}
+.df-role.gate{color:var(--holo-hi)}
+.df-role small{font-family:var(--f-num);font-size:10px;color:var(--ok)}
+.df-s{font-weight:900;font-size:15px}
+.df-pw{display:grid;grid-template-columns:1fr 2.4em;gap:6px;align-items:center}
+.df-pw .bar{height:5px}
+.df-pw em{font-family:var(--f-num);font-style:normal;font-size:12px;text-align:right}
+.df-btns{display:flex;gap:4px}
+.df-btns button{width:30px;height:30px;border:1px solid var(--line-2);font-size:12px}
+.df-btns button[disabled]{opacity:.3}
+.df-star[aria-pressed="true"]{background:var(--theme);color:#05080F;border-color:var(--theme)}
+.df-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.df-actions .btn{font-size:12.5px;padding:10px}
+.df-sum{width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-top:8px;padding:10px;border:1px solid var(--t-line);background:var(--t-10);font-size:13px;font-weight:700;text-align:left}
+.df-sum span{display:grid;line-height:1.15}.df-sum span small{font-size:9px;color:var(--holo-hi)}
+.df-sum span.f{color:var(--holo-hi)}
+.df-sum i{font-style:normal;color:var(--dim)}
+.df-sum em{margin-left:auto;font-style:normal;font-size:11px;color:var(--theme)}
