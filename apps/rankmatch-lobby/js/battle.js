@@ -88,11 +88,17 @@
     <div class="m-nav__bubble"><b>${esc(ctx.char.name)}<em>${esc(exprLabel(ctx.D, ctx.char, expr))}</em></b><p>${esc(line)}</p></div>
   </div>`;
 
-  const Tiles = (b, res, upto) => `<div class="a-tiles">${b.op.order.map((s, k) => {
+  const tileState = (b, res, upto, k) => {
     const a = res && res.areas[k];
     let st = 'pending';
     if (a && k < upto) st = a.skipped ? 'none' : a.win ? 'me' : 'op';
     if (k === upto && b.phase === 'battle') st = 'active';
+    return st;
+  };
+  const Map3D = (hint) => `<div class="a-3d" aria-hidden="false"><span class="a-3d__hint">${hint || 'ドラッグで回転'}</span></div>`;
+  const Tiles = (b, res, upto) => `<div class="a-tiles">${b.op.order.map((s, k) => {
+    const a = res && res.areas[k];
+    const st = tileState(b, res, upto, k);
     const lbl = { me: a && a.duel ? '奪還' : '確保', op: a && a.duel ? '防衛された' : '敵陣', none: '—', active: '交戦中', pending: `第${k + 1}陣` }[st];
     return `<div class="a-tile ${st} ${a && a.duel ? 'duel' : ''}"><span class="a-tile__s">${esc(s)}</span><small>${lbl}</small>${s === b.focus ? '<i class="focus">★</i>' : ''}${s === b.op.focus ? '<i class="ofocus">◆</i>' : ''}</div>`;
   }).join('')}</div>`;
@@ -133,6 +139,7 @@
         <div class="a-rate"><span>勝率予測</span><b>${rate}<small>%</small></b></div>
         <div class="a-vs__side op">${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--vs portrait--op' })}<b>${esc(o.name)}</b><small>${esc(o.rank)} · 学力 ${totalPower(op.S)}</small></div>
       </div>
+      ${Map3D('相手の陣地 · ドラッグで回転')}
       <section class="m-panel">
         <h2 class="panel__title">主戦場を選ぶ（相手の防衛順）</h2>
         <div class="a-compare">${o.order.map((s, k) => {
@@ -168,6 +175,7 @@
         <span class="dash">陣地</span>
         <div class="op"><b>${done.filter((a) => !a.win).length}</b><span>${esc(b.op.name)}</span>${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--op' })}</div>
       </div>
+      ${Map3D()}
       ${Tiles(b, res, b.areaDone ? b.ai + 1 : b.ai)}
       <section class="a-arena ${b.areaDone ? (area.win ? 'won' : 'lost') : ''}">
         <div class="a-arena__head"><span class="eyebrow">第${b.ai + 1}陣</span><h2>${esc(area.subject)}</h2>${b.areaDone ? `<span class="a-capture">${area.win ? '陣地確保' : '陣地を奪われた'}</span>` : ''}</div>
@@ -191,6 +199,7 @@
     const promoted = r.after.label !== r.before.label;
     return `<div class="match-screen phase-result ${res.win ? 'is-win' : 'is-lose'}" style="--oc:${b.oc}">
       <header class="r-head"><span class="eyebrow">RANK MATCH RESULT · VS ${esc(b.op.name)}</span><strong>${res.win ? 'WIN' : 'LOSE'}</strong><span class="r-score">${res.myW} <small>陣地</small> ${res.opW}${b.flipped ? ' <small class="flip">直接対決で逆転</small>' : ''}</span></header>
+      ${Map3D()}
       ${Tiles(b, res, 5)}
       <section class="r-rank holo-panel">
         <div class="rank__badge"><b>${esc(r.after.label)}</b><small>RANK</small></div>
@@ -278,16 +287,30 @@
   }
 
   /* ================= 進行 ================= */
-  let b = null, ctx = null, root = null, timer = null, tick = null;
+  let b = null, ctx = null, root = null, timer = null, tick = null, t3 = null;
   const reduce = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const stop = () => { clearTimeout(timer); timer = null; clearInterval(tick); tick = null; };
 
   function draw() {
     const v = { pick: PickView, plan: PlanView, battle: BattleView, result: ResultView, duel: DuelIntro, duelq: DuelQ, duelres: DuelResult }[b.phase];
     root.innerHTML = `<div class="screen screen--match">${v(b, ctx)}</div>`;
+    attach3d();
     if (b.phase === 'result' && !b.animated) { b.animated = true; animateResult(); }
     const nx = root.querySelector('.js-next'); if (nx) nx.focus({ preventScroll: true });
   }
+
+  /* 3Dマップ：キャンバスは1つを使い回し、再描画のたびに新しい置き場所へ移す */
+  function attach3d() {
+    const host = root.querySelector('.a-3d'); if (!host || !b.op) return;
+    const key = b.op.order.join() + ctx.type.color + b.oc;
+    if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain3D ? window.Terrain3D.create(b.op.order, { me: ctx.type.color, op: b.oc }) : null; }
+    if (!t3) { host.hidden = true; return; }
+    host.appendChild(t3.canvas); t3.resize();
+    const upto = b.phase === 'battle' ? (b.areaDone ? b.ai + 1 : b.ai) : b.phase === 'plan' ? -1 : 5;
+    t3.setState(b.op.order.map((_, k) => tileState(b, b.res, upto, k)), { me: b.focus });
+  }
+  const drop3d = () => { if (t3) { t3.destroy(); t3 = null; } };
+  const onResize = () => { if (t3) t3.resize(); };
 
   function candidates() {
     const rp = ctx.player.rank.rp, pool = ctx.opponents.slice().sort(() => Math.random() - 0.5);
@@ -414,7 +437,7 @@
       case 'fight': fight(); break;
       case 'speed': b.fast = !b.fast; draw(); schedule(); break;
       case 'skip': finish(); break;
-      case 'again': b = { phase: 'pick', cands: candidates(), fast: b.fast }; draw(); break;
+      case 'again': drop3d(); b = { phase: 'pick', cands: candidates(), fast: b.fast }; draw(); break;
       case 'duel-cancel': b.phase = 'result'; draw(); break;
       case 'duel-start': duelAsk(); break;
       case 'duel-next': duelNext(); break;
@@ -433,10 +456,10 @@
   function mount(r, c) {
     unmount(); root = r; ctx = c;
     b = { phase: 'pick', cands: candidates(), fast: false };
-    root.addEventListener('click', onClick); document.addEventListener('keydown', onKey);
+    root.addEventListener('click', onClick); document.addEventListener('keydown', onKey); window.addEventListener('resize', onResize);
     draw();
   }
-  function unmount() { stop(); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); b = null; root = null; }
+  function unmount() { stop(); drop3d(); window.removeEventListener('resize', onResize); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); b = null; root = null; }
 
   window.Battle = { mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
 })();

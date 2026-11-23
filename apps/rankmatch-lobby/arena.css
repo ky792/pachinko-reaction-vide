@@ -237,3 +237,11 @@
 }
 
 .phase-duelres-head strong,.r-head strong.d-word{font-family:var(--f-body)!important;font-style:normal!important;font-weight:900!important;letter-spacing:.02em!important;font-size:clamp(36px,11vw,56px)!important}
+
+/* ---------- 3D territory map ---------- */
+.a-3d{position:relative;height:clamp(210px,36vh,340px);border:1px solid var(--line);overflow:hidden;touch-action:pan-y;cursor:grab;
+  background:radial-gradient(ellipse 80% 70% at 50% 75%,color-mix(in oklab,var(--theme) 14%,transparent),transparent 70%),radial-gradient(ellipse 60% 50% at 80% 30%,color-mix(in oklab,var(--oc) 12%,transparent),transparent 70%),var(--panel-solid)}
+.a-3d:active{cursor:grabbing}
+.a-3d .t3d-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.a-3d__hint{position:absolute;right:8px;bottom:6px;z-index:1;font-size:10px;color:var(--dim);pointer-events:none}
+.phase-battle .a-3d{height:clamp(200px,32vh,300px)}
