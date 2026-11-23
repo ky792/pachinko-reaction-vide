@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """大学受験（共通テスト水準）の4択問題を Claude で量産するパイプライン。
 
+  ingest    手書きの問題（JSON）を下書きに取り込む（API 不要）
   plan      単元ごとの不足数と概算コストを表示（API は呼ばない）
   audit     既存問題の水準を判定（中学レベルの差し替え候補を出す）
   generate  単元ごとに問題を下書き                → work/drafts.jsonl
@@ -144,6 +145,11 @@ def read_jsonl(p):
 def norm(s):
     s = unicodedata.normalize("NFKC", s).lower()
     return re.sub(r"[\s、。，．,.?？!！「」『』（）()]", "", s)
+
+
+def cnorm(s):
+    """選択肢の比較用：大文字小文字・小数点は区別する（Aa と AA、1.4 と 14 は別物）。"""
+    return re.sub(r"\s", "", unicodedata.normalize("NFKC", s))
 
 
 def qid(subject, q):
@@ -366,6 +372,31 @@ def cmd_generate(a):
     print(f"下書き {n_ok}問を追加 → work/drafts.jsonl")
 
 
+# ---------- ingest（手書き・API を使わない下書き）----------
+def cmd_ingest(a):
+    """{科目: [[単元, 難度, 問題, [正答, 誤答, 誤答, 誤答], 解説], ...]} の JSON を drafts.jsonl に追加。"""
+    _, units = load_state()
+    info = {(u["subject"], u["unit"]): u for u in units}
+    have = {d["id"] for d in read_jsonl(WORK / "drafts.jsonl")}
+    src = json.loads(Path(a.file).read_text("utf-8"))
+    n = 0
+    with open(WORK / "drafts.jsonl", "a", encoding="utf-8") as f:
+        for subject, rows in src.items():
+            for unit, diff, q, choices, explain in rows:
+                u = info.get((subject, unit))
+                if not u:
+                    sys.exit(f"カリキュラムにない単元: {subject}/{unit}")
+                row = {"id": qid(subject, q), "subject": subject, "field": u["field"], "unit": unit, "weight": u["weight"],
+                       "difficulty": diff, "q": q, "correct": choices[0], "wrong": choices[1:], "explain": explain,
+                       "model": a.author}
+                if row["id"] in have:
+                    continue
+                have.add(row["id"])
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
+                n += 1
+    print(f"{n}問を drafts.jsonl に追加（{a.file}）")
+
+
 # ---------- verify ----------
 BANNED = re.compile(r"すべて(正しい|誤り)|どれでもない|以上のいずれ|いずれも(正しい|誤り)|all of the above|none of the above", re.I)
 
@@ -376,7 +407,7 @@ def local_checks(d, pool):
     ch = [d["correct"], *d["wrong"]]
     if len(d["wrong"]) != 3:
         fail.append("誤答が3つでない")
-    if any(not c.strip() for c in ch) or len({norm(c) for c in ch}) != len(ch):
+    if any(not c.strip() for c in ch) or len({cnorm(c) for c in ch}) != len(ch):
         fail.append("選択肢が空か重複")
     if BANNED.search(" ".join(ch)):
         fail.append("「すべて／どれでもない」系の選択肢")
@@ -390,11 +421,13 @@ def local_checks(d, pool):
         flag.append("正答だけ長い")
     if len(d["explain"]) < 8:
         flag.append("解説が短い")
-    if re.search(r"図|グラフ|下の表|右の表|次の表", d["q"]):
+    if re.search(r"(下|右|左|上|次|この)の(図|表|グラフ)|図[0-9０-９]|図のよう|表のよう", d["q"]):
         flag.append("図表を参照している")
-    nq = norm(d["q"])
+    # 「古文の「○○」の意味は？」のような定型の問題文は似て当然なので、正答も含めて比べる
+    nq = norm(d["q"]) + "|" + norm(d["correct"])
     for other_id, other_q in pool:
-        if other_id != d["id"] and difflib.SequenceMatcher(None, nq, other_q).ratio() > 0.85:
+        nums = lambda t: re.findall(r"\d+(?:\.\d+)?", t.split("|")[0])
+        if other_id != d["id"] and nums(nq) == nums(other_q) and difflib.SequenceMatcher(None, nq, other_q).ratio() > 0.9:
             fail.append(f"既存と重複（{other_id}）")
             break
     return fail, flag
@@ -412,12 +445,12 @@ def cmd_verify(a):
     todo = [d for d in uniq if d["id"] not in done]
     if a.limit:
         todo = todo[: a.limit]
-    print(f"検算 {len(todo)}問 概算 ${cost('verify', len(todo), not a.sync):.2f}")
+    print(f"検算 {len(todo)}問" + ("（機械チェックのみ）" if a.no_api else f" 概算 ${cost('verify', len(todo), not a.sync):.2f}"))
     pool_by_unit = {}
     for q in bank:
-        pool_by_unit.setdefault((q["subject"], q["unit"]), []).append((q["id"], norm(q["q"])))
+        pool_by_unit.setdefault((q["subject"], q["unit"]), []).append((q["id"], norm(q["q"]) + "|" + norm(q["choices"][q["answer"]])))
     for d in uniq:
-        pool_by_unit.setdefault((d["subject"], d["unit"]), []).append((d["id"], norm(d["q"])))
+        pool_by_unit.setdefault((d["subject"], d["unit"]), []).append((d["id"], norm(d["q"]) + "|" + norm(d["correct"])))
 
     reqs, order = [], {}
     for d in todo:
@@ -429,12 +462,13 @@ def cmd_verify(a):
         user = (f"科目: {d['subject']} / 単元: {d['unit']}\n\n{d['q']}\n\n"
                 + "\n".join(f"{letters[i]}. {ch[j]}" for i, j in enumerate(idx[:4])))
         reqs.append((cid_safe(d["id"]), params(SYSTEM_VERIFY, user, VERIFY_SCHEMA, 16000)))
-    res = run_requests(reqs, a.sync, "verify") if todo else {}
+    res = run_requests(reqs, a.sync, "verify") if todo and not a.no_api else {}
     for d in todo:
         fail, flag = local_checks(d, pool_by_unit.get((d["subject"], d["unit"]), []))
         v = res.get(cid_safe(d["id"]))
         if v is None:
-            flag.append("検算できなかった")
+            if not a.no_api:
+                flag.append("検算できなかった")
         else:
             hard = {"multiple_correct", "no_correct", "factual_error", "needs_figure"}
             if v["answer"] != order[d["id"]]:
@@ -516,7 +550,7 @@ def cmd_export(a):
     t = html.read_text("utf-8")
     if "data/questions-gen.js" not in t:
         t = t.replace('<script src="data/questions-2.js"></script>',
-                      '<script src="data/questions-2.js"></script>\n  <script src="data/questions-gen.js"></script>', 1)
+                      '<script src="data/questions-2.js"></script>\n<script src="data/questions-gen.js"></script>', 1)
         html.write_text(t, "utf-8")
     print(f"{len(approved)}問を data/questions-gen.js に書き出し（差し替え {len(retire)}問）")
 
@@ -534,7 +568,9 @@ def main():
     s.add_argument("--sync", action="store_true")
     s.add_argument("--dry-run", action="store_true")
     s.set_defaults(f=cmd_generate)
-    s = sp.add_parser("verify"); s.add_argument("--limit", type=int); s.add_argument("--sync", action="store_true"); s.set_defaults(f=cmd_verify)
+    s = sp.add_parser("ingest"); s.add_argument("file"); s.add_argument("--author", default="manual"); s.set_defaults(f=cmd_ingest)
+    s = sp.add_parser("verify"); s.add_argument("--limit", type=int); s.add_argument("--sync", action="store_true")
+    s.add_argument("--no-api", action="store_true", help="機械チェックだけ（API を呼ばない・無料）"); s.set_defaults(f=cmd_verify)
     s = sp.add_parser("approve"); s.set_defaults(f=cmd_approve)
     s = sp.add_parser("export"); s.add_argument("--approved"); s.set_defaults(f=cmd_export)
     a = p.parse_args()

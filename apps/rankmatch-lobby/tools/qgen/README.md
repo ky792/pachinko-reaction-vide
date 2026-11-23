@@ -1,5 +1,22 @@
 # 問題の量産パイプライン（大学受験・共通テスト水準）
 
+## お金をかけないやり方（いまの運用）
+
+問題は Claude Code のセッション内で手書きし（`manual/*.json`）、機械チェックだけを通して書き出す。API は使わない。
+
+```sh
+mkdir -p tools/qgen/work && cp tools/qgen/manual/retire.json tools/qgen/work/retire_candidates.json
+python3 tools/qgen/qgen.py ingest tools/qgen/manual/star3-a.json   # 書式：{科目: [[単元, 難度, 問題, [正答, 誤答×3], 解説]]}
+python3 tools/qgen/qgen.py ingest tools/qgen/manual/star3-b.json
+python3 tools/qgen/qgen.py verify --no-api                         # 機械チェックのみ（無料）
+python3 tools/qgen/qgen.py approve                                 # または review.html で人がレビュー
+python3 tools/qgen/qgen.py export
+```
+
+`manual/retire.json` は中学レベルとして差し替える既存問題の id。
+
+## API を使うやり方（有料・任意）
+
 AI が下書き → 答えを伏せて別に解かせて検算 → 機械チェック → 人がレビュー → `data/questions-gen.js` に書き出し。
 
 ```sh
