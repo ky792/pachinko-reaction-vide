@@ -1,0 +1,501 @@
+<title>ランクマッチ ナビゲーターUI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: 左に操作できるスマホ試作、右にその画面の設計ノート。下に5タイプ仕様と演出ルール。単一ダーク（夜の学園ホロ）で固定。 */
+:root{
+  color-scheme: dark;
+  --ink:#080C17; --panel:#10172A; --panel-2:#161F37; --line:#25304D; --line-2:#33406A;
+  --fg:#E7ECF8; --muted:#8B96B5; --dim:#5A6587;
+  --rank:#E7ECF8;                  /* プレイヤー＝主役は無彩色の白で統一 */
+  --good:#4BE0A0; --bad:#FF6B7A;
+  --logic:#3B9BFF; --halo:#3DDC97; --ignite:#FF4D5E; --vex:#B26BFF; --echo:#F2C14E;
+  --nav:var(--logic);
+  --f-disp:"Chakra Petch","Zen Kaku Gothic New",system-ui,sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--ink);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:48px 48px;background-attachment:fixed;background-position:-1px -1px}
+body::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,transparent 0,var(--ink) 70%);pointer-events:none;z-index:-1}
+body>*{position:relative}
+.wrap{max-width:1180px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-disp);text-wrap:balance;margin:0;line-height:1.25}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--nav);outline-offset:2px}
+
+/* ---------- header ---------- */
+.top{padding-block:40px 28px;display:grid;gap:18px}
+.top h1{font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:.01em}
+.top h1 em{font-style:normal;color:var(--nav);transition:color .4s}
+.lede{max-width:62ch;color:var(--muted);margin:0}
+.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+.strip button{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--c);padding:10px 10px 8px;text-align:left;display:grid;gap:2px;transition:background .2s}
+.strip button[aria-pressed="true"]{background:color-mix(in oklab,var(--c) 16%,var(--panel))}
+.strip b{font-family:var(--f-disp);font-size:15px;letter-spacing:.06em;color:var(--c);display:flex;align-items:center;gap:6px}
+.strip span{font-size:12px;color:var(--muted)}
+.strip svg{width:16px;height:16px}
+
+/* ---------- prototype layout ---------- */
+.proto{display:grid;grid-template-columns:minmax(0,390px) minmax(0,1fr);gap:40px;align-items:start;padding-block:24px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{background:transparent;border:1px solid var(--line);padding:6px 12px;font-size:13px;color:var(--muted)}
+.tabs button[aria-selected="true"]{border-color:var(--nav);color:var(--fg);background:color-mix(in oklab,var(--nav) 14%,transparent)}
+.phone{width:100%;max-width:390px;aspect-ratio:390/780;border:1px solid var(--line-2);border-radius:34px;background:var(--ink);
+  overflow:hidden;position:relative;box-shadow:0 0 0 6px var(--panel),0 30px 80px -20px color-mix(in oklab,var(--nav) 45%,transparent);transition:box-shadow .5s}
+.screen{position:absolute;inset:0;padding:44px 18px 18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.status{position:absolute;top:0;left:0;right:0;height:34px;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font-family:var(--f-mono);font-size:11px;color:var(--muted);z-index:3;background:var(--ink)}
+.notes{display:grid;gap:18px;min-width:0}
+.notes h2{font-size:26px}
+.notes ol{margin:0;padding-left:1.2em;display:grid;gap:8px;color:var(--muted)}
+.notes ol b{color:var(--fg);font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.legend span{font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);padding:3px 8px;color:var(--muted)}
+.legend i{display:inline-block;width:8px;height:8px;margin-right:6px;vertical-align:middle}
+
+/* ---------- in-phone components ---------- */
+.p-head{display:flex;justify-content:space-between;align-items:center}
+.p-head h3{font-size:18px;letter-spacing:.04em}
+.chip{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;padding:2px 7px;border:1px solid currentColor;color:var(--muted)}
+.chip.nav{color:var(--nav)}
+.btn{display:block;width:100%;border:0;padding:14px;font-family:var(--f-disp);font-weight:700;font-size:16px;letter-spacing:.08em;
+  background:var(--nav);color:var(--ink);clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px);transition:background .4s,filter .2s}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line-2);clip-path:none}
+.card{background:var(--panel);border:1px solid var(--line);padding:12px}
+
+/* portrait (画像スロット＋フォールバック) */
+.portrait{position:relative;aspect-ratio:3/4;background:
+  radial-gradient(ellipse at 50% 85%,color-mix(in oklab,var(--c) 40%,transparent),transparent 65%),
+  repeating-linear-gradient(0deg,color-mix(in oklab,var(--c) 10%,transparent) 0 1px,transparent 1px 4px),var(--panel);
+  border:1px solid color-mix(in oklab,var(--c) 50%,var(--line));overflow:hidden;max-width:100%}
+.portrait svg.sil{position:absolute;inset:auto 0 0 0;width:100%;height:88%;color:color-mix(in oklab,var(--c) 70%,var(--ink))}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.portrait .mark{position:absolute;top:8px;left:8px;width:22px;height:22px;color:var(--c)}
+.portrait .expr{position:absolute;right:8px;top:8px;font-family:var(--f-mono);font-size:10px;padding:2px 6px;background:var(--ink);color:var(--c);border:1px solid var(--c)}
+.portrait .plate{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 8px;background:linear-gradient(transparent,var(--ink));display:flex;align-items:baseline;gap:8px}
+.portrait .plate b{font-family:var(--f-body);font-weight:900;font-size:20px}
+.portrait .plate span{font-family:var(--f-disp);font-size:11px;letter-spacing:.14em;color:var(--c)}
+
+/* select */
+.typegrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.typegrid button{background:var(--panel);border:1px solid var(--line);padding:8px 0 6px;display:grid;justify-items:center;gap:2px;font-family:var(--f-disp);font-size:9px;letter-spacing:.08em;color:var(--muted)}
+.typegrid button svg{width:20px;height:20px;color:var(--c)}
+.typegrid button[aria-pressed="true"]{border-color:var(--c);color:var(--fg);background:color-mix(in oklab,var(--c) 18%,var(--panel))}
+.gender{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}
+.gender button{background:transparent;border:0;padding:7px;font-size:13px;color:var(--muted)}
+.gender button[aria-pressed="true"]{background:var(--panel-2);color:var(--fg);box-shadow:inset 0 -2px 0 var(--nav)}
+.sel-main{display:grid;grid-template-columns:44% 1fr;gap:12px;align-items:start}
+.sel-info{display:grid;gap:8px;min-width:0}
+.sel-info h4{margin:0;font-family:var(--f-disp);font-size:22px;color:var(--nav);letter-spacing:.06em;line-height:1}
+.sel-info p{margin:0;font-size:12px;color:var(--muted);line-height:1.6}
+.bars{display:grid;gap:4px}
+.bars div{display:grid;grid-template-columns:28px 1fr;align-items:center;gap:6px;font-size:10px;color:var(--muted)}
+.bars i{height:5px;background:var(--line);position:relative;display:block}
+.bars i::after{content:"";position:absolute;inset:0 auto 0 0;width:calc(var(--v)*20%);background:var(--nav);transition:width .4s}
+.quote{border-left:2px solid var(--nav);padding:6px 10px;font-size:13px;background:var(--panel)}
+
+/* home */
+.rankcard{background:linear-gradient(135deg,var(--panel-2),var(--panel));border:1px solid var(--line-2);padding:14px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center}
+.rankbadge{width:76px;height:84px;display:grid;place-items:center;font-family:var(--f-disp);font-weight:700;font-size:36px;color:var(--rank);
+  clip-path:polygon(50% 0,100% 22%,100% 78%,50% 100%,0 78%,0 22%);background:linear-gradient(160deg,var(--line-2),var(--panel));position:relative}
+.rankbadge small{position:absolute;bottom:14px;font-size:10px;letter-spacing:.2em;color:var(--muted)}
+.rp{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.rp b{font-size:26px}
+.gauge{height:6px;background:var(--line);margin-top:6px;position:relative}
+.gauge::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w,62%);background:var(--rank);transition:width .8s}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.kv div{background:var(--panel);border:1px solid var(--line);padding:8px 4px}
+.kv b{display:block;font-family:var(--f-mono);font-size:17px;font-variant-numeric:tabular-nums}
+.kv span{font-size:10px;color:var(--muted)}
+.subjects{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.subjects button{background:var(--panel);border:1px solid var(--line);padding:8px 0;font-size:12px;color:var(--muted)}
+.subjects button[aria-pressed="true"]{color:var(--fg);border-color:var(--fg)}
+.quest{display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.quest .q-bar{flex:0 0 90px;height:4px;background:var(--line);position:relative}
+.quest .q-bar::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--fg)}
+
+/* navigator bubble (共通) */
+.navbar{display:grid;grid-template-columns:58px 1fr;gap:10px;align-items:end;margin-top:auto}
+.navbar .portrait{aspect-ratio:1;border-radius:50%}
+.navbar .portrait .plate,.navbar .portrait .expr{display:none}
+.navbar .portrait .mark{width:14px;height:14px;top:4px;left:50%;transform:translateX(-50%)}
+.bubble{background:var(--panel-2);border:1px solid color-mix(in oklab,var(--nav) 55%,var(--line));padding:9px 12px;font-size:13px;line-height:1.55;position:relative;min-height:52px}
+.bubble::before{content:attr(data-name);position:absolute;top:-9px;left:10px;font-size:10px;font-weight:700;background:var(--nav);color:var(--ink);padding:0 6px;line-height:16px;transition:background .4s}
+.bubble.pop{animation:pop .35s ease-out}
+@keyframes pop{0%{transform:translateY(6px);opacity:.3}100%{transform:none;opacity:1}}
+
+/* match */
+.versus{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;font-size:12px}
+.versus .me{text-align:left}.versus .op{text-align:right}
+.versus b{display:block;font-family:var(--f-mono);font-size:22px;font-variant-numeric:tabular-nums}
+.versus .vs{font-family:var(--f-disp);font-weight:700;color:var(--muted)}
+.timer{height:4px;background:var(--line);position:relative;overflow:hidden}
+.timer::after{content:"";position:absolute;inset:0;background:var(--fg);transform-origin:left;animation:tick 20s linear infinite}
+@keyframes tick{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+.qcard{background:var(--panel);border:1px solid var(--line-2);padding:14px;display:grid;gap:6px}
+.qcard .qn{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.qcard p{margin:0;font-size:16px;font-weight:700;line-height:1.6}
+.answers{display:grid;gap:6px}
+.answers button{background:var(--panel);border:1px solid var(--line);padding:11px 12px;text-align:left;font-size:14px;display:flex;gap:10px}
+.answers button span{font-family:var(--f-mono);color:var(--muted)}
+.answers button.ok{border-color:var(--good);background:color-mix(in oklab,var(--good) 14%,var(--panel))}
+.answers button.ng{border-color:var(--bad);background:color-mix(in oklab,var(--bad) 14%,var(--panel))}
+.cutin{position:absolute;left:0;right:0;top:38%;height:120px;display:grid;grid-template-columns:120px 1fr;align-items:center;gap:10px;padding:0 14px;
+  background:linear-gradient(90deg,color-mix(in oklab,var(--nav) 85%,var(--ink)),color-mix(in oklab,var(--nav) 30%,var(--ink)));
+  clip-path:polygon(0 12%,100% 0,100% 88%,0 100%);transform:translateX(-105%);z-index:5;pointer-events:none}
+.cutin.show{animation:cut 1.5s cubic-bezier(.2,.8,.2,1) forwards}
+.cutin .portrait{height:120px;aspect-ratio:1;border:0;background:transparent}
+.cutin .portrait .plate,.cutin .portrait .expr,.cutin .portrait .mark{display:none}
+.cutin strong{font-family:var(--f-disp);font-size:30px;letter-spacing:.06em;color:var(--ink);line-height:1}
+.cutin small{display:block;font-size:12px;color:var(--ink);font-weight:700}
+@keyframes cut{0%{transform:translateX(-105%)}18%,78%{transform:translateX(0)}100%{transform:translateX(105%)}}
+@media (prefers-reduced-motion:reduce){.cutin.show{animation:none;transform:none;opacity:1}.timer::after{animation:none}.bubble.pop{animation:none}}
+
+/* result */
+.res-head{text-align:center;display:grid;gap:2px;padding-top:6px}
+.res-head strong{font-family:var(--f-disp);font-size:44px;letter-spacing:.1em;line-height:1}
+.res-head .delta{font-family:var(--f-mono);font-size:20px;color:var(--good)}
+.res-table{display:grid;gap:0;font-size:13px}
+.res-table div{display:flex;justify-content:space-between;padding:7px 2px;border-bottom:1px solid var(--line)}
+.res-table b{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+
+/* ---------- spec section ---------- */
+.sec{padding-block:48px 8px;display:grid;gap:20px}
+.sec>h2{font-size:clamp(22px,3.4vw,30px)}
+.sec>p{margin:0;color:var(--muted);max-width:68ch}
+.types{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.tcard{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--c);display:grid;grid-template-rows:auto auto 1fr;min-width:0}
+.tcard .pair{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+.tcard .pair .portrait{border:0}
+.tcard .pair .portrait .plate b{font-size:15px}
+.tcard .pair .portrait .expr{display:none}
+.tcard header{padding:12px 12px 4px;display:flex;align-items:center;gap:8px}
+.tcard header svg{width:20px;height:20px;color:var(--c)}
+.tcard header h3{font-size:18px;letter-spacing:.08em;color:var(--c)}
+.tcard dl{margin:0;padding:4px 12px 14px;display:grid;gap:8px;font-size:12.5px}
+.tcard dt{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
+.tcard dd{margin:0;color:var(--fg)}
+.tcard code{font-family:var(--f-mono);font-size:11px;color:var(--c)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;color:var(--muted);font-weight:500;text-transform:uppercase;background:var(--panel-2)}
+td.t{font-family:var(--f-disp);font-weight:700;color:var(--c);white-space:nowrap}
+.rules{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.rule{border:1px solid var(--line);background:var(--panel);padding:16px;display:grid;gap:6px;align-content:start}
+.rule h3{font-size:16px}
+.rule p{margin:0;font-size:13px;color:var(--muted)}
+.rule .do{color:var(--good);font-size:12px}.rule .dont{color:var(--bad);font-size:12px}
+.ratio{display:flex;height:22px;border:1px solid var(--line);font-family:var(--f-mono);font-size:10px}
+.ratio span{display:grid;place-items:center;color:var(--ink)}
+footer{padding-block:40px 0;color:var(--dim);font-size:12px}
+
+@media (max-width:980px){
+  .proto{grid-template-columns:minmax(0,1fr);justify-items:center}
+  .notes{max-width:560px}
+  .types{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rules{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:520px){
+  .strip{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .strip span{display:none}
+  .strip b{font-size:11px;letter-spacing:0}
+  .types{grid-template-columns:minmax(0,1fr)}
+  .phone{border-radius:24px}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">Learning Rank Match · AI Navigator UI v0.1</div>
+    <h1>主役はプレイヤー。<br><em id="hTitle">ナビゲーター</em>は隣で戦う。</h1>
+    <p class="lede">5タイプ×男女10人のAIナビゲーターを、学力ランクマッチの画面にどう載せるかの設計案です。ボイスもフルアニメもなし。立ち絵1枚と表情差分、そしてタイプカラーのUI演出だけで「隣にいる感じ」を作ります。下のタイプを選ぶと、試作画面の配色とセリフがすべて切り替わります。</p>
+    <div class="strip" id="strip" role="group" aria-label="タイプ切替"></div>
+  </header>
+
+  <section class="proto" aria-label="画面試作">
+    <div style="width:100%;max-width:390px">
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-s="select" aria-selected="true">① ナビ選択</button>
+        <button role="tab" data-s="home" aria-selected="false">② ホーム</button>
+        <button role="tab" data-s="match" aria-selected="false">③ 対戦</button>
+        <button role="tab" data-s="result" aria-selected="false">④ リザルト</button>
+      </div>
+      <div class="phone" id="phone">
+        <div class="status"><span>21:47</span><span>SEASON 03 · W6</span><span>87%</span></div>
+
+        <!-- ① SELECT -->
+        <div class="screen" data-screen="select">
+          <div class="p-head"><h3>相棒を選ぶ</h3><span class="chip">あとで変更可</span></div>
+          <div class="typegrid" id="typegrid"></div>
+          <div class="gender" id="gender">
+            <button data-g="m" aria-pressed="true">男性</button>
+            <button data-g="f" aria-pressed="false">女性</button>
+          </div>
+          <div class="sel-main">
+            <div id="selPortrait"></div>
+            <div class="sel-info">
+              <span class="chip nav" id="selRole" style="justify-self:start"></span>
+              <h4 id="selType"></h4>
+              <p id="selTrait"></p>
+              <div class="bars" id="selBars"></div>
+            </div>
+          </div>
+          <div class="quote" id="selQuote"></div>
+          <button class="btn" id="selGo" style="margin-top:auto">この相棒で始める</button>
+        </div>
+
+        <!-- ② HOME -->
+        <div class="screen" data-screen="home" hidden>
+          <div class="p-head"><h3>ホーム</h3><span class="chip nav" id="homeNavChip"></span></div>
+          <div class="rankcard">
+            <div class="rankbadge">B+<small>RANK</small></div>
+            <div>
+              <div class="eyebrow">あなたの学力ランク</div>
+              <div class="rp"><b>1,482</b> RP</div>
+              <div class="gauge" style="--w:62%"></div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">A− 昇格まで 118 RP · 全国 4,210位</div>
+            </div>
+          </div>
+          <div class="kv">
+            <div><b>3</b><span>連勝中</span></div>
+            <div><b>78%</b><span>今週の正答率</span></div>
+            <div><b>12</b><span>連続学習日</span></div>
+          </div>
+          <div class="eyebrow">出場科目</div>
+          <div class="subjects" id="subjects">
+            <button aria-pressed="true">数学</button><button aria-pressed="false">英語</button><button aria-pressed="false">理科</button><button aria-pressed="false">社会</button>
+          </div>
+          <div class="card" style="display:grid;gap:8px">
+            <div class="quest"><span>デイリー：数学で5問連続正解</span><span class="q-bar" style="--w:60%"></span></div>
+            <div class="quest"><span>ランクマッチを3戦</span><span class="q-bar" style="--w:33%"></span></div>
+          </div>
+          <button class="btn" data-go="match">ランクマッチ開始</button>
+          <div class="navbar" data-slot="nav-greet"></div>
+        </div>
+
+        <!-- ③ MATCH -->
+        <div class="screen" data-screen="match" hidden>
+          <div class="versus">
+            <div class="me"><span style="color:var(--muted)">あなた B+</span><b id="scMe">2</b></div>
+            <div class="vs">Q4/10</div>
+            <div class="op"><span style="color:var(--muted)">ユウキ A−</span><b id="scOp">2</b></div>
+          </div>
+          <div class="timer" aria-hidden="true"></div>
+          <div class="qcard">
+            <span class="qn">数学 · 二次関数 · 難度★★★</span>
+            <p>y = x² − 6x + 5 の頂点の座標は？</p>
+          </div>
+          <div class="answers" id="answers">
+            <button data-ok="0"><span>A</span>(3, 4)</button>
+            <button data-ok="1"><span>B</span>(3, −4)</button>
+            <button data-ok="0"><span>C</span>(−3, −4)</button>
+            <button data-ok="0"><span>D</span>(6, 5)</button>
+          </div>
+          <div class="navbar" data-slot="nav-match"></div>
+          <div class="cutin" id="cutin" aria-hidden="true"></div>
+        </div>
+
+        <!-- ④ RESULT -->
+        <div class="screen" data-screen="result" hidden>
+          <div class="res-head">
+            <span class="eyebrow">Rank Match Result</span>
+            <strong id="resW">WIN</strong>
+            <span class="delta" id="resD">+32 RP</span>
+          </div>
+          <div class="rankcard">
+            <div class="rankbadge">B+<small>RANK</small></div>
+            <div>
+              <div class="rp"><b>1,514</b> RP</div>
+              <div class="gauge" style="--w:78%"></div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px">A− 昇格まで 86 RP</div>
+            </div>
+          </div>
+          <div class="res-table">
+            <div><span>正答</span><b>8 / 10</b></div>
+            <div><span>平均解答時間</span><b>6.1 秒</b></div>
+            <div><span>最速正解</span><b>2.8 秒（Q2）</b></div>
+            <div><span>苦手判定</span><b>平方完成</b></div>
+          </div>
+          <div class="navbar" data-slot="nav-result"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <button class="btn ghost" data-go="home">ホームへ</button>
+            <button class="btn" data-go="match">もう一戦</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes" id="notes"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-types">
+    <div class="eyebrow">Type Sheet</div>
+    <h2 id="h-types">5タイプ定義（カラーと性格は固定）</h2>
+    <p>同じタイプの男女は同じカラーとエンブレムを共有します。色だけで見分けさせないよう、各タイプに形の違うエンブレムを持たせ、色覚特性があっても識別できるようにします。色相は青・緑・赤・紫・金でおよそ60°以上ずつ離しています。</p>
+    <div class="types" id="types"></div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-expr">
+    <div class="eyebrow">Expression Set</div>
+    <h2 id="h-expr">表情差分とセリフのトーン</h2>
+    <p>各キャラクターに用意する立ち絵は1ポーズ×表情6種です。表情はゲーム内イベントに紐づけ、同じイベントでもタイプごとに出し方を変えます。第6の表情はタイプ固有の「らしさ」を担当します。</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>タイプ</th><th>通常（ホーム）</th><th>真剣（対戦開始）</th><th>笑顔（正解）</th><th>固有（誤答）</th><th>喜び（勝利）</th><th>鼓舞（敗北）</th></tr></thead>
+        <tbody id="exprBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-rules">
+    <div class="eyebrow">Staging Rules</div>
+    <h2 id="h-rules">ナビゲーターを「伴走者」に留める演出ルール</h2>
+    <div class="rules">
+      <div class="rule">
+        <h3>色の占有率は2割まで</h3>
+        <p>画面の大半はニュートラルな夜色。タイプカラーはCTA・吹き出し枠・カットインだけに使い、ランクやRPなどプレイヤーの数値は常に白で表示します。</p>
+        <div class="ratio" aria-label="配色比率"><span style="flex:62;background:var(--panel-2);color:var(--muted)">BASE 62%</span><span style="flex:20;background:var(--fg)">PLAYER 20%</span><span style="flex:18;background:var(--nav)">NAV 18%</span></div>
+      </div>
+      <div class="rule">
+        <h3>立ち絵は画面下に小さく</h3>
+        <p>ホームと対戦では直径58pxの丸アイコン＋吹き出し。立ち絵を大きく見せるのは、ナビ選択画面とカットインだけです。</p>
+        <span class="do">○ 問題文と選択肢がいちばん大きい</span>
+        <span class="dont">× 対戦中にキャラが問題文に重なる</span>
+      </div>
+      <div class="rule">
+        <h3>動きはUI側に持たせる</h3>
+        <p>キャラ自体はアニメーションさせません。吹き出しのポップ、1.5秒のカットイン、表情の差し替えで反応を表現します。</p>
+        <span class="do">○ カットインは正解3連続・逆転・勝敗のみ</span>
+        <span class="dont">× 毎問カットインで解答テンポを止める</span>
+      </div>
+      <div class="rule">
+        <h3>セリフは事実＋一言</h3>
+        <p>どのタイプでも、まずプレイヤーの数字や行動に触れてから性格を乗せます。正答率・解答時間・苦手単元など、実データを差し込める文型にします。</p>
+      </div>
+      <div class="rule">
+        <h3>VEXの挑発は人格を攻撃しない</h3>
+        <p>煽る対象は結果とスコアだけ。敗北時は必ず再戦の動機づけで締め、連敗時は挑発レベルを1段下げます。</p>
+      </div>
+      <div class="rule">
+        <h3>無音でも伝わるタイポ</h3>
+        <p>ボイスがない分、吹き出しの文字送り速度をタイプで変えます。LOGIC・ECHOはゆっくり、IGNITEは速く、VEXは一拍ためてから表示。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>参考画像（各タイプのPNG）はこの試作に未同梱です。<code>assets/navigators/{type}_{m|f}.png</code> に置くと、ホログラムの代わりに立ち絵が表示されます。</footer>
+</div>
+
+<script>
+const AX=['分析','共感','熱量','刺激','探究'];
+const T={
+ logic:{k:'LOGIC',c:'var(--logic)',hex:'#3B9BFF',role:'ANALYST',trait:'冷静・分析的・合理的。データで弱点を特定し、最短ルートを示す。',m:'レイ',f:'リゼ',st:[5,2,2,1,3],tempo:'遅め・一定',
+  own:'思案',L:{greet:'データ同期完了。今日の弱点は二次関数。そこから潰そう。',start:'相手の序盤正答率は68%。最初の3問で主導権を取れる。',correct:'正解。解答4.2秒、君の平均より1.1秒速い。',wrong:'誤答。原因は符号の扱いだ。次で修正できる。',win:'勝率予測を上回った。成長曲線は想定以上だ。',lose:'敗因は明確だ。明確なら、直せる。'}},
+ halo:{k:'HALO',c:'var(--halo)',hex:'#3DDC97',role:'PARTNER',trait:'優しく親身な伴走型。小さな前進を見つけて、続ける力を支える。',m:'ハル',f:'ミオ',st:[2,5,3,1,2],tempo:'ふつう・やわらか',
+  own:'励まし',L:{greet:'おかえり。12日連続だね。今日も一緒にやろう。',start:'大丈夫、いつもどおりで行こう。ちゃんと見てるよ。',correct:'うん、いい感じ。ちゃんと身についてる。',wrong:'惜しい！ここはあとで一緒に見直そうね。',win:'やったね。がんばってきた分がちゃんと出たよ。',lose:'悔しいよね。でも二次関数は前より確実に解けてた。'}},
+ ignite:{k:'IGNITE',c:'var(--ignite)',hex:'#FF4D5E',role:'DRIVER',trait:'熱血で行動的。迷う前に一歩を踏ませ、連勝の勢いを最大化する。',m:'カイト',f:'アカリ',st:[1,3,5,3,1],tempo:'速い',
+  own:'檄',L:{greet:'来たな！3連勝中だ、今日も全力で上げにいくぞ！',start:'開幕ダッシュだ！最初の一問で流れをつかめ！',correct:'よっしゃ！その勢いのまま行け！',wrong:'まだまだ！次で取り返せばいい！',win:'勝ったぁ！お前の熱がスコアに出たな！',lose:'負けは燃料だ！もう一戦いくぞ！'}},
+ vex:{k:'VEX',c:'var(--vex)',hex:'#B26BFF',role:'RIVAL',trait:'挑発的なライバル型。あえて煽り、負けん気に火をつける刺激役。',m:'トウマ',f:'ルカ',st:[3,1,3,5,2],tempo:'一拍ためる',
+  own:'呆れ',L:{greet:'へえ、今日も来たんだ。逃げなかったのは褒めてあげる。',start:'相手はA−。君より格上だけど、ビビってる？',correct:'ふーん。それくらいは解けるんだ。',wrong:'今の、本気？……次は外さないでよね。',win:'……まあ、認めてあげなくもないかな。',lose:'そのまま終わる気？相棒なら、やり返しなよ。'}},
+ echo:{k:'ECHO',c:'var(--echo)',hex:'#F2C14E',role:'SCHOLAR',trait:'知的で探究的。答えの先にある「なぜ」へ導く、神秘的な賢者。',m:'ノエル',f:'セラ',st:[4,2,1,1,5],tempo:'ゆっくり',
+  own:'思索',L:{greet:'ようこそ。今日の問いは、昨日より少しだけ深い。',start:'答えは問いの構造の中にある。読み解こう。',correct:'見事。その解法は、もっと遠くまで通じる。',wrong:'誤りもまた手がかり。何が君を迷わせた？',win:'勝利は通過点。次の問いが君を待っている。',lose:'知の旅に敗北はない。未踏の領域があるだけだ。'}},
+};
+const EXPR={greet:'通常',start:'真剣',correct:'笑顔',win:'喜び',lose:'鼓舞'};
+const EMB={
+ logic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 8v8M8 12h8"/></svg>',
+ halo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>',
+ ignite:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7 6 1-5 4 2 8-6-4-6 4 2-8-5-4 6-1z"/></svg>',
+ vex:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/><path d="M12 2v4M12 18v4" /></svg>',
+ echo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>',
+};
+const SIL='<svg class="sil" viewBox="0 0 100 120" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><path fill="currentColor" d="M50 14c13 0 21 9 21 23 0 10-4 18-10 22v6c14 3 30 10 34 22l3 33H2l3-33c4-12 20-19 34-22v-6c-6-4-10-12-10-22 0-14 8-23 21-23z"/></svg>';
+
+let st={t:'logic',g:'m',s:'select'};
+try{const s=JSON.parse(localStorage.getItem('navui')||'{}');if(T[s.t])st.t=s.t;if(s.g==='f'||s.g==='m')st.g=s.g;if(s.s)st.s=s.s}catch(e){}
+const save=()=>{try{localStorage.setItem('navui',JSON.stringify(st))}catch(e){}};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+function portrait(t,g,expr){
+  const d=T[t];
+  return `<div class="portrait" style="--c:${d.c}">${SIL}<img src="assets/navigators/${t}_${g}.png" alt="" onerror="this.remove()"><span class="mark">${EMB[t]}</span>${expr?`<span class="expr">${expr}</span>`:''}<div class="plate"><b>${d[g]}</b><span>${d.k}</span></div></div>`;
+}
+function navbar(ev){
+  const d=T[st.t];
+  return portrait(st.t,st.g)+`<div class="bubble pop" data-name="${d[st.g]} · ${ev==='wrong'?d.own:EXPR[ev]}">${d.L[ev]}</div>`;
+}
+
+const NOTES={
+ select:{h:'① ナビ選択',p:'初回起動時とマイページから入る、唯一キャラクターが主役になる画面です。',li:['<b>タイプ→性別の2段階</b>で選ばせる。性格で選んでから見た目を決める順番にし、「誰と勉強したいか」を先に考えてもらう。','<b>5軸バー</b>（分析・共感・熱量・刺激・探究）で性格の違いを数字で見せ、名前を知らなくても選べるようにする。','<b>サンプルのセリフ</b>は実際のホーム画面の一言をそのまま出す。選んだあとに受け取る体験の試食です。','画面全体の差し色が即座にタイプカラーへ切り替わり、「この色が自分の相棒の色」だと覚えてもらう。']},
+ home:{h:'② ホーム',p:'主役はランクカード。ナビゲーターは画面下の丸アイコンと一言だけに抑えます。',li:['<b>ランク・RP・順位は白</b>で固定し、どのナビを選んでもプレイヤーの数字は同じ見え方にする。','<b>CTA「ランクマッチ開始」</b>だけがタイプカラー。押す場所がひと目でわかる。','ナビの一言は<b>連続学習日数・連勝・苦手単元</b>などの実データを差し込む文型。毎日違う内容になる。','クエストや科目は無彩色。色は最小限にして、学力競争の緊張感を保つ。']},
+ match:{h:'③ 対戦',p:'問題文と選択肢が最大。ナビは下で反応するだけで、解答の邪魔をしません。選択肢を押して反応を確かめてください。',li:['<b>正解・誤答の判定色は緑と赤の固定セマンティック色</b>。タイプカラーとは役割を分ける（HALOやIGNITEを選んでも混同しないよう枠線と背景の両方で表現）。','<b>正解時のみ1.5秒のカットイン</b>（本番は3連続正解・逆転時のみを想定）。立ち絵の差し替えと帯の流れで「動いている感」を作る。','誤答時はタイプ固有の表情（LOGIC＝思案、VEX＝呆れ など）で、性格の違いがいちばん出る瞬間にする。','タイマーは白い細線。焦りを煽る赤は使わない。']},
+ result:{h:'④ リザルト',p:'勝敗とRPの増減を先に、ナビのコメントはそのあとに置きます。',li:['<b>WIN / +32 RP</b> を最上段に。ゲージが伸びる演出で昇格への距離を見せる。','<b>苦手判定</b>を数値の表で出し、ナビのコメントがそれを受けて次の行動を提案する流れ。','ナビの表情は勝利＝喜び、敗北＝鼓舞。敗北時もどのタイプも必ず「次の一戦」に向かう言葉で締める。','「もう一戦」をタイプカラーのCTAにして、連戦の導線を最短にする。']},
+};
+
+function render(){
+  const d=T[st.t];
+  document.documentElement.style.setProperty('--nav',d.hex);
+  $('#hTitle').textContent=d[st.g];
+  $$('#strip button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===st.t));
+  $$('#typegrid button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===st.t));
+  $$('#gender button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.g===st.g));
+  $('#selPortrait').innerHTML=portrait(st.t,st.g,'通常');
+  $('#selRole').textContent=d.role;
+  $('#selType').textContent=d.k;
+  $('#selTrait').textContent=d.trait;
+  $('#selBars').innerHTML=AX.map((a,i)=>`<div><span>${a}</span><i style="--v:${d.st[i]}"></i></div>`).join('');
+  $('#selQuote').textContent='「'+d.L.greet+'」';
+  $('#homeNavChip').textContent='NAV: '+d.k;
+  $('[data-slot="nav-greet"]').innerHTML=navbar('greet');
+  $('[data-slot="nav-match"]').innerHTML=navbar('start');
+  const w=st.win!==false;$('#resW').textContent=w?'WIN':'LOSE';$('#resD').textContent=w?'+32 RP':'−18 RP';$('#resD').style.color=w?'var(--good)':'var(--bad)';
+  $('[data-slot="nav-result"]').innerHTML=navbar(w?'win':'lose');
+  $('#cutin').innerHTML=portrait(st.t,st.g)+`<div><strong>NICE!</strong><small>${d[st.g]}：${d.L.correct}</small></div>`;
+  $$('#answers button').forEach(b=>b.className='');
+  $$('.screen').forEach(s=>s.hidden=s.dataset.screen!==st.s);
+  $$('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.s===st.s));
+  const n=NOTES[st.s];
+  $('#notes').innerHTML=`<div class="eyebrow">Screen Notes</div><h2>${n.h}</h2><p style="margin:0;color:var(--muted)">${n.p}</p><ol>${n.li.map(x=>`<li>${x}</li>`).join('')}</ol>
+   <div class="legend"><span><i style="background:var(--fg)"></i>プレイヤー情報</span><span><i style="background:var(--nav)"></i>ナビ／CTA</span><span><i style="background:var(--good)"></i>正解</span><span><i style="background:var(--bad)"></i>誤答</span></div>`;
+  save();
+}
+
+// build static lists
+$('#strip').innerHTML=Object.entries(T).map(([k,d])=>`<button data-t="${k}" style="--c:${d.c}" aria-pressed="false"><b>${EMB[k]}${d.k}</b><span>${d.m} / ${d.f}</span></button>`).join('');
+$('#typegrid').innerHTML=Object.entries(T).map(([k,d])=>`<button data-t="${k}" style="--c:${d.c}" aria-pressed="false" aria-label="${d.k}">${EMB[k]}${d.k}</button>`).join('');
+$('#types').innerHTML=Object.entries(T).map(([k,d])=>`<article class="tcard" style="--c:${d.c}">
+  <div class="pair">${portrait(k,'m')}${portrait(k,'f')}</div>
+  <header>${EMB[k]}<h3>${d.k}</h3></header>
+  <dl><div><dt>性格</dt><dd>${d.trait}</dd></div>
+  <div><dt>カラー</dt><dd><code>${d.hex}</code></dd></div>
+  <div><dt>文字送り</dt><dd>${d.tempo}</dd></div>
+  <div><dt>口調サンプル</dt><dd>「${d.L.start}」</dd></div></dl></article>`).join('');
+$('#exprBody').innerHTML=Object.entries(T).map(([k,d])=>`<tr style="--c:${d.c}"><td class="t">${d.k}<br><span style="font-weight:500;font-size:11px;color:var(--muted)">${d.m}／${d.f}</span></td>${['greet','start','correct','wrong','win','lose'].map(e=>`<td>${e==='wrong'?`<b style="color:var(--c)">${d.own}</b><br>`:''}${d.L[e]}</td>`).join('')}</tr>`).join('');
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  if(b.dataset.t){st.t=b.dataset.t;render();return}
+  if(b.dataset.g){st.g=b.dataset.g;render();return}
+  if(b.dataset.s){st.s=b.dataset.s;if(st.s==='result')st.win=true;render();return}
+  if(b.dataset.go){st.s=b.dataset.go;render();return}
+  if(b.id==='selGo'){st.s='home';render();return}
+  if(b.parentElement.id==='subjects'){$$('#subjects button').forEach(x=>x.setAttribute('aria-pressed',x===b));return}
+  if(b.parentElement.id==='answers'){
+    const ok=b.dataset.ok==='1';st.win=ok;
+    $$('#answers button').forEach(x=>x.className=x.dataset.ok==='1'?'ok':(x===b?'ng':''));
+    $('[data-slot="nav-match"]').innerHTML=navbar(ok?'correct':'wrong');
+    if(ok){$('#scMe').textContent='3';const c=$('#cutin');c.classList.remove('show');void c.offsetWidth;c.classList.add('show')}
+    else $('#scOp').textContent='3';
+    setTimeout(()=>{if(st.s==='match'){st.s='result';render();$('#scMe').textContent='2';$('#scOp').textContent='2'}},2200);
+  }
+});
+render();
+</script>
