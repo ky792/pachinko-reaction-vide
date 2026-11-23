@@ -232,7 +232,10 @@
   function drawGarden(d, p, x, z, t, it) {
     const g = d.g;
     const gart = it && it.art ? img(it.art) : null;
-    if (gart) { const w = d.u * 1.1, h = (w * gart.naturalHeight) / gart.naturalWidth, [px, py] = d.P(x, 0, z); drawArt(g, gart, null, px - w / 2, py - h + w * 0.08, w, h, d.team || '#ffffff', it.id); return; }
+    if (gart) { // 中身の範囲を検出して、幅0.95u・高さ1.25u以内に収め、下端を接地点に合わせる
+      const K = keyed(gart), B = K.box, k = Math.min((d.u * 0.95) / (B.x1 - B.x0), (d.u * 1.25) / (B.y1 - B.y0)), [px, py] = d.P(x, 0, z);
+      drawArt(g, gart, null, px - ((B.x0 + B.x1) / 2) * k, py - B.y1 * k, gart.naturalWidth * k, gart.naturalHeight * k, d.team || '#ffffff', it.id); return;
+    }
     switch (p.type) {
       case 'tree': d.rod([x, 0, z], [x, 0.5, z], 0.07, hex(p.trunk)); if (p.shape === 'pine') [0.32, 0.26, 0.18].forEach((r, k) => d.cone(x, 0.4 + k * 0.2, z, r, 0.35, p.leaf)); else [[0, 0.62, 0, 0.3], [0.16, 0.52, 0.1, 0.22], [-0.15, 0.55, -0.05, 0.22]].forEach(([dx, y, dz, r]) => d.ball(x + dx, y, z + dz, r, p.leaf)); break;
       case 'bamboo': for (let k = 0; k < 4; k++) { const dx = (k % 2) * 0.14 - 0.07, dz = k > 1 ? 0.1 : -0.1, h = 0.9 + k * 0.12; d.rod([x + dx, 0, z + dz], [x + dx, h, z + dz], 0.05, '#5fa860'); } break;
