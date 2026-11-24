@@ -1,0 +1,147 @@
+/* ナビ選択画面（ソシャゲ型）。色は --c（選択中タイプの色）だけ。スマホ基準、960px 以上で左右に情報を広げる。 */
+.screen--gs{position:relative;min-height:100dvh;display:grid;grid-template-rows:auto 1fr auto;overflow:hidden;
+  padding:calc(12px + env(safe-area-inset-top,0px)) var(--gut-r) calc(12px + env(safe-area-inset-bottom,0px)) var(--gut-l);
+  --c-20:color-mix(in oklab,var(--c) 20%,transparent);--c-40:color-mix(in oklab,var(--c) 40%,transparent);--c-hi:color-mix(in oklab,var(--c) 55%,#fff)}
+
+/* ---- 背景ステージ ---- */
+.gs-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.gs-bg__burst{position:absolute;left:50%;top:42%;width:170vmax;aspect-ratio:1;translate:-50% -50%;
+  background:repeating-conic-gradient(from 0deg,var(--c-20) 0 6deg,transparent 6deg 18deg);
+  mask-image:radial-gradient(circle,#000 0,transparent 42%);animation:gsSpin 90s linear infinite;opacity:.9}
+.gs-bg__burst::after{content:"";position:absolute;inset:30%;border-radius:50%;background:radial-gradient(circle,var(--c-40),transparent 60%)}
+.gs-bg__ring{position:absolute;left:50%;top:42%;width:min(92vw,560px);aspect-ratio:1;translate:-50% -50%;border-radius:50%;border:1px dashed var(--c-40);animation:gsSpin 50s linear infinite}
+.gs-bg__ring--2{width:min(70vw,420px);border:2px solid var(--c-20);border-top-color:var(--c);animation-duration:14s;animation-direction:reverse}
+.gs-bg__word{position:absolute;right:-.08em;top:50%;translate:0 -50%;writing-mode:vertical-rl;font-family:var(--f-disp);font-weight:700;
+  font-size:clamp(120px,34vw,300px);line-height:.8;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px var(--c-40);opacity:.8}
+.gs-bg__stripe{position:absolute;left:-20%;right:-20%;bottom:16%;height:120px;rotate:-8deg;
+  background:linear-gradient(90deg,transparent,var(--c-20) 30%,var(--c-40) 50%,var(--c-20) 70%,transparent);filter:blur(1px)}
+.gs-spark{position:absolute;left:calc(var(--i) * 7.3%);bottom:-10px;width:4px;height:4px;border-radius:50%;background:var(--c-hi);box-shadow:0 0 8px var(--c);
+  opacity:0;animation:gsRise calc(6s + var(--i) * .37s) linear infinite;animation-delay:calc(var(--i) * -.83s)}
+
+/* ---- 上部 ---- */
+.gs-top{position:relative;z-index:4;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.gs-top h1{font-family:var(--f-body);font-weight:900;font-size:clamp(18px,5vw,26px);text-shadow:0 2px 10px rgba(0,0,0,.8)}
+.gs-top .eyebrow{color:var(--c-hi)}
+.gs-chip{flex:none;padding:6px 12px;border:1px solid var(--c-40);background:rgba(6,10,20,.6);font-size:12px;font-weight:700;clip-path:var(--cut)}
+.gs-chip--ghost{color:var(--muted)}
+
+/* ---- ステージ（立ち絵・名前・吹き出し） ---- */
+.gs-stage{position:relative;z-index:2;min-height:clamp(400px,60dvh,700px)}
+.gs-art{position:absolute;left:50%;bottom:0;height:100%;aspect-ratio:295/500;translate:-50% 0;animation:gsArtIn .55s cubic-bezier(.2,.8,.2,1) both}
+.gs-art__img{width:100%;height:100%;object-fit:cover;display:block;animation:gsFloat 5s ease-in-out infinite;
+  -webkit-mask-image:linear-gradient(90deg,transparent 2%,#000 24%,#000 76%,transparent 98%),linear-gradient(180deg,transparent,#000 14%,#000 72%,transparent);-webkit-mask-composite:source-in;
+  mask-image:linear-gradient(90deg,transparent 2%,#000 24%,#000 76%,transparent 98%),linear-gradient(180deg,transparent,#000 14%,#000 72%,transparent);mask-composite:intersect;
+  filter:drop-shadow(0 0 30px var(--c-40))}
+.gs-art.bounce .gs-art__img{animation:gsBounce .35s ease-out,gsFloat 5s ease-in-out .35s infinite}
+.gs-bubble::after{content:"TAP で次へ ▸";display:block;margin-top:2px;text-align:right;font-family:var(--f-num);font-size:9px;letter-spacing:.15em;color:color-mix(in oklab,var(--c) 70%,#0B1430);animation:gsBlink 2.4s ease-in-out infinite}
+.gs-bubble{position:absolute;z-index:3;top:4%;right:0;max-width:min(62%,300px);margin:0;padding:10px 14px;font-size:13px;font-weight:700;line-height:1.55;
+  background:rgba(250,252,255,.94);color:#0B1430;border-radius:14px 14px 4px 14px;box-shadow:0 6px 20px rgba(0,0,0,.4),0 0 0 2px var(--c-40);animation:gsPop .4s .35s both}
+.gs-bubble.pop{animation:gsPop .3s both}
+.gs-plate{position:absolute;z-index:3;left:0;bottom:6%;display:grid;gap:2px;max-width:70%;text-shadow:0 2px 12px rgba(0,0,0,.9)}
+.gs-plate>*{animation:gsSlide .5s cubic-bezier(.2,.8,.2,1) both}
+.gs-plate>:nth-child(2){animation-delay:.08s}.gs-plate>:nth-child(3){animation-delay:.16s}.gs-plate>:nth-child(4){animation-delay:.24s}
+.gs-plate__type{display:inline-flex;align-items:center;gap:6px;width:max-content;padding:3px 10px 3px 6px;font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:.12em;color:#fff;background:var(--c);clip-path:polygon(0 0,100% 0,calc(100% - 8px) 100%,0 100%);text-shadow:none}
+.gs-plate__type small{font-family:var(--f-body);font-size:10px;letter-spacing:0;opacity:.85}
+.gs-plate__type .emblem{width:15px;height:15px}
+.gs-plate__name{font-family:var(--f-body);font-weight:900;font-size:clamp(48px,15vw,84px);line-height:1;letter-spacing:.02em;color:#fff;
+  text-shadow:3px 3px 0 color-mix(in oklab,var(--c) 70%,#000),0 0 22px var(--c-40),0 4px 18px rgba(0,0,0,.8)}
+.gs-plate__sub{display:flex;gap:10px;align-items:baseline;font-family:var(--f-num);font-size:12px;letter-spacing:.25em;color:var(--muted)}
+.gs-plate__sub b{font-family:var(--f-body);letter-spacing:.04em;font-size:14px;color:var(--c-hi)}
+.gs-plate__tag{margin:4px 0 0;font-weight:700;font-size:13px;padding-left:10px;border-left:3px solid var(--c)}
+.gs-side{display:none}
+
+/* ---- 下部：ロスターとボタン ---- */
+.gs-dock{position:relative;z-index:4;display:grid;gap:10px;margin-inline:calc(-1 * var(--gut-l)) calc(-1 * var(--gut-r));padding:10px var(--gut-r) 0 var(--gut-l);
+  background:linear-gradient(180deg,transparent,rgba(6,10,20,.85) 30%,rgba(6,10,20,.95))}
+.gs-roster{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding:8px 2px 6px;scrollbar-width:none}
+.gs-roster::-webkit-scrollbar{display:none}
+.gs-face{position:relative;flex:none;width:58px;height:74px;scroll-snap-align:center;border:2px solid color-mix(in oklab,var(--c) 45%,#1F2A47);background:#0B1226;
+  clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);transition:transform .2s,border-color .2s,filter .2s;filter:saturate(.55) brightness(.75)}
+.gs-face__img{position:absolute;inset:0;background-size:280%;background-position:var(--fx) var(--fy);background-repeat:no-repeat}
+.gs-face__emb{position:absolute;left:3px;top:3px;width:15px;height:15px;color:var(--c);filter:drop-shadow(0 0 2px #000)}
+.gs-face__emb .emblem{width:100%;height:100%}
+.gs-face__name{position:absolute;left:0;right:0;bottom:0;padding:8px 0 2px;font-size:10px;font-weight:700;text-align:center;background:linear-gradient(transparent,rgba(0,0,0,.85))}
+.gs-face:hover{filter:none}
+.gs-face[aria-pressed="true"]{transform:translateY(-6px) scale(1.06);border-color:var(--c);filter:none;box-shadow:0 0 0 1px #fff inset}
+.gs-face[aria-pressed="true"]::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,color-mix(in oklab,var(--c) 45%,transparent));pointer-events:none}
+.gs-cta{display:grid;grid-template-columns:auto 1fr;gap:8px}
+.gs-more{display:inline-flex;align-items:center;gap:6px;padding:0 14px;min-height:54px;font-weight:700;font-size:13px;border:1px solid var(--c-40);background:rgba(14,22,42,.85);clip-path:var(--cut)}
+.gs-more .emblem{width:16px;height:16px;color:var(--c)}
+.gs-go{position:relative;overflow:hidden;min-height:54px;font-family:var(--f-body);font-weight:900;font-size:17px;letter-spacing:.06em;color:#fff;
+  background:linear-gradient(100deg,color-mix(in oklab,var(--c) 85%,#000),var(--c) 45%,var(--c-hi));clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);
+  box-shadow:0 0 24px var(--c-40);text-shadow:0 1px 2px rgba(0,0,0,.45)}
+.gs-go span{position:relative;z-index:1}
+.gs-go i{position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 45%,transparent 60%);translate:-120% 0;animation:gsShine 2.8s ease-in-out infinite}
+.gs-go:active{scale:.98}
+
+/* ---- 詳細シート・確認モーダル ---- */
+.gs-advice{margin:8px 0 0;padding:8px 10px;font-size:12px;color:var(--muted);background:rgba(14,22,42,.7);border-left:3px solid var(--c)}
+.gs-advice b{display:block;color:var(--fg);font-size:13px}
+.gs-note{margin:6px 0 0;font-size:11px;color:var(--dim)}
+.gs-radar{width:100%;max-width:200px;display:block;margin:4px auto 0;overflow:visible}
+.gs-radar__grid{fill:none;stroke:var(--line-2);stroke-width:.7}
+.gs-radar__val{fill:var(--c-40);stroke:var(--c);stroke-width:1.5;stroke-linejoin:round}
+.gs-radar text{font-size:7.5px;fill:var(--muted);text-anchor:middle;font-family:var(--f-body)}
+.gs-sheet{position:fixed;inset:0;z-index:50;display:grid;align-items:end}
+.gs-sheet__bg{position:absolute;inset:0;background:rgba(3,6,14,.7);backdrop-filter:blur(4px);animation:fadeIn .25s}
+.gs-sheet__body{position:relative;max-height:82dvh;overflow:auto;padding:16px var(--gut-r) calc(20px + env(safe-area-inset-bottom,0px)) var(--gut-l);
+  background:linear-gradient(180deg,#0E162A,#0A1020);border-top:2px solid var(--c);box-shadow:0 -10px 40px rgba(0,0,0,.6);animation:gsSheet .35s cubic-bezier(.2,.8,.2,1)}
+.gs-sheet__head{display:flex;justify-content:space-between;align-items:center}
+.gs-sheet h2{font-family:var(--f-body);font-weight:900;font-size:30px;margin-top:6px}
+.gs-sheet h2 small{display:block;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:.06em}
+.gs-sheet h3{font-size:13px;margin:14px 0 6px;color:var(--c-hi)}
+.gs-sheet__bio{color:var(--muted);margin:8px 0 0}
+.gs-sheet__cols{display:grid;gap:4px}
+.gs-x{width:36px;height:36px;font-size:22px;line-height:1;border:1px solid var(--line-2);border-radius:50%}
+.gs-modal{position:fixed;inset:0;z-index:55;display:grid;place-items:center;padding:20px;background:rgba(3,6,14,.78);backdrop-filter:blur(6px);animation:fadeIn .2s}
+.gs-modal__card{position:relative;width:min(100%,360px);display:grid;justify-items:center;gap:6px;padding:0 18px 18px;text-align:center;
+  background:linear-gradient(180deg,color-mix(in oklab,var(--c) 18%,#0E162A),#0A1020);border:1px solid var(--c-40);clip-path:var(--cut);animation:gsPop .3s both}
+.gs-modal__art{width:100%;height:230px;overflow:hidden;margin-inline:-18px;width:calc(100% + 36px)}
+.gs-modal__art img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;-webkit-mask-image:linear-gradient(180deg,#000 60%,transparent);mask-image:linear-gradient(180deg,#000 60%,transparent)}
+.gs-modal__card .eyebrow{color:var(--c-hi);letter-spacing:.3em;margin-top:-18px}
+.gs-modal__card p{margin:0;font-size:16px}.gs-modal__card p b{font-size:22px;font-weight:900;margin-right:2px}
+.gs-modal__card small{color:var(--muted);font-size:11px}
+.gs-modal__btns{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;width:100%;margin-top:10px}
+.gs-modal__btns .btn{min-height:48px}
+
+/* ---- 契約演出（強化版） ---- */
+.contract__flash{position:absolute;inset:0;background:#fff;animation:gsFlash .6s ease-out both;pointer-events:none}
+.contract__rays{position:absolute;left:50%;top:45%;width:200vmax;aspect-ratio:1;translate:-50% -50%;background:repeating-conic-gradient(var(--t-40) 0 4deg,transparent 4deg 14deg);
+  mask-image:radial-gradient(circle,#000,transparent 45%);animation:gsSpin 12s linear infinite,fadeIn .4s;pointer-events:none}
+.contract__stamp{font-family:var(--f-disp);font-weight:700;letter-spacing:.3em;font-size:12px;padding:4px 12px;border:2px solid var(--theme);color:var(--theme);rotate:-6deg;animation:gsStamp .45s .55s cubic-bezier(.3,1.6,.5,1) both}
+.contract__inner{position:relative}
+.contract__inner b{animation:gsSlide .5s .3s both}
+
+@keyframes gsSpin{to{rotate:360deg}}
+@keyframes gsRise{0%{opacity:0;transform:translateY(0)}15%{opacity:.9}100%{opacity:0;transform:translateY(-90vh)}}
+@keyframes gsArtIn{from{opacity:0;translate:calc(-50% + 50px) 0;scale:.96}}
+@keyframes gsFloat{50%{transform:translateY(-8px)}}
+@keyframes gsBounce{40%{transform:translateY(-14px) scale(1.02)}}
+@keyframes gsBlink{50%{opacity:.35}}
+@keyframes gsPop{from{opacity:0;transform:scale(.85) translateY(6px)}}
+@keyframes gsSlide{from{opacity:0;transform:translateX(-24px)}}
+@keyframes gsShine{0%,55%{translate:-120% 0}100%{translate:120% 0}}
+@keyframes gsSheet{from{transform:translateY(40px);opacity:0}}
+@keyframes gsFlash{from{opacity:.9}to{opacity:0}}
+@keyframes gsStamp{from{opacity:0;scale:2.2}}
+
+@media (min-width:960px){
+  .screen--gs{padding-top:24px}
+  .gs-stage{min-height:min(70dvh,720px)}
+  .gs-art{left:46%}
+  .gs-plate{left:2%;bottom:14%;max-width:34%}
+  .gs-bubble{right:324px;top:6%;max-width:250px}
+  .gs-side{display:grid;gap:8px;position:absolute;z-index:3;right:0;top:50%;translate:0 -50%;width:300px;padding:14px;
+    background:rgba(10,16,32,.82);border:1px solid var(--c-40);clip-path:var(--cut);backdrop-filter:blur(6px);animation:gsPop .4s .2s both}
+  .gs-side__bio{margin:0;font-size:12px;color:var(--muted);line-height:1.7}
+  .gs-dock{grid-template-columns:1fr auto;align-items:end;gap:20px}
+  .gs-roster{justify-content:center}
+  .gs-face{width:66px;height:84px}
+  .gs-cta{width:420px}
+  .gs-sheet{place-items:center}
+  .gs-sheet__body{width:min(760px,92vw);max-height:84dvh;border:1px solid var(--c-40);border-top-width:2px}
+  .gs-sheet__cols{grid-template-columns:1fr 1fr;gap:24px}
+}
+@media (prefers-reduced-motion:reduce){
+  .screen--gs *,.contract *{animation:none!important}
+}

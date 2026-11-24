@@ -147,6 +147,7 @@
     confirmed: !!saved.confirmed,
     lineIdx: 0,
     expr: 'default',
+    sel: { expr: 0, line: 0, detail: false, confirming: false }, // 選択画面：表情・セリフ・詳細シート・確認モーダル
   };
   const persist = () => { try { localStorage.setItem(KEY, JSON.stringify({ typeId: state.typeId, gender: state.gender, confirmed: state.confirmed })); } catch (e) {} };
 
@@ -168,28 +169,9 @@
 
   /* ---------- 画面 ---------- */
   function renderSelect() {
-    const t = type(), c = char();
-    root.innerHTML = `<div class="screen screen--select">
-      <header class="sel-head">
-        <div><span class="eyebrow">NAVIGATOR CONTRACT</span><h1>専属ナビゲーターを選ぶ</h1></div>
-        ${state.confirmed ? '<button class="link" data-action="back-home">ホームへ戻る</button>' : '<span class="step">STEP 1/1</span>'}
-      </header>
-      ${UI.TypeTabs(D.types, t.id)}
-      <div class="sel-grid">
-        <div class="stage">
-          <div class="stage__ring" aria-hidden="true"></div>
-          <div class="stage__type" aria-hidden="true">${t.name}</div>
-          ${UI.Portrait({ char: c, expr: 'default', cls: 'portrait--stage' })}
-          <div class="stage__pad" aria-hidden="true"></div>
-          <div class="stage__tagline">${UI.esc(t.tagline)}</div>
-          ${UI.GenderToggle(t, state.gender)}
-        </div>
-        ${UI.NavigatorProfile(D, t, c)}
-      </div>
-      <div class="confirm-bar">
-        <button class="btn btn--main" data-action="confirm">${UI.Emblem(t.emblem)}${UI.esc(c.name)}と契約する</button>
-      </div>
-    </div>`;
+    root.innerHTML = window.SelectView.render({ D, t: type(), c: char(), gender: state.gender, confirmed: state.confirmed, sel: state.sel });
+    const ro = root.querySelector('.gs-roster'), on = ro && ro.querySelector('[aria-pressed="true"]'); // 選択中のナビをロスターの中央へ
+    if (on) ro.scrollLeft = on.offsetLeft - (ro.clientWidth - on.offsetWidth) / 2;
   }
 
   function renderHome() {
@@ -266,10 +248,10 @@
     const t = type(), c = char();
     const fx = document.createElement('div');
     fx.className = 'contract';
-    fx.innerHTML = `<div class="contract__inner">${UI.Portrait({ char: c, expr: 'smile', cls: 'portrait--fx' })}<span class="eyebrow">CONTRACT COMPLETE</span><b>${UI.esc(c.name)}</b><p>「${UI.esc(c.catch)}」</p></div>`;
+    fx.innerHTML = `<span class="contract__rays"></span><span class="contract__flash"></span><div class="contract__inner">${UI.Portrait({ char: c, expr: 'smile', cls: 'portrait--fx' })}<span class="contract__stamp">CONTRACT COMPLETE</span><b>${UI.esc(c.name)}</b><p>「${UI.esc(c.catch)}」</p></div>`;
     document.body.appendChild(fx);
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setTimeout(() => { fx.classList.add('out'); state.expr = 'smile'; go('home'); setTimeout(() => fx.remove(), 400); }, reduce ? 600 : 1500);
+    setTimeout(() => { fx.classList.add('out'); state.expr = 'smile'; go('home'); setTimeout(() => fx.remove(), 400); }, reduce ? 600 : 2100);
   }
 
   /* 吹き出しだけ差し替え（全再描画しない） */
@@ -280,14 +262,26 @@
     const p = root.querySelector('.portrait--home'); if (p) p.outerHTML = UI.Portrait({ char: char(), expr, cls: 'portrait--home' });
   }
 
+  /* Esc で選択画面の詳細・確認を閉じる */
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !root.querySelector('.screen--gs')) return;
+    if (state.sel.confirming) { state.sel.confirming = false; window.SelectView.overlay(root, 'confirm', false); }
+    else if (state.sel.detail) { state.sel.detail = false; window.SelectView.overlay(root, 'detail', false); }
+  });
+
   root.addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.pick) { const [ty, g] = b.dataset.pick.split(':'); if (ty !== state.typeId || g !== state.gender) { state.typeId = ty; state.gender = g; state.sel = { expr: 0, line: 0, detail: false, confirming: false }; render(); } return; }
     if (b.dataset.type) { state.typeId = b.dataset.type; render(); return; }
     if (b.dataset.gender) { state.gender = b.dataset.gender; render(); return; }
     if (b.dataset.statsSubject) { state.statsSubject = b.dataset.statsSubject; render(); window.scrollTo(0, 0); return; }
     if (b.dataset.elective) { setElective(b.dataset.electiveSubject, b.dataset.elective); render(); return; }
     switch (b.dataset.action) {
-      case 'confirm': state.confirmed = true; state.lineIdx = 0; persist(); confirmFx(); break;
+      case 'sel-talk': window.SelectView.talk(root, char(), state.sel); break;
+      case 'sel-detail': state.sel.detail = !state.sel.detail; window.SelectView.overlay(root, 'detail', state.sel.detail, D, type(), char()); break;
+      case 'sel-confirm': state.sel.confirming = true; window.SelectView.overlay(root, 'confirm', true, D, type(), char()); break;
+      case 'sel-cancel': state.sel.confirming = false; window.SelectView.overlay(root, 'confirm', false); break;
+      case 'confirm': state.sel.confirming = false; if (window.SelectView) window.SelectView.overlay(root, 'confirm', false); state.confirmed = true; state.lineIdx = 0; persist(); confirmFx(); break;
       case 'change-nav': go('select'); break;
       case 'back-home': go('home'); break;
       case 'talk': state.lineIdx++; setDialogue(currentLine(), state.lineIdx % 2 ? 'smile' : 'default'); break;
