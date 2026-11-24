@@ -318,3 +318,34 @@
 .mx-cut.has-anim.is-out .mx-stamp{animation-delay:calc(3.3s * var(--sp))}
 @media (prefers-reduced-motion:reduce){.fin__strip{animation:none;transform:translateX(calc(-100% * (var(--n) - 1) / var(--n)))}}
 .mx-stamp b{white-space:nowrap}
+
+/* ==== スパロボ風の見せ方：ナビのカットイン・HP ゲージ・背景スクロール ==== */
+.fin__hp{position:absolute;z-index:6;left:8px;right:8px;top:6px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fin__hpbar{display:grid;gap:2px;font-size:10px;font-weight:700}
+.fin__hpbar.op{text-align:right}
+.fin__hpbar i{display:block;height:8px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.25);clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%)}
+.fin__hpbar.op i{transform:scaleX(-1)}
+.fin__hpbar b{display:block;height:100%;background:linear-gradient(90deg,#3df27a,#c8ff6a)}
+.fin__hpbar b.drain{animation:finHp calc(.45s * var(--T)) calc(1.82s * var(--T)) ease-in both}
+@keyframes finHp{0%{filter:brightness(2.5)}100%{width:0;filter:none}}
+.fin__pilot{position:absolute;z-index:7;top:16%;width:88%;display:grid;grid-template-columns:86px 1fr;align-items:center;gap:10px;padding:6px 14px 6px 6px;opacity:0;
+  background:linear-gradient(90deg,color-mix(in oklab,var(--pc) 55%,#05080f),rgba(5,8,15,.92));border-block:2px solid var(--pc);box-shadow:0 0 24px color-mix(in oklab,var(--pc) 45%,transparent);
+  clip-path:polygon(0 0,100% 0,calc(100% - 18px) 100%,0 100%);animation:finPilot calc(.85s * var(--T)) calc(.55s * var(--T)) cubic-bezier(.2,.8,.2,1) both}
+.fin__pilot.me{left:-2%}
+.fin__pilot.op{right:-2%;grid-template-columns:1fr 86px;padding:6px 6px 6px 14px;background:linear-gradient(270deg,color-mix(in oklab,var(--pc) 55%,#05080f),rgba(5,8,15,.92));clip-path:polygon(0 0,100% 0,100% 100%,18px 100%);animation-name:finPilotOp}
+.fin__pilot.op .fin__pface{order:2}
+.fin__pface{width:86px;height:86px;overflow:hidden;border:2px solid var(--pc);background:#05080f}
+.fin__pface .portrait{width:100%;height:100%;--zm:1.5}
+.fin__pilot p{margin:0;font-family:var(--f-body);font-weight:900;font-size:clamp(15px,4.4vw,20px);line-height:1.35;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.6)}
+.fin__pilot p small{display:block;font-family:var(--f-num);font-size:10px;letter-spacing:.2em;color:color-mix(in oklab,var(--pc) 50%,#fff);font-weight:700}
+@keyframes finPilot{0%{opacity:0;transform:translateX(-60%)}18%{opacity:1;transform:translateX(0)}82%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(15%)}}
+@keyframes finPilotOp{0%{opacity:0;transform:translateX(60%)}18%{opacity:1;transform:translateX(0)}82%{opacity:1;transform:translateX(0)}100%{opacity:0;transform:translateX(-15%)}}
+/* 突進中に背景が流れる（遠景のビル群と雲の帯） */
+.fin__scroll{inset:0;opacity:0;
+  background:linear-gradient(180deg,transparent 55%,rgba(255,255,255,.05) 55% 56%,transparent 56%),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 18px,transparent 18px 26px,rgba(255,255,255,.04) 26px 60px,transparent 60px 90px);
+  -webkit-mask-image:linear-gradient(180deg,transparent 30%,#000 55%,#000 80%,transparent);mask-image:linear-gradient(180deg,transparent 30%,#000 55%,#000 80%,transparent);
+  animation:finScroll calc(.9s * var(--T)) calc(1.0s * var(--T)) linear both}
+@keyframes finScroll{0%{opacity:0;background-position:0 0,0 0}20%,80%{opacity:1}100%{opacity:0;background-position:0 0,-900px 0}}
+.fin .fin__name{bottom:8%}
+.fin .fin__hpbar,.fin .fin__pface{position:relative}

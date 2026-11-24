@@ -239,8 +239,13 @@
   /* 決め技シーン（約 3.5 秒）：陣地の決着で、勝った側の機体が技を決める。
      0.0 顔アップと技名 → 0.7 溜め → 1.25 突進 → 1.65 インパクトフレーム → 1.8 技が炸裂・相手が吹き飛ぶ → 2.7 スタンプ。
      相手が勝ったときは左右を反転して、相手側から撃ってくる。本番の動画が届いたらここで再生する */
+  /* 決め技でナビが叫ぶ一言（タイプ別）。{tech} は技名 */
+  const SHOUT = { logic: '{tech}、照準完了。撃て。', halo: 'お願い、{tech}！', ignite: 'いっけえ！{tech}！', vex: '沈め。{tech}。', echo: '解き放て——{tech}。' };
   function Finisher(b, ctx, area) {
     const M = window.Mechs, s = area.subject, meWin = area.win;
+    const nav = meWin ? { char: ctx.char, type: ctx.type } : navOf(ctx.D, b.op.nav);
+    const g = Math.abs(area.gauge || 0), hpW = Math.min(100, 55 + g / 2), hpL = Math.max(14, 45 - g / 2);
+    const bar = (who, v, drain) => `<div class="fin__hpbar ${who}"><span>${who === 'me' ? esc(ctx.player.name) : esc(b.op.name)}</span><i><b style="width:${v}%" class="${drain ? 'drain' : ''}"></b></i></div>`;
     const W = meWin ? { st: ctx.player.stats[s], c: ctx.type.color } : { st: b.opSide().S[s], c: b.oc };
     const L = meWin ? { st: b.opSide().S[s], c: b.oc } : { st: ctx.player.stats[s], c: ctx.type.color };
     const unit = (x) => M.svg(s, { color: x.c, cov: x.st.coverage, ret: x.st.retention });
@@ -250,7 +255,7 @@
         <div class="fin__strip" style="width:${A.n * 100}%;animation-timing-function:steps(${A.n},jump-none)"><img src="assets/mechs/anim/${key}.webp" alt=""><span style="-webkit-mask-image:url('assets/mechs/anim/${key}_m.webp');mask-image:url('assets/mechs/anim/${key}_m.webp')"></span></div></div>` : '';
     return `<div class="fin ${meWin ? 'me-win' : 'op-win'} ${A ? 'has-anim' : ''}" style="--wc:${W.c};--lc:${L.c}">
       <div class="fin__stage">
-        <span class="fin__bg"></span><span class="fin__lines"></span>
+        <span class="fin__bg"></span><span class="fin__scroll"></span><span class="fin__lines"></span>
         <div class="fin__close">${unit(W)}</div>
         <div class="fin__aura"></div>${Array.from({ length: 10 }, (_, i) => `<i class="fin__p" style="--a:${i * 36}deg"></i>`).join('')}
         <div class="fin__tgt">${unit(L)}</div>
@@ -258,6 +263,9 @@
         <div class="fin__fx">${M.attackFx(s, true, false)}</div>
         <span class="fin__boom"></span>
       </div>
+      <div class="fin__hp">${bar('me', meWin ? hpW : hpL, !meWin)}${bar('op', meWin ? hpL : hpW, meWin)}</div>
+      <div class="fin__pilot ${meWin ? 'me' : 'op'}" style="--pc:${nav.type.color}"><div class="fin__pface">${UI.Portrait({ char: nav.char, expr: 'serious', cls: 'portrait--face' })}</div>
+        <p><small>${esc(nav.char.name)}</small>「${esc(fmt(SHOUT[nav.type.id] || SHOUT.logic, { tech: M.TECH[s] }))}」</p></div>
       <div class="fin__name fin-txt"><small>${meWin ? '決め技' : '敵の決め技'}</small><b>${esc(M.TECH[s])}</b></div>
       <div class="fin__comm">${Comm(b, ctx)}</div>
     </div>`;
