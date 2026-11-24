@@ -125,6 +125,7 @@
     if (!isFinite(t.t0)) return; // 表示が終わる前のタップは数えない
     const q = t.qs[t.i], time = +((performance.now() - t.t0) / 1000).toFixed(1), correct = choice === q.answer;
     const delta = ctx.recordAnswer(q, { correct, time });
+    if (window.SFX) window.SFX.play(correct ? 'correct' : 'wrong');
     t.streak = correct ? t.streak + 1 : 0;
     t.answers[t.i] = { choice, correct, time, delta };
     const ev = !correct ? 'wrong' : t.streak >= 3 ? 'streak' : 'correct';

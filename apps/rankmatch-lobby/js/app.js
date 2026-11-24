@@ -338,6 +338,7 @@
       case 'advance': P.dayShift = (P.dayShift || 0) + 3; refreshStats(); savePlayer(); render(); toast('3日経過：復習していない単元の定着が下がりました'); break;
       case 'reset': P = clone(window.MOCK_PLAYER); initKnowledge(); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;
       case 'study': { const r = recommend(); state.trainSubject = r.subject; state.trainUnits = [r.unit]; go('train'); break; }
+      case 'sfx': if (window.SFX) window.SFX.toggle(); render(); break;
       case 'claim': b.replaceWith(Object.assign(document.createElement('span'), { className: 'mission__reward got', textContent: '受取済' })); toast('報酬を受け取りました'); break;
     }
   });

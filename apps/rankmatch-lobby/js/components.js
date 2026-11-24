@@ -120,7 +120,7 @@
       <span class="me__avatar">${Portrait({ char, cls: 'portrait--face' })}<span class="me__emb">${Emblem(type.emblem)}</span></span>
       <span class="me__text"><b>${esc(p.name)}</b><small>${esc(p.id)} · NAV ${esc(char.name)}</small></span>
     </button>
-    <div class="wallet"><span><i class="dot coin"></i>${num(p.coins)}</span><button data-action="shop" aria-label="クリスタルを購入"><i class="dot gem"></i>${num(p.crystals)}<b>＋</b></button></div>
+    <div class="wallet"><button class="sfx-btn" data-action="sfx" aria-label="効果音 ${window.SFX && window.SFX.muted() ? 'オフ' : 'オン'}">${window.SFX && window.SFX.muted() ? '🔇' : '🔊'}</button><span><i class="dot coin"></i>${num(p.coins)}</span><button data-action="shop" aria-label="クリスタルを購入"><i class="dot gem"></i>${num(p.crystals)}<b>＋</b></button></div>
   </header>`;
 
   const RankCard = (r, season) => `<section class="rank holo-panel" aria-label="現在ランク">

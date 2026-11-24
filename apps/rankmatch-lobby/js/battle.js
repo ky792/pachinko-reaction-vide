@@ -13,37 +13,52 @@
   /* ================= ルール（純関数） ================= */
   const SUBJECTS = KN.SUBJECTS;
   const AXL = { speed: '速さ', acc: '正確さ', app: '応用' };
-  const RULE = { gate: 1.12, momentum: 1.06, focus: 1.10, variance: 0.36, push: 1.6, toWin: 3, duelQ: 5, duelSec: 30 };
+  /* 押し合い：数値の差＋ゆらぎ（正規分布 σ）で勝ち負け。3 回のうち先に 2 回取ったほうが陣地を取る。
+     σ は「同格 50%／総合差 20 で 65:35／総合差 50 で 85:15、格下でも陣地単位で 2〜3 割」になるようシミュレーションで調整（tools/sim_battle.js） */
+  const RULE = { gate: 1.02, momentum: 1.03, focus: 1.15, sigma: 4, toWin: 3, exWin: 2, minSolved: 5, duelQ: 5, duelSec: 30 };
 
   const power = (st) => st.speed + st.acc + st.app;
   const totalPower = (S) => SUBJECTS.reduce((s, k) => s + power(S[k]), 0);
   const pick = (S, cmp) => SUBJECTS.reduce((a, b) => (cmp(power(S[b]), power(S[a])) ? b : a));
   const strongest = (S) => pick(S, (x, y) => x > y);
   const weakest = (S) => pick(S, (x, y) => x < y);
+  const solved = (K, s, u) => { const x = K.units[KN.key(s, u)]; return (x && x.n) || 0; };
+  const gauss = (r) => Math.sqrt(-2 * Math.log(Math.max(1e-9, r()))) * Math.cos(2 * Math.PI * r());
+  /* 押し合う単元：両者が 5 問以上解いた単元から、出題頻度で重み付けして抽選（未学習の単元で即落ちしない） */
+  function drawUnits(me, op, subject, r, n = 2, ban) {
+    const pool = (KN.units()[subject] || []).filter((u) => u !== ban);
+    const both = pool.filter((u) => solved(me.K, subject, u) >= RULE.minSolved && solved(op.K, subject, u) >= RULE.minSolved);
+    const cand = both.length >= n ? both : pool, out = [];
+    while (out.length < n && out.length < cand.length) {
+      const left = cand.filter((u) => !out.includes(u)), tot = left.reduce((x, u) => x + KN.meta(subject, u).weight, 0);
+      let v = r() * tot; const u = left.find((x) => (v -= KN.meta(subject, x).weight) <= 0) || left[left.length - 1];
+      out.push(u);
+    }
+    while (out.length < n) out.push(out[0]);
+    return out;
+  }
 
   /* mom: 直前の陣地を取った側（1＝攻め側、-1＝守り側、0＝なし） */
-  function resolveArea(me, op, subject, idx, r, now, mom = 0) {
-    const units = KN.units()[subject] || [];
-    const u1 = KN.weightedUnit(subject, r);
-    const u2 = units.length > 1 ? KN.weightedUnit(subject, r, u1) : u1;
+  function resolveArea(me, op, subject, idx, r, now, mom = 0, opt = {}) {
+    const [u1, u2] = opt.units || drawUnits(me, op, subject, r);
     let fm = me.focus === subject ? RULE.focus : 1, fo = op.focus === subject ? RULE.focus : 1;
-    const notesMe = me.focus === subject ? ['主戦場 +10%'] : [], notesOp = op.focus === subject ? ['主戦場 +10%'] : [];
-    if (idx === 0) { fo *= RULE.gate; notesOp.push('城門 +12%'); }
-    if (mom > 0) { fm *= RULE.momentum; notesMe.push('勢い +6%'); }
-    if (mom < 0) { fo *= RULE.momentum; notesOp.push('勢い +6%'); }
-    const vr = () => 1 + (r() - 0.5) * RULE.variance;
+    const notesMe = me.focus === subject ? ['主戦場 +15%'] : [], notesOp = op.focus === subject ? ['主戦場 +15%'] : [];
+    if (idx === 0) { fo *= RULE.gate; notesOp.push('城門 +2%'); }
+    if (mom > 0) { fm *= RULE.momentum; notesMe.push('勢い +3%'); }
+    if (mom < 0) { fo *= RULE.momentum; notesOp.push('勢い +3%'); }
     const raw = [
       { axis: 'acc', unit: u1, a: KN.unitValue(me.K, subject, u1, 'acc', now), b: KN.unitValue(op.K, subject, u1, 'acc', now) },
       { axis: 'speed', unit: u2, a: KN.unitValue(me.K, subject, u2, 'speed', now), b: KN.unitValue(op.K, subject, u2, 'speed', now) },
       { axis: 'app', unit: null, a: me.S[subject].app, b: op.S[subject].app },
     ];
-    let gauge = 0;
-    const ex = raw.map((e) => {
-      const a = e.a * fm * vr(), b = e.b * fo * vr(), d = (a - b) * RULE.push;
-      gauge = Math.max(-100, Math.min(100, gauge + d));
-      return { axis: e.axis, unit: e.unit, field: e.unit ? KN.meta(subject, e.unit).field : null, a: Math.round(a), b: Math.round(b), d: Math.round(d), gauge: Math.round(gauge) };
-    });
-    return { subject, idx, ex, gauge: Math.round(gauge), win: gauge > 0 || (gauge === 0 && ex[0].a >= ex[0].b), notesMe, notesOp };
+    let w = 0, l = 0; const ex = [];
+    for (const e of raw) {
+      if (w >= RULE.exWin || l >= RULE.exWin) break;
+      const a = e.a * fm, b = e.b * fo, d = a - b + gauss(r) * RULE.sigma, win = d > 0;
+      win ? w++ : l++;
+      ex.push({ axis: e.axis, unit: e.unit, field: e.unit ? KN.meta(subject, e.unit).field : null, a: Math.round(a), b: Math.round(b), d: Math.round(d) || (win ? 1 : -1), win, gauge: (w - l) * 50, lamps: [w, l] });
+    }
+    return { subject, idx, ex, gauge: (w - l) * 50, win: w >= RULE.exWin, wins: [w, l], notesMe, notesOp, units: [u1, u2] };
   }
 
   function resolveBattle(me, op, seed, now) {
@@ -113,7 +128,8 @@
     const a = res && res.areas[k];
     const st = tileState(b, res, upto, k);
     const lbl = { me: a && a.duel ? '奪還' : '確保', op: a && a.duel ? '防衛された' : '敵陣', none: '—', active: '交戦中', pending: `第${k + 1}陣` }[st];
-    return `<div class="a-tile ${st} ${a && a.duel ? 'duel' : ''}"><span class="a-tile__s">${esc(s)}</span><small>${lbl}</small>${s === b.focus ? '<i class="focus">★</i>' : ''}${s === b.op.focus ? '<i class="ofocus">◆</i>' : ''}</div>`;
+    const ico = st === 'me' ? '⚑ ' : st === 'op' ? '✕ ' : '';
+    return `<div class="a-tile ${st} ${a && a.duel ? 'duel' : ''}" style="--sc:${(window.SUBJECT_COLOR || {})[s] || '#9aa'}"><span class="a-tile__s">${esc(s)}</span><small>${ico}${lbl}</small>${s === b.focus ? '<i class="focus">★</i>' : ''}${s === b.op.focus ? '<i class="ofocus">◆</i>' : ''}</div>`;
   }).join('')}</div>`;
 
   function PickView(b, ctx) {
@@ -211,6 +227,28 @@
     <div class="mx-comm__body"><span class="mx-comm__head">NAV COMM · ${esc(ctx.char.name)}<i></i></span><p>${esc(b.comm.text)}</p></div>
   </div>` : '');
 
+  /* 押し合いのパネル：単元名と両者の数値をバーの対決で見せ、3 つのランプで「先に 2 つで陣地」までの残りを見せる。
+     要点モードでも、ランプはその陣地の押し合いすべての結果を出す */
+  const SC = (s) => (window.SUBJECT_COLOR && window.SUBJECT_COLOR[s]) || '#9aa';
+  function Lamps(area, upto) {
+    const ex = area.ex || [], n = upto == null ? ex.length : upto;
+    return `<span class="mx-lamps" aria-label="押し合い ${ex.slice(0, n).filter((e) => e.win).length}勝${ex.slice(0, n).filter((e) => !e.win).length}敗（先に2勝で陣地）">${[0, 1, 2].map((i) => {
+      const e = ex[i], st = !e || i >= n ? 'off' : e.win ? 'me' : 'op';
+      return `<i class="${st}">${st === 'me' ? '⚑' : st === 'op' ? '✕' : ''}</i>`;
+    }).join('')}<small>先に2勝で陣地</small></span>`;
+  }
+  function ExPanel(b, ctx, area, e) {
+    const digest = !b.full, upto = b.areaDone || digest ? null : (area.ex || []).indexOf(e) + 1;
+    if (!e) return `<div class="mx-ex"><div class="mx-ex__head"><b style="--sc:${SC(area.subject)}">${esc(area.subject)}</b>${Lamps(area, 0)}</div></div>`;
+    const max = Math.max(100, e.a, e.b), unit = e.unit ? `${esc(e.field)} › ${esc(e.unit)}` : '科目全体';
+    return `<div class="mx-ex ${e.win ? 'win' : 'lose'}">
+      <div class="mx-ex__head"><b style="--sc:${SC(area.subject)}">${esc(area.subject)}</b>${Lamps(area, upto)}</div>
+      <div class="mx-ex__what"><span class="mx-ax">${AXL[e.axis]}</span><span class="u">${unit}</span></div>
+      <div class="mx-ex__bars"><span class="v me">${e.a}</span><i class="me" style="--w:${(e.a / max) * 100}%"></i><i class="op" style="--w:${(e.b / max) * 100}%"></i><span class="v op">${e.b}</span></div>
+      <div class="mx-ex__why">${e.win ? '⚑ 押し勝ち' : '✕ 押し負け'}：${esc(explain(e, area.subject, b, ctx))}</div>
+    </div>`;
+  }
+
   /* 激突ステージ：その陣地の科目ロボットどうしが押し合う。押し合い 1 回 = 攻撃 1 回 */
   const MOVE = { acc: '精密打撃', speed: '高速連撃', app: '応用バースト' };
   function Clash(b, ctx, area, shown, g) {
@@ -228,7 +266,7 @@
       <span class="mx-tag">${esc(M.INFO[s].name)}<b>${power(st)}</b></span><small class="muted">${esc(name)}</small></div>`;
     const crit = !b.areaDone && e && Math.abs(e.d) >= 25;
     return `<section class="mx-clash ${crit ? 'is-crit' : ''}" aria-label="${esc(s)}の陣地での戦闘">
-      <div class="mx-bar"><i style="width:${50 + g / 2}%"></i><span style="left:${50 + g / 2}%"></span></div>
+      ${ExPanel(b, ctx, area, e)}
       ${side('me', A, ctx.type.color, pm, ctx.player.name)}<div class="mx-mid">${mid}</div>${side('op', B, b.oc, po, b.op.name)}${fx}
       ${Comm(b, ctx)}
     </section>`;
@@ -314,8 +352,19 @@
           return `<li class="${e.d >= 0 ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}</span><span class="why">${esc(explain(e, area.subject, b, ctx))}</span></li>`;
         }).join('')}</ol>
       </section>
-      <div class="a-controls"><button class="btn btn--sub" data-action="mode" aria-pressed="${!!b.full}">${b.full ? '全演出' : '要点モード'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
+      <div class="a-controls"><button class="btn btn--sub" data-action="mode" aria-pressed="${!!b.full}">${b.full ? '全演出' : '要点モード'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button><button class="btn btn--sub a-sfx" data-action="sfx" aria-pressed="${window.SFX && !window.SFX.muted()}" aria-label="効果音">${window.SFX && window.SFX.muted() ? '🔇' : '🔊'}</button></div>
     </div>`;
+  }
+
+  /* 戦況ダイジェスト：各陣地がどう決まったか（飛ばしたときも、ここで全部追える） */
+  function Digest(b, ctx) {
+    const rows = b.res.areas.filter((a) => !a.skipped && a.ex);
+    return `<section class="r-digest holo-panel ${b.skipped ? 'is-first' : ''}" aria-label="戦況ダイジェスト">
+      <div class="missions__head"><span class="eyebrow">戦況ダイジェスト</span><span class="muted">${b.skipped ? '飛ばした戦闘の内容' : '各陣地の決め手'}</span></div>
+      <ol>${rows.map((a) => { const e = a.ex[a.key] || a.ex[0]; return `<li class="${a.win ? 'me' : 'op'}">
+        <b class="s" style="--sc:${SC(a.subject)}">${esc(a.subject)}</b><span class="r">${a.win ? '⚑ 確保' : '✕ 陥落'}${a.duel ? '（直接対決）' : ''}</span>${Lamps(a)}
+        <small>${AXL[e.axis]}${e.unit ? '・' + esc(e.unit) : ''} ${e.a} vs ${e.b} — ${esc(explain(e, a.subject, b, ctx))}</small></li>`; }).join('')}</ol>
+    </section>`;
   }
 
   function ResultView(b, ctx) {
@@ -326,6 +375,7 @@
     const promoted = r.after.label !== r.before.label;
     return `<div class="match-screen phase-result ${res.win ? 'is-win' : 'is-lose'}" style="--oc:${b.oc}">
       <header class="r-head"><span class="eyebrow">RANK MATCH RESULT · VS ${esc(b.op.name)}</span><strong>${res.win ? 'WIN' : 'LOSE'}</strong><span class="r-score">${res.myW} <small>陣地</small> ${res.opW}${b.flipped ? ' <small class="flip">直接対決で逆転</small>' : ''}</span></header>
+      ${Digest(b, ctx)}
       ${Map3D()}
       ${Tiles(b, res, 5)}
       <section class="r-rank holo-panel">
@@ -498,14 +548,14 @@
       b.fx = null; b.shake = Math.abs(e.d) >= 25 && !reduce();
       if (Math.abs(e.d) >= 25) commSay(b, ctx, e.d > 0 ? 'critMe' : 'critOp', area.subject, e.d > 0 ? 'smile' : 'special'); else b.comm = null;
       if (t3) t3.clash(b.ai, e);
-      show(); schedule(0.85); return;
+      show(); sfx(e.win ? 'exWin' : 'exLose', 420 + 330); schedule(0.85); return;
     }
     if (b.ei < 3) { // 押し合い
       const e = area.ex[b.ei]; b.ei++;
       b.fx = { kind: 'ex', e, subject: area.subject }; b.shake = Math.abs(e.d) >= 25 && !reduce();
       if (Math.abs(e.d) >= 25) commSay(b, ctx, e.d > 0 ? 'critMe' : 'critOp', area.subject, e.d > 0 ? 'smile' : 'special'); else b.comm = null;
       if (t3) t3.clash(b.ai, e);
-      show(); schedule(); return;
+      show(); sfx(e.win ? 'exWin' : 'exLose', (b.ei === 1 ? 420 : 0) + 330); schedule(); return;
     }
     b.areaDone = true;
     b.line = fmt(ctx.char.battleLines[area.win ? 'areaWin' : 'areaLose'], { subject: area.subject });
@@ -514,12 +564,14 @@
     b.comm = { text: b.line, expr: b.expr, key: area.win ? 'win' : 'lose' }; // 決着のセリフもカットインの通信で（ナビのウィンドウは常に 1 つ）
     if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
     b.finArea = b.full || b.finSet.has(b.ai);
-    show();
+    show(); sfx('stamp', b.finArea ? 2700 : 120, area.win);
     const anim = window.MECH_ANIM && window.Mechs && window.MECH_ANIM[window.Mechs.KEY[area.subject]];
     // 決め技シーン（3.5 秒）→スタンプ→抜けてマップへ。要点モードは撃破とスタンプだけで短く抜ける（2倍速なら半分）
     schedule(b.finArea ? (anim ? 4.7 : 4.1) : 0.92);
   }
-  function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); }
+  /* 効果音（2倍速なら待ち時間も半分） */
+  const sfx = (name, ms, ...args) => { if (window.SFX && !reduce()) window.SFX.later(ms * (b && b.fast ? 0.5 : 1), name, ...args); };
+  function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); window.scrollTo(0, 0); }
   function navCut(title, line, expr) {
     if (reduce()) return;
     document.querySelectorAll('.cutin').forEach((x) => x.remove());
@@ -546,7 +598,7 @@
       return Object.assign({}, q, { choices: order.map((i) => q.choices[i]), answer: order.indexOf(q.answer) });
     });
     b.duel = { subject, qs, i: 0, me: [], op: [] };
-    b.phase = 'duel'; draw();
+    b.phase = 'duel'; draw(); sfx('duelStart', 0);
   }
   function duelAsk() {
     const d = b.duel; d.t0 = performance.now(); b.phase = 'duelq'; draw();
@@ -579,7 +631,7 @@
     d.win = mc > oc || (mc === oc && sum(d.me) < sum(d.op));
     b.duelUsed = true;
     if (d.win) { overturn(d.subject); if (ctx.achieve) ctx.achieve('duel'); }
-    b.phase = 'duelres'; draw();
+    b.phase = 'duelres'; draw(); sfx('duelEnd', 150, b.duel.win);
   }
   function overturn(subject) {
     const res = b.res, wasWin = res.win;
@@ -613,7 +665,8 @@
       case 'fight': fight(); break;
       case 'mode': b.full = !b.full; if (b.phase === 'battle') show(); else draw(); break;
       case 'speed': b.fast = !b.fast; draw(); break;
-      case 'skip': finish(); break;
+      case 'skip': b.skipped = true; finish(); break;
+      case 'sfx': if (window.SFX) window.SFX.toggle(); draw(); break;
       case 'again': drop3d(); b = { phase: 'pick', cands: candidates(), fast: b.fast, full: b.full }; draw(); break;
       case 'duel-cancel': b.phase = 'result'; draw(); break;
       case 'duel-start': duelAsk(); break;
