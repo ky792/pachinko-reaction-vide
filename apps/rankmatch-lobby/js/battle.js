@@ -276,21 +276,25 @@
     const st = b.areaDone ? 'is-out' : shown.length === 1 ? 'is-in' : 'is-on';
     const stamp = b.areaDone ? `<div class="mx-stamp ${area.win ? 'me' : 'op'}"><b>${area.win ? '陣地確保' : '陥落'}</b><small>${esc(area.subject)}</small></div>` : '';
     const hasAnim = b.areaDone && window.MECH_ANIM && window.Mechs && window.MECH_ANIM[window.Mechs.KEY[area.subject]];
-    return `<div class="mx-cut ${st} ${hasAnim ? 'has-anim' : ''}" style="--sp:${b.fast ? 0.5 : 1}" role="dialog" aria-label="${esc(area.subject)}の陣地でロボット戦">
+    return `<div class="mx-cut ${st} ${hasAnim ? 'has-anim' : ''} ${b.areaDone && !b.finArea ? 'quick' : ''}" style="--sp:${b.fast ? 0.5 : 1}" role="dialog" aria-label="${esc(area.subject)}の陣地でロボット戦">
       <div class="mx-cut__lines" aria-hidden="true"></div>
       <div class="mx-cut__band">
         <div class="mx-cut__head"><span class="me">${esc(ctx.player.name)}</span><b>第${b.ai + 1}陣 ${esc(area.subject)}</b><span class="op">${esc(b.op.name)}</span></div>
-        ${b.areaDone ? Finisher(b, ctx, area) : Clash(b, ctx, area, shown, g)}
+        ${b.areaDone && b.finArea ? Finisher(b, ctx, area) : Clash(b, ctx, area, shown, g)}
         ${stamp}
-        <div class="mx-cut__ctl"><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
+        <div class="mx-cut__ctl"><button class="btn btn--sub" data-action="mode">${b.full ? '全演出' : '要点'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
       </div>
     </div>`;
   }
 
   function BattleView(b, ctx) {
     const res = b.res, n = navOf(ctx.D, b.op.nav);
-    const area = res.areas[b.ai], shown = area && area.ex ? area.ex.slice(0, Math.max(0, b.ei)) : [];
-    const g = shown.length ? shown[shown.length - 1].gauge : 0;
+    const area = res.areas[b.ai], all = area && area.ex ? area.ex.slice(0, Math.max(0, b.ei)) : [];
+    const digest = !b.full;
+    // 要点モード：カットインは決め手の押し合い 1 回だけ。ログ（下の一覧）には 3 回とも出す
+    const shown = digest ? (b.ei >= 3 && !b.areaDone ? [area.ex[area.key]] : b.areaDone ? [area.ex[area.key]] : []) : all;
+    const log = digest ? (b.ei >= 3 ? area.ex : []) : all;
+    const g = digest ? (b.ei >= 3 ? area.gauge : 0) : shown.length ? shown[shown.length - 1].gauge : 0;
     const done = res.areas.slice(0, b.ai + (b.areaDone ? 1 : 0)).filter((a) => !a.skipped);
     return `<div class="match-screen phase-battle" style="--oc:${b.oc}">
       <div class="a-score">
@@ -306,11 +310,11 @@
         <div class="a-tug" aria-label="陣地ゲージ"><i class="mine" style="width:${50 + g / 2}%"></i><span class="mark" style="left:${50 + g / 2}%"></span><em class="c"></em></div>
         <div class="a-notes">${area.notesMe.map((x) => `<span class="me">${esc(x)}</span>`).join('')}${area.notesOp.map((x) => `<span class="op">相手：${esc(x)}</span>`).join('')}</div>
         <ol class="a-ex">${area.ex.map((e, k) => {
-          if (k >= shown.length) return `<li class="wait">${exLabel(e)}<span class="dots">· · ·</span></li>`;
+          if (k >= log.length) return `<li class="wait">${exLabel(e)}<span class="dots">· · ·</span></li>`;
           return `<li class="${e.d >= 0 ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}</span><span class="why">${esc(explain(e, area.subject, b, ctx))}</span></li>`;
         }).join('')}</ol>
       </section>
-      <div class="a-controls"><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
+      <div class="a-controls"><button class="btn btn--sub" data-action="mode" aria-pressed="${!!b.full}">${b.full ? '全演出' : '要点モード'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
     </div>`;
   }
 
@@ -459,11 +463,20 @@
     b.res = resolveBattle(b.me(), b.opSide(), Math.floor(Math.random() * 1e9), ctx.now());
     b.rpNow = b.res.win ? b.op.reward.win : b.op.reward.lose;
     b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus });
+    // 各陣地の決め手：勝った側に最も大きく押した押し合い
+    b.res.areas.forEach((a) => { if (!a.ex) return; let k = 0; a.ex.forEach((e, i) => { if ((a.win ? e.d : -e.d) > (a.win ? a.ex[k].d : -a.ex[k].d)) k = i; }); a.key = k; });
+    // 決め技のフル演出：ランク昇格した試合の決着の陣地と、前の試合から装甲の段階が上がった科目の陣地だけ
+    const P = ctx.player, lv = {}; SUBJECTS.forEach((s) => { lv[s] = window.Mechs ? window.Mechs.level(P.stats[s].coverage || 0) : 0; });
+    const up = SUBJECTS.filter((s) => P.lastLv && lv[s] > (P.lastLv[s] || 0)); P.lastLv = lv;
+    const promoted = b.ranks.after.label !== b.ranks.before.label && b.res.win;
+    const decisive = b.res.areas.reduce((x, a, i) => (!a.skipped ? i : x), 0);
+    b.finSet = new Set(b.res.areas.map((a, i) => ((promoted && i === decisive) || (!a.skipped && a.win && up.includes(a.subject)) ? i : -1)).filter((i) => i >= 0));
+    if (b.full == null) b.full = false; // 標準は要点モード
     b.phase = 'battle'; b.ai = 0; b.ei = -1; b.areaDone = false; b.line = ctx.char.catch; b.expr = 'serious';
     b.fx = { kind: 'start' }; commSay(b, ctx, 'start', null, 'serious');
     show();
     if (t3) { t3.intro(); t3.focus(null); }
-    clearTimeout(timer); timer = setTimeout(step, reduce() ? 300 : b.fast ? 900 : 1900);
+    clearTimeout(timer); timer = setTimeout(step, reduce() ? 300 : (b.fast ? 0.5 : 1) * (b.full ? 1900 : 800));
   }
   /* 1回分の描画。演出（fx・揺れ）はその描画でだけ再生する */
   function show() { draw(); b.fx = null; b.shake = false; }
@@ -478,7 +491,14 @@
     if (b.ei < 0) { // 陣地に入る：カメラを寄せる
       b.ei = 0; b.fx = { kind: 'area', idx: b.ai, subject: area.subject }; commSay(b, ctx, 'enter', area.subject, 'serious');
       if (t3) t3.focus(b.ai);
-      show(); schedule(1.3); return; // マップで陣地にズームしてからカットイン
+      show(); schedule(b.full ? 1.3 : 0.4); return; // マップで陣地にズームしてからカットイン
+    }
+    if (!b.full && b.ei < 3) { // 要点モード：決め手の押し合いだけ見せる（3 回分の結果はまとめて反映）
+      const e = area.ex[area.key]; b.ei = 3;
+      b.fx = null; b.shake = Math.abs(e.d) >= 25 && !reduce();
+      if (Math.abs(e.d) >= 25) commSay(b, ctx, e.d > 0 ? 'critMe' : 'critOp', area.subject, e.d > 0 ? 'smile' : 'special'); else b.comm = null;
+      if (t3) t3.clash(b.ai, e);
+      show(); schedule(0.85); return;
     }
     if (b.ei < 3) { // 押し合い
       const e = area.ex[b.ei]; b.ei++;
@@ -493,9 +513,11 @@
     b.fx = { kind: 'cap', win: area.win, subject: area.subject };
     b.comm = { text: b.line, expr: b.expr, key: area.win ? 'win' : 'lose' }; // 決着のセリフもカットインの通信で（ナビのウィンドウは常に 1 つ）
     if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
+    b.finArea = b.full || b.finSet.has(b.ai);
     show();
     const anim = window.MECH_ANIM && window.Mechs && window.MECH_ANIM[window.Mechs.KEY[area.subject]];
-    schedule(anim ? 4.7 : 4.1); // 決め技シーン（アニメ 4 秒／演出 3.5 秒）→スタンプ→カットインが抜けてマップで占領の演出を見せる（2倍速なら半分）
+    // 決め技シーン（3.5 秒）→スタンプ→抜けてマップへ。要点モードは撃破とスタンプだけで短く抜ける（2倍速なら半分）
+    schedule(b.finArea ? (anim ? 4.7 : 4.1) : 0.92);
   }
   function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); }
   function navCut(title, line, expr) {
@@ -528,6 +550,7 @@
   }
   function duelAsk() {
     const d = b.duel; d.t0 = performance.now(); b.phase = 'duelq'; draw();
+    requestAnimationFrame(() => requestAnimationFrame(() => { d.t0 = performance.now(); })); // 表示が終わってから計測（練習と同じ基準）
     clearInterval(tick);
     tick = setInterval(() => {
       const left = Math.max(0, RULE.duelSec - (performance.now() - d.t0) / 1000);
@@ -588,9 +611,10 @@
       case 'refresh': b.cands = candidates(); draw(); break;
       case 'back': b.phase = 'pick'; draw(); break;
       case 'fight': fight(); break;
+      case 'mode': b.full = !b.full; if (b.phase === 'battle') show(); else draw(); break;
       case 'speed': b.fast = !b.fast; draw(); break;
       case 'skip': finish(); break;
-      case 'again': drop3d(); b = { phase: 'pick', cands: candidates(), fast: b.fast }; draw(); break;
+      case 'again': drop3d(); b = { phase: 'pick', cands: candidates(), fast: b.fast, full: b.full }; draw(); break;
       case 'duel-cancel': b.phase = 'result'; draw(); break;
       case 'duel-start': duelAsk(); break;
       case 'duel-next': duelNext(); break;

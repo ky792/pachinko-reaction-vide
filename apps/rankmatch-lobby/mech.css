@@ -349,3 +349,8 @@
 @keyframes finScroll{0%{opacity:0;background-position:0 0,0 0}20%,80%{opacity:1}100%{opacity:0;background-position:0 0,-900px 0}}
 .fin .fin__name{bottom:8%}
 .fin .fin__hpbar,.fin .fin__pface{position:relative}
+/* 要点モード：撃破とスタンプだけ見せて短く抜ける */
+.mx-cut.quick.is-out{animation:cutBgOut .28s calc(.92s * var(--sp)) both}
+.mx-cut.quick.is-out .mx-cut__band{animation:cutOut .3s calc(.88s * var(--sp)) cubic-bezier(.6,0,.8,.2) both}
+.mx-cut.quick.is-out .mx-stamp{animation-delay:calc(.12s * var(--sp))}
+.mx-cut.quick.is-out .mx-side.p-down .mx-unit{animation-duration:.6s}

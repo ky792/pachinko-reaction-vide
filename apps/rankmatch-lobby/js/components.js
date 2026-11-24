@@ -155,8 +155,8 @@
   const RecommendCard = (rec, type, char) => `<section class="recommend holo-panel" aria-label="次のおすすめ学習">
     <div class="recommend__head"><span class="eyebrow">NEXT · おすすめ学習</span><span class="pill">+${rec.rewardExp} EXP</span></div>
     <h3>${esc(rec.subject)}｜${esc(rec.unit)}</h3>
-    <div class="recommend__meta"><span>正答率 <b class="warn">${rec.accuracy}%</b></span><span>${rec.questions}問</span><span>約${rec.minutes}分</span></div>
-    <p class="recommend__why"><b>${esc(char.name)}</b>${esc(type.recommendPitch)}</p>
+    <div class="recommend__meta"><span>正答率 <b class="warn">${esc(rec.accuracy)}</b></span><span>${rec.questions}問</span><span>約${rec.minutes}分</span></div>
+    <p class="recommend__why"><b>${esc(char.name)}</b>${esc(rec.why || type.recommendPitch)}</p>
     <button class="btn btn--sub" data-action="study">この単元を始める</button>
   </section>`;
 

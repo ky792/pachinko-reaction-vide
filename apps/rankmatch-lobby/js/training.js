@@ -1,5 +1,5 @@
 /* 演習：解いた結果で知識データ（単元ごとの実力・定着度・速さ）を更新する。
- *  時間無制限。カンニング（調べながら解く）は検知も禁止もしない（黙認）。画面でも推奨はしない。
+ *  時間無制限。調べて解くのも学習として扱う（検知も禁止もしない）。
  *  出題は「忘れかけ・未学習・対戦で押し負けた単元」を優先。
  * ctx = { D, bank, player, type, char, subject, focusUnits, now(), myK(), recordAnswer(q, ans) → 単元の変化,
  *         applyTraining(summary), arena(), exit() } */
@@ -85,7 +85,7 @@
       </section>
       <section class="holo-panel r-review">
         <div class="missions__head"><span class="eyebrow">単元ごとの変化</span><span class="muted">正答予測 / 定着</span></div>
-        <ul class="t-units">${Object.entries(units).map(([u, x]) => `<li><span class="u">${esc(u)}</span><span class="r">${x.ok}/${x.n}${x.memo ? `<small title="最近解いた問題の正解は、実力の推定にほとんど数えません">（覚え${x.memo}）</small>` : ''}</span><span class="p">${x.before.p == null ? '<em>新規</em>' : pct(x.before.p) + '%'} → <b>${pct(x.after.p)}%</b>${x.after.conf ? `<small class="cf-${x.after.conf.level}"> 確かさ:${x.after.conf.label}</small>` : ''}</span><span class="R">${pct(x.before.R)}% → <b>100%</b></span></li>`).join('')}</ul>
+        <ul class="t-units">${Object.entries(units).map(([u, x]) => `<li><span class="u">${esc(u)}</span><span class="r">${x.ok}/${x.n}${x.memo ? `<small title="最近解いた問題の正解は、実力の推定にほとんど数えません">（覚え${x.memo}）</small>` : ''}</span><span class="p">${x.before.p == null ? '<em>新規</em>' : pct(x.before.p) + '%'} → <b>${pct(x.after.p)}%</b>${x.after.conf ? `<small class="cf-${x.after.conf.level}"> 確かさ:${x.after.conf.label}</small>` : ''}</span><span class="R">${pct(x.before.R)}% → <b>${pct(x.after.R)}%</b></span></li>`).join('')}</ul>
       </section>
       ${NavLine(ctx, line, 'smile')}
       <div class="r-actions">
@@ -114,12 +114,15 @@
     t.i = 0; t.answers = []; t.streak = 0; t.phase = 'question'; t.navLine = ctx.char.lines.day; t.navExpr = 'default'; ask();
   }
   function ask() {
-    t.t0 = performance.now(); draw(); stopTick();
-    tick = setInterval(() => { const el = root.querySelector('.js-el'); if (el) el.textContent = Math.floor((performance.now() - t.t0) / 1000) + 's'; }, 250);
+    // 解答時間は「問題が画面に表示されてから選択肢をタップするまで」。描画が終わった次のフレームから測る
+    t.t0 = Infinity; draw(); stopTick();
+    requestAnimationFrame(() => requestAnimationFrame(() => { t.t0 = performance.now(); }));
+    tick = setInterval(() => { const el = root.querySelector('.js-el'); if (el && isFinite(t.t0)) el.textContent = Math.floor((performance.now() - t.t0) / 1000) + 's'; }, 250);
   }
   function answer(choice) {
     if (t.phase !== 'question' || t.answers[t.i]) return;
     stopTick();
+    if (!isFinite(t.t0)) return; // 表示が終わる前のタップは数えない
     const q = t.qs[t.i], time = +((performance.now() - t.t0) / 1000).toFixed(1), correct = choice === q.answer;
     const delta = ctx.recordAnswer(q, { correct, time });
     t.streak = correct ? t.streak + 1 : 0;

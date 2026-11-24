@@ -14,7 +14,7 @@
  *    応用   = 応用レーティングの正答確率 × 定着度補正
  *    範囲   = 学習済み単元の割合
  *
- *  カンニング対策はしない（黙認）。調べて解いても、それで定着するなら学習アプリとしては問題ない。
+ *  調べて解くのも学習として扱う（対策はしない）。それで定着するなら学習アプリとしては問題ない。
  *  知っている問題を繰り返しても、正解して当然なのでレーティングはほとんど動かない。 */
 (function () {
   const DAY = 86400000;
@@ -59,7 +59,12 @@
     return list[list.length - 1];
   }
   const key = (s, u) => s + '/' + u;
-  const retention = (u, now) => (!u || !u.n ? 0 : Math.exp(-Math.max(0, now - u.last) / DAY / u.S));
+  /* 定着度 = 習熟 m（反復で少しずつ積み上がる 0〜1）× 忘却 exp(−経過日数 / 安定度 S)。
+     m は 1 日あたり +35% まで、その日に誤答した単元は 70% まで。100% には日をまたいだ反復が要る */
+  const mastery = (u) => (u.m != null ? u.m : u.n ? Math.min(0.8, Math.max(0.1, u.n * 0.1)) : 0); // m の無い旧データは解いた回数から推定
+  const retention = (u, now) => (!u || !u.n ? 0 : mastery(u) * Math.exp(-Math.max(0, now - u.last) / DAY / u.S));
+  const M_DAY = 0.35, M_WRONG = 0.7;
+  const dayOf = (t) => Math.floor((t + 9 * 3600000) / DAY); // 日本時間の日付
   /* 推定の確かさ：sd は実力レーティングの不確かさ（大きいほど荒い）。解くほど小さくなる */
   const SD0 = 350, SDMIN = 100;
   const sdOf = (u) => (!u || !u.n ? SD0 : u.sd != null ? u.sd : Math.max(SDMIN, SD0 * Math.pow(0.85, u.n)));
@@ -148,10 +153,18 @@
     const gap = u.n ? Math.max(0, now - u.last) / DAY : 0;
     u.S = ans.correct ? (u.n ? Math.min(60, u.S * (1.25 + 0.75 * Math.min(1, gap / u.S))) : 1.5) : Math.max(1, u.S * 0.6);
     if (ans.correct && ans.time != null) u.ratio = u.ratio * 0.65 + (ans.time / REF[q.difficulty]) * 0.35;
+    // 習熟：その日の始まりの値から +35% まで。誤答した日は 70% 止まり。同じ問題の覚えた答えでの正解はほとんど伸びない
+    const m0 = mastery(u), d = dayOf(now);
+    if (u.md !== d) { u.md = d; u.ms = m0 * Math.exp(-Math.max(0, now - (u.last || now)) / DAY / (u.S || 1)); u.mw = 0; }
+    if (!ans.correct) u.mw = 1;
+    const cap = Math.min(u.ms + M_DAY, u.mw ? Math.max(u.ms, M_WRONG) : 1);
+    const gain = ans.correct ? (recent ? 0.02 : 0.12 * (1 + Math.min(1, gap / Math.max(1, u.S)))) : -0.08;
+    u.m = Math.max(0, Math.min(cap, Math.max(m0 * (u.n ? Math.exp(-Math.max(0, now - u.last) / DAY / u.S) : 0), u.ms) + gain));
+    u.c = (u.c || 0) + (ans.correct ? 1 : 0); // 実際の正解数（表示用）
     u.last = now; u.n++;
     K.units[k] = u;
     if (q.difficulty >= 2) { const ra = K.app[q.subject] != null ? K.app[q.subject] : APP - 200; K.app[q.subject] = ra + 24 * (s - (GUESS + (1 - GUESS) * prob(ra, qrat))); }
-    return { unit: q.unit, subject: q.subject, before, recent, after: { p: prob(u.r, STD), R: 1, n: u.n, conf: confOf(u) } };
+    return { unit: q.unit, subject: q.subject, before, recent, after: { p: prob(u.r, STD), R: retention(u, now), n: u.n, conf: confOf(u) } };
   }
 
   /* 出題：実力に合った難しさ・推定が荒い単元・忘れかけ・未学習・指定単元を優先。最近解いた問題は避け、1単元に偏らない */
@@ -191,12 +204,13 @@
       const st = stats[s];
       (UNITS[s] || []).forEach((unit) => {
         if (r() < skip) { K.units[key(s, unit)] = { n: 0 }; return; }
-        K.units[key(s, unit)] = { r: STD + logit(st.acc / 100) + (r() - 0.5) * 180, n: 3 + Math.floor(r() * 8), last: now - r() * 6 * DAY, S: 3 + r() * 10, ratio: Math.max(0.4, 1.5 - st.speed / 100 + (r() - 0.5) * 0.3) };
+        const n = 3 + Math.floor(r() * 8);
+        K.units[key(s, unit)] = { r: STD + logit(st.acc / 100) + (r() - 0.5) * 180, n, c: Math.round(n * (0.4 + r() * 0.5)), m: 0.45 + r() * 0.5, last: now - r() * 6 * DAY, S: 3 + r() * 10, ratio: Math.max(0.4, 1.5 - st.speed / 100 + (r() - 0.5) * 0.3) };
       });
       K.app[s] = APP + logit(st.app / 100);
     });
     return K;
   }
 
-  window.Knowledge = { confOf, sdOf, DAY, SUBJECTS, setBank, setCurriculum, inScope, units: () => UNITS, fields: () => FIELDS, meta, weightedUnit, unitDetail, fieldStats, REF, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
+  window.Knowledge = { mastery, dayOf, confOf, sdOf, DAY, SUBJECTS, setBank, setCurriculum, inScope, units: () => UNITS, fields: () => FIELDS, meta, weightedUnit, unitDetail, fieldStats, REF, retention, prob, STD, unitValue, subjectStats, update, pickQuestions, simulateAnswer, synth, hash, rng, key };
 })();
