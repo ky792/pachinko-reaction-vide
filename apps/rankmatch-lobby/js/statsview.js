@@ -42,6 +42,7 @@
       <header class="m-head"><button class="link" data-action="back-home">← ホーム</button><span class="eyebrow">学力詳細</span></header>
       <h1 class="m-title">知識データ</h1>
       <div class="sv-tabs">${KN.SUBJECTS.map((s) => `<button class="sv-tab" data-stats-subject="${s}" aria-pressed="${s === subject}"><b>${s}</b><span>${window.Battle.power(S[s])}</span></button>`).join('')}</div>
+      ${window.Mechs ? window.Mechs.Hero(subject, st, getComputedStyle(document.documentElement).getPropertyValue('--theme').trim() || '#3B9BFF') : ''}
       ${Electives(subject, electives || {})}
       <section class="holo-panel sv-sum">
         <div class="sv-sum__axes">${[['正確さ', st.acc], ['速さ', st.speed], ['応用', st.app]].map(([k, v]) => `<div class="sv-ax"><span>${k}</span><i class="bar"><b style="width:${v}%"></b></i><b>${v}</b></div>`).join('')}</div>

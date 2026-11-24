@@ -193,6 +193,7 @@
         <div class="lobby__main">
           ${UI.RankCard(rankCardData(), P.season)}
           ${UI.ArenaCTA(P, window.Battle.totalPower(P.stats))}
+          ${window.Mechs ? window.Mechs.Squad(P.stats, t.color, P.focus) : ''}
           ${UI.StatsCard(P.stats, P.focus, window.Battle.power)}
           <div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>
           ${UI.RecommendCard(P.recommend, t, c)}

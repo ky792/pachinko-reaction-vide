@@ -158,7 +158,7 @@
         <div class="a-compare">${o.order.map((s, k) => {
           const a = power(me.S[s]), c = power(op.S[s]);
           return `<button class="a-row ${s === b.focus ? 'is-focus' : ''}" data-focus="${s}" aria-pressed="${s === b.focus}">
-            <span class="no">${k + 1}</span><span class="s">${esc(s)}${s === o.focus ? '<i class="ofocus">◆</i>' : ''}</span>
+            <span class="no">${k + 1}</span><span class="s">${window.Mechs ? `<span class="mx-ico">${window.Mechs.svg(s, { color: mt.color, cov: me.S[s].coverage, ret: me.S[s].retention })}</span>` : ''}${esc(s)}${s === o.focus ? '<i class="ofocus">◆</i>' : ''}</span>
             <span class="v me">${a}</span><span class="duel"><i class="l" style="width:${(a / (a + c)) * 100}%"></i></span><span class="v op">${c}</span>
             <span class="wr ${s === sug ? 'sug' : ''}">${rates[s]}%</span>
           </button>`;
@@ -193,6 +193,27 @@
     return `ほぼ互角（正答予測 ${pc(A.p)} vs ${pc(B.p)}）`;
   }
 
+  /* 激突ステージ：その陣地の科目ロボットどうしが押し合う。押し合い 1 回 = 攻撃 1 回 */
+  const MOVE = { acc: '精密打撃', speed: '高速連撃', app: '応用バースト' };
+  function Clash(b, ctx, area, shown, g) {
+    if (!window.Mechs) return '';
+    const s = area.subject, A = ctx.player.stats[s], B = b.opSide().S[s], M = window.Mechs, e = shown[shown.length - 1];
+    let pm = 'idle', po = 'idle', mid = `<small>第${b.ai + 1}陣</small><strong>${esc(s)}</strong>`, fx = '';
+    if (b.areaDone) { pm = area.win ? 'win' : 'down'; po = area.win ? 'down' : 'win'; mid += `<span class="mx-move ${area.win ? 'me' : 'op'}">${area.win ? '撃破！陣地確保' : '撃破された'}</span>`; }
+    else if (!e) { pm = po = 'enter'; mid += '<span class="mx-move">出撃</span>'; }
+    else {
+      const meAtk = e.d >= 0; pm = meAtk ? 'atk' : 'hit'; po = meAtk ? 'hit' : 'atk';
+      mid += `<span class="mx-move ${meAtk ? 'me' : 'op'}">${MOVE[e.axis]}${e.unit ? ' · ' + esc(e.unit) : ''}</span>${Math.abs(e.d) >= 25 ? '<span class="mx-crit">CRITICAL</span>' : ''}`;
+      fx = `<span class="mx-spark ${meAtk ? 'on-op' : 'on-me'}"></span><span class="mx-dmg ${meAtk ? 'on-op' : 'on-me'}">${Math.abs(e.d)}</span>`;
+    }
+    const side = (who, st, color, pose, name) => `<div class="mx-side ${who} p-${pose}"><div class="mx-unit">${M.svg(s, { color, cov: st.coverage, ret: st.retention })}</div>
+      <span class="mx-tag">${esc(M.INFO[s].name)}<b>${power(st)}</b></span><small class="muted">${esc(name)}</small></div>`;
+    return `<section class="mx-clash" aria-label="${esc(s)}の陣地での戦闘">
+      <div class="mx-bar"><i style="width:${50 + g / 2}%"></i><span style="left:${50 + g / 2}%"></span></div>
+      ${side('me', A, ctx.type.color, pm, ctx.player.name)}<div class="mx-mid">${mid}</div>${side('op', B, b.oc, po, b.op.name)}${fx}
+    </section>`;
+  }
+
   function BattleView(b, ctx) {
     const res = b.res, n = navOf(ctx.D, b.op.nav);
     const area = res.areas[b.ai], shown = area && area.ex ? area.ex.slice(0, Math.max(0, b.ei)) : [];
@@ -204,8 +225,9 @@
         <span class="dash">陣地</span>
         <div class="op"><b>${done.filter((a) => !a.win).length}</b><span>${esc(b.op.name)}</span>${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--op' })}</div>
       </div>
-      ${Map3D(' ', FxLayer(b, ctx, g), b.shake ? 'shake' : '')}
+      ${Clash(b, ctx, area, shown, g)}
       ${Tiles(b, res, b.areaDone ? b.ai + 1 : b.ai)}
+      ${Map3D(' ', FxLayer(b, ctx, g), b.shake ? 'shake' : '')}
       <section class="a-arena ${b.areaDone ? (area.win ? 'won' : 'lost') : ''}">
         <div class="a-arena__head"><span class="eyebrow">第${b.ai + 1}陣</span><h2>${esc(area.subject)}</h2>${b.areaDone ? `<span class="a-capture">${area.win ? '陣地確保' : '陣地を奪われた'}</span>` : ''}</div>
         <div class="a-tug" aria-label="陣地ゲージ"><i class="mine" style="width:${50 + g / 2}%"></i><span class="mark" style="left:${50 + g / 2}%"></span><em class="c"></em></div>

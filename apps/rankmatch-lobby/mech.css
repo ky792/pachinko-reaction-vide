@@ -1,0 +1,103 @@
+/* 科目ロボット：機体の状態・ポーズ・部隊カード・対戦の激突ステージ */
+.mech{display:block;width:100%;height:100%;overflow:visible}
+.mech__core{filter:drop-shadow(0 0 calc(var(--glow) * 8px) var(--C));opacity:var(--glow)}
+.mech__eye{filter:drop-shadow(0 0 3px var(--C))}
+.mech__orbit{transform-origin:60px 72px;animation:mxOrbit 9s linear infinite}
+.mech__bolt{animation:mxBlink .9s steps(2) infinite}
+.mech__flag{transform-origin:30px 24px;animation:mxFlag 1.4s ease-in-out infinite}
+.mech--fading .mech__body{filter:saturate(.35) brightness(.75);animation:holoFlicker 3s infinite}
+.mech__body{transform-origin:60px 136px}
+
+/* ---- 部隊カード（ホーム・知識データ） ---- */
+.mcard{position:relative;display:grid;justify-items:center;gap:0;padding:6px 4px 6px;background:linear-gradient(180deg,color-mix(in oklab,var(--mc) 14%,rgba(10,16,32,.9)),rgba(10,16,32,.9));border:1px solid color-mix(in oklab,var(--mc) 40%,var(--line));clip-path:var(--cut)}
+.mcard__art{width:100%;aspect-ratio:120/140;max-height:120px}
+.mcard__art .mech__body{animation:mxIdle 3.2s ease-in-out infinite}
+.mcard__pw{font-family:var(--f-num);font-size:16px;line-height:1.1;color:#fff;text-shadow:0 0 8px var(--mc)}
+.mcard__name{font-size:11px;font-weight:700;line-height:1.2;text-align:center}
+.mcard__name small{display:block;font-size:9px;color:var(--muted);font-weight:500}
+.mcard__lv{font-size:8px;letter-spacing:1px;color:var(--mc)}
+.mcard.is-focus{border-color:var(--mc);box-shadow:inset 0 0 14px color-mix(in oklab,var(--mc) 30%,transparent)}
+.mcard.is-focus::after{content:"★";position:absolute;right:5px;top:3px;font-size:11px;color:var(--gold)}
+.squad{display:grid;gap:10px}
+.squad__head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.squad__head b{font-family:var(--f-num);font-size:20px}
+.squad__row{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.squad__row button{display:block;width:100%}
+.squad__note{margin:0;font-size:11px;color:var(--muted)}
+.mx-hero{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center}
+.mx-hero .mcard__art{max-height:none}
+.mx-hero ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:3px;font-size:12px;color:var(--muted)}
+.mx-hero ul b{color:var(--fg);font-family:var(--f-num)}
+.mx-hero h2{font-size:18px;font-family:var(--f-body);font-weight:900}
+.mx-hero h2 small{font-size:11px;color:var(--muted);font-weight:500;margin-left:6px;letter-spacing:.1em}
+.mx-ico{display:inline-block;width:26px;height:30px;vertical-align:middle;margin-right:2px}
+
+/* ---- 対戦：激突ステージ ---- */
+.mx-clash{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;min-height:230px;padding:10px 8px 8px;
+  background:radial-gradient(ellipse 60% 60% at 50% 100%,rgba(255,255,255,.07),transparent 70%),linear-gradient(180deg,rgba(8,13,26,.4),rgba(8,13,26,.9));border:1px solid var(--line-2);clip-path:var(--cut)}
+.mx-clash::before{content:"";position:absolute;left:-20%;right:-20%;bottom:-30%;height:60%;transform:perspective(300px) rotateX(60deg);
+  background-image:linear-gradient(rgba(140,170,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(140,170,255,.18) 1px,transparent 1px);background-size:30px 30px;mask-image:linear-gradient(transparent,#000 50%)}
+.mx-side{position:relative;z-index:1;display:grid;justify-items:center;gap:2px}
+.mx-unit{width:min(150px,38vw);aspect-ratio:120/140}
+.mx-side.op .mx-unit{transform:scaleX(-1)}
+.mx-tag{display:flex;gap:6px;align-items:baseline;font-size:11px;font-weight:700;text-shadow:0 1px 4px #000}
+.mx-tag b{font-family:var(--f-num);font-size:14px}
+.mx-side.me .mx-tag b{color:var(--theme)}.mx-side.op .mx-tag b{color:var(--oc)}
+.mx-mid{position:relative;z-index:2;align-self:center;display:grid;justify-items:center;gap:2px;text-align:center;min-width:72px}
+.mx-mid small{font-size:10px;color:var(--muted);letter-spacing:.1em}
+.mx-mid strong{font-family:var(--f-body);font-weight:900;font-size:20px;line-height:1.1}
+.mx-move{font-size:11px;font-weight:700;padding:2px 8px;background:rgba(0,0,0,.5);border:1px solid var(--line-2);white-space:nowrap;animation:gsPop .3s both}
+.mx-move.me{border-color:var(--theme);color:var(--holo-hi)}.mx-move.op{border-color:var(--oc);color:color-mix(in oklab,var(--oc) 55%,#fff)}
+.mx-crit{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--gold);text-shadow:0 0 10px var(--gold);animation:gsStamp .4s .15s both}
+.mx-dmg{position:absolute;z-index:3;top:18%;font-family:var(--f-num);font-weight:700;font-size:26px;color:#fff;text-shadow:0 0 10px #f44,0 2px 0 #000;animation:mxDmg .9s .2s ease-out both}
+.mx-dmg.on-me{left:14%}.mx-dmg.on-op{right:14%}
+.mx-spark{position:absolute;z-index:2;top:42%;width:90px;height:90px;translate:-50% -50%;pointer-events:none;
+  background:conic-gradient(from 0deg,transparent 0 10deg,#fff 10deg 14deg,transparent 14deg 40deg,#fff 40deg 43deg,transparent 43deg 80deg,#fff 80deg 84deg,transparent 84deg 130deg,#fff 130deg 133deg,transparent 133deg 190deg,#fff 190deg 194deg,transparent 194deg 250deg,#fff 250deg 253deg,transparent 253deg 310deg,#fff 310deg 314deg,transparent 314deg);
+  mask-image:radial-gradient(circle,transparent 18%,#000 22%,transparent 70%);animation:mxSpark .45s .22s ease-out both}
+.mx-spark.on-op{left:72%}.mx-spark.on-me{left:28%}
+.mx-bar{position:absolute;z-index:3;left:8px;right:8px;top:8px;height:6px;background:color-mix(in oklab,var(--oc) 55%,#1a1a2a);clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%)}
+.mx-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--theme);box-shadow:0 0 8px var(--theme);transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.mx-bar span{position:absolute;top:-3px;width:2px;height:12px;background:#fff;transition:left .5s cubic-bezier(.2,.8,.2,1)}
+
+/* ポーズ（再描画のたびにアニメが再生される） */
+.mx-side .mech__body{animation:mxIdle 2.6s ease-in-out infinite}
+.mx-side.p-enter .mx-unit{animation:mxEnter .6s cubic-bezier(.2,.8,.2,1) both}
+.mx-side.op.p-enter .mx-unit{animation-name:mxEnterOp}
+.mx-side.p-atk .mx-unit{animation:mxAtk .55s cubic-bezier(.3,.7,.3,1) both}
+.mx-side.op.p-atk .mx-unit{animation-name:mxAtkOp}
+.mx-side.p-atk .mech__weapon{transform-origin:90px 80px;animation:mxSwing .55s ease-out both}
+.mx-side.p-hit .mx-unit{animation:mxHit .5s .2s ease-out both}
+.mx-side.op.p-hit .mx-unit{animation-name:mxHitOp}
+.mx-side.p-hit .mech{animation:mxFlash .5s .2s steps(2) both}
+.mx-side.p-down .mx-unit{animation:mxDown .9s .1s ease-in both}
+.mx-side.op.p-down .mx-unit{animation-name:mxDownOp}
+.mx-side.p-down .mech{animation:mxSmoke .9s .1s both}
+.mx-side.p-win .mech__body{animation:mxWin .7s ease-out both,mxIdle 2.6s .7s ease-in-out infinite}
+.mx-side.p-win .mech__core{animation:mxBlink .3s 3}
+
+@keyframes mxIdle{50%{transform:translateY(-3px)}}
+@keyframes mxOrbit{to{transform:rotate(360deg)}}
+@keyframes mxBlink{50%{opacity:.2}}
+@keyframes mxFlag{50%{transform:skewY(-8deg) scaleX(.9)}}
+@keyframes mxEnter{from{opacity:0;transform:translateX(-60px)}}
+@keyframes mxEnterOp{from{opacity:0;transform:scaleX(-1) translateX(-60px)}to{transform:scaleX(-1)}}
+@keyframes mxAtk{35%{transform:translateX(38%)}100%{transform:none}}
+@keyframes mxAtkOp{0%{transform:scaleX(-1)}35%{transform:scaleX(-1) translateX(38%)}100%{transform:scaleX(-1)}}
+@keyframes mxSwing{30%{transform:rotate(-40deg)}60%{transform:rotate(25deg)}100%{transform:none}}
+@keyframes mxHit{30%{transform:translateX(-14%) rotate(-6deg)}60%{transform:translateX(-6%)}100%{transform:none}}
+@keyframes mxHitOp{0%{transform:scaleX(-1)}30%{transform:scaleX(-1) translateX(-14%) rotate(-6deg)}60%{transform:scaleX(-1) translateX(-6%)}100%{transform:scaleX(-1)}}
+@keyframes mxFlash{0%{filter:brightness(3) saturate(0)}100%{filter:none}}
+@keyframes mxDown{40%{transform:translateX(-10%) rotate(-10deg)}100%{transform:translateX(-18%) translateY(18%) rotate(-28deg);opacity:.35}}
+@keyframes mxDownOp{0%{transform:scaleX(-1)}40%{transform:scaleX(-1) translateX(-10%) rotate(-10deg)}100%{transform:scaleX(-1) translateX(-18%) translateY(18%) rotate(-28deg);opacity:.35}}
+@keyframes mxSmoke{0%{filter:none}30%{filter:brightness(3)}100%{filter:grayscale(1) brightness(.5)}}
+@keyframes mxWin{40%{transform:translateY(-14px) scale(1.04)}}
+@keyframes mxDmg{0%{opacity:0;transform:translateY(10px) scale(.6)}25%{opacity:1;transform:translateY(-6px) scale(1.15)}100%{opacity:0;transform:translateY(-34px)}}
+@keyframes mxSpark{0%{opacity:0;scale:.3}40%{opacity:1}100%{opacity:0;scale:1.5;rotate:30deg}}
+
+@media (min-width:900px){
+  .mx-clash{min-height:280px}
+  .mx-unit{width:190px}
+}
+@media (prefers-reduced-motion:reduce){
+  .mech *,.mx-clash *{animation:none!important}
+}
