@@ -138,3 +138,42 @@
 @media (min-width:900px){.mx-clash{min-height:380px}}
 /* チーム色の輪郭光（敵味方をひと目で見分ける） */
 .mech--art .mech__body img{filter:drop-shadow(0 0 1.5px var(--M)) drop-shadow(0 0 7px color-mix(in oklab,var(--M) 70%,transparent))}
+
+/* ==== ロボット戦のカットイン ==== */
+.phase-battle .a-3d{height:clamp(320px,58vh,620px)}
+.a-3d .mx-comm{top:auto;bottom:12px;left:10px}
+.mx-cut{position:fixed;inset:0;z-index:45;display:grid;place-items:center;padding:0 0 env(safe-area-inset-bottom,0px);background:rgba(3,6,14,.62);backdrop-filter:blur(3px)}
+.mx-cut__lines{position:absolute;inset:0;pointer-events:none;opacity:.5;
+  background:repeating-linear-gradient(-14deg,transparent 0 22px,rgba(255,255,255,.07) 22px 24px,transparent 24px 60px);animation:cutLines .6s linear infinite}
+.mx-cut__band{position:relative;width:100%;max-width:980px;padding:12px var(--gut-r) 14px var(--gut-l);display:grid;gap:8px;
+  background:linear-gradient(180deg,rgba(10,16,32,.96),rgba(6,10,20,.98));border-block:2px solid color-mix(in oklab,var(--theme) 60%,transparent);
+  clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);box-shadow:0 0 60px rgba(0,0,0,.7)}
+.mx-cut__band::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,color-mix(in oklab,var(--theme) 18%,transparent),transparent 40%,transparent 60%,color-mix(in oklab,var(--oc) 18%,transparent))}
+.mx-cut__head{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;font-size:12px;font-weight:700}
+.mx-cut__head b{font-family:var(--f-body);font-weight:900;font-size:18px;letter-spacing:.06em;text-align:center}
+.mx-cut__head .me{color:var(--holo-hi)}.mx-cut__head .op{text-align:right;color:color-mix(in oklab,var(--oc) 60%,#fff)}
+.mx-cut .mx-clash{border:0;clip-path:none;background:radial-gradient(ellipse 60% 70% at 50% 100%,rgba(255,255,255,.08),transparent 70%)}
+.mx-cut__ctl{position:relative;display:flex;justify-content:center;gap:8px}
+.mx-cut__ctl .btn{min-height:38px;padding-inline:14px;font-size:12px}
+.mx-stamp{position:absolute;z-index:6;left:50%;top:46%;translate:-50% -50%;display:grid;justify-items:center;padding:8px 22px;rotate:-6deg;
+  border:3px solid currentColor;background:rgba(6,10,20,.75);animation:gsStamp .45s .55s cubic-bezier(.3,1.6,.5,1) both}
+.mx-stamp b{font-family:var(--f-body);font-weight:900;font-size:clamp(30px,9vw,52px);line-height:1;letter-spacing:.08em}
+.mx-stamp small{font-size:12px;font-weight:700}
+.mx-stamp.me{color:var(--holo-hi);text-shadow:0 0 18px var(--theme)}.mx-stamp.op{color:#ff7a86;text-shadow:0 0 18px #ff3a4c}
+/* 入る：斜めに切り裂いて入り、その後に最初の攻撃 */
+.mx-cut.is-in{animation:fadeIn .25s both}
+.mx-cut.is-in .mx-cut__band{animation:cutIn .42s cubic-bezier(.2,.8,.2,1) both}
+.mx-cut.is-in .mx-side.p-atk .mx-unit,.mx-cut.is-in .mx-side.p-atk .mech__weapon{animation-delay:.42s}
+.mx-cut.is-in .mx-side.p-hit .mx-unit,.mx-cut.is-in .mx-side.p-hit .mech,.mx-cut.is-in .mx-spark,.mx-cut.is-in .mx-dmg{animation-delay:.62s}
+.mx-cut.is-in .mx-comm,.mx-cut.is-in .mx-move,.mx-cut.is-in .mx-crit{animation-delay:.45s}
+/* 抜ける：撃破とスタンプを見せてから斜めに抜ける（2倍速なら半分の時間） */
+.mx-cut.is-out{animation:cutBgOut .35s calc(1.35s * var(--sp)) both}
+.mx-cut.is-out .mx-cut__band{animation:cutOut .38s calc(1.3s * var(--sp)) cubic-bezier(.6,0,.8,.2) both}
+.mx-cut.is-out .mx-stamp{animation-duration:calc(.45s * var(--sp));animation-delay:calc(.5s * var(--sp))}
+.mx-cut.is-out{pointer-events:none}
+@keyframes cutIn{0%{clip-path:polygon(0 3%,0 0,0 100%,0 100%);filter:brightness(2.5)}60%{filter:brightness(1.4)}100%{clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);filter:none}}
+@keyframes cutOut{to{clip-path:polygon(100% 0,100% 0,100% 97%,100% 100%)}}
+@keyframes cutBgOut{to{opacity:0;visibility:hidden}}
+@keyframes cutLines{to{background-position:-62px 0}}
+@media (prefers-reduced-motion:reduce){.mx-cut,.mx-cut *{animation:none!important}.mx-cut.is-out{display:none}}
+.mx-cut .mx-mid small,.mx-cut .mx-mid strong{display:none}

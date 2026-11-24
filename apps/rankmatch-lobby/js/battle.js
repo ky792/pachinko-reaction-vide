@@ -233,6 +233,23 @@
     </section>`;
   }
 
+  /* ロボット戦のカットイン：陣地にズームしたあと全面に入り、3 回の攻防→撃破を見せて抜ける。
+     入る（is-in）は最初の攻防の描画だけ、抜ける（is-out）は決着の描画だけ。間の描画（is-on）は動かない */
+  function CutIn(b, ctx, area, shown, g) {
+    if (!window.Mechs || (!shown.length && !b.areaDone)) return '';
+    const st = b.areaDone ? 'is-out' : shown.length === 1 ? 'is-in' : 'is-on';
+    const stamp = b.areaDone ? `<div class="mx-stamp ${area.win ? 'me' : 'op'}"><b>${area.win ? '陣地確保' : '陥落'}</b><small>${esc(area.subject)}</small></div>` : '';
+    return `<div class="mx-cut ${st}" style="--sp:${b.fast ? 0.5 : 1}" role="dialog" aria-label="${esc(area.subject)}の陣地でロボット戦">
+      <div class="mx-cut__lines" aria-hidden="true"></div>
+      <div class="mx-cut__band">
+        <div class="mx-cut__head"><span class="me">${esc(ctx.player.name)}</span><b>第${b.ai + 1}陣 ${esc(area.subject)}</b><span class="op">${esc(b.op.name)}</span></div>
+        ${Clash(b, ctx, area, shown, g)}
+        ${stamp}
+        <div class="mx-cut__ctl"><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
+      </div>
+    </div>`;
+  }
+
   function BattleView(b, ctx) {
     const res = b.res, n = navOf(ctx.D, b.op.nav);
     const area = res.areas[b.ai], shown = area && area.ex ? area.ex.slice(0, Math.max(0, b.ei)) : [];
@@ -244,9 +261,9 @@
         <span class="dash">陣地</span>
         <div class="op"><b>${done.filter((a) => !a.win).length}</b><span>${esc(b.op.name)}</span>${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--op' })}</div>
       </div>
-      ${Clash(b, ctx, area, shown, g)}
+      ${Map3D(' ', FxLayer(b, ctx, g) + (!shown.length && !b.areaDone ? Comm(b, ctx) : ''), b.shake ? 'shake' : '')}
       ${Tiles(b, res, b.areaDone ? b.ai + 1 : b.ai)}
-      ${Map3D(' ', FxLayer(b, ctx, g), b.shake ? 'shake' : '')}
+      ${CutIn(b, ctx, area, shown, g)}
       <section class="a-arena ${b.areaDone ? (area.win ? 'won' : 'lost') : ''}">
         <div class="a-arena__head"><span class="eyebrow">第${b.ai + 1}陣</span><h2>${esc(area.subject)}</h2>${b.areaDone ? `<span class="a-capture">${area.win ? '陣地確保' : '陣地を奪われた'}</span>` : ''}</div>
         <div class="a-tug" aria-label="陣地ゲージ"><i class="mine" style="width:${50 + g / 2}%"></i><span class="mark" style="left:${50 + g / 2}%"></span><em class="c"></em></div>
@@ -425,7 +442,7 @@
     if (b.ei < 0) { // 陣地に入る：カメラを寄せる
       b.ei = 0; b.fx = { kind: 'area', idx: b.ai, subject: area.subject }; commSay(b, ctx, 'enter', area.subject, 'serious');
       if (t3) t3.focus(b.ai);
-      show(); schedule(0.9); return;
+      show(); schedule(1.3); return; // マップで陣地にズームしてからカットイン
     }
     if (b.ei < 3) { // 押し合い
       const e = area.ex[b.ei]; b.ei++;
@@ -439,8 +456,8 @@
     b.expr = area.win ? 'smile' : 'special';
     b.fx = { kind: 'cap', win: area.win, subject: area.subject }; b.comm = null;
     if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
-    show(); navCut(area.win ? '陣地確保' : '陥落', b.line, b.expr);
-    schedule(1.8);
+    show();
+    schedule(2.1); // 撃破→スタンプ→カットインが抜けてマップで占領の演出を見せる
   }
   function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); }
   function navCut(title, line, expr) {
