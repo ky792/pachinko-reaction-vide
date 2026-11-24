@@ -32,6 +32,15 @@
     if (!on && P.pause) { P.pauseOffset = (P.pauseOffset || 0) + (Date.now() - P.pause); P.pause = null; P.defClock = now(); }
     refreshStats(); savePlayer();
   }
+  /* 受験型：対象の科目だけで戦う（対戦相手も同じ受験型） */
+  const examSet = () => window.EXAM_SETS[P.examSet || 'all'].subjects;
+  const examLabel = () => window.EXAM_SETS[P.examSet || 'all'].short;
+  /* 防衛スナップショット：登録した時点の学力で守る（その後の演習は「更新」するまで防衛に入らない。
+     攻める側にとって相手の強さが試合ごとにぶれない＝偵察の情報が信頼できる） */
+  function snapDefense() {
+    P.defense.snap = { K: clone(P.K), S: clone(P.stats), at: now(), total: window.Battle.totalPower(P.stats) };
+    savePlayer();
+  }
   /* 数字の変化の記録：ホームで「何が・どれだけ・なぜ」を見せる */
   function logChange(kind, d, why) { if (!d) return; P.changes = (P.changes || []).concat({ kind, d, why, at: Date.now() }).slice(-12); }
   function initKnowledge() {
@@ -41,7 +50,10 @@
     migrateCos();
     if (!P.achv) P.achv = { train: 0, duel: 0 };
     if (!P.defense) P.defense = { order: KN.SUBJECTS.slice(), focus: P.focus || KN.SUBJECTS[0] };
+    if (!P.examSet || !window.EXAM_SETS[P.examSet]) P.examSet = 'all';
+    if (!P.privacy) P.privacy = { units: true };
     refreshStats();
+    if (!P.defense.snap) snapDefense();
   }
   /* 旧カリキュラムの単元の学習記録を新しい単元へ移す（統合先に記録があれば、解いた回数が多い方を残す） */
   function migrateUnits() {
@@ -95,7 +107,13 @@
   }
   const rankCardData = () => { const v = rankView(P.rank.rp); return Object.assign({}, P.rank, { label: v.label, nextTier: v.next || '—', nextAt: v.nextAt, floor: v.floor }); };
 
+  /* 日ごとの記録（保護者レポート用）。試作では過去 6 日分を仮の値で埋める */
+  function dayRec(d = KN.dayOf(now())) {
+    if (!P.days) { P.days = {}; const r = KN.rng(11); for (let k = 6; k >= 1; k--) { const n = 10 + Math.floor(r() * 30); P.days[d - k] = { min: 15 + Math.floor(r() * 70), solved: n, correct: Math.round(n * (0.6 + r() * 0.25)), battles: Math.floor(r() * 4), wins: 0, demo: true }; P.days[d - k].wins = Math.floor(P.days[d - k].battles * (0.3 + r() * 0.5)); } }
+    return P.days[d] || (P.days[d] = { min: 0, solved: 0, correct: 0, battles: 0, wins: 0 });
+  }
   const addStudy = (seconds, solved, correct) => {
+    const D = dayRec(); D.min += Math.max(1, Math.ceil(seconds / 60)); D.solved += solved; D.correct += correct;
     const T = P.today; T.solved += solved; T.correct += correct; T.minutes += Math.max(1, Math.ceil(seconds / 60));
     P.missions.forEach((ms) => { if (ms.id === 'm3') ms.progress = Math.min(ms.total, T.minutes); });
   };
@@ -107,6 +125,7 @@
     P.rank.rp = Math.max(0, P.rank.rp + r.rp);
     logChange('rp', r.rp, `${r.opName || '相手'}に${r.win ? '勝利' : '敗北'}`);
     P.rank.winStreak = r.win ? P.rank.winStreak + 1 : 0;
+    { const D = dayRec(); D.battles++; if (r.win) D.wins++; }
     P.rank.nationalPos = Math.max(1, P.rank.nationalPos + (r.win ? -60 : 30));
     P.focus = r.focus;
     addExp(r.win ? 120 : 50);
@@ -131,14 +150,18 @@
     let added = 0;
     for (; k > 0; k--) {
       const os = window.OPPONENTS, o = os[Math.floor(Math.random() * os.length)];
-      const atk = { K: opK(o), S: opStats(o), focus: KN.SUBJECTS[Math.floor(Math.random() * 5)] };
-      const def = { K: P.K, S: P.stats, focus: P.defense.focus, order: P.defense.order };
-      const res = window.Battle.resolveBattle(atk, def, Math.floor(Math.random() * 1e9), t);
+      const es = examSet(), atk = { K: opK(o), S: opStats(o), focus: Math.random() < 0.7 && es.includes(o.focus) ? o.focus : es[Math.floor(Math.random() * es.length)] }; // 7割は相手の得意な主戦場で来る
+      const sn = P.defense.snap || { K: P.K, S: P.stats, at: t };
+      const def = { K: sn.K, S: sn.S, focus: P.defense.focus, order: P.defense.order, conc: !!P.defense.conc };
+      atk.active = examSet();
+      const res = window.Battle.resolveBattle(atk, def, Math.floor(Math.random() * 1e9), sn.at);
       const win = !res.win; let rp = win ? 5 : -6;
       if (rp < 0) { rp = -Math.min(-rp, Math.max(0, DEF_LOSS_CAP - P.defDay.lost)); P.defDay.lost -= rp; }
       P.rank.rp = Math.max(0, P.rank.rp + rp);
       logChange('rp', rp, `防衛${win ? '成功' : '失敗'}（${o.name}）`);
-      P.defenseLog.unshift({ name: o.name, rank: o.rank, win, score: `${res.opW}-${res.myW}`, rp, at: t - k * 60000, lost: res.areas.filter((a) => !a.skipped && a.win).map((a) => a.subject) });
+      P.defenseLog.unshift({ name: o.name, rank: o.rank, win, score: `${res.opW}-${res.myW}`, rp, at: t - k * 60000, lost: res.areas.filter((a) => !a.skipped && a.win).map((a) => a.subject),
+        // リプレイ用（防衛側＝自分から見た値に直して保存）
+        rep: res.areas.filter((a) => !a.skipped).map((a) => ({ s: a.subject, win: !a.win, ex: (a.ex || []).map((e) => ({ u: e.unit, ax: e.axis, a: e.b, b: e.a, d: -e.d })), mine: a.notesOp || [], tac: a.notesMe || [] })) });
       added++;
     }
     P.defenseLog = P.defenseLog.slice(0, 6); savePlayer();
@@ -256,6 +279,7 @@
         </div>
       </div>
       <div class="bar"><i style="width:${v.pct}%"></i></div>
+      <button class="rsum__share" data-action="share" aria-label="戦績をシェア">シェア</button>
       <span class="rank__meta">${v.next ? `${UI.esc(v.next)} 昇格まで <b>${(v.nextAt - P.rank.rp).toLocaleString('ja-JP')}</b> RP` : '最高ランク'} · ${UI.esc(P.season.name)} 残り${P.season.daysLeft}日</span>
       ${state.homeChips.length ? `<ul class="rsum__chg">${state.homeChips.slice(-4).reverse().map((c) => `<li class="${c.d > 0 ? 'up' : 'down'}"><b>${c.d > 0 ? '▲ +' : '▼ '}${c.d} ${c.kind === 'rp' ? 'RP' : '学力'}</b><span>${UI.esc(c.why)}</span></li>`).join('')}</ul>` : ''}
     </section>`;
@@ -265,8 +289,12 @@
     return `<section class="missions holo-panel settings" aria-label="設定">
       <div class="missions__head"><span class="eyebrow">設定</span></div>
       <label class="set-row"><input type="checkbox" data-set="pause" ${paused() ? 'checked' : ''}><span><b>休止モード</b><small>受験直前用。定着度の低下とランク変動（対戦・防衛）を止める</small></span></label>
+      <div class="set-row set-row--sel"><span><b>受験型</b><small>対戦は同じ受験型の相手と。対象外の科目の陣地では戦わない</small></span>
+        <div class="set-seg" role="group" aria-label="受験型">${Object.entries(window.EXAM_SETS).map(([k, v]) => `<button data-action="exam" data-k="${k}" aria-pressed="${P.examSet === k}">${UI.esc(v.short)}</button>`).join('')}</div></div>
+      <label class="set-row"><input type="checkbox" data-set="units" ${P.privacy.units ? 'checked' : ''}><span><b>得意・苦手な単元を公開する</b><small>オフにすると相手にあなたの単元が見えない。そのかわり、あなたにも相手の単元が見えない（お互いさま）</small></span></label>
       <label class="set-row"><input type="checkbox" data-set="sfx" ${window.SFX && !window.SFX.muted() ? 'checked' : ''}><span><b>効果音</b><small>正解・押し合い・決着スタンプなど</small></span></label>
-      <p class="set-note">相手の画面に出るあなたの情報：学力合計、科目ごとの戦力、城門の科目、主戦場の候補（2択）、得意・苦手そうな単元 1 つずつ、戦術の傾向。単元ごとの正答率や解いた問題は見えません。</p>
+      <p class="set-note">相手の画面に出るあなたの情報：学力合計、科目ごとの戦力、城門の科目、主戦場の候補（2択）、${P.privacy.units ? '得意・苦手そうな単元 1 つずつ、' : ''}戦術の傾向。単元ごとの正答率や解いた問題は見えません。</p>
+      <button class="btn btn--sub set-btn" data-action="report">保護者・先生向けレポート</button>
     </section>`;
   }
 
@@ -293,10 +321,25 @@
           ${window.Mechs ? window.Mechs.Squad(P.stats, t.color, P.defense.focus) : ''}
           ${UI.StatsCard(P.stats, P.defense.focus, window.Battle.power)}
         </div>
-        <div class="lobby__side"><p class="side-label">そのほか</p>${UI.RecommendCard(recommend(), t, c)}<div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>${Settings()}${UI.DefenseLog(P.defenseLog.map((d) => Object.assign({}, d, { ago: agoOf(d) })), P.defense, window.Defense.rates(P.defense.order, P.defense.focus, { now, myK: () => P.K, player: P, opponents: window.OPPONENTS, opK, opStats }).avg)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
+        <div class="lobby__side"><p class="side-label">そのほか</p>${UI.RecommendCard(recommend(), t, c)}<div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>${Settings()}${UI.DefenseLog(P.defenseLog.map((d) => Object.assign({}, d, { ago: agoOf(d) })), P.defense, window.Defense.rates(P.defense.order, P.defense.focus, { now, myK: () => P.K, player: P, opponents: window.OPPONENTS, opK, opStats, examSet }).avg)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
       </div>
       ${UI.BottomNav()}
+      ${state.replay != null && P.defenseLog[state.replay] ? Replay(P.defenseLog[state.replay]) : ''}
     </div>`;
+  }
+  /* 防衛のリプレイ：相手がどの陣地をどう攻めて、どこで押し負け／押し返したか（画面を塞がない横スライド） */
+  function Replay(d) {
+    const AX = { acc: '正確さ', speed: '速さ', app: '応用' };
+    const body = d.rep ? d.rep.map((a) => `<li class="rp-area ${a.win ? 'ok' : 'ng'}" style="--sc:${SCOL(a.s)}"><div class="rp-area__h"><b>${UI.esc(a.s)}</b><span>${a.win ? '守った' : '取られた'}</span></div>
+        ${(a.mine && a.mine.length) || (a.tac && a.tac.length) ? `<small class="muted">${(a.mine || []).map(UI.esc).join('・') || '補正なし'}${a.tac && a.tac.length ? ` ／ 相手：${a.tac.map(UI.esc).join('・')}` : ''}</small>` : ''}
+        <ul>${a.ex.map((e) => `<li class="${e.d > 0 ? 'up' : 'down'}"><span>${e.u ? UI.esc(e.u) : '科目全体'} · ${AX[e.ax]}</span><b>${e.a} vs ${e.b}</b><em>${e.d > 0 ? '押し返した' : '押し込まれた'}</em></li>`).join('')}</ul></li>`).join('')
+      : '<p class="muted">この記録にはリプレイがありません（以前の記録）。</p>';
+    const lost = d.rep ? d.rep.filter((a) => !a.win).flatMap((a) => a.ex.filter((e) => e.d < 0 && e.u).map((e) => ({ s: a.s, u: e.u }))) : [];
+    return `<aside class="slide" aria-label="防衛のリプレイ"><div class="slide__head"><span class="eyebrow">DEFENSE REPLAY</span><button class="slide__x" data-action="replay-close" aria-label="閉じる">×</button></div>
+      <h3>${UI.esc(d.name)}<small>${UI.esc(d.rank)} · ${UI.esc(agoOf(d))} · ${d.win ? '防衛成功' : '突破された'} ${UI.esc(d.score)}</small></h3>
+      <ul class="rp-list">${body}</ul>
+      ${lost.length ? `<p class="rp-tip">押し込まれた単元：${lost.slice(0, 3).map((x) => `${UI.esc(x.s)}・${UI.esc(x.u)}`).join('／')}</p><button class="btn btn--main" data-action="train" data-subject="${UI.esc(lost[0].s)}" data-units="${UI.esc(lost.filter((x) => x.s === lost[0].s).map((x) => x.u).join('|'))}">この単元を鍛える</button>` : ''}
+    </aside>`;
   }
 
   function render() {
@@ -304,10 +347,10 @@
     refreshStats();
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
-    window.Battle.unmount(); window.Training.unmount(); window.MyBase.unmount(); window.Defense.unmount();
+    window.Battle.unmount(); window.Training.unmount(); if (window.Report) window.Report.unmount(); window.MyBase.unmount(); window.Defense.unmount();
     if ((route === 'arena' || route === 'match') && state.confirmed && paused()) { location.hash = 'home'; return; } // 休止中は対戦しない
     if ((route === 'arena' || route === 'match') && state.confirmed) {
-      window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, useTicket, overturn, recordAnswer,
+      window.Battle.mount(root, Object.assign(base, { examSet, examLabel, privacy: () => P.privacy, opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, useTicket, overturn, recordAnswer,
         achieve: (k) => { P.achv[k] = (P.achv[k] || 0) + 1; savePlayer(); },
         train: (s, u) => { state.trainSubject = s; state.trainUnits = u || []; go('train'); } }));
       return;
@@ -319,8 +362,13 @@
       return;
     }
     if (route === 'defense' && state.confirmed) {
-      window.Defense.mount(root, { D, player: P, type: type(), char: char(), now, myK: () => P.K, opponents: window.OPPONENTS, opK, opStats,
+      window.Defense.mount(root, { D, player: P, type: type(), char: char(), now, myK: () => P.K, opponents: window.OPPONENTS, opK, opStats, examSet, snapDefense,
         look: () => window.MyBase.lookOf(P), save: savePlayer, toast, exit: () => go('home') });
+      return;
+    }
+    if ((route === 'report' || route === 'share') && state.confirmed) {
+      dayRec();
+      window.Report.mount(root, { route, examSet, player: P, type: type(), char: char(), now, rankLabel: rankView(P.rank.rp).label, examLabel, go, exit: () => go('home') });
       return;
     }
     if (route === 'base' && state.confirmed) {
@@ -374,13 +422,14 @@
 
   /* Esc で選択画面の詳細・確認を閉じる */
   document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.matches && e.target.matches('li[data-action]')) { e.preventDefault(); e.target.click(); return; }
     if (e.key !== 'Escape' || !root.querySelector('.screen--gs')) return;
     if (state.sel.confirming) { state.sel.confirming = false; window.SelectView.overlay(root, 'confirm', false); }
     else if (state.sel.detail) { state.sel.detail = false; window.SelectView.overlay(root, 'detail', false); }
   });
 
   root.addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
+    const b = e.target.closest('button, li[data-action]'); if (!b) return;
     if (b.dataset.seltype) { state.typeId = b.dataset.seltype; state.sel = { step: 'char', picked: null, expr: 0, line: 0, detail: false, confirming: false }; render(); window.scrollTo(0, 0); return; }
     if (b.dataset.selchar) { state.gender = b.dataset.selchar; window.SelectView.pick(root, type(), state.sel, b.dataset.selchar); return; }
     if (b.dataset.type) { state.typeId = b.dataset.type; render(); return; }
@@ -405,6 +454,11 @@
       case 'advance': P.dayShift = (P.dayShift || 0) + 3; refreshStats(); savePlayer(); render(); toast('3日経過：復習していない単元の定着が下がりました'); break;
       case 'reset': P = clone(window.MOCK_PLAYER); initKnowledge(); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;
       case 'review': { const q = reviewQueue(); if (q.length) { state.trainSubject = q[0].s; state.trainUnits = q.filter((x) => x.s === q[0].s).map((x) => x.unit); } go('train'); break; }
+      case 'exam': { P.examSet = b.dataset.k; const es = examSet(); if (!es.includes(P.defense.focus)) P.defense.focus = es[0]; if (!es.includes(P.focus)) P.focus = es[0]; savePlayer(); render(); break; }
+      case 'replay': state.replay = +b.dataset.i; render(); break;
+      case 'replay-close': state.replay = null; render(); break;
+      case 'report': go('report'); break;
+      case 'share': go('share'); break;
       case 'study': { const r = recommend(); state.trainSubject = r.subject; state.trainUnits = [r.unit]; go('train'); break; }
       case 'sfx': if (window.SFX) window.SFX.toggle(); render(); break;
       case 'claim': b.replaceWith(Object.assign(document.createElement('span'), { className: 'mission__reward got', textContent: '受取済' })); toast('報酬を受け取りました'); break;
@@ -413,6 +467,7 @@
   root.addEventListener('change', (e) => {
     const k = e.target.dataset && e.target.dataset.set; if (!k) return;
     if (k === 'pause') { setPause(e.target.checked); render(); }
+    if (k === 'units') { P.privacy.units = e.target.checked; savePlayer(); render(); }
     if (k === 'sfx' && window.SFX) { window.SFX.setMute(!e.target.checked); render(); }
   });
   root.addEventListener('pointerover', (e) => { if (e.target.closest('[data-action="match"]') && state.expr !== 'serious') setDialogue(char().lines.match, 'serious'); });

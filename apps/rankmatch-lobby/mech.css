@@ -513,3 +513,63 @@
 .set-note{margin:6px 0 0;font-size:11px;color:var(--muted);line-height:1.6}
 @media (max-width:520px){.tdy__row{grid-template-columns:1fr}.rsum__nums b{font-size:17px}}
 @media (prefers-reduced-motion:reduce){.rsum__chg li,.t-mech__flash,.is-armorup .is-after .mech,.t-mech__up{animation:none!important}}
+
+/* ---- 横スライド（防衛リプレイ・戦闘の詳細）：画面を塞がない ---- */
+.slide{position:fixed;right:0;top:0;bottom:0;z-index:60;width:min(380px,88vw);overflow-y:auto;padding:14px 16px 90px;background:rgba(8,12,26,.96);border-left:1px solid var(--line);box-shadow:-12px 0 30px rgba(0,0,0,.5);animation:slideIn .25s ease-out;font-size:13px}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:none}}
+.slide__head{display:flex;justify-content:space-between;align-items:center;gap:8px;position:sticky;top:-14px;padding:6px 0;background:inherit}
+.slide__x{width:40px;height:40px;font-size:22px;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.slide h3{margin:6px 0 10px;font-size:18px}.slide h3 small{display:block;font-size:11px;color:var(--muted);font-weight:500}
+.rp-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.rp-area{padding:8px 10px;border-left:3px solid var(--sc);background:rgba(255,255,255,.03)}
+.rp-area.ng{border-left-style:dashed}
+.rp-area__h{display:flex;justify-content:space-between;align-items:baseline}
+.rp-area.ok .rp-area__h span{color:#3DDC97}.rp-area.ok .rp-area__h span::before{content:"⚑ "}
+.rp-area.ng .rp-area__h span{color:#FF8C96}.rp-area.ng .rp-area__h span::before{content:"✕ "}
+.rp-area ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px}
+.rp-area li li{display:grid;grid-template-columns:1fr auto;gap:0 8px;font-size:12px}
+.rp-area li li em{grid-column:1/-1;font-style:normal;font-size:11px;color:var(--muted)}
+.rp-area li li.up b{color:#3DDC97}.rp-area li li.down b{color:#FF8C96}
+.rp-area li li.up span::before{content:"▲ ";color:#3DDC97}.rp-area li li.down span::before{content:"▼ ";color:#FF8C96}
+.rp-tip{margin:12px 0 8px;color:#FFB020}
+.def[data-action]{cursor:pointer}.def__go{color:var(--muted);font-size:16px;padding-left:4px}
+.df-snap{display:grid;gap:6px}.df-snap>div{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}.df-snap b{font-family:var(--f-num);font-size:18px}.df-snap small{color:var(--muted)}.df-snap p{margin:0;font-size:12px}
+.df-snap .up{color:#3DDC97}.df-snap .down{color:#FF8C96}
+.set-row--sel{flex-direction:column;cursor:default}
+.set-seg{display:flex;gap:4px;width:100%}.set-seg button{flex:1;min-height:40px;font-size:12px;color:#fff;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.set-seg button[aria-pressed="true"]{background:color-mix(in oklab,var(--accent,#3B9BFF) 35%,#0A1020);border-color:var(--accent,#3B9BFF);font-weight:700}
+.set-btn{width:100%;margin-top:8px}
+.rsum__share{justify-self:end;margin-top:-4px;padding:4px 12px;font-size:12px;color:#fff;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+
+/* ---- レポート・シェア ---- */
+.m-title small{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
+.rp-kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rp-kpi span{display:block;font-size:11px;color:var(--muted)}.rp-kpi b{font-family:var(--f-num);font-size:24px}.rp-kpi b small{font-size:11px;margin:0 2px}.rp-kpi em{display:block;font-style:normal;font-size:11px;color:var(--muted)}
+.rp-bars{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;height:140px;align-items:end;margin-top:8px}
+.rp-bars div{display:grid;grid-template-rows:1fr auto auto;height:100%;text-align:center;font-size:11px}
+.rp-bars i{align-self:end;display:block;background:color-mix(in oklab,var(--accent,#3B9BFF) 60%,transparent);min-height:2px}
+.rp-bars .is-today i{background:var(--accent,#3B9BFF)}.rp-bars b{font-family:var(--f-num);font-size:11px}.rp-bars small{color:var(--muted)}
+.rp-subj{list-style:none;margin:8px 0;padding:0;display:grid;gap:6px}
+.rp-subj li{display:grid;grid-template-columns:3em repeat(3,minmax(0,1fr));gap:8px;align-items:center;font-size:12px}
+.rp-subj li>b{color:var(--sc)}.rp-subj span{display:grid;grid-template-columns:1fr 3em;gap:4px;align-items:center}.rp-subj em{font-style:normal;font-family:var(--f-num);text-align:right}
+.rp-subj .bar.is-low b{background:#FFB020}
+.rp-units{display:grid;grid-template-columns:1fr 1fr;gap:12px}.rp-units ul{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;font-size:12px}
+.rp-units li span{font-size:10px;font-weight:700;margin-right:6px}.rp-units li em{display:block;font-style:normal;color:var(--muted);font-size:11px}
+.rp-text{width:100%;box-sizing:border-box;font:12px/1.6 var(--f-num,monospace);color:#dfe6ff;background:rgba(0,0,0,.35);border:1px solid var(--line);padding:8px;resize:vertical}
+.sh-wrap{max-width:420px;margin:0 auto}.sh-cv{display:block;width:100%;height:auto;border:1px solid var(--line)}
+@media (max-width:520px){.rp-units{grid-template-columns:1fr}.rp-subj li{grid-template-columns:2.6em repeat(3,minmax(0,1fr))}}
+@media print{.m-head,.r-actions,.bottom-nav{display:none!important}body{background:#fff}}
+/* スマホ：下 4 割のシートにして、戦闘と出撃ボタンは上に見えたまま（ページ下に同じだけ余白を足す） */
+@media (max-width:720px){
+  .slide{top:auto;left:0;width:auto;height:42vh;border-left:0;border-top:2px solid var(--accent,#3B9BFF);box-shadow:0 -12px 30px rgba(0,0,0,.5);animation-name:sheetIn;padding-bottom:20px}
+  @keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
+  body:has(.slide) .screen{padding-bottom:44vh}
+}
+li.def[data-action]{position:relative;padding-right:18px}
+.def__go{position:absolute;right:2px;top:50%;translate:0 -50%;padding:0}
+.m-tip{display:grid;gap:6px;margin:0 0 10px;font-size:13px;line-height:1.65}
+.m-tip p{margin:0;padding:8px 10px;background:rgba(77,163,255,.08);border-left:3px solid #4DA3FF}
+.m-tip b{display:block;font-size:11px;color:#4DA3FF;margin-bottom:2px}
+.m-tip__miss{background:rgba(255,176,32,.08)!important;border-left-color:#FFB020!important}.m-tip__miss b{color:#FFB020}
+.set-row b{display:block}.set-row small{display:block}
+.df-list li.is-off{opacity:.45}.df-list li.is-off .df-role{color:var(--muted)}

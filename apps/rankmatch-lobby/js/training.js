@@ -42,6 +42,11 @@
   </div>`;
   }
 
+  /* 単元の考え方（いつも）と、よくあるミス（不正解のときだけ） */
+  function Tip(q, a) {
+    const tp = window.UNIT_TIPS && window.UNIT_TIPS[q.subject + '/' + q.unit]; if (!tp) return '';
+    return `<div class="m-tip"><p><b>考え方</b>${esc(tp.point)}</p>${!a.correct && tp.miss ? `<p class="m-tip__miss"><b>よくあるミス</b>${esc(tp.miss)}</p>` : ''}</div>`;
+  }
   function QuestionView(t, ctx) {
     const q = t.qs[t.i], a = t.answers[t.i], rev = !!a;
     const u = ctx.myK().units[KN.key(q.subject, q.unit)];
@@ -64,7 +69,8 @@
       ${rev ? `<section class="m-reveal">
         <div class="m-reveal__row"><span class="res ${a.correct ? 'ok' : 'ng'}">${a.correct ? '正解' : '不正解'}</span><span class="t">${a.time.toFixed(1)}秒</span>
           <span class="opp">${esc(q.unit)}：正答予測 ${a.delta.before.p == null ? '—' : pct(a.delta.before.p) + '%'} → <b class="${a.delta.before.p == null || a.delta.after.p >= a.delta.before.p ? 'up' : 'down'} ${a.delta.before.p != null && a.delta.after.p - a.delta.before.p >= 0.01 ? 'is-glow' : ''}">${pct(a.delta.after.p)}%</b></span></div>
-        <p class="m-reveal__exp"><b>解説</b>${esc(q.explain)}</p>
+        <p class="m-reveal__exp"><b>解説</b>${a.correct ? '' : `あなたの答え「${esc(q.choices[a.choice])}」ではなく「${esc(q.choices[q.answer])}」。`}${esc(q.explain)}</p>
+        ${Tip(q, a)}
         <button class="btn btn--main js-next" data-action="next">${t.i + 1 >= t.qs.length ? '結果を見る' : '次の問題'}<kbd>Enter</kbd></button>
       </section>` : ''}
       ${NavLine(ctx, t.navLine, t.navExpr)}

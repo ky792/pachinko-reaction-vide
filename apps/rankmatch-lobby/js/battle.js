@@ -50,9 +50,14 @@
   /* mom: 直前の陣地を取った側（1＝攻め側、-1＝守り側、0＝なし） */
   function resolveArea(me, op, subject, idx, r, now, mom = 0, opt = {}) {
     const [u1, u2] = opt.units || drawUnits(me, op, subject, r);
-    let fm = me.focus === subject ? RULE.focus : 1, fo = op.focus === subject ? RULE.focus : 1;
-    const notesMe = me.focus === subject ? ['主戦場 +15%'] : [], notesOp = op.focus === subject ? ['主戦場 +15%'] : [];
-    if (op.order && op.order[0] === subject) { fo *= RULE.gate; notesOp.push('城門 +2%'); }
+    // 主戦場：通常は +15%。集中防衛（conc）は「読み」：相手の主戦場を当てたら相手の +15% を打ち消して自分が +15%、外したら自分の主戦場の +15% も無い
+    const read = (x, y) => x.conc && x.focus === subject && y.focus === subject; // x が y の主戦場を読み当てた
+    const fOf = (x, y) => (x.conc ? (read(x, y) ? RULE.focus : 1) : read(y, x) ? 1 : x.focus === subject ? RULE.focus : 1);
+    const nOf = (x, y) => (x.conc ? (read(x, y) ? ['集中防衛 読み勝ち +15%'] : x.focus === subject ? ['集中防衛 読み外れ'] : []) : read(y, x) ? ['主戦場を読まれた ±0'] : x.focus === subject ? ['主戦場 +15%'] : []);
+    let fm = fOf(me, op), fo = fOf(op, me);
+    const notesMe = nOf(me, op), notesOp = nOf(op, me);
+    const act = me.active || op.active, gate = op.order && op.order.find((x) => !act || act.includes(x)); // 城門＝対象の陣地のうち最初の 1 つ
+    if (gate === subject) { fo *= RULE.gate; notesOp.push('城門 +2%'); }
     const tm = TAC[opt.tacMe], to = TAC[opt.tacOp];
     if (tm) notesMe.push(tm.name); if (to) notesOp.push(to.name);
     if (opt.tacMe && opt.tacOp && BEATS[opt.tacMe] === opt.tacOp) { fm *= RULE.counter; notesMe.push('戦術の相性 +6%'); }
@@ -77,14 +82,16 @@
     return { subject, idx, ex, gauge: (w - l) * 50, win: w >= RULE.exWin, wins: [w, l], notesMe, notesOp, units: [u1, u2], tacMe: opt.tacMe, tacOp: opt.tacOp };
   }
 
+  const needWin = (n) => Math.floor(n / 2) + 1; // 対象の陣地の過半数（5→3、3→2）
   function resolveBattle(me, op, seed, now) {
     const r = KN.rng(seed), areas = []; let myW = 0, opW = 0, mom = 0;
-    (me.order || op.order).forEach((subject, idx) => {
-      if (myW >= RULE.toWin || opW >= RULE.toWin) { areas.push({ subject, idx, skipped: true }); return; }
+    const act = me.active || op.active, order = (me.order || op.order).filter((s) => !act || act.includes(s)), need = needWin(order.length);
+    order.forEach((subject, idx) => {
+      if (myW >= need || opW >= need) { areas.push({ subject, idx, skipped: true }); return; }
       const a = resolveArea(me, op, subject, idx, r, now, mom, { focusUnit: me.focusUnit });
       a.win ? myW++ : opW++; mom = a.win ? 1 : -1; areas.push(a);
     });
-    return { areas, myW, opW, win: myW >= RULE.toWin, seed };
+    return { areas, myW, opW, win: myW >= need, seed, need };
   }
   function winRate(me, op, now, n = 300) {
     let w = 0; for (let i = 1; i <= n; i++) if (resolveBattle(me, op, i * 7919, now).win) w++;
@@ -93,7 +100,7 @@
   function tally(res) {
     res.myW = res.areas.filter((a) => !a.skipped && a.win).length;
     res.opW = res.areas.filter((a) => !a.skipped && !a.win).length;
-    res.win = res.myW >= RULE.toWin;
+    res.win = res.myW >= (res.need || RULE.toWin);
   }
   function analyze(res) {
     const lost = res.areas.filter((a) => !a.skipped && !a.win && a.ex && a.ex.length).map((a) => {
@@ -124,6 +131,7 @@
 
   /* 陣地の状態（科目で引く。攻め順は攻め側が決め、地図の並びは防衛側の順） */
   function stateOf(b, subject) {
+    if (b.active && !b.active.includes(subject)) return 'none'; // 受験型の対象外
     const a = b.res && b.res.areas.find((x) => x.subject === subject);
     if (!a) return b.phase === 'battle' && b.stage === 'decide' && b.dec && b.dec.subject === subject ? 'active' : 'pending';
     if (a.skipped) return 'none';
@@ -194,6 +202,7 @@
           <li><b>城門</b>（防衛側 +2%）：<em style="--sc:${SC(h.gate)}">${esc(h.gate)}</em></li>
           <li><b>相手の主戦場</b>：<em>${h.focus.map(esc).join(' か ')}</em></li>
           <li><b>戦術の傾向</b>：「${esc(TAC[h.style].name)}」を好む</li>
+          ${h.hidden ? '<li><b>得意・苦手な単元</b>：<span class="muted">見えません（あなたが単元を非公開にしているため。お互いさま）</span></li>' : ''}
           ${h.strong ? `<li><b>得意そう</b>：${esc(h.strong.s)}・${esc(h.strong.u)}　<b>苦手そう</b>：${esc(h.weak.s)}・${esc(h.weak.u)}</li>` : ''}
         </ul>
       </section>
@@ -205,9 +214,9 @@
             <span class="no">${k + 1}</span><span class="s" style="--sc:${SC(s)}">${window.Mechs ? `<span class="mx-ico">${window.Mechs.svg(s, { color: mt.color, cov: me.S[s].coverage, ret: me.S[s].retention })}</span>` : ''}${esc(s)}${s === b.focus ? '<i>★</i>' : ''}</span>
             <span class="v me">${a}</span><span class="duel"><i class="l" style="width:${(a / (a + c)) * 100}%"></i></span><span class="v op">${c}</span>
             <span class="wr ${s === sug ? 'sug' : ''}">${rates[s]}%</span>
-          </button><span class="a-mv"><button data-mv="${k}:-1" aria-label="${s}を前へ" ${k === 0 ? 'disabled' : ''}>▲</button><button data-mv="${k}:1" aria-label="${s}を後へ" ${k === 4 ? 'disabled' : ''}>▼</button></span></div>`;
+          </button><span class="a-mv"><button data-mv="${k}:-1" aria-label="${s}を前へ" ${k === 0 ? 'disabled' : ''}>▲</button><button data-mv="${k}:1" aria-label="${s}を後へ" ${k === b.order.length - 1 ? 'disabled' : ''}>▼</button></span></div>`;
         }).join('')}</div>
-        <p class="muted">右端はその科目を主戦場にしたときの勝率。先に3つ取った方の勝ちなので、取りやすい科目を前に置くと勢い（+3%）が乗る。</p>
+        <p class="muted">右端はその科目を主戦場にしたときの勝率。${b.order.length < 5 ? `受験型「${esc(ctx.examLabel ? ctx.examLabel() : '')}」なので対象は ${b.order.length} 陣地。` : ''}先に${needWin(b.order.length)}つ取った方の勝ちなので、取りやすい科目を前に置くと勢い（+3%）が乗る。</p>
       </section>
       <section class="m-panel">
         <h2 class="panel__title">重点単元<small class="panel__note">その単元の押し合いが +15%</small></h2>
@@ -368,7 +377,7 @@
         <div class="mx-cut__head"><span class="me">${esc(ctx.player.name)}</span><b>第${b.ai + 1}陣 ${esc(area.subject)}</b><span class="op">${esc(b.op.name)}</span></div>
         ${b.areaDone && b.finArea ? Finisher(b, ctx, area) : Clash(b, ctx, area, shown, g)}
         ${stamp}
-        <div class="mx-cut__ctl"><button class="btn btn--sub" data-action="mode">${b.full ? '全演出' : '要点'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
+        <div class="mx-cut__ctl"><button class="btn btn--sub" data-action="mode">${b.full ? '全演出' : '要点'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button><button class="btn btn--sub" data-action="detail" aria-pressed="${!!b.detail}">詳細</button></div>
       </div>
     </div>`;
   }
@@ -427,8 +436,19 @@
           return `<li class="${e.win ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.win ? '⚑ 押し勝ち' : '✕ 押し負け'}</span><span class="why">${esc(explain(e, area.subject, b, ctx))}</span></li>`;
         }).join('')}${area.duelAtk ? `<li class="${area.win ? 'up' : 'down'}">直接対決で決着</li>` : ''}</ol>
       </section>` : ''}
-      <div class="a-controls"><button class="btn btn--sub" data-action="mode" aria-pressed="${!!b.full}">${b.full ? '全演出' : '要点モード'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button><button class="btn btn--sub a-sfx" data-action="sfx" aria-pressed="${window.SFX && !window.SFX.muted()}" aria-label="効果音">${window.SFX && window.SFX.muted() ? '🔇' : '🔊'}</button></div>
+      <div class="a-controls"><button class="btn btn--sub" data-action="mode" aria-pressed="${!!b.full}">${b.full ? '全演出' : '要点モード'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button><button class="btn btn--sub" data-action="detail" aria-pressed="${!!b.detail}">詳細</button><button class="btn btn--sub a-sfx" data-action="sfx" aria-pressed="${window.SFX && !window.SFX.muted()}" aria-label="効果音">${window.SFX && window.SFX.muted() ? '🔇' : '🔊'}</button></div>
     </div>`;
+  }
+
+  /* 戦闘中の詳細：画面を塞がない横スライド。戦闘は止めずに、これまでの陣地の押し合いと補正を全部読める */
+  function Detail(b, ctx) {
+    const rows = b.res.areas.filter((a) => !a.skipped);
+    return `<aside class="slide" aria-label="戦闘の詳細"><div class="slide__head"><span class="eyebrow">戦闘の詳細 · 戦闘は続いています</span><button class="slide__x" data-action="detail" aria-label="閉じる">×</button></div>
+      <p class="muted">${esc(ctx.player.name)} ${b.res.myW} − ${b.res.opW} ${esc(b.op.name)}（先に${b.res.need}つ）</p>
+      <ul class="rp-list">${rows.length ? rows.map((a) => `<li class="rp-area ${a.win ? 'ok' : 'ng'}" style="--sc:${SC(a.subject)}"><div class="rp-area__h"><b>${esc(a.subject)}</b><span>${a.win ? '確保' : '陥落'}</span></div>
+        <small class="muted">${a.notesMe.map(esc).join('・') || '補正なし'}${a.notesOp.length ? ` ／ 相手：${a.notesOp.map(esc).join('・')}` : ''}</small>
+        <ul>${(a.ex || []).map((e) => `<li class="${e.win ? 'up' : 'down'}"><span>${e.unit ? esc(e.unit) : '科目全体'} · ${AXL[e.axis]}</span><b>${e.a} vs ${e.b}</b><em>${esc(explain(e, a.subject, b, ctx))}</em></li>`).join('')}${a.duelAtk ? '<li>直接対決で決着</li>' : ''}</ul></li>`).join('') : '<li class="muted">まだ陣地の結果はありません</li>'}</ul>
+    </aside>`;
   }
 
   /* 戦況ダイジェスト：各陣地がどう決まったか（飛ばしたときも、ここで全部追える） */
@@ -550,7 +570,9 @@
 
   function draw() {
     const v = { pick: PickView, plan: PlanView, battle: BattleView, result: ResultView, duel: DuelIntro, duelq: DuelQ, duelres: DuelResult }[b.phase];
-    root.innerHTML = `<div class="screen screen--match">${v(b, ctx)}</div>`;
+    const sy = root.querySelector('.slide'), top = sy ? sy.scrollTop : 0;
+    root.innerHTML = `<div class="screen screen--match">${v(b, ctx)}</div>${b.detail && b.phase === 'battle' ? Detail(b, ctx) : ''}`;
+    const sl = root.querySelector('.slide'); if (sl) sl.scrollTop = top;
     attach3d();
     if (b.phase === 'result' && !b.animated) { b.animated = true; animateResult(); }
     const nx = root.querySelector('.js-next'); if (nx) nx.focus({ preventScroll: true });
@@ -579,11 +601,11 @@
 
   /* 開戦前に見えるヒント：防衛順と主戦場は断片だけ */
   function hintsOf(o, K, S) {
-    const r = KN.rng(KN.hash(o.id + 'hint')), other = SUBJECTS.filter((x) => x !== o.focus);
+    const r = KN.rng(KN.hash(o.id + 'hint')), other = SUBJECTS.filter((x) => x !== o.focus && (!b.active || b.active.includes(x)));
     const fc = [o.focus, other[Math.floor(r() * other.length)]].sort();
     const us = []; SUBJECTS.forEach((s) => (KN.units()[s] || []).forEach((u) => { const x = K.units[KN.key(s, u)]; if (x && x.n >= RULE.minSolved) us.push({ s, u, p: KN.prob(x.r, KN.STD) }); }));
     us.sort((a, b) => b.p - a.p);
-    return { gate: o.order[0], focus: fc, style: styleOf(o), strong: us[0], weak: us[us.length - 1] };
+    return { gate: o.order.find((x) => !b.active || b.active.includes(x)), focus: fc, style: styleOf(o), strong: us[0], weak: us[us.length - 1] };
   }
 
   function choose(id) {
@@ -591,10 +613,13 @@
     b.op = o; b.oc = n.type.id === ctx.type.id ? '#D9DFEF' : n.type.color; b.focus = ctx.player.focus; b.phase = 'plan';
     const opK = ctx.opK(o), opS = ctx.opStats(o);
     b.focusUnit = null;
-    b.order = SUBJECTS.slice().sort((x, y) => (power(ctx.player.stats[y]) - power(opS[y])) - (power(ctx.player.stats[x]) - power(opS[x]))); // 初期値：有利な科目から
+    b.active = (ctx.examSet && ctx.examSet()) || SUBJECTS;
+    b.order = SUBJECTS.filter((s) => b.active.includes(s)).sort((x, y) => (power(ctx.player.stats[y]) - power(opS[y])) - (power(ctx.player.stats[x]) - power(opS[x]))); // 初期値：有利な科目から
     b.hint = hintsOf(o, opK, opS);
-    b.me = () => ({ K: ctx.myK(), S: ctx.player.stats, focus: b.focus, order: b.order, focusUnit: b.focusUnit });
-    b.opSide = () => ({ K: opK, S: opS, focus: o.focus, order: o.order });
+    if (ctx.privacy && !ctx.privacy().units) { b.hint.strong = null; b.hint.weak = null; b.hint.hidden = true; } // 自分が非公開なら相手のも見えない
+    if (!b.active.includes(b.focus)) b.focus = b.order[0];
+    b.me = () => ({ K: ctx.myK(), S: ctx.player.stats, focus: b.focus, order: b.order, focusUnit: b.focusUnit, active: b.active });
+    b.opSide = () => ({ K: opK, S: opS, focus: o.focus, order: o.order, active: b.active });
     draw();
   }
 
@@ -603,7 +628,7 @@
     if (ctx.player.tickets.now <= 0) return;
     ctx.useTicket();
     const seed = Math.floor(Math.random() * 1e9);
-    b.res = { areas: [], myW: 0, opW: 0, win: false, seed };
+    b.res = { areas: [], myW: 0, opW: 0, win: false, seed, need: needWin(b.order.length) };
     b.prevP = ctx.player.lastP || null; // 「前回の対戦より伸びた」を出すための基準
     b.live = { r: KN.rng(seed), mom: 0, k: 0, uses: RULE.uses };
     // 決め技のフル演出の対象：前の試合から装甲の段階が上がった科目（昇格は決着の瞬間に判定）
@@ -617,7 +642,7 @@
     if (t3) { t3.intro(); t3.focus(null); }
     clearTimeout(timer); timer = setTimeout(nextArea, reduce() ? 300 : (b.fast ? 0.5 : 1) * (b.full ? 1900 : 900));
   }
-  const decided = () => b.res.myW >= RULE.toWin || b.res.opW >= RULE.toWin;
+  const decided = () => b.res.myW >= b.res.need || b.res.opW >= b.res.need;
   const ti = (subject) => b.op.order.indexOf(subject); // 地図上の位置
   /* 次の陣地：作戦パネルを出す（おまかせなら自動で決めて出撃） */
   function nextArea() {
@@ -653,7 +678,7 @@
     let k = 0; (area.ex || []).forEach((e, i) => { if ((area.win ? e.d : -e.d) > (area.win ? area.ex[k].d : -area.ex[k].d)) k = i; }); area.key = k;
     b.res.areas.push(area); b.ai = b.res.areas.length - 1;
     area.win ? b.res.myW++ : b.res.opW++; b.live.mom = area.win ? 1 : -1; b.live.k++;
-    b.res.win = b.res.myW >= RULE.toWin;
+    b.res.win = b.res.myW >= b.res.need;
     if (decided() && !b.ranks) settle();
     b.finArea = b.full || b.finSet.has(b.ai) || (!area.duel && area.win && b.lvUp.includes(area.subject));
   }
@@ -803,7 +828,7 @@
     // 決着がつかなくなったら、未戦闘の陣地を自動戦闘で続ける
     const r = KN.rng(res.seed + 99);
     res.areas.forEach((a, i) => {
-      if (!a.skipped || res.myW >= RULE.toWin || res.opW >= RULE.toWin) return;
+      if (!a.skipped || res.myW >= (res.need || RULE.toWin) || res.opW >= (res.need || RULE.toWin)) return;
       res.areas[i] = resolveArea(b.me(), b.opSide(), a.subject, i, r, ctx.now());
       tally(res);
     });
@@ -833,6 +858,7 @@
       case 'mode': b.full = !b.full; if (b.phase === 'battle') show(); else draw(); break;
       case 'speed': b.fast = !b.fast; draw(); break;
       case 'skip': if (b.phase === 'battle') skipAll(); break;
+      case 'detail': b.detail = !b.detail; draw(); break;
       case 'go': if (b.stage === 'decide') go(); break;
       case 'redraw': if (b.stage === 'decide' && b.live.uses > 0) { b.live.uses--; b.dec.cands = drawUnits(b.me(), b.opSide(), b.dec.subject, b.live.r, 3, null); b.dec.ban = null; show(); } break;
       case 'duel-attack': if (b.stage === 'decide') duelOpen(b.dec.subject, true); break;
