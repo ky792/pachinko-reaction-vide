@@ -297,3 +297,24 @@
 @media (prefers-reduced-motion:reduce){.fin__close,.fin__aura,.fin__p,.fin__trail,.fin__fx,.fin__boom,.fin__name,.fin__lines{display:none}.fin__atk,.fin__tgt{opacity:1}}
 .fin.op-win .ax-txt{scale:-1 1}
 .fin [class^="fin__"].fin__comm{inset:0;z-index:6;pointer-events:none}
+
+/* ==== 決め技アニメ（スプライト）を流す場合 ==== */
+.fin__stage{container-type:size}
+.fin.has-anim .fin__close,.fin.has-anim .fin__aura,.fin.has-anim .fin__p,.fin.has-anim .fin__atk,.fin.has-anim .fin__trail,.fin.has-anim .fin__fx,.fin.has-anim .fin__lines{display:none}
+.fin__anim{z-index:3;left:2%;bottom:5%;overflow:hidden;filter:drop-shadow(0 0 1.5px var(--wc)) drop-shadow(0 0 10px color-mix(in oklab,var(--wc) 55%,transparent))}
+.fin__strip{position:absolute;left:0;top:0;height:100%;animation:finStrip calc(4s * var(--T)) calc(.1s * var(--T)) linear both}
+.fin__strip img{display:block;width:100%;height:100%}
+.fin__strip span{position:absolute;inset:0;background:var(--wc);-webkit-mask-size:100% 100%;mask-size:100% 100%;filter:brightness(1.15)}
+@keyframes finStrip{from{transform:translateX(0)}to{transform:translateX(calc(-100% * (var(--n) - 1) / var(--n)))}}
+.fin.has-anim .fin__tgt{right:2%;width:30%;animation:finTgt2 calc(3.4s * var(--T)) calc(.1s * var(--T)) both}
+@keyframes finTgt2{0%{opacity:0}5%,55%{opacity:1;transform:none;filter:none}57%{transform:translateX(6%);filter:brightness(4) saturate(0)}
+  70%{transform:translateX(26%) translateY(-6%) rotate(14deg);filter:brightness(1.6)}85%{transform:translateX(30%) translateY(14%) rotate(30deg);filter:grayscale(1) brightness(.6)}100%{opacity:.4;transform:translateX(30%) translateY(16%) rotate(32deg);filter:grayscale(1) brightness(.45)}}
+.fin.has-anim .fin__stage{animation-delay:calc(1.95s * var(--T))}
+.fin.has-anim .fin__boom{animation-delay:calc(2s * var(--T));opacity:0;right:10%}
+.fin.has-anim .fin__comm .mx-comm{animation-delay:calc(3s * var(--T))}
+.fin.has-anim .fin__comm .mx-comm p{animation-delay:calc(3.15s * var(--T))}
+.mx-cut.has-anim.is-out{animation-delay:calc(4.25s * var(--sp))}
+.mx-cut.has-anim.is-out .mx-cut__band{animation-delay:calc(4.2s * var(--sp))}
+.mx-cut.has-anim.is-out .mx-stamp{animation-delay:calc(3.3s * var(--sp))}
+@media (prefers-reduced-motion:reduce){.fin__strip{animation:none;transform:translateX(calc(-100% * (var(--n) - 1) / var(--n)))}}
+.mx-stamp b{white-space:nowrap}

@@ -172,5 +172,5 @@
       ${crit ? `<div class="ax-tech ${fromMe ? 'from-me' : 'from-op'}"><small>${fromMe ? 'CRITICAL' : 'ENEMY CRITICAL'}</small><b>${TECH[subject]}</b></div>` : ''}`;
   }
 
-  window.Mechs = { INFO, svg, card, level, Squad, Hero, artOf, attackFx, TECH };
+  window.Mechs = { INFO, KEY, svg, card, level, Squad, Hero, artOf, attackFx, TECH };
 })();

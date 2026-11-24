@@ -244,13 +244,17 @@
     const W = meWin ? { st: ctx.player.stats[s], c: ctx.type.color } : { st: b.opSide().S[s], c: b.oc };
     const L = meWin ? { st: b.opSide().S[s], c: b.oc } : { st: ctx.player.stats[s], c: ctx.type.color };
     const unit = (x) => M.svg(s, { color: x.c, cov: x.st.coverage, ret: x.st.retention });
-    return `<div class="fin ${meWin ? 'me-win' : 'op-win'}" style="--wc:${W.c};--lc:${L.c}">
+    const key = M.KEY[s], A = window.MECH_ANIM && window.MECH_ANIM[key];
+    /* 決め技アニメ（AI 動画から作ったスプライト）があれば、それを流す。コマを横に並べた帯を 1 コマずつずらして再生 */
+    const anim = A ? `<div class="fin__anim" style="--n:${A.n};width:min(94cqw,calc(80cqh * ${(A.w / A.h).toFixed(3)}));aspect-ratio:${A.w}/${A.h}">
+        <div class="fin__strip" style="width:${A.n * 100}%;animation-timing-function:steps(${A.n},jump-none)"><img src="assets/mechs/anim/${key}.webp" alt=""><span style="-webkit-mask-image:url('assets/mechs/anim/${key}_m.webp');mask-image:url('assets/mechs/anim/${key}_m.webp')"></span></div></div>` : '';
+    return `<div class="fin ${meWin ? 'me-win' : 'op-win'} ${A ? 'has-anim' : ''}" style="--wc:${W.c};--lc:${L.c}">
       <div class="fin__stage">
         <span class="fin__bg"></span><span class="fin__lines"></span>
         <div class="fin__close">${unit(W)}</div>
         <div class="fin__aura"></div>${Array.from({ length: 10 }, (_, i) => `<i class="fin__p" style="--a:${i * 36}deg"></i>`).join('')}
         <div class="fin__tgt">${unit(L)}</div>
-        <div class="fin__atk">${unit(W)}</div><div class="fin__trail">${unit(W)}</div>
+        <div class="fin__atk">${unit(W)}</div><div class="fin__trail">${unit(W)}</div>${anim}
         <div class="fin__fx">${M.attackFx(s, true, false)}</div>
         <span class="fin__boom"></span>
       </div>
@@ -263,7 +267,8 @@
     if (!window.Mechs || (!shown.length && !b.areaDone)) return '';
     const st = b.areaDone ? 'is-out' : shown.length === 1 ? 'is-in' : 'is-on';
     const stamp = b.areaDone ? `<div class="mx-stamp ${area.win ? 'me' : 'op'}"><b>${area.win ? '陣地確保' : '陥落'}</b><small>${esc(area.subject)}</small></div>` : '';
-    return `<div class="mx-cut ${st}" style="--sp:${b.fast ? 0.5 : 1}" role="dialog" aria-label="${esc(area.subject)}の陣地でロボット戦">
+    const hasAnim = b.areaDone && window.MECH_ANIM && window.Mechs && window.MECH_ANIM[window.Mechs.KEY[area.subject]];
+    return `<div class="mx-cut ${st} ${hasAnim ? 'has-anim' : ''}" style="--sp:${b.fast ? 0.5 : 1}" role="dialog" aria-label="${esc(area.subject)}の陣地でロボット戦">
       <div class="mx-cut__lines" aria-hidden="true"></div>
       <div class="mx-cut__band">
         <div class="mx-cut__head"><span class="me">${esc(ctx.player.name)}</span><b>第${b.ai + 1}陣 ${esc(area.subject)}</b><span class="op">${esc(b.op.name)}</span></div>
@@ -481,7 +486,8 @@
     b.comm = { text: b.line, expr: b.expr, key: area.win ? 'win' : 'lose' }; // 決着のセリフもカットインの通信で（ナビのウィンドウは常に 1 つ）
     if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
     show();
-    schedule(4.1); // 決め技シーン（3.5 秒）→スタンプ→カットインが抜けてマップで占領の演出を見せる（2倍速なら半分）
+    const anim = window.MECH_ANIM && window.Mechs && window.MECH_ANIM[window.Mechs.KEY[area.subject]];
+    schedule(anim ? 4.7 : 4.1); // 決め技シーン（アニメ 4 秒／演出 3.5 秒）→スタンプ→カットインが抜けてマップで占領の演出を見せる（2倍速なら半分）
   }
   function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); }
   function navCut(title, line, expr) {
