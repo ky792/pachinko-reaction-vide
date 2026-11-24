@@ -193,6 +193,24 @@
     return `ほぼ互角（正答予測 ${pc(A.p)} vs ${pc(B.p)}）`;
   }
 
+  /* ナビの指揮通信（タイプごとの口調）。{subject} 陣地の科目、{mech} 機体名 */
+  const COMM = {
+    logic: { start: '全5機、起動完了。勝率の高い順に指示を出す。', enter: '{subject}陣地、{mech}を投入。主導権は最初の一手で決まる。', critMe: '会心の一撃だ。計算以上の出力が出ている。', critOp: '被弾が大きい。{mech}、体勢を立て直せ。' },
+    halo: { start: 'みんな、準備できたよ。焦らず一つずつ取りにいこう。', enter: '{subject}は{mech}にお願い。いつもの練習どおりで大丈夫。', critMe: 'すごい！今の一撃、積み重ねてきた力だよ。', critOp: '大丈夫、まだ立てる。{mech}、落ち着いて！' },
+    ignite: { start: 'いくよ！全機フルスロットル！', enter: '{subject}、{mech}突撃！ぶちかませ！', critMe: 'よっしゃあ！今の最高！', critOp: 'くっ…まだまだ！{mech}、踏ん張れ！' },
+    vex: { start: 'さあ、狩りの時間だ。弱いところから崩していく。', enter: '{subject}か。{mech}、遠慮はいらない。叩き潰せ。', critMe: 'いい手応えだ。相手の顔が見たいね。', critOp: 'へえ、やるじゃないか。{mech}、本気を出せ。' },
+    echo: { start: '戦場の流れが見えます。静かに、確かに進みましょう。', enter: '{subject}の陣へ。{mech}、相手の癖を見極めて。', critMe: '見事な一撃。積み重ねた知が形になりました。', critOp: '深い一撃を受けました。{mech}、呼吸を整えて。' },
+  };
+  function commSay(b, ctx, key, subject, expr) {
+    const L = COMM[ctx.type.id] || COMM.logic, mech = window.Mechs && subject ? window.Mechs.INFO[subject].name : '';
+    b.comm = { text: fmt(L[key], { subject: subject || '', mech }), expr: expr || 'serious', key };
+  }
+  /* 通信ウィンドウ（ホログラム）：再描画のたびに出現アニメが再生される */
+  const Comm = (b, ctx) => (b.comm ? `<div class="mx-comm k-${b.comm.key}" aria-live="polite">
+    <div class="mx-comm__face">${UI.Portrait({ char: ctx.char, expr: b.comm.expr, cls: 'portrait--face' })}</div>
+    <div class="mx-comm__body"><span class="mx-comm__head">NAV COMM · ${esc(ctx.char.name)}<i></i></span><p>${esc(b.comm.text)}</p></div>
+  </div>` : '');
+
   /* 激突ステージ：その陣地の科目ロボットどうしが押し合う。押し合い 1 回 = 攻撃 1 回 */
   const MOVE = { acc: '精密打撃', speed: '高速連撃', app: '応用バースト' };
   function Clash(b, ctx, area, shown, g) {
@@ -211,6 +229,7 @@
     return `<section class="mx-clash" aria-label="${esc(s)}の陣地での戦闘">
       <div class="mx-bar"><i style="width:${50 + g / 2}%"></i><span style="left:${50 + g / 2}%"></span></div>
       ${side('me', A, ctx.type.color, pm, ctx.player.name)}<div class="mx-mid">${mid}</div>${side('op', B, b.oc, po, b.op.name)}${fx}
+      ${Comm(b, ctx)}
     </section>`;
   }
 
@@ -388,7 +407,7 @@
     b.rpNow = b.res.win ? b.op.reward.win : b.op.reward.lose;
     b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus });
     b.phase = 'battle'; b.ai = 0; b.ei = -1; b.areaDone = false; b.line = ctx.char.catch; b.expr = 'serious';
-    b.fx = { kind: 'start' };
+    b.fx = { kind: 'start' }; commSay(b, ctx, 'start', null, 'serious');
     show();
     if (t3) { t3.intro(); t3.focus(null); }
     clearTimeout(timer); timer = setTimeout(step, reduce() ? 300 : b.fast ? 900 : 1900);
@@ -404,20 +423,21 @@
       return step();
     }
     if (b.ei < 0) { // 陣地に入る：カメラを寄せる
-      b.ei = 0; b.fx = { kind: 'area', idx: b.ai, subject: area.subject };
+      b.ei = 0; b.fx = { kind: 'area', idx: b.ai, subject: area.subject }; commSay(b, ctx, 'enter', area.subject, 'serious');
       if (t3) t3.focus(b.ai);
       show(); schedule(0.9); return;
     }
     if (b.ei < 3) { // 押し合い
       const e = area.ex[b.ei]; b.ei++;
       b.fx = { kind: 'ex', e, subject: area.subject }; b.shake = Math.abs(e.d) >= 25 && !reduce();
+      if (Math.abs(e.d) >= 25) commSay(b, ctx, e.d > 0 ? 'critMe' : 'critOp', area.subject, e.d > 0 ? 'smile' : 'special'); else b.comm = null;
       if (t3) t3.clash(b.ai, e);
       show(); schedule(); return;
     }
     b.areaDone = true;
     b.line = fmt(ctx.char.battleLines[area.win ? 'areaWin' : 'areaLose'], { subject: area.subject });
     b.expr = area.win ? 'smile' : 'special';
-    b.fx = { kind: 'cap', win: area.win, subject: area.subject };
+    b.fx = { kind: 'cap', win: area.win, subject: area.subject }; b.comm = null;
     if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
     show(); navCut(area.win ? '陣地確保' : '陥落', b.line, b.expr);
     schedule(1.8);
@@ -427,7 +447,7 @@
     if (reduce()) return;
     document.querySelectorAll('.cutin').forEach((x) => x.remove());
     const el = document.createElement('div'); el.className = 'cutin cutin--battle';
-    el.innerHTML = `${UI.Portrait({ char: ctx.char, expr, cls: 'portrait--cut' })}<div class="cutin__txt"><strong>${esc(title)}</strong><small>${esc(line)}</small></div>`;
+    el.innerHTML = `${UI.Portrait({ char: ctx.char, expr, cls: 'portrait--cut' })}<div class="cutin__txt"><span class="cutin__comm">NAV COMM · ${esc(ctx.char.name)}</span><strong>${esc(title)}</strong><small>${esc(line)}</small></div>`;
     document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
   }
 
