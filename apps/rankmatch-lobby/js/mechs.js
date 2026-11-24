@@ -12,8 +12,8 @@
     国語: { name: 'ハクビ', en: 'HAKUBI', role: '筆刀の侍機', accent: '#F2EDE0' },
     数学: { name: 'ジオメトラ', en: 'GEOMETRA', role: '幾何演算機', accent: '#9FF0FF' },
     英語: { name: 'ヘラルド', en: 'HERALD', role: '伝令の騎士機', accent: '#FFE08A' },
-    理科: { name: 'アトム', en: 'ATOM', role: '反応炉の重機', accent: '#B6FF8A' },
-    社会: { name: 'ストラテゴ', en: 'STRATEGO', role: '戦略砲撃機', accent: '#FFB27A' },
+    理科: { name: 'アトム', en: 'ATOM', role: '試薬砲の実験機', accent: '#B6FF8A' },
+    社会: { name: 'ストラテゴ', en: 'STRATEGO', role: '天球儀の賢者機', accent: '#FFB27A' },
   };
 
   /* 色：M=本体（チーム色）、D=暗部、K=フレーム、A=科目のアクセント、C=コア */
@@ -88,10 +88,25 @@
   };
 
   const level = (cov) => (cov >= 0.75 ? 2 : cov >= 0.4 ? 1 : 0);
+  const KEY = { 国語: 'ja', 数学: 'ma', 英語: 'en', 理科: 'sc', 社会: 'so' };
+  /* 本番絵：assets/mechs/{key}_lv{1-3}.webp（本体）＋ _m.webp（チーム色を乗せる範囲）。無いレベルは近いレベルで代用 */
+  function artOf(subject, lv) {
+    const A = window.MECH_ART || {}, k = KEY[subject];
+    for (const n of [lv + 1, 2, 3, 1]) if (A[`${k}_lv${n}`]) return Object.assign({ src: `assets/mechs/${k}_lv${n}.webp`, mask: `assets/mechs/${k}_lv${n}_m.webp` }, A[`${k}_lv${n}`]);
+    return null;
+  }
 
   function svg(subject, o = {}) {
     const c = o.color || '#3B9BFF', info = INFO[subject], lv = level(o.cov || 0), ret = o.ret == null ? 1 : o.ret;
     const st = `--M:${c};--D:color-mix(in oklab,${c} 35%,#0A1020);--K:color-mix(in oklab,${c} 18%,#1B2440);--A:${info.accent};--C:color-mix(in oklab,${c} 40%,#fff);--glow:${(0.35 + ret * 0.65).toFixed(2)}`;
+    const art = o.svgOnly ? null : artOf(subject, lv);
+    if (art) {
+      return `<span class="mech mech--art ${ret < 0.6 ? 'mech--fading' : ''} mech--lv${lv}" style="${st}" role="img" aria-label="${esc(info.name)}（${esc(subject)}）">
+        <span class="mech__shadow"></span>
+        <span class="mech__body" style="height:${((art.h / art.ref) * 100).toFixed(1)}%;aspect-ratio:${art.w}/${art.h}">
+          <img src="${art.src}" alt="" draggable="false"><span class="mech__team" style="-webkit-mask-image:url('${art.mask}');mask-image:url('${art.mask}')"></span>
+        </span></span>`;
+    }
     return `<svg class="mech ${ret < 0.6 ? 'mech--fading' : ''} mech--lv${lv}" viewBox="0 0 120 140" style="${st}" role="img" aria-label="${esc(info.name)}（${esc(subject)}）">
       <ellipse cx="60" cy="137" rx="34" ry="4" fill="#000" opacity=".45"/>
       <g class="mech__body">${BODY[subject](lv)}</g>
@@ -131,5 +146,5 @@
     </section>`;
   }
 
-  window.Mechs = { INFO, svg, card, level, Squad, Hero };
+  window.Mechs = { INFO, svg, card, level, Squad, Hero, artOf };
 })();
