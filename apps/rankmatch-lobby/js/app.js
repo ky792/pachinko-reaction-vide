@@ -147,7 +147,7 @@
     confirmed: !!saved.confirmed,
     lineIdx: 0,
     expr: 'default',
-    sel: { expr: 0, line: 0, detail: false, confirming: false }, // 選択画面：表情・セリフ・詳細シート・確認モーダル
+    sel: { step: 'type', picked: null, expr: 0, line: 0, detail: false, confirming: false }, // 選択画面：段階（type→char）・選んだナビ・表情・セリフ・詳細・確認
   };
   const persist = () => { try { localStorage.setItem(KEY, JSON.stringify({ typeId: state.typeId, gender: state.gender, confirmed: state.confirmed })); } catch (e) {} };
 
@@ -169,9 +169,7 @@
 
   /* ---------- 画面 ---------- */
   function renderSelect() {
-    root.innerHTML = window.SelectView.render({ D, t: type(), c: char(), gender: state.gender, confirmed: state.confirmed, sel: state.sel });
-    const ro = root.querySelector('.gs-roster'), on = ro && ro.querySelector('[aria-pressed="true"]'); // 選択中のナビをロスターの中央へ
-    if (on) ro.scrollLeft = on.offsetLeft - (ro.clientWidth - on.offsetWidth) / 2;
+    root.innerHTML = window.SelectView.render({ D, t: type(), confirmed: state.confirmed, sel: state.sel });
   }
 
   function renderHome() {
@@ -271,18 +269,19 @@
 
   root.addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.pick) { const [ty, g] = b.dataset.pick.split(':'); if (ty !== state.typeId || g !== state.gender) { state.typeId = ty; state.gender = g; state.sel = { expr: 0, line: 0, detail: false, confirming: false }; render(); } return; }
+    if (b.dataset.seltype) { state.typeId = b.dataset.seltype; state.sel = { step: 'char', picked: null, expr: 0, line: 0, detail: false, confirming: false }; render(); window.scrollTo(0, 0); return; }
+    if (b.dataset.selchar) { state.gender = b.dataset.selchar; window.SelectView.pick(root, type(), state.sel, b.dataset.selchar); return; }
     if (b.dataset.type) { state.typeId = b.dataset.type; render(); return; }
     if (b.dataset.gender) { state.gender = b.dataset.gender; render(); return; }
     if (b.dataset.statsSubject) { state.statsSubject = b.dataset.statsSubject; render(); window.scrollTo(0, 0); return; }
     if (b.dataset.elective) { setElective(b.dataset.electiveSubject, b.dataset.elective); render(); return; }
     switch (b.dataset.action) {
-      case 'sel-talk': window.SelectView.talk(root, char(), state.sel); break;
+      case 'sel-back': state.sel = { step: 'type', picked: null, expr: 0, line: 0, detail: false, confirming: false }; render(); window.scrollTo(0, 0); break;
       case 'sel-detail': state.sel.detail = !state.sel.detail; window.SelectView.overlay(root, 'detail', state.sel.detail, D, type(), char()); break;
       case 'sel-confirm': state.sel.confirming = true; window.SelectView.overlay(root, 'confirm', true, D, type(), char()); break;
       case 'sel-cancel': state.sel.confirming = false; window.SelectView.overlay(root, 'confirm', false); break;
       case 'confirm': state.sel.confirming = false; if (window.SelectView) window.SelectView.overlay(root, 'confirm', false); state.confirmed = true; state.lineIdx = 0; persist(); confirmFx(); break;
-      case 'change-nav': go('select'); break;
+      case 'change-nav': state.sel = { step: 'type', picked: null, expr: 0, line: 0, detail: false, confirming: false }; go('select'); break;
       case 'back-home': go('home'); break;
       case 'talk': state.lineIdx++; setDialogue(currentLine(), state.lineIdx % 2 ? 'smile' : 'default'); break;
       case 'match': go('arena'); break;

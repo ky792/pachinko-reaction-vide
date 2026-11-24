@@ -1,8 +1,11 @@
-/* ナビ選択画面（ソシャゲ型）：全面ステージに立ち絵、下に 10 人のロスター、詳細は引き出し、契約は確認→演出。
- * SelectView.render(ctx) → HTML 文字列。立ち絵タップ（話す）は DOM だけ差し替える（talk）。 */
+/* ナビ選択画面（2 段階・ホログラム演出）
+ *   STEP 1 タイプを選ぶ：5 タイプをホログラムのエンブレムで並べる
+ *   STEP 2 ナビを選ぶ：そのタイプの 2 人をホログラム投影し、タップした方が実体化する
+ * SelectView.render(ctx) → HTML 文字列。キャラのタップ・会話・詳細・確認は DOM だけ差し替える（入場演出を繰り返さない）。 */
 (function () {
   const UI = window.UI, esc = UI.esc;
   const EXPRS = ['default', 'smile', 'special'];
+  const HOLO = '#6FD3FF'; // タイプ未選択時のホログラム色
 
   const artOf = (c, expr) => (c.visual && c.visual.expr && c.visual.expr[expr]) || (c.visual && c.visual.src) || '';
   const lineOf = (c, i) => { const L = [c.catch, c.lines.morning, c.lines.day, c.lines.night, c.lines.match]; return L[i % L.length]; };
@@ -20,14 +23,91 @@
     </svg>`;
   }
 
-  /* ロスター：10 人を顔アイコンで。タイプ色の枠＋エンブレム */
-  function Roster(D, typeId, gender) {
-    return `<nav class="gs-roster" aria-label="ナビゲーター一覧">${D.types.map((t) => ['m', 'f'].map((g) => {
-      const c = t.characters[g], on = t.id === typeId && g === gender, f = (c.visual && c.visual.focus) || [50, 20];
-      return `<button class="gs-face" data-pick="${t.id}:${g}" style="--c:${t.color};--fx:${f[0]}%;--fy:${f[1]}%" aria-pressed="${on}" aria-label="${esc(c.name)}（${t.name}）">
-        <span class="gs-face__img" style="background-image:url('${esc(artOf(c, 'default'))}')"></span>
-        <span class="gs-face__emb">${UI.Emblem(t.emblem)}</span><span class="gs-face__name">${esc(c.name)}</span></button>`;
-    }).join('')).join('')}</nav>`;
+  const Bg = (word) => `<div class="gs-bg" aria-hidden="true">
+    <span class="gs-bg__burst"></span><span class="gs-bg__ring"></span><span class="gs-bg__ring gs-bg__ring--2"></span>
+    ${word ? `<span class="gs-bg__word">${word}</span>` : ''}<span class="gs-bg__grid"></span>
+    ${Array.from({ length: 14 }, (_, i) => `<i class="gs-spark" style="--i:${i}"></i>`).join('')}
+  </div>`;
+
+  /* ---------- STEP 1：タイプ選択 ---------- */
+  function TypeCard(t, i) {
+    const ghost = ['m', 'f'].map((g) => { const c = t.characters[g], f = c.visual.focus; return `<span class="tc__ghost tc__ghost--${g}" style="background-image:url('${esc(artOf(c, 'default'))}');--fx:${f[0]}%;--fy:${f[1]}%"></span>`; }).join('');
+    return `<button class="tc" data-seltype="${t.id}" style="--c:${t.color};--d:${i * 0.08}s" aria-label="${t.name}（${esc(t.characters.m.name)}・${esc(t.characters.f.name)}）">
+      ${ghost}
+      <span class="tc__core" aria-hidden="true"><span class="tc__beam"></span><span class="tc__pad"></span><span class="tc__emb">${UI.Emblem(t.emblem)}</span></span>
+      <span class="tc__txt">
+        <b class="tc__name">${t.name}</b><small class="tc__kana">${t.kana}</small>
+        <span class="tc__tag">${esc(t.tagline)}</span>
+        <span class="tc__navs">${esc(t.characters.m.name)} <i>/</i> ${esc(t.characters.f.name)}</span>
+      </span>
+      <span class="tc__go" aria-hidden="true">▶</span>
+    </button>`;
+  }
+  function renderTypes({ D, confirmed }) {
+    return `<div class="screen screen--gs gs--types" style="--c:${HOLO}">
+      ${Bg('')}
+      <header class="gs-top">
+        <div><span class="eyebrow">NAVIGATOR CONTRACT · STEP 1/2</span><h1>タイプを選ぶ</h1><p class="gs-lead">学び方の相性で選ぼう。どのタイプでも対戦の強さは同じ。</p></div>
+        ${confirmed ? '<button class="gs-chip" data-action="back-home">ホームへ戻る</button>' : ''}
+      </header>
+      <div class="tc-list">${D.types.map(TypeCard).join('')}</div>
+    </div>`;
+  }
+
+  /* ---------- STEP 2：ナビ選択（ホログラム投影） ---------- */
+  function Proj(c, g, sel, i) {
+    const real = sel.picked === g, dim = sel.picked && !real;
+    const src = artOf(c, real ? EXPRS[sel.expr % EXPRS.length] : 'default');
+    return `<button class="proj ${real ? 'is-real' : ''} ${dim ? 'is-dim' : ''}" data-selchar="${g}" style="--d:${0.15 + i * 0.25}s" aria-pressed="${real}" aria-label="${esc(c.name)}を選ぶ">
+      <span class="proj__beam" aria-hidden="true"></span>
+      <span class="holo" style="--img:url('${esc(src)}')">
+        <img class="holo__img" src="${esc(src)}" alt="">
+        <span class="holo__tint" aria-hidden="true"></span><span class="holo__scan" aria-hidden="true"></span>
+      </span>
+      <span class="proj__pad" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="proj__plate"><b>${esc(c.name)}</b><small>${esc(c.title)}</small></span>
+    </button>`;
+  }
+  function Picked(t, c, sel) {
+    if (!c) return `<p class="gs-hint">投影されたナビをタップして選ぼう</p>`;
+    return `<div class="gs-pick">
+      <p class="gs-bubble">${esc(lineOf(c, sel.line))}</p>
+      <div class="gs-cta">
+        <button class="gs-more" data-action="sel-detail">${UI.Emblem(t.emblem)}詳しく見る</button>
+        <button class="gs-go" data-action="sel-confirm"><span>${esc(c.name)}と契約する</span><i aria-hidden="true"></i></button>
+      </div>
+    </div>`;
+  }
+  function renderChars({ t, sel }) {
+    const c = sel.picked ? t.characters[sel.picked] : null;
+    return `<div class="screen screen--gs gs--chars" style="--c:${t.color}">
+      ${Bg(t.name)}
+      <header class="gs-top">
+        <div><span class="eyebrow">NAVIGATOR CONTRACT · STEP 2/2</span><h1>ナビを選ぶ</h1></div>
+        <button class="gs-chip" data-action="sel-back">← タイプ選択</button>
+      </header>
+      <div class="gs-typebar"><span class="gs-typebar__tag">${UI.Emblem(t.emblem)}${t.name}<small>${t.kana}</small></span><span class="gs-typebar__line">${esc(t.tagline)}</span></div>
+      <div class="proj-stage">${['m', 'f'].map((g, i) => Proj(t.characters[g], g, sel, i)).join('')}</div>
+      <div class="gs-dock">${Picked(t, c, sel)}</div>
+    </div>`;
+  }
+
+  function render(ctx) { return ctx.sel.step === 'char' ? renderChars(ctx) : renderTypes(ctx); }
+
+  /* キャラのタップ：選択（実体化）／選択中なら話す。DOM だけ差し替える */
+  function pick(root, t, sel, g) {
+    if (sel.picked === g) { sel.expr++; sel.line++; } else { sel.picked = g; sel.expr = 0; sel.line = 0; }
+    const c = t.characters[g];
+    root.querySelectorAll('.proj').forEach((p) => {
+      const me = p.dataset.selchar === g;
+      p.classList.toggle('is-real', me); p.classList.toggle('is-dim', !me); p.setAttribute('aria-pressed', me);
+      if (me) {
+        const src = artOf(c, EXPRS[sel.expr % EXPRS.length]), h = p.querySelector('.holo');
+        h.style.setProperty('--img', `url('${src}')`); h.querySelector('.holo__img').src = src;
+        p.classList.remove('talk'); void p.offsetWidth; p.classList.add('talk');
+      }
+    });
+    const dock = root.querySelector('.gs-dock'); if (dock) dock.innerHTML = Picked(t, c, sel);
   }
 
   function Detail(D, t, c) {
@@ -45,7 +125,6 @@
       </section>
     </div>`;
   }
-
   function Confirm(t, c) {
     return `<div class="gs-modal" role="dialog" aria-modal="true" aria-label="契約の確認">
       <div class="gs-modal__card">
@@ -57,70 +136,13 @@
       </div>
     </div>`;
   }
-
-  function render({ D, t, c, gender, confirmed, sel }) {
-    const expr = EXPRS[sel.expr % EXPRS.length];
-    return `<div class="screen screen--gs" style="--c:${t.color}">
-      <div class="gs-bg" aria-hidden="true">
-        <span class="gs-bg__burst"></span><span class="gs-bg__ring"></span><span class="gs-bg__ring gs-bg__ring--2"></span>
-        <span class="gs-bg__word">${t.name}</span><span class="gs-bg__stripe"></span>
-        ${Array.from({ length: 14 }, (_, i) => `<i class="gs-spark" style="--i:${i}"></i>`).join('')}
-      </div>
-      <header class="gs-top">
-        <div><span class="eyebrow">NAVIGATOR CONTRACT</span><h1>専属ナビゲーターを選ぶ</h1></div>
-        ${confirmed ? '<button class="gs-chip" data-action="back-home">ホームへ戻る</button>' : '<span class="gs-chip gs-chip--ghost">10 人から 1 人</span>'}
-      </header>
-
-      <div class="gs-stage" data-key="${c.id}">
-        <button class="gs-art" data-action="sel-talk" aria-label="${esc(c.name)}に話しかける">
-          <img class="gs-art__img" src="${esc(artOf(c, expr))}" alt="${esc(c.name)}">
-        </button>
-        <p class="gs-bubble" aria-live="polite">${esc(lineOf(c, sel.line))}</p>
-
-        <div class="gs-plate">
-          <span class="gs-plate__type">${UI.Emblem(t.emblem)}${t.name}<small>${t.kana}</small></span>
-          <h2 class="gs-plate__name">${esc(c.name)}</h2>
-          <span class="gs-plate__sub">${esc(c.romaji || '')}<b>${esc(c.title)}</b></span>
-          <p class="gs-plate__tag">${esc(t.tagline)}</p>
-        </div>
-
-        <aside class="gs-side">
-          ${Radar(D.axes, t.stats)}
-          <div class="chips">${t.traits.map((x) => `<span class="chip">${esc(x)}</span>`).join('')}</div>
-          <p class="gs-side__bio">${esc(c.bio)}</p>
-          <p class="gs-advice"><b>${esc(t.advice.name)}</b>${esc(t.advice.desc)}</p>
-          <p class="gs-note">対戦の強さはナビで変わりません</p>
-        </aside>
-      </div>
-
-      <div class="gs-dock">
-        ${Roster(D, t.id, gender)}
-        <div class="gs-cta">
-          <button class="gs-more" data-action="sel-detail">${UI.Emblem(t.emblem)}詳しく見る</button>
-          <button class="gs-go" data-action="sel-confirm"><span>${esc(c.name)}と契約する</span><i aria-hidden="true"></i></button>
-        </div>
-      </div>
-      ${sel.detail ? Detail(D, t, c) : ''}
-      ${sel.confirming ? Confirm(t, c) : ''}
-    </div>`;
-  }
-
-  /* 立ち絵タップ：表情とセリフだけ差し替え（入場アニメは再生しない） */
-  function talk(root, c, sel) {
-    sel.expr++; sel.line++;
-    const img = root.querySelector('.gs-art__img'), b = root.querySelector('.gs-bubble');
-    if (img) img.src = artOf(c, EXPRS[sel.expr % EXPRS.length]);
-    if (b) { b.textContent = lineOf(c, sel.line); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
-    const art = root.querySelector('.gs-art'); if (art) { art.classList.remove('bounce'); void art.offsetWidth; art.classList.add('bounce'); }
-  }
-
-  /* 詳細シート・確認モーダルの開閉（画面全体を描き直さず、入場アニメを繰り返さない） */
+  /* 詳細シート・確認モーダルの開閉（画面全体を描き直さない） */
   function overlay(root, kind, open, D, t, c) {
     const scr = root.querySelector('.screen--gs'); if (!scr) return;
-    const sel = kind === 'detail' ? '.gs-sheet' : '.gs-modal', cur = scr.querySelector(sel);
+    const s = kind === 'detail' ? '.gs-sheet' : '.gs-modal', cur = scr.querySelector(s);
     if (cur) cur.remove();
-    if (open) { scr.insertAdjacentHTML('beforeend', kind === 'detail' ? Detail(D, t, c) : Confirm(t, c)); const f = scr.querySelector(sel + ' button'); if (f) f.focus({ preventScroll: true }); }
+    if (open) { scr.insertAdjacentHTML('beforeend', kind === 'detail' ? Detail(D, t, c) : Confirm(t, c)); const f = scr.querySelector(s + ' button'); if (f) f.focus({ preventScroll: true }); }
   }
 
-  window.SelectView = { render, talk, overlay, artOf };
+  window.SelectView = { render, pick, overlay, artOf };
 })();
