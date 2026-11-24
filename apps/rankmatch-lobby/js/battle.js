@@ -273,7 +273,6 @@
           return `<li class="${e.d >= 0 ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}</span><span class="why">${esc(explain(e, area.subject, b, ctx))}</span></li>`;
         }).join('')}</ol>
       </section>
-      ${NavLine(ctx, b.line, b.expr)}
       <div class="a-controls"><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
     </div>`;
   }
@@ -454,7 +453,8 @@
     b.areaDone = true;
     b.line = fmt(ctx.char.battleLines[area.win ? 'areaWin' : 'areaLose'], { subject: area.subject });
     b.expr = area.win ? 'smile' : 'special';
-    b.fx = { kind: 'cap', win: area.win, subject: area.subject }; b.comm = null;
+    b.fx = { kind: 'cap', win: area.win, subject: area.subject };
+    b.comm = { text: b.line, expr: b.expr, key: area.win ? 'win' : 'lose' }; // 決着のセリフもカットインの通信で（ナビのウィンドウは常に 1 つ）
     if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
     show();
     schedule(2.1); // 撃破→スタンプ→カットインが抜けてマップで占領の演出を見せる

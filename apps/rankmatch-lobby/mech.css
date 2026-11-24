@@ -177,3 +177,5 @@
 @keyframes cutLines{to{background-position:-62px 0}}
 @media (prefers-reduced-motion:reduce){.mx-cut,.mx-cut *{animation:none!important}.mx-cut.is-out{display:none}}
 .mx-cut .mx-mid small,.mx-cut .mx-mid strong{display:none}
+.mx-comm.k-win{border-color:var(--holo-hi);box-shadow:0 0 18px color-mix(in oklab,var(--theme) 50%,transparent)}
+.mx-comm.k-lose{border-color:#ff5a6a}
