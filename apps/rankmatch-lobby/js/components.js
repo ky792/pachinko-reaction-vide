@@ -211,7 +211,7 @@
 
   const Dialogue = (data, char, line, expr) => `<div class="dialogue" aria-live="polite">
     <span class="dialogue__name">${esc(char.name)}<em>${esc(exprLabel(data, char, expr))}</em></span>
-    <p>${esc(line)}</p>
+    <p>${esc(line)}</p><i class="dialogue__next" aria-hidden="true">▼</i>
   </div>`;
 
   const BottomNav = () => `<nav class="bnav" aria-label="メニュー">

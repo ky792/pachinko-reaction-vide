@@ -141,6 +141,7 @@
 
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
   const saved = load();
+  let typeTimer = 0; // セリフの 1 文字ずつ表示
   const state = {
     typeId: D.types.some((t) => t.id === saved.typeId) ? saved.typeId : D.types[0].id,
     gender: saved.gender === 'f' ? 'f' : 'm',
@@ -178,10 +179,14 @@
       ${UI.TopBar(P, t, c)}
       <div class="lobby">
         <div class="lobby__nav">
-          <button class="navstage" data-action="talk" aria-label="${UI.esc(c.name)}に話しかける">
-            <span class="navstage__grid" aria-hidden="true"></span>
-            ${UI.Portrait({ char: c, expr: state.expr, cls: 'portrait--home' })}
-            <span class="navstage__plate">${UI.Emblem(t.emblem)}<b>${UI.esc(c.name)}</b><small>${t.name} · ${UI.esc(c.title)}</small></span>
+          <button class="navstage hn" data-action="talk" aria-label="${UI.esc(c.name)}に話しかける">
+            <span class="hn__bg" aria-hidden="true"><span class="hn__rays"></span><span class="hn__ring"></span><span class="navstage__grid"></span>${Array.from({ length: 8 }, (_, i) => `<i class="gs-spark" style="--i:${i * 1.6}"></i>`).join('')}</span>
+            <span class="hn__beam" aria-hidden="true"></span>
+            <span class="hn__holo" style="--img:url('${window.SelectView.artOf(c, state.expr)}')"><img class="hn__img" src="${window.SelectView.artOf(c, state.expr)}" alt="${UI.esc(c.name)}"><span class="hn__scan" aria-hidden="true"></span></span>
+            <span class="hn__pad" aria-hidden="true"><i></i><i></i></span>
+            <span class="hn__hud" aria-hidden="true"><b>NAV LINK</b><small>ONLINE</small><span class="hn__sig"><i></i><i></i><i></i><i></i></span></span>
+            <span class="navstage__plate hn__plate"><span class="hn__tag">${UI.Emblem(t.emblem)}${t.name}</span><b>${UI.esc(c.name)}</b><small>${UI.esc(c.title)}</small></span>
+            <span class="hn__tap" aria-hidden="true">TAP で話す</span>
           </button>
           ${UI.Dialogue(D, c, currentLine(), state.expr)}
         </div>
@@ -231,7 +236,7 @@
       root.innerHTML = window.StatsView.render({ player: P, K: P.K, now: now(), subject: subj, electives: P.electives });
       return;
     }
-    if (route === 'home' && state.confirmed) renderHome(); else renderSelect();
+    if (route === 'home' && state.confirmed) { renderHome(); typeLine(); } else renderSelect();
   }
 
   function go(route) { if (location.hash !== '#' + route) location.hash = route; else render(); window.scrollTo(0, 0); }
@@ -257,7 +262,17 @@
     state.expr = expr;
     const d = root.querySelector('.dialogue'); if (!d) return;
     d.outerHTML = UI.Dialogue(D, char(), line, expr);
-    const p = root.querySelector('.portrait--home'); if (p) p.outerHTML = UI.Portrait({ char: char(), expr, cls: 'portrait--home' });
+    typeLine();
+    const h = root.querySelector('.hn__holo'); // 表情を差し替えて、一瞬ホログラムに戻ってから実体化
+    if (h) { const src = window.SelectView.artOf(char(), expr); h.style.setProperty('--img', `url('${src}')`); h.querySelector('.hn__img').src = src; h.classList.remove('flip'); void h.offsetWidth; h.classList.add('flip'); }
+  }
+  /* セリフを 1 文字ずつ表示（動きを減らす設定なら一度に） */
+  function typeLine() {
+    const p = root.querySelector('.dialogue p'); if (!p) return;
+    clearInterval(typeTimer);
+    const text = p.textContent; if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    p.setAttribute('aria-label', text); let i = 0; p.textContent = '';
+    typeTimer = setInterval(() => { p.textContent = text.slice(0, ++i); if (i >= text.length) clearInterval(typeTimer); }, 28);
   }
 
   /* Esc で選択画面の詳細・確認を閉じる */
