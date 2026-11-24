@@ -135,7 +135,7 @@
 .a-ex{list-style:none;margin:0;padding:0;display:grid;gap:4px}
 .a-ex li{display:grid;grid-template-columns:4em 2.4em auto 2.4em 1fr;gap:8px;align-items:center;padding:7px 8px;background:var(--panel-solid);font-size:13px;animation:pop .25s ease-out}
 .a-ex li.wait{grid-template-columns:4em 1fr;color:var(--dim);animation:none}
-.a-ex .ax{font-weight:700}
+.a-ex .exl{font-weight:700}
 .a-ex .a{font-family:var(--f-num);color:var(--theme);text-align:right}
 .a-ex .b{font-family:var(--f-num);color:var(--oc)}
 .a-ex .vs{font-size:10px;color:var(--dim)}
@@ -196,8 +196,8 @@
 .stats-list .s small em{font-style:normal;color:var(--warn);margin-left:4px}
 .demo{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 12px}
 .demo .reset{margin:10px 0 0}
-.a-ex .ax{display:grid;line-height:1.15}
-.a-ex .ax small{font-size:9.5px;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-ex .exl{display:grid;line-height:1.15}
+.a-ex .exl small{font-size:9.5px;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .a-ex li{grid-template-columns:6.4em 2.4em auto 2.4em 1fr}
 .a-ex li.wait{grid-template-columns:6.4em 1fr}
 .a-why .u{color:var(--holo-hi)}

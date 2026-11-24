@@ -95,7 +95,6 @@
   /* 対戦（自動戦闘）の結果：RP・挑戦権・ミッション */
   function applyBattle(r) {
     const before = rankView(P.rank.rp);
-    P.tickets.now = Math.max(0, P.tickets.now - 1);
     P.rank.rp = Math.max(0, P.rank.rp + r.rp);
     P.rank.winStreak = r.win ? P.rank.winStreak + 1 : 0;
     P.rank.nationalPos = Math.max(1, P.rank.nationalPos + (r.win ? -60 : 30));
@@ -105,6 +104,9 @@
     savePlayer();
     return { before, after: rankView(P.rank.rp) };
   }
+
+  /* 挑戦権は開戦時に使う（RP は試合の決着時に applyBattle で反映） */
+  function useTicket() { P.tickets.now = Math.max(0, P.tickets.now - 1); savePlayer(); }
 
   /* 非同期PvP：誰かがあなたの防衛データに挑んだ結果。
      対戦中やプレイ中に割り込ませず、ホームを開いたときに「前回から経過した時間」ぶんだけまとめて反映する（試作は 4 時間に 1 件・1 回に最大 3 件）。
@@ -240,7 +242,7 @@
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
     window.Battle.unmount(); window.Training.unmount(); window.MyBase.unmount(); window.Defense.unmount();
     if ((route === 'arena' || route === 'match') && state.confirmed) {
-      window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, overturn, recordAnswer,
+      window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, useTicket, overturn, recordAnswer,
         achieve: (k) => { P.achv[k] = (P.achv[k] || 0) + 1; savePlayer(); },
         train: (s, u) => { state.trainSubject = s; state.trainUnits = u || []; go('train'); } }));
       return;

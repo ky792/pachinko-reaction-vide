@@ -401,3 +401,41 @@
 .mx-stamp b{font-size:clamp(34px,10vw,58px)}
 .sfx-btn,.a-sfx{min-width:40px;font-size:16px}
 .sfx-btn{padding:4px 8px;border:1px solid var(--line);background:var(--panel-solid);border-radius:8px}
+
+/* ==== 作戦パネル（陣地の前）・作戦画面 ==== */
+.a-decide{display:grid;gap:8px;padding:12px;background:linear-gradient(180deg,rgba(10,16,32,.96),rgba(6,10,20,.98));border:1px solid var(--line-2);border-top:3px solid var(--sc);clip-path:var(--cut)}
+.a-decide__head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.a-decide__head h2{font-family:var(--f-body);font-weight:900;font-size:22px;padding-left:8px;border-left:4px solid var(--sc)}
+.a-decide h3{font-size:13px;margin:4px 0 0;display:grid;gap:1px}
+.a-decide h3 small{font-size:11px;font-weight:500;color:var(--muted)}
+.a-tacs,.a-cands-u{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.a-inter{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.a-tacs button,.a-cands-u button,.a-inter button,.d-bets button{position:relative;display:grid;gap:2px;min-height:56px;padding:8px 6px;text-align:center;border:1px solid var(--line-2);background:var(--panel-solid);font-size:12px}
+.a-tacs b,.a-cands-u b{font-size:13px}.a-tacs small,.a-cands-u small{font-size:10px;color:var(--muted)}
+.a-tacs em,.a-cands-u em{font-style:normal;font-size:10px;font-weight:700;color:var(--gold)}
+.a-tacs [aria-pressed="true"],.a-inter [aria-pressed="true"],.d-bets [aria-pressed="true"]{border-color:var(--theme);background:var(--t-20);box-shadow:inset 0 0 0 1px var(--theme)}
+.a-cands-u [aria-pressed="true"]{border-color:#ff6a78;background:rgba(255,80,100,.12);text-decoration:line-through}
+.a-cands-u [aria-pressed="true"] em{color:#ff8a96;text-decoration:none}
+.a-inter button:disabled{opacity:.4}
+.a-decide__go{display:grid;grid-template-columns:1fr 1.4fr;gap:8px;margin-top:4px}
+.a-decide__go .btn{min-height:54px}
+.a-auto{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted)}
+.a-hints ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:13px}
+.a-hints em{font-style:normal;font-weight:700}
+.a-hints em[style]{padding-left:6px;border-left:3px solid var(--sc)}
+.a-row-wrap{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:stretch}
+.a-mv{display:grid;gap:2px}.a-mv button{min-width:40px;padding:0 8px;border:1px solid var(--line-2);background:var(--panel-solid);font-size:12px}
+.a-mv button:disabled{opacity:.3}
+.a-row .s[style]{border-left:3px solid var(--sc);padding-left:6px}
+.a-fu{width:100%;min-height:44px;padding:8px;background:var(--panel-solid);color:var(--fg);border:1px solid var(--line-2);font:inherit}
+.d-bets{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.d-betmark{display:block;font-style:normal;font-size:10px;font-weight:900;color:var(--gold)}
+.d-row.is-bet{background:rgba(245,192,74,.08)}
+.r-gain{margin:4px 0 10px;padding:8px 10px;border-left:3px solid var(--gold);background:rgba(245,192,74,.06);font-size:12px}
+.r-gain ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:3px}
+.r-gain span{font-weight:900;margin-right:6px;padding-left:5px;border-left:3px solid var(--sc)}
+.r-gain em{font-style:normal;font-weight:700;color:var(--gold)}
+.a-need{display:inline-block;margin:0 6px;font-style:normal;font-size:11px;color:var(--gold)}
+.a-arena .mx-lamps{margin:4px 0}
+/* 作戦を決めている間は地図を小さくして、作戦パネルを親指の届く位置に */
+.phase-battle:has(.a-decide) .a-3d{height:clamp(170px,26vh,260px)}

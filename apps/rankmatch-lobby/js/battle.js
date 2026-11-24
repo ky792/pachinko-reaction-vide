@@ -15,7 +15,16 @@
   const AXL = { speed: '速さ', acc: '正確さ', app: '応用' };
   /* 押し合い：数値の差＋ゆらぎ（正規分布 σ）で勝ち負け。3 回のうち先に 2 回取ったほうが陣地を取る。
      σ は「同格 50%／総合差 20 で 65:35／総合差 50 で 85:15、格下でも陣地単位で 2〜3 割」になるようシミュレーションで調整（tools/sim_battle.js） */
-  const RULE = { gate: 1.02, momentum: 1.03, focus: 1.15, sigma: 4, toWin: 3, exWin: 2, minSolved: 5, duelQ: 5, duelSec: 30 };
+  const RULE = { gate: 1.02, momentum: 1.03, focus: 1.15, focusUnit: 1.15, boost: 1.10, counter: 1.06, sigma: 4, toWin: 3, exWin: 2, minSolved: 5, uses: 2, duelQ: 5, duelSec: 30 };
+  /* 戦術：三すくみ（確実 → 速攻 → 応用 → 確実 の順に強い）。相性で勝つと全押し合い +6% */
+  const TAC = {
+    sure: { name: '確実にいく', desc: '正確さ+12%・速さ−8%', acc: 1.12, speed: 0.92, app: 1 },
+    rush: { name: '速攻', desc: '速さ+12%・正確さ−8%', acc: 0.92, speed: 1.12, app: 1 },
+    apply: { name: '応用に賭ける', desc: '応用+15%・正確さと速さ−5%', acc: 0.95, speed: 0.95, app: 1.15 },
+  };
+  const BEATS = { sure: 'rush', rush: 'apply', apply: 'sure' };
+  const styleOf = (op) => ['sure', 'rush', 'apply'][KN.hash(op.id || 'x') % 3]; // 相手の戦術の傾向（防衛データの一部として見える）
+  function opTactic(op, r) { const st = styleOf(op); return r() < 0.6 ? st : ['sure', 'rush', 'apply'][Math.floor(r() * 3)]; }
 
   const power = (st) => st.speed + st.acc + st.app;
   const totalPower = (S) => SUBJECTS.reduce((s, k) => s + power(S[k]), 0);
@@ -43,7 +52,11 @@
     const [u1, u2] = opt.units || drawUnits(me, op, subject, r);
     let fm = me.focus === subject ? RULE.focus : 1, fo = op.focus === subject ? RULE.focus : 1;
     const notesMe = me.focus === subject ? ['主戦場 +15%'] : [], notesOp = op.focus === subject ? ['主戦場 +15%'] : [];
-    if (idx === 0) { fo *= RULE.gate; notesOp.push('城門 +2%'); }
+    if (op.order && op.order[0] === subject) { fo *= RULE.gate; notesOp.push('城門 +2%'); }
+    const tm = TAC[opt.tacMe], to = TAC[opt.tacOp];
+    if (tm) notesMe.push(tm.name); if (to) notesOp.push(to.name);
+    if (opt.tacMe && opt.tacOp && BEATS[opt.tacMe] === opt.tacOp) { fm *= RULE.counter; notesMe.push('戦術の相性 +6%'); }
+    if (opt.tacMe && opt.tacOp && BEATS[opt.tacOp] === opt.tacMe) { fo *= RULE.counter; notesOp.push('戦術の相性 +6%'); }
     if (mom > 0) { fm *= RULE.momentum; notesMe.push('勢い +3%'); }
     if (mom < 0) { fo *= RULE.momentum; notesOp.push('勢い +3%'); }
     const raw = [
@@ -54,18 +67,21 @@
     let w = 0, l = 0; const ex = [];
     for (const e of raw) {
       if (w >= RULE.exWin || l >= RULE.exWin) break;
-      const a = e.a * fm, b = e.b * fo, d = a - b + gauss(r) * RULE.sigma, win = d > 0;
+      let km = fm * (tm ? tm[e.axis] : 1), ko = fo * (to ? to[e.axis] : 1);
+      if (opt.focusUnit && e.unit && opt.focusUnit === subject + '/' + e.unit) km *= RULE.focusUnit; // 重点単元
+      if (opt.boost === e.axis) km *= RULE.boost; // 介入：底上げ
+      const a = e.a * km, b = e.b * ko, d = a - b + gauss(r) * RULE.sigma, win = d > 0;
       win ? w++ : l++;
-      ex.push({ axis: e.axis, unit: e.unit, field: e.unit ? KN.meta(subject, e.unit).field : null, a: Math.round(a), b: Math.round(b), d: Math.round(d) || (win ? 1 : -1), win, gauge: (w - l) * 50, lamps: [w, l] });
+      ex.push({ axis: e.axis, unit: e.unit, field: e.unit ? KN.meta(subject, e.unit).field : null, a: Math.round(a), b: Math.round(b), d: Math.round(d) || (win ? 1 : -1), win, gauge: (w - l) * 50, lamps: [w, l], km, raw: e.a });
     }
-    return { subject, idx, ex, gauge: (w - l) * 50, win: w >= RULE.exWin, wins: [w, l], notesMe, notesOp, units: [u1, u2] };
+    return { subject, idx, ex, gauge: (w - l) * 50, win: w >= RULE.exWin, wins: [w, l], notesMe, notesOp, units: [u1, u2], tacMe: opt.tacMe, tacOp: opt.tacOp };
   }
 
   function resolveBattle(me, op, seed, now) {
     const r = KN.rng(seed), areas = []; let myW = 0, opW = 0, mom = 0;
-    op.order.forEach((subject, idx) => {
+    (me.order || op.order).forEach((subject, idx) => {
       if (myW >= RULE.toWin || opW >= RULE.toWin) { areas.push({ subject, idx, skipped: true }); return; }
-      const a = resolveArea(me, op, subject, idx, r, now, mom);
+      const a = resolveArea(me, op, subject, idx, r, now, mom, { focusUnit: me.focusUnit });
       a.win ? myW++ : opW++; mom = a.win ? 1 : -1; areas.push(a);
     });
     return { areas, myW, opW, win: myW >= RULE.toWin, seed };
@@ -80,9 +96,9 @@
     res.win = res.myW >= RULE.toWin;
   }
   function analyze(res) {
-    const lost = res.areas.filter((a) => !a.skipped && !a.win).map((a) => {
+    const lost = res.areas.filter((a) => !a.skipped && !a.win && a.ex && a.ex.length).map((a) => {
       const w = a.ex.reduce((x, y) => (y.d < x.d ? y : x));
-      return { subject: a.subject, unit: w.unit, axis: w.axis, a: w.a, b: w.b, units: a.ex.filter((e) => e.unit).map((e) => e.unit) };
+      return { subject: a.subject, unit: w.unit, axis: w.axis, a: w.a, b: w.b, e: w, units: a.ex.filter((e) => e.unit).map((e) => e.unit) };
     });
     const won = res.areas.filter((a) => !a.skipped && a.win).sort((x, y) => y.gauge - x.gauge)[0];
     return { lost, mvp: won ? won.subject : null, weak: lost[0] || null };
@@ -106,13 +122,15 @@
     <div class="m-nav__bubble"><b>${esc(ctx.char.name)}<em>${esc(exprLabel(ctx.D, ctx.char, expr))}</em></b><p>${esc(line)}</p></div>
   </div>`;
 
-  const tileState = (b, res, upto, k) => {
-    const a = res && res.areas[k];
-    let st = 'pending';
-    if (a && k < upto) st = a.skipped ? 'none' : a.win ? 'me' : 'op';
-    if (k === upto && b.phase === 'battle') st = 'active';
-    return st;
-  };
+  /* 陣地の状態（科目で引く。攻め順は攻め側が決め、地図の並びは防衛側の順） */
+  function stateOf(b, subject) {
+    const a = b.res && b.res.areas.find((x) => x.subject === subject);
+    if (!a) return b.phase === 'battle' && b.stage === 'decide' && b.dec && b.dec.subject === subject ? 'active' : 'pending';
+    if (a.skipped) return 'none';
+    if (b.phase === 'battle' && b.res.areas[b.ai] === a && !b.areaDone) return 'active';
+    return a.win ? 'me' : 'op';
+  }
+  const tileState = (b, res, upto, k) => stateOf(b, (b.order || b.op.order)[k]);
   const Map3D = (hint, inner = '', cls = '') => `<div class="a-3d ${cls}"><span class="a-3d__hint">${hint || 'ドラッグで回転'}</span>${inner}</div>`;
   /* バトル中に3Dの上へ重ねる演出（再描画のたびに新しい要素になるので、CSSアニメが毎回再生される） */
   function FxLayer(b, ctx, g) {
@@ -124,12 +142,12 @@
     if (f.kind === 'cap') h += `<div class="fx fx-cap ${f.win ? 'me' : 'op'}"><b>${f.win ? '陣地確保' : '陥落'}</b><small>${esc(f.subject)}</small></div>`;
     return h;
   };
-  const Tiles = (b, res, upto) => `<div class="a-tiles">${b.op.order.map((s, k) => {
-    const a = res && res.areas[k];
-    const st = tileState(b, res, upto, k);
-    const lbl = { me: a && a.duel ? '奪還' : '確保', op: a && a.duel ? '防衛された' : '敵陣', none: '—', active: '交戦中', pending: `第${k + 1}陣` }[st];
+  const Tiles = (b, res, upto) => `<div class="a-tiles">${(b.order || b.op.order).map((s, k) => {
+    const a = res && res.areas.find((x) => x.subject === s);
+    const st = stateOf(b, s);
+    const lbl = { me: a && a.duel ? '奪還' : a && a.duelAtk ? '直接対決' : '確保', op: a && a.duel ? '防衛された' : '敵陣', none: '—', active: '交戦中', pending: `第${k + 1}陣` }[st];
     const ico = st === 'me' ? '⚑ ' : st === 'op' ? '✕ ' : '';
-    return `<div class="a-tile ${st} ${a && a.duel ? 'duel' : ''}" style="--sc:${(window.SUBJECT_COLOR || {})[s] || '#9aa'}"><span class="a-tile__s">${esc(s)}</span><small>${ico}${lbl}</small>${s === b.focus ? '<i class="focus">★</i>' : ''}${s === b.op.focus ? '<i class="ofocus">◆</i>' : ''}</div>`;
+    return `<div class="a-tile ${st} ${a && a.duel ? 'duel' : ''}" style="--sc:${(window.SUBJECT_COLOR || {})[s] || '#9aa'}"><span class="a-tile__s">${esc(s)}</span><small>${ico}${lbl}</small>${s === b.focus ? '<i class="focus">★</i>' : ''}${b.phase === 'result' && s === b.op.focus ? '<i class="ofocus">◆</i>' : ''}</div>`;
   }).join('')}</div>`;
 
   function PickView(b, ctx) {
@@ -156,11 +174,12 @@
 
   function PlanView(b, ctx) {
     const o = b.op, n = navOf(ctx.D, o.nav), mt = ctx.type, now = ctx.now();
-    const me = b.me(), op = b.opSide();
-    const rates = {}; o.order.forEach((s) => { rates[s] = winRate(Object.assign({}, me, { focus: s }), op, now, 200); });
+    const me = b.me(), op = b.opSide(), h = b.hint;
+    const rates = {}; b.order.forEach((s) => { rates[s] = winRate(Object.assign({}, me, { focus: s }), op, now, 160); });
     const rate = rates[b.focus];
     const sug = ADVICE[mt.id](me, op, now);
     const line = fmt(ctx.char.battleLines.start, { rate: rates[sug], focus: sug });
+    const unitOpts = SUBJECTS.map((s) => `<optgroup label="${s}">${(KN.units()[s] || []).map((u) => `<option value="${esc(s + '/' + u)}" ${b.focusUnit === s + '/' + u ? 'selected' : ''}>${esc(u)}</option>`).join('')}</optgroup>`).join('');
     return `<div class="match-screen phase-plan" style="--oc:${b.oc}">
       <header class="m-head"><button class="link" data-action="back">← 相手を選び直す</button><span class="eyebrow">作戦</span></header>
       <div class="a-vs">
@@ -169,33 +188,62 @@
         <div class="a-vs__side op">${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--vs portrait--op' })}<b>${esc(o.name)}</b><small>${esc(o.rank)} · 学力 ${totalPower(op.S)}</small></div>
       </div>
       ${Map3D('相手の陣地 · ドラッグで回転')}
+      <section class="m-panel a-hints">
+        <h2 class="panel__title">偵察で分かったこと<small class="panel__note">防衛の順番と主戦場は一部だけ</small></h2>
+        <ul>
+          <li><b>城門</b>（防衛側 +2%）：<em style="--sc:${SC(h.gate)}">${esc(h.gate)}</em></li>
+          <li><b>相手の主戦場</b>：<em>${h.focus.map(esc).join(' か ')}</em></li>
+          <li><b>戦術の傾向</b>：「${esc(TAC[h.style].name)}」を好む</li>
+          ${h.strong ? `<li><b>得意そう</b>：${esc(h.strong.s)}・${esc(h.strong.u)}　<b>苦手そう</b>：${esc(h.weak.s)}・${esc(h.weak.u)}</li>` : ''}
+        </ul>
+      </section>
       <section class="m-panel">
-        <h2 class="panel__title">主戦場を選ぶ（相手の防衛順）</h2>
-        <div class="a-compare">${o.order.map((s, k) => {
+        <h2 class="panel__title">攻める順番と主戦場<small class="panel__note">▲▼で順番、科目をタップで主戦場（全能力 +15%）</small></h2>
+        <div class="a-compare">${b.order.map((s, k) => {
           const a = power(me.S[s]), c = power(op.S[s]);
-          return `<button class="a-row ${s === b.focus ? 'is-focus' : ''}" data-focus="${s}" aria-pressed="${s === b.focus}">
-            <span class="no">${k + 1}</span><span class="s">${window.Mechs ? `<span class="mx-ico">${window.Mechs.svg(s, { color: mt.color, cov: me.S[s].coverage, ret: me.S[s].retention })}</span>` : ''}${esc(s)}${s === o.focus ? '<i class="ofocus">◆</i>' : ''}</span>
+          return `<div class="a-row-wrap"><button class="a-row ${s === b.focus ? 'is-focus' : ''}" data-focus="${s}" aria-pressed="${s === b.focus}">
+            <span class="no">${k + 1}</span><span class="s" style="--sc:${SC(s)}">${window.Mechs ? `<span class="mx-ico">${window.Mechs.svg(s, { color: mt.color, cov: me.S[s].coverage, ret: me.S[s].retention })}</span>` : ''}${esc(s)}${s === b.focus ? '<i>★</i>' : ''}</span>
             <span class="v me">${a}</span><span class="duel"><i class="l" style="width:${(a / (a + c)) * 100}%"></i></span><span class="v op">${c}</span>
             <span class="wr ${s === sug ? 'sug' : ''}">${rates[s]}%</span>
-          </button>`;
+          </button><span class="a-mv"><button data-mv="${k}:-1" aria-label="${s}を前へ" ${k === 0 ? 'disabled' : ''}>▲</button><button data-mv="${k}:1" aria-label="${s}を後へ" ${k === 4 ? 'disabled' : ''}>▼</button></span></div>`;
         }).join('')}</div>
-        <p class="muted">右端は<b>その科目を主戦場（★ 全能力 +10%）にしたときの勝率</b>。◆は相手の主戦場。押し合う単元は戦闘ごとに抽選。</p>
+        <p class="muted">右端はその科目を主戦場にしたときの勝率。先に3つ取った方の勝ちなので、取りやすい科目を前に置くと勢い（+3%）が乗る。</p>
+      </section>
+      <section class="m-panel">
+        <h2 class="panel__title">重点単元<small class="panel__note">その単元の押し合いが +15%</small></h2>
+        <select class="a-fu" data-fu aria-label="重点単元"><option value="">指定しない</option>${unitOpts}</select>
+        <p class="muted">${b.focusUnit ? `代わりに、相手にも「${esc(b.focusUnit.split('/')[0])}」を重点にしていることが伝わります（本番では相手の画面にヒントが出る）。` : '指定すると、その単元が引かれたときに強くなる。代わりに相手にも科目のヒントが伝わる。'}</p>
       </section>
       <section class="a-advice">
         <div class="a-advice__head"><span class="eyebrow">${esc(ctx.char.name)}の提案</span><b>${UI.Emblem(mt.emblem)}${esc(mt.advice.name)}</b><small>${esc(mt.advice.desc)}</small></div>
         ${b.focus === sug ? '<span class="a-advice__on">採用中</span>' : `<button class="btn btn--sub" data-focus="${esc(sug)}">${esc(sug)}を主戦場にする</button>`}
       </section>
       ${NavLine(ctx, line, 'serious')}
-      <p class="a-fair">ナビのタイプは対戦の強さに影響しません。勝敗を決めるのは知識データと主戦場の選択だけです。</p>
+      <p class="a-fair">ナビのタイプは対戦の強さに影響しません。勝敗を決めるのは知識データと作戦だけです。各陣地の前に、戦術・単元のバン・介入を選べます。</p>
       <button class="btn btn--main" data-action="fight">挑戦権を1つ使って開戦</button>
     </div>`;
   }
 
-  const exLabel = (e) => `<span class="ax"><small>${e.unit ? esc(e.field) + ' › ' + esc(e.unit) : '科目全体'}</small>${AXL[e.axis]}</span>`;
+  const exLabel = (e) => `<span class="exl"><small>${e.unit ? esc(e.field) + ' › ' + esc(e.unit) : '科目全体'}</small>${AXL[e.axis]}</span>`;
   /* 押し合いの解説：なぜ押した／押されたかを、両者の単元データから説明する */
   const pc = (x) => Math.round(x * 100) + '%';
+  /* 勉強→勝利の因果：前回の対戦時からの正答予測の伸び（gain）と、負けた押し合いを覆すのに要る伸び（need） */
+  function gainOf(b, ctx, subject, unit) {
+    const prev = b.prevP && b.prevP[KN.key(subject, unit)]; if (prev == null) return 0;
+    const u = ctx.myK().units[KN.key(subject, unit)]; return u && u.n ? KN.prob(u.r, KN.STD) - prev : 0;
+  }
+  function needOf(b, ctx, subject, e) {
+    if (e.win || !e.unit) return '';
+    const u = ctx.myK().units[KN.key(subject, e.unit)], now = ctx.now(); if (!u || !u.n) return 'まず解いて未学習をなくすと互角に近づく';
+    const R = KN.retention(u, now), p = KN.prob(u.r, KN.STD), km = e.km || 1;
+    if (e.axis === 'acc') { const need = e.b / (100 * (0.5 + 0.5 * R) * km) - p; return need > 0.5 ? '' : `あと正答予測 +${Math.max(1, Math.round(need * 100))}% で互角`; }
+    const r2 = 1.5 - e.b / (100 * (0.6 + 0.4 * p) * km), sec = (u.ratio - r2) * KN.REF[2];
+    return sec > 0 && sec < 15 ? `あと約 ${sec.toFixed(1)} 秒速く解ければ互角` : '';
+  }
   function explain(e, subject, b, ctx) {
     if (e.axis === 'app') return `★2以上の問題での実力 ${e.d >= 0 ? 'で上回った' : 'で下回った'}`;
+    const gain = e.unit ? gainOf(b, ctx, subject, e.unit) : 0;
+    if (e.win && gain >= 0.05) return `前回の対戦より正答予測 +${Math.round(gain * 100)}%。勉強した分で押し勝った`;
     const now = ctx.now(), A = KN.unitDetail(b.me().K, subject, e.unit, now), B = KN.unitDetail(b.opSide().K, subject, e.unit, now);
     const win = e.d >= 0, flip = (x) => ((win ? x < 0 : x > 0) ? '（揺らぎで逆転）' : '');
     if (A.status === 'new' && B.status === 'new') return '両者とも未学習。運の勝負';
@@ -325,15 +373,41 @@
     </div>`;
   }
 
+  /* 陣地の前の作戦パネル：戦術・単元のバン・介入（引き直し／底上げ）・直接対決 */
+  function DecidePanel(b, ctx) {
+    const d = b.dec, me = b.me(), op = b.opSide(), now = ctx.now(), sug = suggestTac();
+    const uv = (K, u) => Math.round(KN.prob((K.units[KN.key(d.subject, u)] || {}).r || KN.STD - 150, KN.STD) * 100);
+    const solvedMe = (u) => solved(me.K, d.subject, u);
+    return `<section class="a-decide" style="--sc:${SC(d.subject)}" aria-label="第${b.live.k + 1}陣の作戦">
+      <div class="a-decide__head"><span class="eyebrow">第${b.live.k + 1}陣 · 作戦</span><h2>${esc(d.subject)}</h2><span class="muted">陣地 ${b.res.myW}-${b.res.opW}（先に3つ）</span></div>
+      <h3>戦術<small>相手は「${esc(TAC[b.hint.style].name)}」を好む。確実→速攻→応用→確実 の順に強い</small></h3>
+      <div class="a-tacs">${Object.keys(TAC).map((k) => `<button data-tac="${k}" aria-pressed="${d.tac === k}"><b>${TAC[k].name}</b><small>${TAC[k].desc}</small>${k === sug ? '<em>ナビの提案</em>' : ''}</button>`).join('')}</div>
+      <h3>押し合う単元<small>3つから1つ外せる（外さなければ1つは抽選で外れる）</small></h3>
+      <div class="a-cands-u">${d.cands.map((u) => `<button data-ban="${esc(u)}" aria-pressed="${d.ban === u}"><b>${esc(u)}</b><small>あなた ${solvedMe(u) ? uv(me.K, u) + '%' : '未学習'} · 相手 ${uv(op.K, u)}%</small>${d.ban === u ? '<em>✕ 外す</em>' : ''}</button>`).join('')}</div>
+      <h3>介入<small>この試合で残り ${b.live.uses} 回</small></h3>
+      <div class="a-inter">
+        <button data-action="redraw" ${b.live.uses > 0 ? '' : 'disabled'}>単元を引き直す</button>
+        ${['acc', 'speed', 'app'].map((ax) => `<button data-boost="${ax}" aria-pressed="${d.boost === ax}" ${b.live.uses > 0 || d.boost === ax ? '' : 'disabled'}>${AXL[ax]}を底上げ +10%</button>`).join('')}
+      </div>
+      <div class="a-decide__go">
+        <button class="btn btn--sub" data-action="duel-attack">直接対決で取りにいく</button>
+        <button class="btn btn--main" data-action="go">出撃</button>
+      </div>
+      <label class="a-auto"><input type="checkbox" data-auto ${b.auto ? 'checked' : ''}> 残りの陣地はナビにおまかせ</label>
+    </section>`;
+  }
+
   function BattleView(b, ctx) {
     const res = b.res, n = navOf(ctx.D, b.op.nav);
-    const area = res.areas[b.ai], all = area && area.ex ? area.ex.slice(0, Math.max(0, b.ei)) : [];
+    const playing = b.stage === 'play' && b.ai >= 0, area = playing ? res.areas[b.ai] : null;
+    const exn = area && area.ex ? area.ex.length : 0, all = area && area.ex ? area.ex.slice(0, Math.max(0, b.ei)) : [];
     const digest = !b.full;
-    // 要点モード：カットインは決め手の押し合い 1 回だけ。ログ（下の一覧）には 3 回とも出す
-    const shown = digest ? (b.ei >= 3 && !b.areaDone ? [area.ex[area.key]] : b.areaDone ? [area.ex[area.key]] : []) : all;
-    const log = digest ? (b.ei >= 3 ? area.ex : []) : all;
-    const g = digest ? (b.ei >= 3 ? area.gauge : 0) : shown.length ? shown[shown.length - 1].gauge : 0;
-    const done = res.areas.slice(0, b.ai + (b.areaDone ? 1 : 0)).filter((a) => !a.skipped);
+    // 要点モード：カットインは決め手の押し合い 1 回だけ。ログ（下の一覧）には全部出す
+    const keyEx = area && exn ? [area.ex[area.key]] : [];
+    const shown = !area ? [] : digest ? (b.ei >= exn && exn ? keyEx : []) : all;
+    const log = !area ? [] : digest ? (b.ei >= exn ? area.ex : []) : all;
+    const g = !area ? 0 : digest ? (b.ei >= exn ? area.gauge : 0) : shown.length ? shown[shown.length - 1].gauge : 0;
+    const done = res.areas.filter((a, i) => !a.skipped && (i < b.ai || (i === b.ai && b.areaDone)));
     return `<div class="match-screen phase-battle" style="--oc:${b.oc}">
       <div class="a-score">
         <div class="me">${UI.Portrait({ char: ctx.char, cls: 'portrait--face' })}<span>${esc(ctx.player.name)}</span><b>${done.filter((a) => a.win).length}</b></div>
@@ -341,17 +415,18 @@
         <div class="op"><b>${done.filter((a) => !a.win).length}</b><span>${esc(b.op.name)}</span>${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--op' })}</div>
       </div>
       ${Map3D(' ', FxLayer(b, ctx, g) + (!shown.length && !b.areaDone ? Comm(b, ctx) : ''), b.shake ? 'shake' : '')}
-      ${Tiles(b, res, b.areaDone ? b.ai + 1 : b.ai)}
-      ${CutIn(b, ctx, area, shown, g)}
-      <section class="a-arena ${b.areaDone ? (area.win ? 'won' : 'lost') : ''}">
-        <div class="a-arena__head"><span class="eyebrow">第${b.ai + 1}陣</span><h2>${esc(area.subject)}</h2>${b.areaDone ? `<span class="a-capture">${area.win ? '陣地確保' : '陣地を奪われた'}</span>` : ''}</div>
-        <div class="a-tug" aria-label="陣地ゲージ"><i class="mine" style="width:${50 + g / 2}%"></i><span class="mark" style="left:${50 + g / 2}%"></span><em class="c"></em></div>
+      ${Tiles(b, res)}
+      ${b.stage === 'decide' ? DecidePanel(b, ctx) : ''}
+      ${area ? CutIn(b, ctx, area, shown, g) : ''}
+      ${area ? `<section class="a-arena ${b.areaDone ? (area.win ? 'won' : 'lost') : ''}">
+        <div class="a-arena__head"><span class="eyebrow">第${b.ai + 1}陣</span><h2>${esc(area.subject)}</h2>${b.areaDone ? `<span class="a-capture">${area.win ? '⚑ 陣地確保' : '✕ 陣地を奪われた'}</span>` : ''}</div>
+        ${Lamps(area, log.length)}
         <div class="a-notes">${area.notesMe.map((x) => `<span class="me">${esc(x)}</span>`).join('')}${area.notesOp.map((x) => `<span class="op">相手：${esc(x)}</span>`).join('')}</div>
-        <ol class="a-ex">${area.ex.map((e, k) => {
+        <ol class="a-ex">${(area.ex || []).map((e, k) => {
           if (k >= log.length) return `<li class="wait">${exLabel(e)}<span class="dots">· · ·</span></li>`;
-          return `<li class="${e.d >= 0 ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.d >= 0 ? '押し込み +' + e.d : '押し返され ' + e.d}</span><span class="why">${esc(explain(e, area.subject, b, ctx))}</span></li>`;
-        }).join('')}</ol>
-      </section>
+          return `<li class="${e.win ? 'up' : 'down'}">${exLabel(e)}<b class="a">${e.a}</b><span class="vs">vs</span><b class="b">${e.b}</b><span class="d">${e.win ? '⚑ 押し勝ち' : '✕ 押し負け'}</span><span class="why">${esc(explain(e, area.subject, b, ctx))}</span></li>`;
+        }).join('')}${area.duelAtk ? `<li class="${area.win ? 'up' : 'down'}">直接対決で決着</li>` : ''}</ol>
+      </section>` : ''}
       <div class="a-controls"><button class="btn btn--sub" data-action="mode" aria-pressed="${!!b.full}">${b.full ? '全演出' : '要点モード'}</button><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button><button class="btn btn--sub a-sfx" data-action="sfx" aria-pressed="${window.SFX && !window.SFX.muted()}" aria-label="効果音">${window.SFX && window.SFX.muted() ? '🔇' : '🔊'}</button></div>
     </div>`;
   }
@@ -361,8 +436,8 @@
     const rows = b.res.areas.filter((a) => !a.skipped && a.ex);
     return `<section class="r-digest holo-panel ${b.skipped ? 'is-first' : ''}" aria-label="戦況ダイジェスト">
       <div class="missions__head"><span class="eyebrow">戦況ダイジェスト</span><span class="muted">${b.skipped ? '飛ばした戦闘の内容' : '各陣地の決め手'}</span></div>
-      <ol>${rows.map((a) => { const e = a.ex[a.key] || a.ex[0]; return `<li class="${a.win ? 'me' : 'op'}">
-        <b class="s" style="--sc:${SC(a.subject)}">${esc(a.subject)}</b><span class="r">${a.win ? '⚑ 確保' : '✕ 陥落'}${a.duel ? '（直接対決）' : ''}</span>${Lamps(a)}
+      <ol>${b.res.areas.filter((a) => !a.skipped).map((a) => { const e = a.ex && (a.ex[a.key] || a.ex[0]); if (!e) return `<li class="${a.win ? 'me' : 'op'}"><b class="s" style="--sc:${SC(a.subject)}">${esc(a.subject)}</b><span class="r">${a.win ? '⚑ 確保' : '✕ 陥落'}</span><span></span><small>直接対決で決着</small></li>`; return `<li class="${a.win ? 'me' : 'op'}">
+        <b class="s" style="--sc:${SC(a.subject)}">${esc(a.subject)}</b><span class="r">${a.win ? '⚑ 確保' : '✕ 陥落'}${a.duel ? '（直接対決で奪還）' : ''}</span>${Lamps(a)}
         <small>${AXL[e.axis]}${e.unit ? '・' + esc(e.unit) : ''} ${e.a} vs ${e.b} — ${esc(explain(e, a.subject, b, ctx))}</small></li>`; }).join('')}</ol>
     </section>`;
   }
@@ -389,8 +464,10 @@
       ${NavLine(ctx, line, res.win ? 'smile' : 'serious')}
       <section class="r-review holo-panel">
         <div class="missions__head"><span class="eyebrow">戦況分析</span>${an.mvp ? `<span class="muted">MVP陣地：<b>${esc(an.mvp)}</b></span>` : ''}</div>
+        ${(() => { const gs = []; b.res.areas.forEach((a) => (a.ex || []).forEach((e) => { const g = e.unit && e.win ? gainOf(b, ctx, a.subject, e.unit) : 0; if (g >= 0.05) gs.push({ a, e, g }); }));
+          return gs.length ? `<div class="r-gain"><b>今日の勉強が変えた押し合い</b><ul>${gs.map((x) => `<li><span style="--sc:${SC(x.a.subject)}">${esc(x.a.subject)}</span>${esc(x.e.unit)}の${AXL[x.e.axis]}：正答予測 <em>+${Math.round(x.g * 100)}%</em> で押し勝ち</li>`).join('')}</ul></div>` : ''; })()}
         ${an.lost.length ? `<ul class="a-why">${an.lost.map((l) => `<li>
-            <span><b>${esc(l.subject)}</b>：${l.unit ? `<b class="u">${esc(KN.meta(l.subject, l.unit).field)} › ${esc(l.unit)}</b>の` : ''}${AXL[l.axis]}で押し負け <em>${l.a} vs ${l.b}</em>
+            <span><b>${esc(l.subject)}</b>${needOf(b, ctx, l.subject, l.e) ? `<em class="a-need">${esc(needOf(b, ctx, l.subject, l.e))}</em>` : ''}：${l.unit ? `<b class="u">${esc(KN.meta(l.subject, l.unit).field)} › ${esc(l.unit)}</b>の` : ''}${AXL[l.axis]}で押し負け <em>${l.a} vs ${l.b}</em>
               ${l.unit ? (() => { const A = KN.unitDetail(b.me().K, l.subject, l.unit, ctx.now()), B = KN.unitDetail(b.opSide().K, l.subject, l.unit, ctx.now()); const f = (d) => (d.status === 'new' ? '未学習' : `正答予測${pc(d.p)}・定着${pc(d.R)}・${d.sec}秒`); return `<small class="a-why__cmp"><span class="me">あなた ${f(A)}</span><span class="op">相手 ${f(B)}</span></small>`; })() : ''}</span>
             <span class="a-why__btns">
               ${b.duelUsed ? '' : `<button class="btn btn--duel" data-duel="${esc(l.subject)}">直接対決</button>`}
@@ -410,7 +487,7 @@
   function DuelIntro(b, ctx) {
     const d = b.duel, n = navOf(ctx.D, b.op.nav);
     return `<div class="match-screen phase-duel" style="--oc:${b.oc}">
-      <header class="m-head"><button class="link" data-action="duel-cancel">← リザルトへ</button><span class="eyebrow">DIRECT MATCH</span></header>
+      <header class="m-head"><button class="link" data-action="duel-cancel">${d.attack ? '← 作戦に戻る' : '← リザルトへ'}</button><span class="eyebrow">DIRECT MATCH</span></header>
       <h1 class="m-title">直接対決：${esc(d.subject)}</h1>
       <div class="a-vs">
         <div class="a-vs__side me">${UI.Portrait({ char: ctx.char, cls: 'portrait--face portrait--vs' })}<b>${esc(ctx.player.name)}</b></div>
@@ -419,12 +496,14 @@
       </div>
       <section class="m-panel m-rules"><h2 class="panel__title">ルール</h2><ul>
         <li>両者が<b>同じ${d.qs.length}問</b>を解く（自動戦闘で押し合った単元から優先して出題）</li>
-        <li>正解数が多いほうの勝ち。同数なら<b>合計時間</b>が短いほう。1問${RULE.duelSec}秒</li>
-        <li>勝てば<b>${esc(d.subject)}の陣地を奪還</b>。結果がひっくり返ることもある</li>
+        <li>正解 1 点。<b>勝負問</b>は正解 3 点・不正解 −1 点。点の多いほうの勝ち、同点なら<b>合計時間</b>が短いほう。1問${RULE.duelSec}秒</li>
+        <li>${d.attack ? `勝てば<b>${esc(d.subject)}の陣地を確保</b>、負ければ陥落` : `勝てば<b>${esc(d.subject)}の陣地を奪還</b>。結果がひっくり返ることもある`}</li>
         <li>解いた結果はあなたの知識データにも反映される</li>
       </ul><p class="muted">本番では、相手もあとで同じ問題を解いて決着します（試作では相手の知識データから回答を予測）。</p></section>
+      <section class="m-panel"><h2 class="panel__title">勝負問を選ぶ<small class="panel__note">何問目で勝負をかけるか（問題は始まるまで見えない）</small></h2>
+        <div class="d-bets">${d.qs.map((q, k) => `<button data-bet="${k}" aria-pressed="${d.bet === k}">Q${k + 1}<small>${'★'.repeat(q.difficulty)}</small></button>`).join('')}</div></section>
       ${NavLine(ctx, ctx.char.lines.match, 'serious')}
-      <button class="btn btn--main" data-action="duel-start">直接対決を始める</button>
+      <button class="btn btn--main" data-action="duel-start" ${d.bet == null ? 'disabled' : ''}>${d.bet == null ? '勝負問を選んでください' : '直接対決を始める'}</button>
     </div>`;
   }
 
@@ -433,7 +512,7 @@
     return `<div class="match-screen phase-${rev ? 'reveal' : 'question'}" style="--oc:${b.oc}">
       <div class="m-board">
         <div class="m-side me"><small>直接対決 · ${esc(d.subject)}</small><b>${d.me.filter((x) => x.correct).length}<small>正解</small></b></div>
-        <div class="m-round"><span>Q${d.i + 1}<small>/${d.qs.length}</small></span></div>
+        <div class="m-round"><span>Q${d.i + 1}<small>/${d.qs.length}</small></span>${d.i === d.bet ? '<em class="d-betmark">勝負問</em>' : ''}</div>
         <div class="m-side op"><small>${esc(b.op.name)}</small><b>？</b></div>
       </div>
       <div class="m-timer"><i class="js-bar" style="width:${rev ? 0 : 100}%"></i><span class="js-sec">${rev ? '' : RULE.duelSec}</span></div>
@@ -452,15 +531,15 @@
     const d = b.duel, sum = (arr) => arr.reduce((s, x) => s + (x.time == null ? RULE.duelSec : x.time), 0);
     const mc = d.me.filter((x) => x.correct).length, oc = d.op.filter((x) => x.correct).length;
     return `<div class="match-screen phase-result ${d.win ? 'is-win' : 'is-lose'}" style="--oc:${b.oc}">
-      <header class="r-head"><span class="eyebrow">DIRECT MATCH · ${esc(d.subject)}</span><strong class="d-word">${d.win ? '陣地奪還' : '防衛された'}</strong><span class="r-score">${mc} <small>正解</small> ${oc}</span></header>
+      <header class="r-head"><span class="eyebrow">DIRECT MATCH · ${esc(d.subject)}</span><strong class="d-word">${d.win ? (d.attack ? '陣地確保' : '陣地奪還') : d.attack ? '陥落' : '防衛された'}</strong><span class="r-score">${d.mp} <small>点</small> ${d.opp}</span></header>
       <section class="r-review holo-panel">
         <div class="d-row d-head"><span>問題</span><span class="me">あなた</span><span class="op">${esc(b.op.name)}</span></div>
-        ${d.qs.map((q, k) => `<div class="d-row"><span class="qq"><small>${esc(q.unit)}</small>${esc(q.q)}</span><span class="me ${d.me[k].correct ? 'ok' : 'ng'}">${d.me[k].correct ? '○' : '×'} <small>${d.me[k].time != null ? d.me[k].time.toFixed(1) + 's' : '—'}</small></span><span class="op ${d.op[k].correct ? 'ok' : 'ng'}">${d.op[k].correct ? '○' : '×'} <small>${d.op[k].time.toFixed(1)}s</small></span></div>`).join('')}
+        ${d.qs.map((q, k) => `<div class="d-row ${k === d.bet ? 'is-bet' : ''}"><span class="qq"><small>${k === d.bet ? '勝負問 · ' : ''}${esc(q.unit)}</small>${esc(q.q)}</span><span class="me ${d.me[k].correct ? 'ok' : 'ng'}">${d.me[k].correct ? '○' : '×'} <small>${d.me[k].time != null ? d.me[k].time.toFixed(1) + 's' : '—'}</small></span><span class="op ${d.op[k].correct ? 'ok' : 'ng'}">${d.op[k].correct ? '○' : '×'} <small>${d.op[k].time.toFixed(1)}s</small></span></div>`).join('')}
         <div class="d-row d-total"><span>合計</span><span class="me">${mc}問 <small>${sum(d.me).toFixed(1)}s</small></span><span class="op">${oc}問 <small>${sum(d.op).toFixed(1)}s</small></span></div>
       </section>
       ${b.flipped ? '<p class="d-flip">陣地の奪還で試合結果が逆転しました</p>' : ''}
       ${NavLine(ctx, d.win ? fmt(ctx.char.battleLines.areaWin, { subject: d.subject }) : fmt(ctx.char.battleLines.areaLose, { subject: d.subject }), d.win ? 'smile' : 'special')}
-      <button class="btn btn--main" data-action="duel-done">リザルトに戻る</button>
+      <button class="btn btn--main" data-action="duel-done">${d.attack ? '戦闘に戻る' : 'リザルトに戻る'}</button>
     </div>`;
   }
 
@@ -485,8 +564,7 @@
     if (!t3 || t3.key !== key) { if (t3) t3.destroy(); t3 = window.Terrain ? window.Terrain.create(b.op.order, colors, look) : null; }
     if (!t3) { host.hidden = true; return; }
     host.appendChild(t3.canvas); t3.resize();
-    const upto = b.phase === 'battle' ? (b.areaDone ? b.ai + 1 : b.ai) : b.phase === 'plan' ? -1 : 5;
-    t3.setState(b.op.order.map((_, k) => tileState(b, b.res, upto, k)), { me: b.focus });
+    t3.setState(b.op.order.map((sub) => (b.phase === 'plan' ? 'pending' : stateOf(b, sub))), { me: b.focus });
   }
   const drop3d = () => { if (t3) { t3.destroy(); t3 = null; } };
   const onResize = () => { if (t3) t3.resize(); };
@@ -499,62 +577,135 @@
     return out.sort((x, y) => x.rp - y.rp);
   }
 
+  /* 開戦前に見えるヒント：防衛順と主戦場は断片だけ */
+  function hintsOf(o, K, S) {
+    const r = KN.rng(KN.hash(o.id + 'hint')), other = SUBJECTS.filter((x) => x !== o.focus);
+    const fc = [o.focus, other[Math.floor(r() * other.length)]].sort();
+    const us = []; SUBJECTS.forEach((s) => (KN.units()[s] || []).forEach((u) => { const x = K.units[KN.key(s, u)]; if (x && x.n >= RULE.minSolved) us.push({ s, u, p: KN.prob(x.r, KN.STD) }); }));
+    us.sort((a, b) => b.p - a.p);
+    return { gate: o.order[0], focus: fc, style: styleOf(o), strong: us[0], weak: us[us.length - 1] };
+  }
+
   function choose(id) {
     const o = ctx.opponents.find((x) => x.id === id), n = navOf(ctx.D, o.nav);
     b.op = o; b.oc = n.type.id === ctx.type.id ? '#D9DFEF' : n.type.color; b.focus = ctx.player.focus; b.phase = 'plan';
     const opK = ctx.opK(o), opS = ctx.opStats(o);
-    b.me = () => ({ K: ctx.myK(), S: ctx.player.stats, focus: b.focus });
+    b.focusUnit = null;
+    b.order = SUBJECTS.slice().sort((x, y) => (power(ctx.player.stats[y]) - power(opS[y])) - (power(ctx.player.stats[x]) - power(opS[x]))); // 初期値：有利な科目から
+    b.hint = hintsOf(o, opK, opS);
+    b.me = () => ({ K: ctx.myK(), S: ctx.player.stats, focus: b.focus, order: b.order, focusUnit: b.focusUnit });
     b.opSide = () => ({ K: opK, S: opS, focus: o.focus, order: o.order });
     draw();
   }
 
+  /* 開戦：挑戦権を使い、陣地を 1 つずつ「作戦（戦術・バン・介入）→ 戦闘」で進める。RP は試合が決まった瞬間に反映 */
   function fight() {
     if (ctx.player.tickets.now <= 0) return;
-    b.res = resolveBattle(b.me(), b.opSide(), Math.floor(Math.random() * 1e9), ctx.now());
-    b.rpNow = b.res.win ? b.op.reward.win : b.op.reward.lose;
-    b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus });
-    // 各陣地の決め手：勝った側に最も大きく押した押し合い
-    b.res.areas.forEach((a) => { if (!a.ex) return; let k = 0; a.ex.forEach((e, i) => { if ((a.win ? e.d : -e.d) > (a.win ? a.ex[k].d : -a.ex[k].d)) k = i; }); a.key = k; });
-    // 決め技のフル演出：ランク昇格した試合の決着の陣地と、前の試合から装甲の段階が上がった科目の陣地だけ
+    ctx.useTicket();
+    const seed = Math.floor(Math.random() * 1e9);
+    b.res = { areas: [], myW: 0, opW: 0, win: false, seed };
+    b.prevP = ctx.player.lastP || null; // 「前回の対戦より伸びた」を出すための基準
+    b.live = { r: KN.rng(seed), mom: 0, k: 0, uses: RULE.uses };
+    // 決め技のフル演出の対象：前の試合から装甲の段階が上がった科目（昇格は決着の瞬間に判定）
     const P = ctx.player, lv = {}; SUBJECTS.forEach((s) => { lv[s] = window.Mechs ? window.Mechs.level(P.stats[s].coverage || 0) : 0; });
-    const up = SUBJECTS.filter((s) => P.lastLv && lv[s] > (P.lastLv[s] || 0)); P.lastLv = lv;
-    const promoted = b.ranks.after.label !== b.ranks.before.label && b.res.win;
-    const decisive = b.res.areas.reduce((x, a, i) => (!a.skipped ? i : x), 0);
-    b.finSet = new Set(b.res.areas.map((a, i) => ((promoted && i === decisive) || (!a.skipped && a.win && up.includes(a.subject)) ? i : -1)).filter((i) => i >= 0));
+    b.lvUp = SUBJECTS.filter((s) => P.lastLv && lv[s] > (P.lastLv[s] || 0)); P.lastLv = lv;
+    b.finSet = new Set();
     if (b.full == null) b.full = false; // 標準は要点モード
-    b.phase = 'battle'; b.ai = 0; b.ei = -1; b.areaDone = false; b.line = ctx.char.catch; b.expr = 'serious';
+    b.phase = 'battle'; b.stage = 'start'; b.ai = -1; b.ei = -1; b.areaDone = false; b.line = ctx.char.catch; b.expr = 'serious';
     b.fx = { kind: 'start' }; commSay(b, ctx, 'start', null, 'serious');
     show();
     if (t3) { t3.intro(); t3.focus(null); }
-    clearTimeout(timer); timer = setTimeout(step, reduce() ? 300 : (b.fast ? 0.5 : 1) * (b.full ? 1900 : 800));
+    clearTimeout(timer); timer = setTimeout(nextArea, reduce() ? 300 : (b.fast ? 0.5 : 1) * (b.full ? 1900 : 900));
+  }
+  const decided = () => b.res.myW >= RULE.toWin || b.res.opW >= RULE.toWin;
+  const ti = (subject) => b.op.order.indexOf(subject); // 地図上の位置
+  /* 次の陣地：作戦パネルを出す（おまかせなら自動で決めて出撃） */
+  function nextArea() {
+    clearTimeout(timer);
+    if (decided() || b.live.k >= b.order.length) { endMatch(); return; }
+    const subject = b.order[b.live.k];
+    b.dec = { subject, cands: drawUnits(b.me(), b.opSide(), subject, b.live.r, 3), ban: null, tac: null, boost: null };
+    b.dec.tac = suggestTac(); b.stage = 'decide'; b.comm = null;
+    if (t3) t3.focus(ti(subject));
+    if (b.auto) { autoDecide(); go(); return; }
+    show();
+  }
+  /* ナビの提案：相手の傾向に相性で勝つ戦術。バンは自分が最も不利な単元 */
+  function suggestTac() { const st = b.hint.style; return Object.keys(BEATS).find((k) => BEATS[k] === st); }
+  function autoDecide() {
+    const d = b.dec, me = b.me(), op = b.opSide(), now = ctx.now();
+    d.tac = suggestTac();
+    const gap = (u) => KN.unitValue(me.K, d.subject, u, 'acc', now) - KN.unitValue(op.K, d.subject, u, 'acc', now);
+    d.ban = d.cands.slice().sort((x, y) => gap(x) - gap(y))[0];
+  }
+  /* 出撃：作戦を反映して陣地を解決し、戦闘の演出へ */
+  function go() {
+    const d = b.dec, me = b.me(), op = b.opSide();
+    if (d.boost) b.live.uses--;
+    let units = d.cands.filter((u) => u !== d.ban);
+    if (units.length > 2) units.splice(Math.floor(b.live.r() * units.length), 1); // バンしなければ 1 つは抽選で外れる
+    const area = resolveArea(me, op, d.subject, b.live.k, b.live.r, ctx.now(), b.live.mom, { units: units.slice(0, 2), tacMe: d.tac, tacOp: opTactic(b.op, b.live.r), focusUnit: b.focusUnit, boost: d.boost });
+    pushArea(area);
+    b.stage = 'play'; b.ei = -1; b.areaDone = false;
+    step();
+  }
+  function pushArea(area) {
+    let k = 0; (area.ex || []).forEach((e, i) => { if ((area.win ? e.d : -e.d) > (area.win ? area.ex[k].d : -area.ex[k].d)) k = i; }); area.key = k;
+    b.res.areas.push(area); b.ai = b.res.areas.length - 1;
+    area.win ? b.res.myW++ : b.res.opW++; b.live.mom = area.win ? 1 : -1; b.live.k++;
+    b.res.win = b.res.myW >= RULE.toWin;
+    if (decided() && !b.ranks) settle();
+    b.finArea = b.full || b.finSet.has(b.ai) || (!area.duel && area.win && b.lvUp.includes(area.subject));
+  }
+  /* 試合が決まった瞬間に RP を反映（ランク昇格したら、決着の陣地は決め技のフル演出） */
+  function settle() {
+    const K = ctx.myK(), snap = {}; Object.keys(K.units).forEach((k) => { const u = K.units[k]; if (u && u.n) snap[k] = +KN.prob(u.r, KN.STD).toFixed(3); });
+    ctx.player.lastP = snap; // 次の対戦の基準（applyBattle で保存される）
+    b.rpNow = b.res.win ? b.op.reward.win : b.op.reward.lose;
+    b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus });
+    if (b.res.win && b.ranks.after.label !== b.ranks.before.label) b.finSet.add(b.res.areas.length - 1);
+  }
+  function endMatch() {
+    b.order.forEach((s) => { if (!b.res.areas.find((a) => a.subject === s)) b.res.areas.push({ subject: s, idx: b.res.areas.length, skipped: true }); });
+    if (!b.ranks) settle();
+    finish();
+  }
+  /* 飛ばす：残りの陣地はおまかせで一気に解決 */
+  function skipAll() {
+    stop(); b.skipped = true;
+    while (!decided() && b.live && b.live.k < b.order.length) {
+      const subject = b.order[b.live.k];
+      if (!b.dec || b.dec.subject !== subject || b.stage !== 'decide') b.dec = { subject, cands: drawUnits(b.me(), b.opSide(), subject, b.live.r, 3), ban: null, tac: null, boost: null };
+      autoDecide();
+      const d = b.dec, units = d.cands.filter((u) => u !== d.ban).slice(0, 2);
+      pushArea(resolveArea(b.me(), b.opSide(), subject, b.live.k, b.live.r, ctx.now(), b.live.mom, { units, tacMe: d.tac, tacOp: opTactic(b.op, b.live.r), focusUnit: b.focusUnit }));
+      b.stage = 'play';
+    }
+    endMatch();
   }
   /* 1回分の描画。演出（fx・揺れ）はその描画でだけ再生する */
   function show() { draw(); b.fx = null; b.shake = false; }
   function schedule(mult = 1) { clearTimeout(timer); const base = reduce() ? 300 : b.fast ? 520 : 1150; timer = setTimeout(step, base * mult); }
   function step() {
     const area = b.res.areas[b.ai];
-    if (b.areaDone) {
-      b.ai++; b.ei = -1; b.areaDone = false;
-      if (b.ai >= b.res.areas.length || b.res.areas[b.ai].skipped) { finish(); return; }
-      return step();
-    }
+    if (b.areaDone) { b.areaDone = false; nextArea(); return; }
     if (b.ei < 0) { // 陣地に入る：カメラを寄せる
       b.ei = 0; b.fx = { kind: 'area', idx: b.ai, subject: area.subject }; commSay(b, ctx, 'enter', area.subject, 'serious');
-      if (t3) t3.focus(b.ai);
+      if (t3) t3.focus(ti(area.subject));
       show(); schedule(b.full ? 1.3 : 0.4); return; // マップで陣地にズームしてからカットイン
     }
-    if (!b.full && b.ei < 3) { // 要点モード：決め手の押し合いだけ見せる（3 回分の結果はまとめて反映）
-      const e = area.ex[area.key]; b.ei = 3;
+    if (!b.full && b.ei < area.ex.length) { // 要点モード：決め手の押し合いだけ見せる（全部の結果はまとめて反映）
+      const e = area.ex[area.key]; b.ei = area.ex.length;
       b.fx = null; b.shake = Math.abs(e.d) >= 25 && !reduce();
       if (Math.abs(e.d) >= 25) commSay(b, ctx, e.d > 0 ? 'critMe' : 'critOp', area.subject, e.d > 0 ? 'smile' : 'special'); else b.comm = null;
-      if (t3) t3.clash(b.ai, e);
+      if (t3) t3.clash(ti(area.subject), e);
       show(); sfx(e.win ? 'exWin' : 'exLose', 420 + 330); schedule(0.85); return;
     }
-    if (b.ei < 3) { // 押し合い
+    if (b.ei < area.ex.length) { // 押し合い
       const e = area.ex[b.ei]; b.ei++;
       b.fx = { kind: 'ex', e, subject: area.subject }; b.shake = Math.abs(e.d) >= 25 && !reduce();
       if (Math.abs(e.d) >= 25) commSay(b, ctx, e.d > 0 ? 'critMe' : 'critOp', area.subject, e.d > 0 ? 'smile' : 'special'); else b.comm = null;
-      if (t3) t3.clash(b.ai, e);
+      if (t3) t3.clash(ti(area.subject), e);
       show(); sfx(e.win ? 'exWin' : 'exLose', (b.ei === 1 ? 420 : 0) + 330); schedule(); return;
     }
     b.areaDone = true;
@@ -562,8 +713,7 @@
     b.expr = area.win ? 'smile' : 'special';
     b.fx = { kind: 'cap', win: area.win, subject: area.subject };
     b.comm = { text: b.line, expr: b.expr, key: area.win ? 'win' : 'lose' }; // 決着のセリフもカットインの通信で（ナビのウィンドウは常に 1 つ）
-    if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
-    b.finArea = b.full || b.finSet.has(b.ai);
+    if (t3) t3.capture(ti(area.subject), area.win ? 'me' : 'op');
     show(); sfx('stamp', b.finArea ? 2700 : 120, area.win);
     const anim = window.MECH_ANIM && window.Mechs && window.MECH_ANIM[window.Mechs.KEY[area.subject]];
     // 決め技シーン（3.5 秒）→スタンプ→抜けてマップへ。要点モードは撃破とスタンプだけで短く抜ける（2倍速なら半分）
@@ -590,14 +740,14 @@
   }
 
   /* 直接対決 */
-  function duelOpen(subject) {
+  function duelOpen(subject, attack) {
     const area = b.res.areas.find((a) => a.subject === subject && !a.skipped);
-    const focusUnits = area ? area.ex.filter((e) => e.unit).map((e) => e.unit) : [];
+    const focusUnits = attack ? b.dec.cands.slice() : area ? area.ex.filter((e) => e.unit).map((e) => e.unit) : [];
     const qs = KN.pickQuestions(ctx.myK(), ctx.bank, subject, RULE.duelQ, ctx.now(), focusUnits, null, ctx.player.qr).map((q) => {
       const order = q.choices.map((_, i) => i).sort(() => Math.random() - 0.5);
       return Object.assign({}, q, { choices: order.map((i) => q.choices[i]), answer: order.indexOf(q.answer) });
     });
-    b.duel = { subject, qs, i: 0, me: [], op: [] };
+    b.duel = { subject, qs, i: 0, me: [], op: [], attack: !!attack, bet: null };
     b.phase = 'duel'; draw(); sfx('duelStart', 0);
   }
   function duelAsk() {
@@ -626,12 +776,24 @@
     if (d.i + 1 < d.qs.length) { d.i++; duelAsk(); return; }
     const r = KN.rng(KN.hash(b.op.id + d.subject + b.res.seed));
     d.op = d.qs.map((q) => KN.simulateAnswer(b.opSide().K, q, ctx.player.qr, r));
-    const mc = d.me.filter((x) => x.correct).length, oc = d.op.filter((x) => x.correct).length;
+    // 点数：正解 1 点。勝負問は正解 3 点・不正解 −1 点。同点なら合計時間が短いほう
+    const pts = (arr) => arr.reduce((s, x, k) => s + (k === d.bet ? (x.correct ? 3 : -1) : x.correct ? 1 : 0), 0);
     const sum = (arr) => arr.reduce((s, x) => s + (x.time == null ? RULE.duelSec : x.time), 0);
-    d.win = mc > oc || (mc === oc && sum(d.me) < sum(d.op));
-    b.duelUsed = true;
-    if (d.win) { overturn(d.subject); if (ctx.achieve) ctx.achieve('duel'); }
+    d.mp = pts(d.me); d.opp = pts(d.op);
+    d.win = d.mp > d.opp || (d.mp === d.opp && sum(d.me) < sum(d.op));
+    if (!d.attack) { b.duelUsed = true; if (d.win) { overturn(d.subject); if (ctx.achieve) ctx.achieve('duel'); } }
+    else if (d.win && ctx.achieve) ctx.achieve('duel');
     b.phase = 'duelres'; draw(); sfx('duelEnd', 150, b.duel.win);
+  }
+  /* 攻めの直接対決が終わったら、その陣地の結果として戦闘に戻る */
+  function duelBack() {
+    const d = b.duel;
+    pushArea({ subject: d.subject, idx: b.live.k, ex: [], duelAtk: true, win: d.win, gauge: d.win ? 100 : -100, wins: [d.win ? 2 : 0, d.win ? 0 : 2], notesMe: ['直接対決'], notesOp: [] });
+    b.phase = 'battle'; b.stage = 'play'; b.ei = 0; b.areaDone = true; b.finArea = false;
+    b.line = fmt(ctx.char.battleLines[d.win ? 'areaWin' : 'areaLose'], { subject: d.subject }); b.expr = d.win ? 'smile' : 'special';
+    b.comm = { text: b.line, expr: b.expr, key: d.win ? 'win' : 'lose' };
+    if (t3) t3.capture(ti(d.subject), d.win ? 'me' : 'op');
+    show(); sfx('stamp', 120, d.win); schedule(0.92);
   }
   function overturn(subject) {
     const res = b.res, wasWin = res.win;
@@ -659,22 +821,36 @@
     if (t.dataset.focus) { b.focus = t.dataset.focus; draw(); return; }
     if (t.dataset.duel) { duelOpen(t.dataset.duel); return; }
     if (t.dataset.choice != null) { duelAnswer(+t.dataset.choice); return; }
+    if (t.dataset.mv) { const [k, dir] = t.dataset.mv.split(':').map(Number), j = k + dir; if (j >= 0 && j < b.order.length) { [b.order[k], b.order[j]] = [b.order[j], b.order[k]]; draw(); } return; }
+    if (t.dataset.tac && b.dec) { b.dec.tac = t.dataset.tac; show(); return; }
+    if (t.dataset.ban && b.dec) { b.dec.ban = b.dec.ban === t.dataset.ban ? null : t.dataset.ban; show(); return; }
+    if (t.dataset.boost && b.dec) { b.dec.boost = b.dec.boost === t.dataset.boost ? null : b.live.uses > 0 ? t.dataset.boost : null; show(); return; }
+    if (t.dataset.bet != null && b.duel) { b.duel.bet = +t.dataset.bet; draw(); return; }
     switch (t.dataset.action) {
       case 'refresh': b.cands = candidates(); draw(); break;
       case 'back': b.phase = 'pick'; draw(); break;
       case 'fight': fight(); break;
       case 'mode': b.full = !b.full; if (b.phase === 'battle') show(); else draw(); break;
       case 'speed': b.fast = !b.fast; draw(); break;
-      case 'skip': b.skipped = true; finish(); break;
+      case 'skip': if (b.phase === 'battle') skipAll(); break;
+      case 'go': if (b.stage === 'decide') go(); break;
+      case 'redraw': if (b.stage === 'decide' && b.live.uses > 0) { b.live.uses--; b.dec.cands = drawUnits(b.me(), b.opSide(), b.dec.subject, b.live.r, 3, null); b.dec.ban = null; show(); } break;
+      case 'duel-attack': if (b.stage === 'decide') duelOpen(b.dec.subject, true); break;
       case 'sfx': if (window.SFX) window.SFX.toggle(); draw(); break;
       case 'again': drop3d(); b = { phase: 'pick', cands: candidates(), fast: b.fast, full: b.full }; draw(); break;
-      case 'duel-cancel': b.phase = 'result'; draw(); break;
+      case 'duel-cancel': if (b.duel && b.duel.attack) { b.phase = 'battle'; draw(); } else { b.phase = 'result'; draw(); } break;
       case 'duel-start': duelAsk(); break;
       case 'duel-next': duelNext(); break;
-      case 'duel-done': b.phase = 'result'; draw(); break;
+      case 'duel-done': if (b.duel && b.duel.attack) duelBack(); else { b.phase = 'result'; draw(); } break;
       case 'train': { const s = t.dataset.subject, u = t.dataset.units ? t.dataset.units.split('|') : []; unmount(); ctx.train(s, u); break; }
       case 'exit': unmount(); ctx.exit(); break;
     }
+  }
+  /* 作戦画面の入力（重点単元・おまかせ） */
+  function onChange(e) {
+    if (!b) return;
+    if (e.target.matches('[data-fu]')) { b.focusUnit = e.target.value || null; draw(); }
+    if (e.target.matches('[data-auto]')) { b.auto = e.target.checked; if (b.auto && b.stage === 'decide') { autoDecide(); go(); } }
   }
   function onKey(e) {
     if (!b || b.phase !== 'duelq') return;
@@ -686,10 +862,10 @@
   function mount(r, c) {
     unmount(); root = r; ctx = c;
     b = { phase: 'pick', cands: candidates(), fast: false };
-    root.addEventListener('click', onClick); document.addEventListener('keydown', onKey); window.addEventListener('resize', onResize);
+    root.addEventListener('click', onClick); root.addEventListener('change', onChange); document.addEventListener('keydown', onKey); window.addEventListener('resize', onResize);
     draw();
   }
-  function unmount() { stop(); drop3d(); document.querySelectorAll('.cutin').forEach((x) => x.remove()); window.removeEventListener('resize', onResize); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); b = null; root = null; }
+  function unmount() { stop(); drop3d(); document.querySelectorAll('.cutin').forEach((x) => x.remove()); window.removeEventListener('resize', onResize); if (root) { root.removeEventListener('click', onClick); root.removeEventListener('change', onChange); } document.removeEventListener('keydown', onKey); b = null; root = null; }
 
-  window.Battle = { RULE, mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
+  window.Battle = { RULE, TAC, BEATS, drawUnits, resolveArea, mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
 })();
