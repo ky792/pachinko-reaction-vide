@@ -236,6 +236,29 @@
 
   /* ロボット戦のカットイン：陣地にズームしたあと全面に入り、3 回の攻防→撃破を見せて抜ける。
      入る（is-in）は最初の攻防の描画だけ、抜ける（is-out）は決着の描画だけ。間の描画（is-on）は動かない */
+  /* 決め技シーン（約 3.5 秒）：陣地の決着で、勝った側の機体が技を決める。
+     0.0 顔アップと技名 → 0.7 溜め → 1.25 突進 → 1.65 インパクトフレーム → 1.8 技が炸裂・相手が吹き飛ぶ → 2.7 スタンプ。
+     相手が勝ったときは左右を反転して、相手側から撃ってくる。本番の動画が届いたらここで再生する */
+  function Finisher(b, ctx, area) {
+    const M = window.Mechs, s = area.subject, meWin = area.win;
+    const W = meWin ? { st: ctx.player.stats[s], c: ctx.type.color } : { st: b.opSide().S[s], c: b.oc };
+    const L = meWin ? { st: b.opSide().S[s], c: b.oc } : { st: ctx.player.stats[s], c: ctx.type.color };
+    const unit = (x) => M.svg(s, { color: x.c, cov: x.st.coverage, ret: x.st.retention });
+    return `<div class="fin ${meWin ? 'me-win' : 'op-win'}" style="--wc:${W.c};--lc:${L.c}">
+      <div class="fin__stage">
+        <span class="fin__bg"></span><span class="fin__lines"></span>
+        <div class="fin__close">${unit(W)}</div>
+        <div class="fin__aura"></div>${Array.from({ length: 10 }, (_, i) => `<i class="fin__p" style="--a:${i * 36}deg"></i>`).join('')}
+        <div class="fin__tgt">${unit(L)}</div>
+        <div class="fin__atk">${unit(W)}</div><div class="fin__trail">${unit(W)}</div>
+        <div class="fin__fx">${M.attackFx(s, true, false)}</div>
+        <span class="fin__boom"></span>
+      </div>
+      <div class="fin__name fin-txt"><small>${meWin ? '決め技' : '敵の決め技'}</small><b>${esc(M.TECH[s])}</b></div>
+      <div class="fin__comm">${Comm(b, ctx)}</div>
+    </div>`;
+  }
+
   function CutIn(b, ctx, area, shown, g) {
     if (!window.Mechs || (!shown.length && !b.areaDone)) return '';
     const st = b.areaDone ? 'is-out' : shown.length === 1 ? 'is-in' : 'is-on';
@@ -244,7 +267,7 @@
       <div class="mx-cut__lines" aria-hidden="true"></div>
       <div class="mx-cut__band">
         <div class="mx-cut__head"><span class="me">${esc(ctx.player.name)}</span><b>第${b.ai + 1}陣 ${esc(area.subject)}</b><span class="op">${esc(b.op.name)}</span></div>
-        ${Clash(b, ctx, area, shown, g)}
+        ${b.areaDone ? Finisher(b, ctx, area) : Clash(b, ctx, area, shown, g)}
         ${stamp}
         <div class="mx-cut__ctl"><button class="btn btn--sub" data-action="speed">${b.fast ? '通常速度' : '2倍速'}</button><button class="btn btn--sub" data-action="skip">結果まで飛ばす</button></div>
       </div>
@@ -458,7 +481,7 @@
     b.comm = { text: b.line, expr: b.expr, key: area.win ? 'win' : 'lose' }; // 決着のセリフもカットインの通信で（ナビのウィンドウは常に 1 つ）
     if (t3) t3.capture(b.ai, area.win ? 'me' : 'op');
     show();
-    schedule(2.1); // 撃破→スタンプ→カットインが抜けてマップで占領の演出を見せる
+    schedule(4.1); // 決め技シーン（3.5 秒）→スタンプ→カットインが抜けてマップで占領の演出を見せる（2倍速なら半分）
   }
   function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); }
   function navCut(title, line, expr) {

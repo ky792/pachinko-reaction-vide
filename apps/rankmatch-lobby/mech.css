@@ -167,9 +167,9 @@
 .mx-cut.is-in{--t0:.42s}
 .mx-cut.is-in .mx-comm,.mx-cut.is-in .mx-move,.mx-cut.is-in .mx-crit{animation-delay:.45s}
 /* 抜ける：撃破とスタンプを見せてから斜めに抜ける（2倍速なら半分の時間） */
-.mx-cut.is-out{animation:cutBgOut .35s calc(1.35s * var(--sp)) both}
-.mx-cut.is-out .mx-cut__band{animation:cutOut .38s calc(1.3s * var(--sp)) cubic-bezier(.6,0,.8,.2) both}
-.mx-cut.is-out .mx-stamp{animation-duration:calc(.45s * var(--sp));animation-delay:calc(.5s * var(--sp))}
+.mx-cut.is-out{animation:cutBgOut .35s calc(3.6s * var(--sp)) both}
+.mx-cut.is-out .mx-cut__band{animation:cutOut .38s calc(3.55s * var(--sp)) cubic-bezier(.6,0,.8,.2) both}
+.mx-cut.is-out .mx-stamp{animation-duration:calc(.45s * var(--sp));animation-delay:calc(2.7s * var(--sp))}
 .mx-cut.is-out{pointer-events:none}
 @keyframes cutIn{0%{clip-path:polygon(0 3%,0 0,0 100%,0 100%);filter:brightness(2.5)}60%{filter:brightness(1.4)}100%{clip-path:polygon(0 3%,100% 0,100% 97%,0 100%);filter:none}}
 @keyframes cutOut{to{clip-path:polygon(100% 0,100% 0,100% 97%,100% 100%)}}
@@ -246,3 +246,54 @@
 @keyframes axTech{0%{opacity:0;clip-path:inset(0 100% 0 0)}14%{opacity:1;clip-path:inset(0 0 0 0)}78%{opacity:1}100%{opacity:0;transform:translateX(3%)}}
 .mx-clash.is-crit{animation:axShake .35s calc(var(--t0,0s) + .33s)}
 @keyframes axShake{20%{translate:-6px 3px}40%{translate:6px -3px}60%{translate:-4px 2px}80%{translate:3px -1px}}
+
+/* ==== 決め技シーン（約 3.5 秒・--sp で速度） ==== */
+.fin{position:relative;height:clamp(300px,50vh,440px);overflow:hidden;--T:var(--sp,1)}
+.fin__stage{position:absolute;inset:0;animation:finImpact calc(.2s * var(--T)) calc(1.62s * var(--T)) steps(1) both}
+.fin.op-win .fin__stage{transform:scaleX(-1)}
+.fin [class^="fin__"]{position:absolute}
+.fin__bg{inset:-40%;background:repeating-conic-gradient(from 0deg,color-mix(in oklab,var(--wc) 30%,transparent) 0 2deg,transparent 2deg 9deg);
+  -webkit-mask-image:radial-gradient(circle,transparent 8%,#000 40%);mask-image:radial-gradient(circle,transparent 8%,#000 40%);animation:gsSpin 6s linear infinite,finBg calc(3.5s * var(--T)) both}
+@keyframes finBg{0%{opacity:0}8%,70%{opacity:1}100%{opacity:.35}}
+.fin__lines{inset:0;opacity:0;background:repeating-linear-gradient(0deg,transparent 0 14px,rgba(255,255,255,.35) 14px 15px,transparent 15px 34px);animation:finLines calc(.6s * var(--T)) calc(1.15s * var(--T)) linear both}
+@keyframes finLines{0%{opacity:0;background-position:0 0}20%,80%{opacity:1}100%{opacity:0;background-position:-400px 0}}
+/* 顔アップ */
+.fin__close{left:50%;top:-6%;width:62%;height:250%;translate:-50% 0;opacity:0;animation:finClose calc(.8s * var(--T)) both}
+.fin__close .mech{filter:drop-shadow(0 0 16px var(--wc))}
+@keyframes finClose{0%{opacity:0;transform:scale(1.15) translateY(4%)}12%{opacity:1}80%{opacity:1;transform:scale(1) translateY(0)}100%{opacity:0;transform:scale(1)}}
+.fin__name{z-index:5;left:-4%;right:-4%;bottom:12%;padding:6px 0;display:grid;justify-items:center;line-height:1.1;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.8) 18%,rgba(0,0,0,.8) 82%,transparent);border-block:1px solid var(--wc);animation:finName calc(1s * var(--T)) calc(.08s * var(--T)) both}
+.fin__name small{font-family:var(--f-num);font-size:10px;letter-spacing:.3em;color:var(--gold)}
+.fin__name b{font-family:var(--f-body);font-weight:900;font-style:italic;font-size:clamp(28px,8.5vw,44px);color:#fff;text-shadow:0 0 14px var(--wc),2px 2px 0 rgba(0,0,0,.6)}
+@keyframes finName{0%{opacity:0;clip-path:inset(0 100% 0 0)}14%{opacity:1;clip-path:inset(0 0 0 0)}80%{opacity:1}100%{opacity:0;transform:translateX(4%)}}
+/* 溜め：光が集まる */
+.fin__aura{left:12%;bottom:8%;width:32%;height:72%;border-radius:50%;opacity:0;background:radial-gradient(ellipse,color-mix(in oklab,var(--wc) 60%,transparent),transparent 65%);
+  animation:finAura calc(.6s * var(--T)) calc(.7s * var(--T)) both}
+@keyframes finAura{0%{opacity:0;transform:scale(.6)}50%{opacity:1;transform:scale(1.15)}80%{opacity:1;transform:scale(.95)}100%{opacity:0;transform:scale(1.4)}}
+.fin__p{left:28%;top:52%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:#fff;box-shadow:0 0 8px var(--wc);opacity:0;animation:finP calc(.5s * var(--T)) calc(.72s * var(--T)) ease-in both}
+@keyframes finP{0%{opacity:0;transform:rotate(var(--a)) translateX(110px)}30%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateX(0)}}
+/* 機体：突進→命中→戻って勝ちポーズ／相手は吹き飛んで倒れる */
+.fin__atk,.fin__trail{left:12%;bottom:4%;width:32%;height:80%;opacity:0}
+.fin__atk{z-index:3;animation:finAtk calc(2.8s * var(--T)) calc(.68s * var(--T)) cubic-bezier(.2,.8,.2,1) both}
+@keyframes finAtk{0%{opacity:0;transform:translateX(-10%)}4%{opacity:1;transform:none}20%{transform:translateX(-6%) scale(1.02)}
+  24%{transform:translateX(92%) scale(1.05)}40%{transform:translateX(88%)}58%{transform:translateX(86%)}70%{transform:translateX(0) translateY(-6%)}78%{transform:translateY(0)}100%{opacity:1;transform:none}}
+.fin__trail{z-index:2;filter:blur(3px) brightness(1.6);animation:finTrail calc(.45s * var(--T)) calc(1.25s * var(--T)) linear both}
+@keyframes finTrail{0%{opacity:0;transform:translateX(0)}30%{opacity:.6}100%{opacity:0;transform:translateX(80%)}}
+.fin__tgt{z-index:2;right:10%;bottom:4%;width:32%;height:80%;opacity:0;animation:finTgt calc(2.8s * var(--T)) calc(.68s * var(--T)) both}
+.fin__tgt .mech{transform:scaleX(-1)}
+@keyframes finTgt{0%{opacity:0}4%,38%{opacity:1;transform:none;filter:none}41%{transform:translateX(6%);filter:brightness(4) saturate(0)}
+  55%{transform:translateX(30%) translateY(-8%) rotate(14deg);filter:brightness(1.6)}75%{transform:translateX(34%) translateY(14%) rotate(32deg);filter:grayscale(1) brightness(.6)}100%{opacity:.4;transform:translateX(34%) translateY(16%) rotate(34deg);filter:grayscale(1) brightness(.45)}}
+/* インパクトフレーム（一瞬だけ白黒反転） */
+@keyframes finImpact{0%,100%{filter:none}1%,99%{filter:invert(1) grayscale(1) contrast(1.8)}}
+.fin__fx{inset:0;z-index:4;--t0:calc(1.45s * var(--T))}
+.fin__fx .ax{--fxc:var(--wc)}
+.fin__fx .ax.from-me{transform:scale(1.25);transform-origin:70% 50%}
+.fin__boom{z-index:4;right:16%;bottom:24%;width:180px;height:180px;margin:0 -90px -90px 0;border-radius:50%;opacity:0;
+  background:radial-gradient(circle,#fff 0,color-mix(in oklab,var(--wc) 80%,#fff) 25%,color-mix(in oklab,var(--wc) 50%,transparent) 50%,transparent 70%);animation:finBoom calc(.7s * var(--T)) calc(1.8s * var(--T)) ease-out both}
+@keyframes finBoom{0%{opacity:1;transform:scale(.1)}40%{opacity:1;transform:scale(1.2)}100%{opacity:0;transform:scale(1.8)}}
+.fin__comm .mx-comm{animation-delay:calc(2.5s * var(--T))}
+.fin__comm .mx-comm p{animation-delay:calc(2.65s * var(--T))}
+.mx-cut.is-out .mx-cut__head{opacity:.9}
+@media (prefers-reduced-motion:reduce){.fin__close,.fin__aura,.fin__p,.fin__trail,.fin__fx,.fin__boom,.fin__name,.fin__lines{display:none}.fin__atk,.fin__tgt{opacity:1}}
+.fin.op-win .ax-txt{scale:-1 1}
+.fin [class^="fin__"].fin__comm{inset:0;z-index:6;pointer-events:none}
