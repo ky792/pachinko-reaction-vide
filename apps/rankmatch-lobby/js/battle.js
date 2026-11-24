@@ -662,7 +662,7 @@
     const K = ctx.myK(), snap = {}; Object.keys(K.units).forEach((k) => { const u = K.units[k]; if (u && u.n) snap[k] = +KN.prob(u.r, KN.STD).toFixed(3); });
     ctx.player.lastP = snap; // 次の対戦の基準（applyBattle で保存される）
     b.rpNow = b.res.win ? b.op.reward.win : b.op.reward.lose;
-    b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus });
+    b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus, opName: b.op.name });
     if (b.res.win && b.ranks.after.label !== b.ranks.before.label) b.finSet.add(b.res.areas.length - 1);
   }
   function endMatch() {

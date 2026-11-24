@@ -116,7 +116,9 @@
   /* 名前・戦闘力・成長の状態つきカード */
   function card(subject, st, color, extra = '') {
     const info = INFO[subject], lv = level(st.coverage || 0);
-    return `<div class="mcard ${extra}" style="--mc:${color}">
+    const fade = (st.retention == null ? 1 : st.retention) < 0.5; // 科目平均の定着が半分を切ったら要復習
+    return `<div class="mcard mcard--lv${lv} ${fade ? 'is-fading' : ''} ${extra}" style="--mc:${color}">
+      <span class="mcard__badge">Lv${lv + 1}</span>${fade ? '<span class="mcard__warn">要復習</span>' : ''}
       <div class="mcard__art">${svg(subject, { color, cov: st.coverage, ret: st.retention })}</div>
       <b class="mcard__pw">${st.acc + st.speed + st.app}</b>
       <span class="mcard__name">${esc(info.name)}<small>${esc(subject)}</small></span>

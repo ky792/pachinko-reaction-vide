@@ -24,7 +24,16 @@
   const applyCurriculum = () => KN.setCurriculum(window.curriculumFor(P.electives), window.QUESTION_BANK, window.CURRICULUM);
   fixElectives();
   applyCurriculum();
-  const now = () => Date.now() + (P.dayShift || 0) * KN.DAY;
+  /* 学習の時計。休止モードの間は止まる（定着度が下がらない）。止めていた時間は pauseOffset に積む */
+  const now = () => Date.now() + (P.dayShift || 0) * KN.DAY - (P.pauseOffset || 0) - (P.pause ? Date.now() - P.pause : 0);
+  const paused = () => !!P.pause;
+  function setPause(on) {
+    if (on && !P.pause) P.pause = Date.now();
+    if (!on && P.pause) { P.pauseOffset = (P.pauseOffset || 0) + (Date.now() - P.pause); P.pause = null; P.defClock = now(); }
+    refreshStats(); savePlayer();
+  }
+  /* 数字の変化の記録：ホームで「何が・どれだけ・なぜ」を見せる */
+  function logChange(kind, d, why) { if (!d) return; P.changes = (P.changes || []).concat({ kind, d, why, at: Date.now() }).slice(-12); }
   function initKnowledge() {
     if (!P.K) { P.K = KN.synth(P.stats, 7, now()); P.qr = {}; P.dayShift = 0; }
     migrateUnits();
@@ -96,6 +105,7 @@
   function applyBattle(r) {
     const before = rankView(P.rank.rp);
     P.rank.rp = Math.max(0, P.rank.rp + r.rp);
+    logChange('rp', r.rp, `${r.opName || '相手'}に${r.win ? '勝利' : '敗北'}`);
     P.rank.winStreak = r.win ? P.rank.winStreak + 1 : 0;
     P.rank.nationalPos = Math.max(1, P.rank.nationalPos + (r.win ? -60 : 30));
     P.focus = r.focus;
@@ -113,7 +123,8 @@
      防衛負けで失う RP は 1 日 20 まで */
   const DEF_EVERY = 4 * 3600000, DEF_LOSS_CAP = 20;
   function defenseTick() {
-    const t = now(); if (!P.defClock) { P.defClock = t; return 0; }
+    const t = now(); if (paused()) return 0; // 休止中は防衛戦も起きない
+    if (!P.defClock) { P.defClock = t; return 0; }
     let k = Math.min(3, Math.floor((t - P.defClock) / DEF_EVERY)); if (k <= 0) return 0;
     P.defClock += k * DEF_EVERY;
     const day = KN.dayOf(t); if (!P.defDay || P.defDay.d !== day) P.defDay = { d: day, lost: 0 };
@@ -126,6 +137,7 @@
       const win = !res.win; let rp = win ? 5 : -6;
       if (rp < 0) { rp = -Math.min(-rp, Math.max(0, DEF_LOSS_CAP - P.defDay.lost)); P.defDay.lost -= rp; }
       P.rank.rp = Math.max(0, P.rank.rp + rp);
+      logChange('rp', rp, `防衛${win ? '成功' : '失敗'}（${o.name}）`);
       P.defenseLog.unshift({ name: o.name, rank: o.rank, win, score: `${res.opW}-${res.myW}`, rp, at: t - k * 60000, lost: res.areas.filter((a) => !a.skipped && a.win).map((a) => a.subject) });
       added++;
     }
@@ -162,6 +174,7 @@
 
   /* 演習の結果（知識データは1問ごとに recordAnswer で更新済み）：挑戦権・EXP・学習量・ミッション */
   function applyTraining(g) {
+    if (g.gain) logChange('power', g.gain, `${g.subject}の演習（${g.correct}/${g.total}正解）`);
     P.achv.train += 1;
     P.tickets.now = Math.min(P.tickets.max, P.tickets.now + 1);
     addExp(g.correct * 15 + 60);
@@ -204,10 +217,64 @@
     root.innerHTML = window.SelectView.render({ D, t: type(), confirmed: state.confirmed, sel: state.sel });
   }
 
+  /* 今日の復習キュー：定着度が 60% を下回った単元（低い順） */
+  function reviewQueue() {
+    const t = now(), q = [];
+    KN.SUBJECTS.forEach((s) => (KN.units()[s] || []).forEach((unit) => { const u = P.K.units[KN.key(s, unit)]; if (u && u.n) { const R = KN.retention(u, t); if (R < 0.6) q.push({ s, unit, R }); } }));
+    return q.sort((a, b) => a.R - b.R);
+  }
+  const SCOL = (s) => (window.SUBJECT_COLOR && window.SUBJECT_COLOR[s]) || '#9aa';
+  /* ホーム最上部：今日やること（復習・挑戦・ミッション）だけを大きく */
+  function TodayPanel() {
+    const q = reviewQueue(), tk = P.tickets, ms = P.missions.filter((m) => !(m.done || m.progress >= m.total)).slice(0, 2), rec = recommend();
+    return `<section class="tdy" aria-label="今日やること">
+      <div class="tdy__head"><span class="eyebrow">TODAY · 今日やること</span>${paused() ? '<em class="tdy__pause">休止モード中（忘却とランクは止まっています）</em>' : ''}</div>
+      <div class="tdy__rev">
+        <div class="tdy__revhead"><b>今日の復習</b><span>${q.length ? `${q.length}単元` : 'なし'}</span></div>
+        ${q.length ? `<ul>${q.slice(0, 3).map((x) => `<li style="--sc:${SCOL(x.s)}"><span>${UI.esc(x.s)}</span>${UI.esc(x.unit)}<small>定着 ${Math.round(x.R * 100)}%</small></li>`).join('')}</ul>
+          <button class="btn btn--main tdy__go" data-action="review">復習を始める（${UI.esc(q[0].s)}）</button>`
+          : `<p class="muted">忘れかけの単元はありません。次は「${UI.esc(rec.subject)}｜${UI.esc(rec.unit)}」がおすすめ。</p><button class="btn btn--main tdy__go" data-action="study">おすすめを解く</button>`}
+      </div>
+      <div class="tdy__row">
+        <button class="tdy__match ${tk.now > 0 && !paused() ? '' : 'is-empty'}" data-action="match" ${paused() ? 'disabled' : ''}>
+          <b>${paused() ? '休止中' : 'ランクマッチ'}</b><span class="tix">${Array.from({ length: tk.max }, (_, k) => `<i class="${k < tk.now ? 'on' : ''}"></i>`).join('')}</span><small>挑戦権 ${tk.now}/${tk.max}${tk.now ? '' : '・演習で回復'}</small></button>
+        <div class="tdy__ms">${ms.length ? ms.map((m) => `<div><span>${UI.esc(m.title || m.name || '')}</span><i><b style="width:${Math.round((m.progress / m.total) * 100)}%"></b></i><small>${m.progress}/${m.total}</small></div>`).join('') : '<p class="muted">今日のミッションは達成済み</p>'}</div>
+      </div>
+    </section>`;
+  }
+  /* ランク・RP・順位・学力合計を 1 か所に。前回ホームを見てからの変化を「何が・どれだけ・なぜ」で出す */
+  function RankSummary() {
+    if (!state.homeChips) { const since = P.seenAt || 0; state.homeChips = (P.changes || []).filter((c) => c.at > since); P.seenAt = Date.now(); savePlayer(); }
+    const v = rankView(P.rank.rp), total = window.Battle.totalPower(P.stats);
+    return `<section class="rsum holo-panel" aria-label="ランクと学力">
+      <div class="rsum__main">
+        <div class="rank__badge"><b>${UI.esc(v.label)}</b><small>RANK</small></div>
+        <div class="rsum__nums">
+          <div><span>RP</span><b>${P.rank.rp.toLocaleString('ja-JP')}</b></div>
+          <div><span>学力合計</span><b>${total}</b></div>
+          <div><span>全国</span><b>${P.rank.nationalPos.toLocaleString('ja-JP')}位</b></div>
+        </div>
+      </div>
+      <div class="bar"><i style="width:${v.pct}%"></i></div>
+      <span class="rank__meta">${v.next ? `${UI.esc(v.next)} 昇格まで <b>${(v.nextAt - P.rank.rp).toLocaleString('ja-JP')}</b> RP` : '最高ランク'} · ${UI.esc(P.season.name)} 残り${P.season.daysLeft}日</span>
+      ${state.homeChips.length ? `<ul class="rsum__chg">${state.homeChips.slice(-4).reverse().map((c) => `<li class="${c.d > 0 ? 'up' : 'down'}"><b>${c.d > 0 ? '▲ +' : '▼ '}${c.d} ${c.kind === 'rp' ? 'RP' : '学力'}</b><span>${UI.esc(c.why)}</span></li>`).join('')}</ul>` : ''}
+    </section>`;
+  }
+  /* 設定：休止モード・効果音・弱点の見え方 */
+  function Settings() {
+    return `<section class="missions holo-panel settings" aria-label="設定">
+      <div class="missions__head"><span class="eyebrow">設定</span></div>
+      <label class="set-row"><input type="checkbox" data-set="pause" ${paused() ? 'checked' : ''}><span><b>休止モード</b><small>受験直前用。定着度の低下とランク変動（対戦・防衛）を止める</small></span></label>
+      <label class="set-row"><input type="checkbox" data-set="sfx" ${window.SFX && !window.SFX.muted() ? 'checked' : ''}><span><b>効果音</b><small>正解・押し合い・決着スタンプなど</small></span></label>
+      <p class="set-note">相手の画面に出るあなたの情報：学力合計、科目ごとの戦力、城門の科目、主戦場の候補（2択）、得意・苦手そうな単元 1 つずつ、戦術の傾向。単元ごとの正答率や解いた問題は見えません。</p>
+    </section>`;
+  }
+
   function renderHome() {
     const t = type(), c = char();
     root.innerHTML = `<div class="screen screen--home">
       ${UI.TopBar(P, t, c)}
+      ${TodayPanel()}
       <div class="lobby">
         <div class="lobby__nav">
           <button class="navstage hn" data-action="talk" aria-label="${UI.esc(c.name)}に話しかける">
@@ -222,14 +289,11 @@
           ${UI.Dialogue(D, c, currentLine(), state.expr)}
         </div>
         <div class="lobby__main">
-          ${UI.RankCard(rankCardData(), P.season)}
-          ${UI.ArenaCTA(P, window.Battle.totalPower(P.stats))}
+          ${RankSummary()}
           ${window.Mechs ? window.Mechs.Squad(P.stats, t.color, P.defense.focus) : ''}
           ${UI.StatsCard(P.stats, P.defense.focus, window.Battle.power)}
-          <div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>
-          ${UI.RecommendCard(recommend(), t, c)}
         </div>
-        <div class="lobby__side">${UI.DefenseLog(P.defenseLog.map((d) => Object.assign({}, d, { ago: agoOf(d) })), P.defense, window.Defense.rates(P.defense.order, P.defense.focus, { now, myK: () => P.K, player: P, opponents: window.OPPONENTS, opK, opStats }).avg)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
+        <div class="lobby__side"><p class="side-label">そのほか</p>${UI.RecommendCard(recommend(), t, c)}<div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>${Settings()}${UI.DefenseLog(P.defenseLog.map((d) => Object.assign({}, d, { ago: agoOf(d) })), P.defense, window.Defense.rates(P.defense.order, P.defense.focus, { now, myK: () => P.K, player: P, opponents: window.OPPONENTS, opK, opStats }).avg)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
       </div>
       ${UI.BottomNav()}
     </div>`;
@@ -241,6 +305,7 @@
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
     window.Battle.unmount(); window.Training.unmount(); window.MyBase.unmount(); window.Defense.unmount();
+    if ((route === 'arena' || route === 'match') && state.confirmed && paused()) { location.hash = 'home'; return; } // 休止中は対戦しない
     if ((route === 'arena' || route === 'match') && state.confirmed) {
       window.Battle.mount(root, Object.assign(base, { opponents: window.OPPONENTS, bank: window.QUESTION_BANK, now, myK: () => P.K, opK, opStats, applyBattle, useTicket, overturn, recordAnswer,
         achieve: (k) => { P.achv[k] = (P.achv[k] || 0) + 1; savePlayer(); },
@@ -271,7 +336,7 @@
     if (route === 'home' && state.confirmed) { if (defenseTick()) refreshStats(); renderHome(); typeLine(); } else renderSelect();
   }
 
-  function go(route) { if (location.hash !== '#' + route) location.hash = route; else render(); window.scrollTo(0, 0); }
+  function go(route) { if (route !== 'home') state.homeChips = null; if (location.hash !== '#' + route) location.hash = route; else render(); window.scrollTo(0, 0); }
 
   function toast(msg) {
     const el = document.createElement('div');
@@ -339,10 +404,16 @@
       case 'stats': state.statsSubject = b.dataset.subject || state.statsSubject; go('stats'); break;
       case 'advance': P.dayShift = (P.dayShift || 0) + 3; refreshStats(); savePlayer(); render(); toast('3日経過：復習していない単元の定着が下がりました'); break;
       case 'reset': P = clone(window.MOCK_PLAYER); initKnowledge(); savePlayer(); state.expr = 'default'; render(); toast('試作データを初期状態に戻しました'); break;
+      case 'review': { const q = reviewQueue(); if (q.length) { state.trainSubject = q[0].s; state.trainUnits = q.filter((x) => x.s === q[0].s).map((x) => x.unit); } go('train'); break; }
       case 'study': { const r = recommend(); state.trainSubject = r.subject; state.trainUnits = [r.unit]; go('train'); break; }
       case 'sfx': if (window.SFX) window.SFX.toggle(); render(); break;
       case 'claim': b.replaceWith(Object.assign(document.createElement('span'), { className: 'mission__reward got', textContent: '受取済' })); toast('報酬を受け取りました'); break;
     }
+  });
+  root.addEventListener('change', (e) => {
+    const k = e.target.dataset && e.target.dataset.set; if (!k) return;
+    if (k === 'pause') { setPause(e.target.checked); render(); }
+    if (k === 'sfx' && window.SFX) { window.SFX.setMute(!e.target.checked); render(); }
   });
   root.addEventListener('pointerover', (e) => { if (e.target.closest('[data-action="match"]') && state.expr !== 'serious') setDialogue(char().lines.match, 'serious'); });
   root.addEventListener('focusin', (e) => { if (e.target.closest('[data-action="match"]') && state.expr !== 'serious') setDialogue(char().lines.match, 'serious'); });

@@ -63,12 +63,29 @@
       }).join('')}</div>
       ${rev ? `<section class="m-reveal">
         <div class="m-reveal__row"><span class="res ${a.correct ? 'ok' : 'ng'}">${a.correct ? '正解' : '不正解'}</span><span class="t">${a.time.toFixed(1)}秒</span>
-          <span class="opp">${esc(q.unit)}：正答予測 ${a.delta.before.p == null ? '—' : pct(a.delta.before.p) + '%'} → <b class="${a.delta.before.p == null || a.delta.after.p >= a.delta.before.p ? 'up' : 'down'}">${pct(a.delta.after.p)}%</b></span></div>
+          <span class="opp">${esc(q.unit)}：正答予測 ${a.delta.before.p == null ? '—' : pct(a.delta.before.p) + '%'} → <b class="${a.delta.before.p == null || a.delta.after.p >= a.delta.before.p ? 'up' : 'down'} ${a.delta.before.p != null && a.delta.after.p - a.delta.before.p >= 0.01 ? 'is-glow' : ''}">${pct(a.delta.after.p)}%</b></span></div>
         <p class="m-reveal__exp"><b>解説</b>${esc(q.explain)}</p>
         <button class="btn btn--main js-next" data-action="next">${t.i + 1 >= t.qs.length ? '結果を見る' : '次の問題'}<kbd>Enter</kbd></button>
       </section>` : ''}
       ${NavLine(ctx, t.navLine, t.navExpr)}
     </div>`;
+  }
+
+  /* 演習結果：その科目の機体が「前 → 後」でどう変わったか。装甲が上がったら演出と効果音 */
+  function MechGrowth(s, b, a, ctx) {
+    const M = window.Mechs; if (!M) return '';
+    const c = ctx.type.color, lb = M.level(b.coverage || 0), la = M.level(a.coverage || 0), up = la > lb;
+    const pw = (x) => x.acc + x.speed + x.app, core = (x) => Math.round((x.retention || 0) * 100);
+    if (up && window.SFX) window.SFX.later(700, 'armorUp');
+    return `<section class="holo-panel t-mech ${up ? 'is-armorup' : ''}" style="--mc:${c}">
+      <div class="missions__head"><span class="eyebrow">${esc(M.INFO[s].name)} の変化</span>${up ? '<b class="t-mech__up">ARMOR UP!</b>' : ''}</div>
+      <div class="t-mech__row">
+        <figure class="t-mech__fig is-before"><div class="mcard__art">${M.svg(s, { color: c, cov: b.coverage, ret: b.retention })}</div><figcaption>前<b>${pw(b)}</b><small>装甲 ${'◆'.repeat(lb + 1)}${'◇'.repeat(2 - lb)} · コア ${core(b)}%</small></figcaption></figure>
+        <span class="t-mech__arrow" aria-hidden="true">▶</span>
+        <figure class="t-mech__fig is-after"><div class="mcard__art">${M.svg(s, { color: c, cov: a.coverage, ret: a.retention })}${up ? '<i class="t-mech__flash"></i>' : ''}</div><figcaption>後<b>${pw(a)}</b><small>装甲 ${'◆'.repeat(la + 1)}${'◇'.repeat(2 - la)} · コア ${core(a)}%</small></figcaption></figure>
+      </div>
+      <p class="muted t-mech__why">${up ? `範囲が ${pct(a.coverage)}% に広がり、装甲が一段階増えた。` : la < 2 ? `範囲 ${la === 0 ? 40 : 75}% で次の装甲（いま ${pct(a.coverage)}%）。` : '最終装甲。'}${core(a) > core(b) ? 'コアの光が強くなった。' : core(a) < 60 ? 'コアがくすんでいる：同じ単元を日を空けて解くと戻る。' : ''}</p>
+    </section>`;
   }
 
   function ResultView(t, ctx) {
@@ -79,6 +96,7 @@
     const line = sum > 0 ? fmt(ctx.char.battleLines.train, { subject: s, gain: sum }) : ctx.char.lines.night;
     return `<div class="match-screen phase-result is-win">
       <header class="r-head"><span class="eyebrow">TRAINING RESULT · ${esc(s)}</span><strong class="t-up">学力 ${sum >= 0 ? '+' : ''}${sum}</strong><span class="r-score">${correct}/${t.answers.length} 正解 · 範囲 ${pct(b.coverage)}% → ${pct(a.coverage)}%</span></header>
+      ${MechGrowth(s, b, a, ctx)}
       <section class="holo-panel t-growth">
         <div class="missions__head"><span class="eyebrow">${esc(s)} の学力ステータス</span><span class="muted">${window.Battle.power(b)} → <b>${window.Battle.power(a)}</b></span></div>
         ${['acc', 'speed', 'app'].map((k) => { const d = a[k] - b[k]; return `<div class="t-axis"><span>${AXL[k]}</span><div class="bar"><i style="width:${Math.min(a[k], b[k])}%"></i><em class="${d < 0 ? 'neg' : ''}" style="left:${Math.min(a[k], b[k])}%;width:${Math.abs(d)}%"></em></div><b>${a[k]}</b><small class="${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d >= 0 ? '+' : ''}${d}</small></div>`; }).join('')}
@@ -140,7 +158,8 @@
     let streak = 0, max = 0; t.answers.forEach((x) => { streak = x.correct ? streak + 1 : 0; max = Math.max(max, streak); });
     const miss = {}; t.answers.forEach((x, i) => { if (!x.correct) miss[t.qs[i].unit] = (miss[t.qs[i].unit] || 0) + 1; });
     const weak = Object.entries(miss).sort((a, b) => b[1] - a[1])[0];
-    ctx.applyTraining({ subject: t.subject, correct, total: t.answers.length, maxStreak: max, weakUnit: weak ? weak[0] : null, seconds: Math.round(t.answers.reduce((s, x) => s + x.time, 0)) });
+    const gainNow = ['speed', 'acc', 'app'].reduce((x, k) => x + (ctx.player.stats[t.subject][k] - t.before[t.subject][k]), 0);
+    ctx.applyTraining({ gain: gainNow, subject: t.subject, correct, total: t.answers.length, maxStreak: max, weakUnit: weak ? weak[0] : null, seconds: Math.round(t.answers.reduce((s, x) => s + x.time, 0)) });
     t.phase = 'result'; draw();
   }
   function onClick(e) {

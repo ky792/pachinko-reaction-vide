@@ -205,7 +205,7 @@
       (UNITS[s] || []).forEach((unit) => {
         if (r() < skip) { K.units[key(s, unit)] = { n: 0 }; return; }
         const n = 3 + Math.floor(r() * 8);
-        K.units[key(s, unit)] = { r: STD + logit(st.acc / 100) + (r() - 0.5) * 180, n, c: Math.round(n * (0.4 + r() * 0.5)), m: 0.45 + r() * 0.5, last: now - r() * 6 * DAY, S: 3 + r() * 10, ratio: Math.max(0.4, 1.5 - st.speed / 100 + (r() - 0.5) * 0.3) };
+        K.units[key(s, unit)] = { r: STD + logit(st.acc / 100) + (r() - 0.5) * 180, n, c: Math.round(n * (0.4 + r() * 0.5)), m: 0.7 + r() * 0.3, last: now - Math.pow(r(), 2) * 7 * DAY, S: 5 + r() * 12, ratio: Math.max(0.4, 1.5 - st.speed / 100 + (r() - 0.5) * 0.3) };
       });
       K.app[s] = APP + logit(st.app / 100);
     });
