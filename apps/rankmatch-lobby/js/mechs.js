@@ -146,5 +146,31 @@
     </section>`;
   }
 
-  window.Mechs = { INFO, svg, card, level, Squad, Hero, artOf };
+  /* ---------- 科目ごとの攻撃エフェクト（絵は使わず CSS と SVG だけ）----------
+   攻撃側 → 相手へ。相手側から撃つときは全体を左右反転し、文字だけ反転を戻す。
+   時間：0〜0.15s 溜め／0.15〜0.33s 攻撃が飛ぶ／0.33s 命中（被弾・ダメージ表示もここに合わせる） */
+  const TECH = { 国語: '墨染一閃', 数学: '黄金比ブラスト', 英語: 'ロゴス・ランス', 理科: '臨界反応砲', 社会: '星図流星群' };
+  const n = (k, f) => Array.from({ length: k }, (_, i) => f(i)).join('');
+  const FX = {
+    国語: () => `<svg class="ax-ink" viewBox="0 0 100 100" preserveAspectRatio="none"><path class="ax-ink__glow" d="M6 88 Q48 52 94 6" pathLength="100"/><path class="ax-ink__line" d="M6 88 Q48 52 94 6" pathLength="100"/><path class="ax-ink__line ax-ink__line--2" d="M14 96 Q56 58 98 22" pathLength="100"/></svg>
+      ${n(8, (i) => `<i class="ax-splat" style="--a:${i * 45 + 20}deg;--r:${30 + (i % 3) * 14}px"></i>`)}
+      <span class="ax-word ax-txt" style="--x:70%;--y:18%">墨</span><span class="ax-word ax-txt" style="--x:84%;--y:42%;--dl:.06s">筆</span>`,
+    数学: () => `<span class="ax-circle"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"/><polygon points="50,8 86,71 14,71"/><polygon points="50,92 14,29 86,29"/></svg></span><span class="ax-laser"></span>
+      ${n(7, (i) => `<i class="ax-shard" style="--a:${i * 51 + 10}deg;--r:${34 + (i % 3) * 12}px"></i>`)}
+      <span class="ax-word ax-txt" style="--x:30%;--y:18%">φ = 1.618</span>`,
+    英語: () => `<span class="ax-speed"></span>
+      ${n(7, (i) => `<span class="ax-letter ax-txt" style="--i:${i};--y:${38 + ((i * 17) % 24)}%">${'LOGOS!?'[i]}</span>`)}
+      <span class="ax-star"></span>`,
+    理科: () => `<span class="ax-beam"></span>${n(6, (i) => `<i class="ax-bubble" style="--i:${i};--y:${44 + ((i * 13) % 14)}%"></i>`)}
+      ${n(6, (i) => `<i class="ax-hex" style="--a:${i * 60 + 15}deg;--r:${36 + (i % 2) * 18}px"></i>`)}<span class="ax-boom"></span>`,
+    社会: () => `<svg class="ax-stars" viewBox="0 0 100 40" preserveAspectRatio="none"><polyline points="8,30 22,12 38,20 52,6 68,16 86,8" pathLength="100"/></svg>
+      ${n(6, (i) => `<i class="ax-dot" style="--x:${[8, 22, 38, 52, 68, 86][i]}%;--y:${[30, 12, 20, 6, 16, 8][i] * 0.9}%"></i>`)}
+      ${n(4, (i) => `<i class="ax-meteor" style="--i:${i};--x:${58 + i * 8}%"></i>`)}<span class="ax-ring"></span>`,
+  };
+  function attackFx(subject, fromMe, crit) {
+    return `<div class="ax ax--${KEY[subject]} ${fromMe ? 'from-me' : 'from-op'} ${crit ? 'is-crit' : ''}" aria-hidden="true">${FX[subject]()}</div>
+      ${crit ? `<div class="ax-tech ${fromMe ? 'from-me' : 'from-op'}"><small>${fromMe ? 'CRITICAL' : 'ENEMY CRITICAL'}</small><b>${TECH[subject]}</b></div>` : ''}`;
+  }
+
+  window.Mechs = { INFO, svg, card, level, Squad, Hero, artOf, attackFx, TECH };
 })();

@@ -221,12 +221,13 @@
     else if (!e) { pm = po = 'enter'; mid += '<span class="mx-move">出撃</span>'; }
     else {
       const meAtk = e.d >= 0; pm = meAtk ? 'atk' : 'hit'; po = meAtk ? 'hit' : 'atk';
-      mid += `<span class="mx-move ${meAtk ? 'me' : 'op'}">${MOVE[e.axis]}${e.unit ? ' · ' + esc(e.unit) : ''}</span>${Math.abs(e.d) >= 25 ? '<span class="mx-crit">CRITICAL</span>' : ''}`;
-      fx = `<span class="mx-spark ${meAtk ? 'on-op' : 'on-me'}"></span><span class="mx-dmg ${meAtk ? 'on-op' : 'on-me'}">${Math.abs(e.d)}</span>`;
+      mid += `<span class="mx-move ${meAtk ? 'me' : 'op'}">${MOVE[e.axis]}${e.unit ? ' · ' + esc(e.unit) : ''}</span>`; // クリティカルは攻撃エフェクト側の技名カットインで見せる
+      fx = `${M.attackFx(s, meAtk, Math.abs(e.d) >= 25)}<span class="mx-spark ${meAtk ? 'on-op' : 'on-me'}"></span><span class="mx-dmg ${meAtk ? 'on-op' : 'on-me'}">${Math.abs(e.d)}</span>`;
     }
     const side = (who, st, color, pose, name) => `<div class="mx-side ${who} p-${pose}"><div class="mx-unit">${M.svg(s, { color, cov: st.coverage, ret: st.retention })}</div>
       <span class="mx-tag">${esc(M.INFO[s].name)}<b>${power(st)}</b></span><small class="muted">${esc(name)}</small></div>`;
-    return `<section class="mx-clash" aria-label="${esc(s)}の陣地での戦闘">
+    const crit = !b.areaDone && e && Math.abs(e.d) >= 25;
+    return `<section class="mx-clash ${crit ? 'is-crit' : ''}" aria-label="${esc(s)}の陣地での戦闘">
       <div class="mx-bar"><i style="width:${50 + g / 2}%"></i><span style="left:${50 + g / 2}%"></span></div>
       ${side('me', A, ctx.type.color, pm, ctx.player.name)}<div class="mx-mid">${mid}</div>${side('op', B, b.oc, po, b.op.name)}${fx}
       ${Comm(b, ctx)}

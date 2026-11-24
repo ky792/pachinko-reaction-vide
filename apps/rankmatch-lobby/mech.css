@@ -49,11 +49,11 @@
 .mx-move{font-size:11px;font-weight:700;padding:2px 8px;background:rgba(0,0,0,.5);border:1px solid var(--line-2);white-space:nowrap;animation:gsPop .3s both}
 .mx-move.me{border-color:var(--theme);color:var(--holo-hi)}.mx-move.op{border-color:var(--oc);color:color-mix(in oklab,var(--oc) 55%,#fff)}
 .mx-crit{font-family:var(--f-disp);font-weight:700;font-size:13px;letter-spacing:.2em;color:var(--gold);text-shadow:0 0 10px var(--gold);animation:gsStamp .4s .15s both}
-.mx-dmg{position:absolute;z-index:3;top:18%;font-family:var(--f-num);font-weight:700;font-size:26px;color:#fff;text-shadow:0 0 10px #f44,0 2px 0 #000;animation:mxDmg .9s .2s ease-out both}
+.mx-dmg{position:absolute;z-index:3;top:18%;font-family:var(--f-num);font-weight:700;font-size:26px;color:#fff;text-shadow:0 0 10px #f44,0 2px 0 #000;animation:mxDmg .9s calc(var(--t0,0s) + .36s) ease-out both}
 .mx-dmg.on-me{left:14%}.mx-dmg.on-op{right:14%}
 .mx-spark{position:absolute;z-index:2;top:42%;width:90px;height:90px;translate:-50% -50%;pointer-events:none;
   background:conic-gradient(from 0deg,transparent 0 10deg,#fff 10deg 14deg,transparent 14deg 40deg,#fff 40deg 43deg,transparent 43deg 80deg,#fff 80deg 84deg,transparent 84deg 130deg,#fff 130deg 133deg,transparent 133deg 190deg,#fff 190deg 194deg,transparent 194deg 250deg,#fff 250deg 253deg,transparent 253deg 310deg,#fff 310deg 314deg,transparent 314deg);
-  mask-image:radial-gradient(circle,transparent 18%,#000 22%,transparent 70%);animation:mxSpark .45s .22s ease-out both}
+  mask-image:radial-gradient(circle,transparent 18%,#000 22%,transparent 70%);animation:mxSpark .45s calc(var(--t0,0s) + .33s) ease-out both}
 .mx-spark.on-op{left:72%}.mx-spark.on-me{left:28%}
 .mx-bar{position:absolute;z-index:3;left:8px;right:8px;top:8px;height:6px;background:color-mix(in oklab,var(--oc) 55%,#1a1a2a);clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%)}
 .mx-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--theme);box-shadow:0 0 8px var(--theme);transition:width .5s cubic-bezier(.2,.8,.2,1)}
@@ -66,9 +66,9 @@
 .mx-side.p-atk .mx-unit{animation:mxAtk .55s cubic-bezier(.3,.7,.3,1) both}
 .mx-side.op.p-atk .mx-unit{animation-name:mxAtkOp}
 .mx-side.p-atk .mech__weapon{transform-origin:90px 80px;animation:mxSwing .55s ease-out both}
-.mx-side.p-hit .mx-unit{animation:mxHit .5s .2s ease-out both}
+.mx-side.p-hit .mx-unit{animation:mxHit .5s calc(var(--t0,0s) + .33s) ease-out both}
 .mx-side.op.p-hit .mx-unit{animation-name:mxHitOp}
-.mx-side.p-hit .mech{animation:mxFlash .5s .2s steps(2) both}
+.mx-side.p-hit .mech{animation:mxFlash .5s calc(var(--t0,0s) + .33s) steps(2) both}
 .mx-side.p-down .mx-unit{animation:mxDown .9s .1s ease-in both}
 .mx-side.op.p-down .mx-unit{animation-name:mxDownOp}
 .mx-side.p-down .mech{animation:mxSmoke .9s .1s both}
@@ -164,7 +164,7 @@
 .mx-cut.is-in{animation:fadeIn .25s both}
 .mx-cut.is-in .mx-cut__band{animation:cutIn .42s cubic-bezier(.2,.8,.2,1) both}
 .mx-cut.is-in .mx-side.p-atk .mx-unit,.mx-cut.is-in .mx-side.p-atk .mech__weapon{animation-delay:.42s}
-.mx-cut.is-in .mx-side.p-hit .mx-unit,.mx-cut.is-in .mx-side.p-hit .mech,.mx-cut.is-in .mx-spark,.mx-cut.is-in .mx-dmg{animation-delay:.62s}
+.mx-cut.is-in{--t0:.42s}
 .mx-cut.is-in .mx-comm,.mx-cut.is-in .mx-move,.mx-cut.is-in .mx-crit{animation-delay:.45s}
 /* 抜ける：撃破とスタンプを見せてから斜めに抜ける（2倍速なら半分の時間） */
 .mx-cut.is-out{animation:cutBgOut .35s calc(1.35s * var(--sp)) both}
@@ -179,3 +179,70 @@
 .mx-cut .mx-mid small,.mx-cut .mx-mid strong{display:none}
 .mx-comm.k-win{border-color:var(--holo-hi);box-shadow:0 0 18px color-mix(in oklab,var(--theme) 50%,transparent)}
 .mx-comm.k-lose{border-color:#ff5a6a}
+
+/* ==== 科目ごとの攻撃エフェクト（0.33s で命中） ==== */
+.ax{position:absolute;inset:0;z-index:3;pointer-events:none;--fxc:var(--theme);--s:var(--t0,0s)}
+.ax.from-op{transform:scaleX(-1);--fxc:var(--oc)}
+.ax.from-op .ax-txt{scale:-1 1}
+.ax svg{overflow:visible}
+.ax [class^="ax-"]{position:absolute}
+.ax-splat,.ax-shard,.ax-hex{left:76%;top:50%;opacity:0;animation:axBurst .5s calc(var(--s) + .33s) ease-out both}
+@keyframes axBurst{0%{opacity:1;transform:rotate(var(--a)) translateX(0) scale(1.3)}100%{opacity:0;transform:rotate(var(--a)) translateX(var(--r)) scale(.4)}}
+.ax-word{left:var(--x);top:var(--y);font-weight:900;font-size:26px;white-space:nowrap;opacity:0;animation:axWord .9s calc(var(--s) + .3s + var(--dl,0s)) both}
+@keyframes axWord{0%{opacity:0;transform:translateY(10px) scale(1.5)}25%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-18px)}}
+/* 国語：墨の斬撃 */
+.ax-ink{left:52%;top:12%;width:44%;height:72%}
+.ax-ink path{fill:none;stroke-linecap:round;vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;animation:axDraw .18s calc(var(--s) + .15s) cubic-bezier(.7,0,.3,1) forwards,axFade .35s calc(var(--s) + .65s) forwards}
+.ax-ink__glow{stroke:var(--fxc);stroke-width:22px;opacity:.55;filter:blur(4px)}
+.ax-ink__line{stroke:#0b0b12;stroke-width:11px;filter:drop-shadow(0 0 1.5px #fff)}
+.ax-ink__line--2{stroke-width:4px;animation-delay:calc(var(--s) + .2s),calc(var(--s) + .65s)!important}
+.ax--ja .ax-splat{width:9px;height:9px;border-radius:50%;background:#0b0b12;box-shadow:0 0 0 1.5px #fff}
+.ax--ja .ax-word{color:#0b0b12;text-shadow:0 0 3px #fff,0 0 10px #fff,0 0 18px var(--fxc)}
+@keyframes axDraw{to{stroke-dashoffset:0}}
+@keyframes axFade{to{opacity:0}}
+/* 数学：幾何の魔法陣とレーザー */
+.ax-circle{left:31%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;opacity:0;animation:axCircle .75s var(--s) both}
+.ax-circle svg{width:100%;height:100%}
+.ax-circle svg *{fill:none;stroke:var(--fxc);stroke-width:2;filter:drop-shadow(0 0 4px var(--fxc))}
+@keyframes axCircle{0%{opacity:0;transform:scale(0) rotate(-120deg)}25%{opacity:1;transform:scale(1) rotate(0)}75%{opacity:1;transform:scale(1.05) rotate(80deg)}100%{opacity:0;transform:scale(1.2) rotate(110deg)}}
+.ax-laser{left:34%;top:50%;width:44%;height:8px;margin-top:-4px;transform-origin:left;border-radius:4px;opacity:0;
+  background:linear-gradient(90deg,var(--fxc),#fff 30%,#fff 70%,var(--fxc));box-shadow:0 0 14px var(--fxc),0 0 30px var(--fxc);animation:axLaser .5s calc(var(--s) + .18s) both}
+@keyframes axLaser{0%{opacity:1;transform:scaleX(0)}30%{opacity:1;transform:scaleX(1)}70%{opacity:1;transform:scaleX(1) scaleY(1.8)}100%{opacity:0;transform:scaleX(1) scaleY(0)}}
+.ax--ma .ax-shard{width:12px;height:12px;background:var(--fxc);clip-path:polygon(50% 0,100% 100%,0 100%);filter:drop-shadow(0 0 3px var(--fxc))}
+.ax--ma .ax-word{font-family:var(--f-num);font-size:16px;color:#fff;text-shadow:0 0 8px var(--fxc)}
+/* 英語：光の文字列で突進 */
+.ax-speed{left:18%;right:8%;top:28%;height:46%;opacity:0;background:repeating-linear-gradient(0deg,transparent 0 9px,rgba(255,255,255,.55) 9px 10px);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 30%,#000 80%,transparent);mask-image:linear-gradient(90deg,transparent,#000 30%,#000 80%,transparent);animation:axSpeed .45s calc(var(--s) + .05s) both}
+@keyframes axSpeed{0%{opacity:0;transform:translateX(-30%)}50%{opacity:.9}100%{opacity:0;transform:translateX(20%)}}
+.ax-letter{left:30%;top:var(--y);font-family:Georgia,serif;font-weight:700;font-size:24px;color:#fff;text-shadow:0 0 8px var(--fxc),0 0 18px var(--fxc);opacity:0;
+  animation:axLetter .32s calc(var(--s) + .06s + var(--i) * .025s) ease-in both}
+@keyframes axLetter{0%{opacity:0;left:30%}20%{opacity:1}100%{opacity:0;left:77%}}
+.ax-star,.ax-boom,.ax-ring{left:76%;top:50%;width:120px;height:120px;margin:-60px 0 0 -60px;opacity:0;animation:axFlash .45s calc(var(--s) + .33s) ease-out both}
+.ax-star{background:conic-gradient(from 0deg,transparent 0 20deg,#fff 20deg 25deg,transparent 25deg 65deg,#fff 65deg 70deg,transparent 70deg 110deg,#fff 110deg 115deg,transparent 115deg 155deg,#fff 155deg 160deg,transparent 160deg 200deg,#fff 200deg 205deg,transparent 205deg 245deg,#fff 245deg 250deg,transparent 250deg 290deg,#fff 290deg 295deg,transparent 295deg 335deg,#fff 335deg 340deg,transparent 340deg);
+  -webkit-mask-image:radial-gradient(circle,#000 10%,transparent 70%);mask-image:radial-gradient(circle,#000 10%,transparent 70%)}
+@keyframes axFlash{0%{opacity:1;transform:scale(.2)}100%{opacity:0;transform:scale(1.6)}}
+/* 理科：試薬ビームと反応 */
+.ax-beam{left:33%;top:50%;width:45%;height:24px;margin-top:-12px;transform-origin:left;border-radius:12px;opacity:0;
+  background:linear-gradient(180deg,transparent,var(--fxc) 22%,#fff 50%,var(--fxc) 78%,transparent);box-shadow:0 0 22px var(--fxc);animation:axBeam .6s calc(var(--s) + .13s) both}
+@keyframes axBeam{0%{opacity:1;transform:scaleX(0)}32%{opacity:1;transform:scaleX(1)}55%{transform:scaleX(1) scaleY(1.35)}80%{opacity:1;transform:scaleX(1) scaleY(.8)}100%{opacity:0;transform:scaleX(1) scaleY(0)}}
+.ax-bubble{left:34%;top:var(--y);width:11px;height:11px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 6px var(--fxc);opacity:0;animation:axBub .35s calc(var(--s) + .13s + var(--i) * .03s) ease-in both}
+@keyframes axBub{0%{opacity:0;left:34%}20%{opacity:1}100%{opacity:0;left:76%;transform:scale(1.6)}}
+.ax--sc .ax-hex{width:16px;height:16px;border:0;background:var(--fxc);clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);filter:drop-shadow(0 0 3px var(--fxc))}
+.ax-boom{background:radial-gradient(circle,#fff 0,var(--fxc) 35%,transparent 70%)}
+/* 社会：星図と流星 */
+.ax-stars{left:4%;top:3%;width:92%;height:28%}
+.ax-stars polyline{fill:none;stroke:var(--fxc);stroke-width:1.5px;vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;filter:drop-shadow(0 0 3px var(--fxc));animation:axDraw .22s var(--s) forwards,axFade .3s calc(var(--s) + .6s) forwards}
+.ax-dot{left:calc(4% + var(--x) * .92);top:calc(3% + var(--y) * .75);width:6px;height:6px;margin:-3px;border-radius:50%;background:#fff;box-shadow:0 0 8px var(--fxc);opacity:0;animation:axWord .8s var(--s) both}
+.ax-meteor{left:var(--x);top:2%;width:4px;height:70px;border-radius:2px;background:linear-gradient(transparent,#fff);box-shadow:0 0 10px var(--fxc);opacity:0;
+  animation:axMeteor .26s calc(var(--s) + .12s + var(--i) * .045s) ease-in both}
+@keyframes axMeteor{0%{opacity:0;transform:translate(-50px,-30px) rotate(-30deg)}30%{opacity:1}100%{opacity:1;transform:translate(36px,120px) rotate(-30deg)}}
+.ax-ring{border-radius:50%;border:3px solid var(--fxc);box-shadow:0 0 14px var(--fxc)}
+/* クリティカル：技名のカットインと揺れ */
+.ax-tech{position:absolute;z-index:5;left:-6%;right:-6%;bottom:18%;padding:5px 0;display:grid;justify-items:center;line-height:1.1;pointer-events:none;--fxc:var(--theme);
+  background:linear-gradient(90deg,transparent,rgba(0,0,0,.78) 18%,rgba(0,0,0,.78) 82%,transparent);border-block:1px solid var(--fxc);animation:axTech 1s var(--t0,0s) both}
+.ax-tech.from-op{--fxc:var(--oc)}
+.ax-tech small{font-family:var(--f-num);font-size:10px;letter-spacing:.3em;color:var(--gold)}
+.ax-tech b{font-family:var(--f-body);font-weight:900;font-style:italic;font-size:clamp(24px,7vw,36px);color:#fff;text-shadow:0 0 12px var(--fxc),2px 2px 0 rgba(0,0,0,.6)}
+@keyframes axTech{0%{opacity:0;clip-path:inset(0 100% 0 0)}14%{opacity:1;clip-path:inset(0 0 0 0)}78%{opacity:1}100%{opacity:0;transform:translateX(3%)}}
+.mx-clash.is-crit{animation:axShake .35s calc(var(--t0,0s) + .33s)}
+@keyframes axShake{20%{translate:-6px 3px}40%{translate:6px -3px}60%{translate:-4px 2px}80%{translate:3px -1px}}
