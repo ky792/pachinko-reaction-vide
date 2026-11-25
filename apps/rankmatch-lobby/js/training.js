@@ -37,7 +37,7 @@
       </ul>
       ${t.focusUnits.length ? `<p class="t-focus">優先して出題：${t.focusUnits.map((u) => `<b>${esc(u)}</b>`).join('・')}</p>` : '<p class="muted">忘れかけ・未学習の単元から優先して出題します。</p>'}
     </section>
-    ${NavLine(ctx, ctx.char.lines.day, 'default')}
+    ${NavLine(ctx, !tips().intro && ctx.char.lines.lookup ? ctx.char.lines.lookup : ctx.char.lines.day, 'default')}
     <button class="btn btn--main" data-action="start">${esc(t.subject)}の演習を始める</button>
   </div>`;
   }
@@ -120,6 +120,21 @@
     </div>`;
   }
 
+  /* ---------- 調べて解くことへの一言 ----------
+     禁止も減点もしない（調べた正解もそのまま記録する）。「本番には持ち込めない」とナビが伝えるだけ。
+     初めての演習の前に 1 回、問題の途中で画面を離れて戻ってきたときに 1 日 1 回まで */
+  const TIP_KEY = 'rankmatch-lobby:tips';
+  const tips = () => { try { return JSON.parse(localStorage.getItem(TIP_KEY) || '{}'); } catch (e) { return {}; } };
+  const setTips = (o) => { try { localStorage.setItem(TIP_KEY, JSON.stringify(Object.assign(tips(), o))); } catch (e) {} };
+  function onVis() {
+    if (!t || t.phase !== 'question' || t.answers[t.i]) return;
+    if (document.hidden) { t.left = true; return; }
+    if (!t.left) return; t.left = false;
+    const day = KN.dayOf(ctx.now()), line = ctx.char.lines.lookup;
+    if (!line || tips().away === day) return;
+    setTips({ away: day }); t.navLine = line; t.navExpr = 'default'; draw();
+  }
+
   /* ---------- 進行 ---------- */
   let t = null, ctx = null, root = null, tick = null;
   const stopTick = () => { clearInterval(tick); tick = null; };
@@ -135,6 +150,7 @@
       const order = q.choices.map((_, i) => i).sort(() => Math.random() - 0.5);
       return Object.assign({}, q, { choices: order.map((i) => q.choices[i]), answer: order.indexOf(q.answer) });
     });
+    setTips({ intro: true });
     t.i = 0; t.answers = []; t.streak = 0; t.phase = 'question'; t.navLine = ctx.char.lines.day; t.navExpr = 'default'; ask();
   }
   function ask() {
@@ -184,8 +200,8 @@
     if (!t.answers[t.i]) { const k = { 1: 0, 2: 1, 3: 2, 4: 3, a: 0, b: 1, c: 2, d: 3 }[e.key.toLowerCase()]; if (k != null) { e.preventDefault(); answer(k); } }
     else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); }
   }
-  function mount(r, c) { unmount(); root = r; ctx = c; fresh(c.subject, c.focusUnits); root.addEventListener('click', onClick); document.addEventListener('keydown', onKey); draw(); }
-  function unmount() { stopTick(); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); t = null; root = null; }
+  function mount(r, c) { unmount(); root = r; ctx = c; fresh(c.subject, c.focusUnits); root.addEventListener('click', onClick); document.addEventListener('keydown', onKey); document.addEventListener('visibilitychange', onVis); draw(); }
+  function unmount() { stopTick(); if (root) root.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); document.removeEventListener('visibilitychange', onVis); t = null; root = null; }
 
   window.Training = { mount, unmount };
 })();
