@@ -1,0 +1,15 @@
+[
+ {
+  "kind": "誤読",
+  "where": "ワ",
+  "expect": "ワ",
+  "reason": "台本は「ワ」、聞こえたのは「オーチャーテタ」",
+  "level": "中",
+  "id": "s01-003",
+  "who": "baku",
+  "text": "は？",
+  "asr": "おーちゃあてた?",
+  "ratio": 0.0,
+  "audio": "episodes/shorts001_s55/voices/s01-003.wav"
+ }
+]
