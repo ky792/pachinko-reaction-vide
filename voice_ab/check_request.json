@@ -1,12 +1,6 @@
 {
- "episode": "episodes/kyu001v2",
+ "episode": "episodes/shorts001_s7",
  "model": "large-v3-turbo",
  "trim": true,
- "only": [
-  "k01-090"
- ],
- "_run": 1795396330,
- "trim_only": [
-  "k01-090"
- ]
+ "_run": "7"
 }
