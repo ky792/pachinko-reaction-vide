@@ -42,6 +42,9 @@ export type Line = {
   se?: string;
   ochi?: boolean;
   react?: {who: Who; face: string; at: number};
+  cam?: {focus?: string; zoom: number; mode?: 'snap' | 'push'};
+  fx?: string[];
+  word?: string;
 };
 export type Episode = {
   estimate?: boolean;

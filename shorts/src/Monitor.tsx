@@ -250,3 +250,14 @@ export const MonitorBody: React.FC<P> = (p) => {
   if (!Comp) throw new Error(`モニターの type がない: ${p.m.type}`);
   return <Comp {...p} />;
 };
+
+// パネルの細かい動きに合わせた効果音（声ではない）。at はセリフ開始からのフレーム
+export const panelSounds = (m: Monitor, dur: number): {at: number; src: string; vol: number}[] => {
+  if (m.type === 'icons') return Array.from({length: m.count}, (_, i) => ({at: 6 + i * 3, src: 'pop', vol: 0.22}));
+  if (m.type === 'formula') return [{at: Math.round(dur * 0.08), src: 'res', vol: 0.3}, {at: Math.round(dur * 0.38), src: 'res', vol: 0.3},
+    {at: Math.round(dur * 0.38) + 4, src: 'pop', vol: 0.3}];
+  if (m.type === 'steps') return [...Array.from({length: m.n}, (_, k) => ({at: 6 + k * 4, src: 'pop', vol: 0.16 + k * 0.012})),
+    {at: Math.round(dur * 0.3), src: 'res', vol: 0.3}];
+  if (m.type === 'hook') return [{at: 0, src: 'res', vol: 0.35}];
+  return [];
+};

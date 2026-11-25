@@ -2,7 +2,8 @@ import React from 'react';
 import {AbsoluteFill, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
 import {C, EN, Episode, JP, LAYOUT, Line, OUT, Who, clamp} from './theme';
-import {MonitorBody} from './Monitor';
+import {MonitorBody, panelSounds} from './Monitor';
+import {BigWord, Camera, Sparks, SpeedLines, Sweep, camAt} from './Fx';
 
 // 30秒ナギバク研究所：共通の画面（上＝テーマ／中央＝分析モニター／下＝ナギとバク）
 // 回ごとの違いは src/data/<id>.json（shorts/scripts/build.py が episode.json と声から作る）だけ
@@ -167,8 +168,9 @@ const Subtitle: React.FC<{ep: Episode}> = ({ep}) => {
   const a = f - l.start;
   const col = l.who === 'nagi' ? C.blue : C.orange;
   const {top, left, width} = LAYOUT.sub;
+  const punch = l.who === 'baku' && l.start > 0 ? interpolate(spring({frame: a, fps: 30, config: {damping: 8, stiffness: 320}}), [0, 1], [1.25, 1]) : 1;
   return (
-    <div style={{position: 'absolute', top, left, width, display: 'flex', justifyContent: 'center',
+    <div style={{position: 'absolute', top, left, width, display: 'flex', justifyContent: 'center', scale: `${punch}`,
       translate: l.start === 0 ? undefined : `0 ${interpolate(a, [0, 6], [14, 0], {...clamp, easing: OUT})}px`, opacity: l.start === 0 ? 1 : interpolate(a, [0, 3], [0, 1], clamp)}}>
       <div style={{position: 'relative', background: 'rgba(255,255,255,0.96)', borderRadius: 26, padding: '18px 34px 16px',
         border: `5px solid ${col}`, boxShadow: '0 10px 26px rgba(0,0,0,0.35)'}}>
@@ -249,6 +251,7 @@ const TapBeam: React.FC<{ep: Episode}> = ({ep}) => {
 
 export const ShortsEpisode: React.FC<{ep: Episode}> = ({ep}) => {
   const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
   const bgmVol = (fr: number) => {
     if (fr >= ep.bgm.cut_at && fr < ep.cta_start) return 0;
     if (fr >= ep.cta_start) return ep.bgm.gain * interpolate(fr - ep.cta_start, [0, 12], [0, 0.8], clamp);
@@ -257,14 +260,20 @@ export const ShortsEpisode: React.FC<{ep: Episode}> = ({ep}) => {
   return (
     <AbsoluteFill style={{background: C.navy}}>
       <Img src={staticFile('bg/lab_v.jpg')} style={{position: 'absolute', inset: 0, width: 1080, height: 1920,
-        scale: `${1.04 + Math.sin(f / 90) * 0.01}`}} />
+        scale: `${1.06 + (camAt(ep, f, fps).z - 1) * 0.5 + Math.sin(f / 90) * 0.01}`}} />
       <div style={{position: 'absolute', inset: 0,
         background: 'linear-gradient(180deg, rgba(10,26,63,0.85) 0%, rgba(10,26,63,0.35) 30%, rgba(10,26,63,0.2) 60%, rgba(10,26,63,0.75) 100%)'}} />
+      <Camera ep={ep}>
+        <MonitorFrame ep={ep} />
+        <Sweep ep={ep} />
+        <Sparks ep={ep} />
+        <SpeedLines ep={ep} />
+        <TapBeam ep={ep} />
+        <Bust ep={ep} who="nagi" />
+        <Bust ep={ep} who="baku" />
+      </Camera>
       <Theme ep={ep} />
-      <MonitorFrame ep={ep} />
-      <TapBeam ep={ep} />
-      <Bust ep={ep} who="nagi" />
-      <Bust ep={ep} who="baku" />
+      <BigWord ep={ep} />
       <Subtitle ep={ep} />
 
       {!ep.estimate && <Sounds ep={ep} bgmVol={bgmVol} />}
@@ -299,6 +308,11 @@ const Sounds: React.FC<{ep: Episode; bgmVol: (f: number) => number}> = ({ep, bgm
           <Audio src={staticFile('se/ochi.wav')} volume={0.32} />
         </Sequence>
       ))}
+      {ep.lines.filter((l) => l.monitor).flatMap((l) => panelSounds(l.monitor!, l.end - l.start).map((o, i) => (
+        <Sequence key={`ps-${l.id}-${i}`} from={l.start + o.at}>
+          <Audio src={staticFile(`se/${o.src}.wav`)} volume={o.vol} />
+        </Sequence>
+      )))}
       <Sequence from={ep.cta_start + 30}>
         <Audio src={staticFile('se/pop.wav')} volume={0.35} />
       </Sequence>

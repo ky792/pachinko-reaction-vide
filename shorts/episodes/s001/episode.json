@@ -14,9 +14,9 @@
  "bgm": {
   "file": "bg/bgm_s001.m4a",
   "start": 7.0,
-  "gain": 0.145,
+  "gain": 0.09,
   "cut_before": "s01-009",
-  "_note": "2026-11-25 ユーザー指定のBGM（1000010960.mp4 の音）。静かな頭7秒を飛ばし、曲が入るところから使う。声の約3.5割の大きさ（2026-11-25 もうちょい盛っていい）"
+  "_note": "2026-11-25 ユーザー指定のBGM（1000010960.mp4 の音）。静かな頭7秒を飛ばし、曲が入るところから使う。声の約2割の大きさ"
  },
  "lines": [
   {
@@ -27,7 +27,15 @@
     "value": "90％",
     "label": "継続率"
    },
-   "pre": 0
+   "pre": 0,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "fx": [
+    "speed"
+   ]
   },
   {
    "id": "s01-002",
@@ -38,14 +46,28 @@
     "label": "ANALYZING",
     "text": "継続率90％で駆け抜ける確率"
    },
-   "se": "res"
+   "se": "res",
+   "cam": {
+    "focus": "nagi",
+    "zoom": 1.06,
+    "mode": "push"
+   }
   },
   {
    "id": "s01-003",
    "face": "surprised",
    "pop": true,
    "se": "pop",
-   "gap": 0.08
+   "gap": 0.08,
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.2,
+    "mode": "snap"
+   },
+   "fx": [
+    "speed"
+   ],
+   "word": "は？"
   },
   {
    "id": "s01-004",
@@ -56,7 +78,12 @@
     "count": 10,
     "label": "継続率90％のRUSH × 10回"
    },
-   "se": "res"
+   "se": "res",
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.08,
+    "mode": "push"
+   }
   },
   {
    "id": "s01-005",
@@ -85,6 +112,11 @@
     "who": "baku",
     "face": "surprised",
     "at_end": 0.9
+   },
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.12,
+    "mode": "push"
    }
   },
   {
@@ -92,7 +124,16 @@
    "face": "surprised",
    "pop": true,
    "se": "emphasis",
-   "gap": 0.1
+   "gap": 0.1,
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.18,
+    "mode": "snap"
+   },
+   "fx": [
+    "speed"
+   ],
+   "word": "！？"
   },
   {
    "id": "s01-007",
@@ -112,7 +153,12 @@
     "big": "約39％",
     "big_at_end": 1.0
    },
-   "se": "res"
+   "se": "res",
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.12,
+    "mode": "push"
+   }
   },
   {
    "id": "s01-008",
@@ -122,7 +168,16 @@
     "type": "glitch",
     "value": "90％"
    },
-   "se": "pop"
+   "se": "pop",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.12,
+    "mode": "snap"
+   },
+   "fx": [
+    "speed",
+    "angry"
+   ]
   },
   {
    "id": "s01-009",
@@ -134,7 +189,12 @@
     "label": "継続率"
    },
    "se": "ochi",
-   "ochi": true
+   "ochi": true,
+   "cam": {
+    "focus": "nagi",
+    "zoom": 1.24,
+    "mode": "push"
+   }
   }
  ],
  "cta": {
