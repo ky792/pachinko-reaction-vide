@@ -1,0 +1,47 @@
+{
+ "s01-001": {
+  "sha1": "0efae408f5b3d2d32901704ff2fb40591b76316c",
+  "model": "large-v3-turbo",
+  "text": "なんで継続率90%ってあんな駆け抜ける?"
+ },
+ "s01-002": {
+  "sha1": "e73ef1bb4daec352514cb961a2dc1255fd5f6232",
+  "model": "large-v3-turbo",
+  "text": "実はそこまで珍しいことじゃないんだよ"
+ },
+ "s01-003": {
+  "sha1": "0854401fc6c9642a777c0a0d33e6d02c681efc94",
+  "model": "large-v3-turbo",
+  "text": "はぁ?"
+ },
+ "s01-004": {
+  "sha1": "2996a8ca3c2c4fa0ca9cc0a6d0eb3cca220e7c66",
+  "model": "large-v3-turbo",
+  "text": "独立90%のラッシュに10回突入したとするでしょ?"
+ },
+ "s01-005": {
+  "sha1": "8e0b5c9470d85996f4582573496bd88d160f962c",
+  "model": "large-v3-turbo",
+  "text": "そのうち一度でも駆け抜ける確率は約65%"
+ },
+ "s01-006": {
+  "sha1": "efcf0b3c5f902323e5a934b30ca3d82cd174e269",
+  "model": "large-v3-turbo",
+  "text": "そんな高いん?"
+ },
+ "s01-007": {
+  "sha1": "542ddd55907749ecd18a7745eb500081ad2640c8",
+  "model": "large-v3-turbo",
+  "text": "逆に10連以上する確率は約39%しかない"
+ },
+ "s01-008": {
+  "sha1": "cabeec317d5bab518eaff6bc2d57699f0b3316ad",
+  "model": "large-v3-turbo",
+  "text": "もう90%って書くなよ"
+ },
+ "s01-009": {
+  "sha1": "b7e4f06db36f5a7288c643de57f0e49637929b14",
+  "model": "large-v3-turbo",
+  "text": "90%は90%だよ"
+ }
+}
