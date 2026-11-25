@@ -43,11 +43,17 @@ export type Line = {
   ochi?: boolean;
   react?: {who: Who; face: string; at: number};
   cam?: {focus?: string; zoom: number; mode?: 'snap' | 'push'};
-  fx?: string[];
+  fx?: any[];
   word?: string;
 };
+export type Ev = {type: string; f0: number; f1: number; who?: Who; kind?: string; [k: string]: any};
 export type Episode = {
   estimate?: boolean;
+  events?: Ev[];
+  timer?: {start: number; end: number; seconds: number};
+  title?: string;
+  end_at?: number;
+  note?: string;
   id: string;
   no: number;
   theme: string[];

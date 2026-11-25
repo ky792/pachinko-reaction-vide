@@ -8,13 +8,13 @@ import {BigWord, CharCam, MonitorCam, Sparks, SpeedLines, Sweep, camAt} from './
 // 30秒ナギバク研究所：共通の画面（上＝テーマ／中央＝分析モニター／下＝ナギとバク）
 // 回ごとの違いは src/data/<id>.json（shorts/scripts/build.py が episode.json と声から作る）だけ
 
-const lineAt = (ep: Episode, f: number): Line | null => {
+export const lineAt = (ep: Episode, f: number): Line | null => {
   let cur: Line | null = null;
   for (const l of ep.lines) if (l.start <= f) cur = l;
   return cur;
 };
 
-const faceOf = (ep: Episode, who: Who, f: number) => {
+export const faceOf = (ep: Episode, who: Who, f: number) => {
   if (f >= ep.cta_start) return ep.cta.faces[who];
   let face = who === 'nagi' ? 'normal' : 'normal';
   let t = -1;
@@ -68,7 +68,7 @@ const Theme: React.FC<{ep: Episode}> = ({ep}) => {
 };
 
 // ───────── 中央：分析モニター
-const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
+export const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const {left, top, width, height} = LAYOUT.monitor;
@@ -173,7 +173,7 @@ const HexGrid: React.FC<{w: number; h: number; f: number}> = ({w, h, f}) => (
 );
 
 // ナギのタブレットからホログラムへ伸びる投影光（ナギが話している間は強く）
-const HoloBeam: React.FC<{ep: Episode}> = ({ep}) => {
+export const HoloBeam: React.FC<{ep: Episode}> = ({ep}) => {
   const f = useCurrentFrame();
   const l = lineAt(ep, f);
   const nagi = !!l && l.who === 'nagi' && f < l.end + 4;
@@ -230,10 +230,10 @@ const wrap = (t: string) => {
 };
 const NUM = /(約?[0-9.]+[％%連回])/;
 
-const Subtitle: React.FC<{ep: Episode}> = ({ep}) => {
+export const Subtitle: React.FC<{ep: Episode}> = ({ep}) => {
   const f = useCurrentFrame();
   const l = lineAt(ep, f);
-  if (!l || f >= ep.cta_start) return null;
+  if (!l || f >= ep.cta_start || (l as any).nosub) return null;
   const next = ep.lines[ep.lines.indexOf(l) + 1];
   if (next && next.start - l.end > 15 && f > l.end + 6) return null; // オチ前の沈黙では字幕も消す
   const a = f - l.start;
@@ -258,7 +258,7 @@ const Subtitle: React.FC<{ep: Episode}> = ({ep}) => {
 };
 
 // ───────── 下：ナギとバク（バストアップ）。口の動きは声の大きさに合わせて弾む／耳は上だけ揺らす
-const Bust: React.FC<{ep: Episode; who: Who}> = ({ep, who}) => {
+export const Bust: React.FC<{ep: Episode; who: Who}> = ({ep, who}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const l = lineAt(ep, f);
@@ -285,6 +285,18 @@ const Bust: React.FC<{ep: Episode; who: Who}> = ({ep, who}) => {
   const x = who === 'nagi' ? nagiX : bakuX;
   const active = speaking || cta >= 0 || reactAt !== undefined;
   const src = staticFile(`chars/${who}_${face}.png`);
+  // 一時的な変形（ナギの45秒解析の events）。kind: squash（潰れて弾む）/ stretch（縦に伸びる）/ deflate（しぼむ）/ tilt（見上げる）/ wobble（ぐにゃ）
+  let sx = 1, sy = 1, rot = 0, dy = 0;
+  for (const ev of ep.events ?? []) {
+    if (ev.who !== who || f < ev.f0 || f >= ev.f1) continue;
+    const u = (f - ev.f0) / Math.max(1, ev.f1 - ev.f0);
+    const k = f - ev.f0;
+    if (ev.kind === 'squash') { const w = Math.exp(-k / 6) * Math.cos(k * 0.9); sx *= 1 + 0.35 * w; sy *= 1 - 0.3 * w; }
+    if (ev.kind === 'stretch') { const w = Math.exp(-k / 8) * Math.cos(k * 0.7); sx *= 1 - 0.2 * w; sy *= 1 + 0.35 * w; }
+    if (ev.kind === 'deflate') { const w = interpolate(k, [0, 8], [0, 1], clamp) * interpolate(u, [0.85, 1], [1, 0], clamp); sy *= 1 - 0.16 * w; sx *= 1 + 0.06 * w; dy += 30 * w; rot += -4 * w; }
+    if (ev.kind === 'tilt') { const w = interpolate(k, [0, 8], [0, 1], {...clamp, easing: OUT}) * interpolate(u, [0.85, 1], [1, 0], clamp); rot += (ev.deg ?? -10) * w; dy -= 14 * w; }
+    if (ev.kind === 'wobble') { rot += Math.sin(k * 1.3) * 6 * Math.exp(-k / 14); sx *= 1 + Math.sin(k * 1.7) * 0.06 * Math.exp(-k / 14); }
+  }
   // タブレット操作（ナギ）：画面をタップした光
   const tapF = speaking && l!.tap ? local - 3 : -1;
   return (
@@ -292,7 +304,7 @@ const Bust: React.FC<{ep: Episode; who: Who}> = ({ep, who}) => {
       translate: `${shake}px ${-env * 12 + hopY + breathe - reactHop - ctaHop}px`, scale: `${(active ? 1 : 0.94) * (1 + env * 0.025)}`,
       transformOrigin: '50% 100%', filter: active ? 'none' : 'brightness(0.93) saturate(0.92)',
       WebkitMaskImage: 'linear-gradient(180deg, #000 82%, transparent 100%)'}}>
-      <div style={{position: 'absolute', inset: 0}}>
+      <div style={{position: 'absolute', inset: 0, transformOrigin: '50% 100%', transform: `translateY(${dy}px) rotate(${rot}deg) scale(${sx}, ${sy})`}}>
         <Img src={src} style={{position: 'absolute', bottom: 0, left: '50%', translate: '-50% 0', height: h, clipPath: 'inset(29.6% 0 0 0)'}} />
         <Img src={src} style={{position: 'absolute', bottom: 0, left: '50%', translate: '-50% 0', height: h, clipPath: 'inset(0 0 70% 0)',
           transformOrigin: '50% 30%', transform: `skewX(${ear}deg)`}} />
@@ -306,7 +318,7 @@ const Bust: React.FC<{ep: Episode; who: Who}> = ({ep, who}) => {
 };
 
 // ナギのタップ → モニターへ走る光
-const TapBeam: React.FC<{ep: Episode}> = ({ep}) => {
+export const TapBeam: React.FC<{ep: Episode}> = ({ep}) => {
   const f = useCurrentFrame();
   const l = lineAt(ep, f);
   if (!l || !l.tap || l.who !== 'nagi') return null;

@@ -24,7 +24,8 @@ const camOfLine = (l: Line, a: number, from: Cam, fps: number): Cam => {
 };
 
 export const camAt = (ep: Episode, f: number, fps: number): Cam => {
-  let cam: Cam = {z: 1, ...FOCUS.center};
+  const c0 = ep.lines[0]?.cam;
+  let cam: Cam = c0 && ep.lines[0].start === 0 ? {z: c0.zoom, ...FOCUS[(c0.focus ?? 'center') as keyof typeof FOCUS]} : {z: 1, ...FOCUS.center};
   for (const l of ep.lines) {
     if (l.start > f) break;
     cam = camOfLine(l, Math.min(f, l.end) - l.start, cam, fps);
@@ -54,6 +55,9 @@ export const shakeAt = (ep: Episode, f: number) => {
     if (l.shake && f >= l.start && f < l.end && f % 10 < 4) amp = Math.max(amp, 9);
   }
   if (f < 8) amp = Math.max(amp, interpolate(f, [0, 8], [10, 0]));
+  for (const ev of ep.events ?? []) {
+    if (ev.type === 'shake' && f >= ev.f0 && f < ev.f1) amp = Math.max(amp, interpolate(f, [ev.f0, ev.f1], [ev.amp ?? 18, ev.decay === false ? ev.amp ?? 18 : 0]));
+  }
   return {x: (random(`sx${f}`) - 0.5) * 2 * amp, y: (random(`sy${f}`) - 0.5) * 2 * amp};
 };
 
@@ -89,9 +93,10 @@ export const CharCam: React.FC<{ep: Episode; children: React.ReactNode}> = ({ep,
   const {fps} = useVideoConfig();
   const p = camParts(ep, f, fps);
   const s = shakeAt(ep, f);
+  const pull = interpolate(p.chr, [1.3, 2.2], [0, 1], clamp);
   return (
     <div style={{position: 'absolute', inset: 0, transformOrigin: `${p.cx}px ${p.cy}px`,
-      transform: `translate(${s.x * 1.2}px, ${s.y * 1.2}px) scale(${p.chr})`}}>
+      transform: `translate(${s.x * 1.2 + (540 - p.cx) * pull}px, ${s.y * 1.2 + (1180 - p.cy) * pull}px) scale(${p.chr})`}}>
       {children}
     </div>
   );
