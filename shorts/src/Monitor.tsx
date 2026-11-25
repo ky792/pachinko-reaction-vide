@@ -33,7 +33,7 @@ const BigStamp: React.FC<{text: string; f: number; fps: number; color?: string}>
   const shake = f < 8 ? Math.sin(f * 3.1) * (8 - f) * 1.4 : 0;
   return (
     <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-      <div style={{position: 'absolute', inset: 0, background: `rgba(6,16,42,${interpolate(f, [0, 4], [0, 0.72], clamp)})`}} />
+      <div style={{position: 'absolute', inset: 0, background: `rgba(6,16,42,${interpolate(f, [0, 4, 24, 34], [0, 0.72, 0.72, 0.5], clamp)})`}} />
       <div style={{position: 'absolute', inset: 0, background: '#fff', opacity: interpolate(f, [0, 1, 5], [0, 0.55, 0], clamp)}} />
       <div
         style={{
@@ -176,7 +176,7 @@ const Steps: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
   const W = 66, GAP = 18, H = 250, base = 455;
   const grow = (k: number) => interpolate(f, [6 + k * 4, 16 + k * 4], [0, 1], {...clamp, easing: OUT});
   const hl = f >= 6 + m.n * 4 + 4;
-  const fAt = Math.round(dur * 0.55);
+  const fAt = Math.round(dur * 0.3);
   return (
     <>
       <Label f={f}>{m.label}</Label>

@@ -101,7 +101,7 @@ const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
           background: 'linear-gradient(180deg, transparent, rgba(95,212,255,0.07), transparent)'}} />
         <div style={{position: 'absolute', top: 12, left: 22, fontFamily: EN, fontWeight: 700, fontSize: 18, color: 'rgba(95,212,255,0.7)',
           letterSpacing: 4}}>NAGIBAKU LAB / ANALYSIS</div>
-        <div style={{position: 'absolute', inset: 0, opacity: cta >= 0 ? interpolate(cta, [0, 8], [1, 0.06], clamp) : 1}}>
+        <div style={{position: 'absolute', inset: 0, opacity: cta >= 0 ? interpolate(cta, [0, 8], [1, 0], clamp) : 1}}>
           {prev && local < 8 && (
             <div style={{position: 'absolute', inset: 0, opacity: interpolate(local, [0, 7], [1, 0], clamp)}}>
               {render(prev, f - prev.start)}
@@ -277,24 +277,24 @@ const Sounds: React.FC<{ep: Episode; bgmVol: (f: number) => number}> = ({ep, bgm
       ))}
       {ep.lines.filter((l) => l.se && !l.ochi).map((l) => (
         <Sequence key={`se-${l.id}`} from={l.start}>
-          <Audio src={staticFile(`se/${l.se}.wav`)} volume={0.45} />
+          <Audio src={staticFile(`se/${l.se}.wav`)} volume={0.32} />
         </Sequence>
       ))}
       {ep.lines.filter((l) => l.monitor?.big_at !== undefined).map((l) => (
         <Sequence key={`big-${l.id}`} from={l.monitor!.big_at}>
-          <Audio src={staticFile('se/emphasis.wav')} volume={0.7} />
+          <Audio src={staticFile('se/emphasis.wav')} volume={0.42} />
         </Sequence>
       ))}
       <Sequence from={ep.bgm.cut_at}>
-        <Audio src={staticFile('se/bgm_cut.wav')} volume={0.45} />
+        <Audio src={staticFile('se/bgm_cut.wav')} volume={0.3} />
       </Sequence>
       {ep.lines.filter((l) => l.ochi).map((l) => (
         <Sequence key={`ochi-${l.id}`} from={l.end}>
-          <Audio src={staticFile('se/ochi.wav')} volume={0.6} />
+          <Audio src={staticFile('se/ochi.wav')} volume={0.32} />
         </Sequence>
       ))}
       <Sequence from={ep.cta_start + 30}>
-        <Audio src={staticFile('se/pop.wav')} volume={0.5} />
+        <Audio src={staticFile('se/pop.wav')} volume={0.35} />
       </Sequence>
     </>
   );

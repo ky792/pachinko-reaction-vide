@@ -56,6 +56,22 @@ def envelope(a, sr):
     return [round(float(min(1.0, x)), 3) for x in e]
 
 
+def last_pause(env, thr=0.1, run=3):
+    """セリフの後ろ6割にある最後の無音（thr 未満が run フレーム以上）の終わりのフレーム"""
+    lo, best, i = int(len(env) * 0.4), None, 0
+    while i < len(env) - 2:
+        if env[i] < thr:
+            j = i
+            while j < len(env) and env[j] < thr:
+                j += 1
+            if j - i >= run and i >= lo and j < len(env) - 3:
+                best = j
+            i = j
+        else:
+            i += 1
+    return best
+
+
 def main(eid, estimate=False):
     ep = json.loads((SH / 'episodes' / eid / 'episode.json').read_text(encoding='utf-8'))
     lines = {l['id']: l for l in script_lines(ROOT / ep['voice_episode'] / 'script' / f"{ep['script']}.txt")}
@@ -80,10 +96,12 @@ def main(eid, estimate=False):
         t = end / FPS
         L = {**d, **sc, 'start': start, 'end': end, 'audio': f'{eid}/voice/{d["id"]}.wav', 'env': env}
         mon = L.get('monitor')
-        if mon and 'big_at_end' in mon:
-            mon['big_at'] = end - round(mon['big_at_end'] * FPS)
+        if mon and 'big' in mon:
+            # 大きい数字は、その数字を言い始める瞬間に出す＝セリフ後半の最後の息継ぎ（読点の間）の直後。見つからなければ big_at_end 秒前
+            gap = last_pause(env)
+            mon['big_at'] = start + gap if gap is not None else end - round(mon.get('big_at_end', 1.0) * FPS)
         if 'react' in L:
-            L['react']['at'] = end - round(L['react']['at_end'] * FPS)
+            L['react']['at'] = (mon['big_at'] + 3) if mon and 'big_at' in mon else end - round(L['react']['at_end'] * FPS)
         out.append(L)
     if set(lines) - {l['id'] for l in out}:
         sys.exit(f'演出がない台本の行: {sorted(set(lines) - {l["id"] for l in out})}')
@@ -100,7 +118,8 @@ def main(eid, estimate=False):
     dst.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
     print(f'{dst}  {total} フレーム（{total / FPS:.2f}秒）')
     for l in out:
-        print(f"  {l['start'] / FPS:6.2f}-{l['end'] / FPS:6.2f} {l['who']:4} {l['text']}")
+        big = l.get('monitor', {}).get('big_at')
+        print(f"  {l['start'] / FPS:6.2f}-{l['end'] / FPS:6.2f} {l['who']:4} {l['text']}" + (f"  ［{l['monitor']['big']} {big / FPS:.2f}秒］" if big else ''))
 
 
 if __name__ == '__main__':
