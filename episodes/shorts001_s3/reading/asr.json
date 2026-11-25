@@ -1,0 +1,17 @@
+{
+ "s01-003": {
+  "sha1": "5c5a81366fc0c6eb0032b261791d56c2f291ba42",
+  "model": "large-v3-turbo",
+  "text": "ん?"
+ },
+ "s01-006": {
+  "sha1": "95103d0119b6b3ad0ec4c228bf42316dc4611a3e",
+  "model": "large-v3-turbo",
+  "text": "そんな高いん?"
+ },
+ "s01-008": {
+  "sha1": "7e865e161f1e2cf1bba44caeb4319b92d4eb1282",
+  "model": "large-v3-turbo",
+  "text": "もう90%って書くなよ"
+ }
+}
