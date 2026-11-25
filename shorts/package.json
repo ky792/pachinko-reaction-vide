@@ -1,0 +1,13 @@
+{
+  "name": "nagibaku-shorts",
+  "private": true,
+  "version": "0.1.0",
+  "description": "30秒ナギバク研究所（YouTube Shorts 専用・縦型）。横型の remotion/ とは別フォルダ",
+  "dependencies": {
+    "@remotion/cli": "4.0.541",
+    "@remotion/media": "4.0.541",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.541"
+  }
+}
