@@ -329,7 +329,7 @@ const Dist: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
       )}
       {m.keep_pct && [lbl(1, '10%', -99, C.orange), lbl(2, '9%', -99), lbl(3, '8.1%', -99)]}
       {mode === 'pctdecay' && (
-        <div style={{position: 'absolute', left: xc(13), top: 300, fontFamily: JP, fontWeight: 900, fontSize: 34, color: C.orange,
+        <div style={{position: 'absolute', left: xc(17), top: 128, fontFamily: JP, fontWeight: 900, fontSize: 30, lineHeight: 1.35, color: C.orange, textShadow: '0 0 8px #06204f',
           opacity: interpolate(f - (m.delay ?? 0), [44, 52], [0, 1], clamp)}}>連チャン数が増えるほど<br />その回数で終わる確率は↓</div>
       )}
       {mode === 'decay' && (
