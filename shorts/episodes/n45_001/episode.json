@@ -563,7 +563,14 @@
     "type": "warn",
     "text": "虚偽のスペック"
    },
-   "fx": []
+   "fx": [
+    {
+     "type": "alarm",
+     "dur": 1.2,
+     "sound": "se/alarm.wav",
+     "vol": 0.3
+    }
+   ]
   }
  ],
  "cta": {

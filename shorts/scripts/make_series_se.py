@@ -136,3 +136,11 @@ for k in range(9):
     place(x, click(2200 - k * 120, decay=300) * (0.6 - k * 0.05), at); at += 0.05 + k * 0.018
 save(C / 'stop.wav', x, 0.85)
 print('clock se ok')
+
+# 警告音（ビーッ・ビーッ：2音を交互に）
+al = []
+for k in range(6):
+    al.append(tone(1046 if k % 2 == 0 else 784, 0.16, 'sq', a=0.003, r=0.02))
+    al.append(np.zeros(int(SR * 0.03)))
+save(E / 'alarm.wav', np.concatenate(al), 0.6)
+print('alarm ok')
