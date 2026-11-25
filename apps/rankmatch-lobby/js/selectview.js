@@ -43,13 +43,15 @@
       <span class="tc__go" aria-hidden="true">▶</span>
     </button>`;
   }
-  function renderTypes({ D, confirmed }) {
+  /* 契約中のナビ：閲覧しているだけでは変わらないことを明示 */
+  const Current = (cur) => (cur ? `<p class="gs-current">いまの契約：<b>${esc(cur.name)}</b>　見ているだけでは変わりません（「契約する」→ 確認で切り替え）</p>` : '');
+  function renderTypes({ D, confirmed, current }) {
     return `<div class="screen screen--gs gs--types" style="--c:${HOLO}">
       ${Bg('')}
       <header class="gs-top">
         <div><span class="eyebrow">NAVIGATOR CONTRACT · STEP 1/2</span><h1>タイプを選ぶ</h1><p class="gs-lead">学び方の相性で選ぼう。どのタイプでも対戦の強さは同じ。</p></div>
         ${confirmed ? '<button class="gs-chip" data-action="back-home">ホームへ戻る</button>' : ''}
-      </header>
+      </header>${Current(current)}
       <div class="tc-list">${D.types.map(TypeCard).join('')}</div>
     </div>`;
   }
@@ -78,14 +80,14 @@
       </div>
     </div>`;
   }
-  function renderChars({ t, sel }) {
+  function renderChars({ t, sel, current }) {
     const c = sel.picked ? t.characters[sel.picked] : null;
     return `<div class="screen screen--gs gs--chars" style="--c:${t.color}">
       ${Bg(t.name)}
       <header class="gs-top">
         <div><span class="eyebrow">NAVIGATOR CONTRACT · STEP 2/2</span><h1>ナビを選ぶ</h1></div>
         <button class="gs-chip" data-action="sel-back">← タイプ選択</button>
-      </header>
+      </header>${Current(current)}
       <div class="gs-typebar"><span class="gs-typebar__tag">${UI.Emblem(t.emblem)}${t.name}<small>${t.kana}</small></span><span class="gs-typebar__line">${esc(t.tagline)}</span></div>
       <div class="proj-stage">${['m', 'f'].map((g, i) => Proj(t.characters[g], g, sel, i)).join('')}</div>
       <div class="gs-dock">${Picked(t, c, sel)}</div>

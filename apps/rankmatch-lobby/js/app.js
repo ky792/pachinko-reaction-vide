@@ -91,7 +91,18 @@
     /* 科目ごとの見た目（素材・台座・庭・エフェクト・周回物）。旧データは共通の設定を全科目にコピー */
     if (!e.per) { e.per = {}; KN.SUBJECTS.forEach((sub) => { e.per[sub] = { material: e.material, base: e.base, garden: (e.garden || []).slice(), fx: e.fx, orbit: e.orbit }; }); }
   }
-  const refreshStats = () => { P.stats = KN.subjectStats(P.K, now()); };
+  /* 学力ステータスは「日単位」で計算する：忘却は日付が変わったときにだけ進み、同じ日のうちに画面ごとに数字が揺れない。
+     日付が変わって下がった分は、ホームの変化欄に「忘却」として理由と量を出す。演習の結果はその場で反映される */
+  function refreshStats() {
+    const t = now(), day = KN.dayOf(t), old = P.stats;
+    P.stats = KN.subjectStats(P.K, Math.min(t, day * KN.DAY - 9 * 3600000 + 1));
+    if (P.statDay != null && P.statDay !== day && old && old.国語 && old.国語.speed != null) {
+      const pw = (x) => x.acc + x.speed + x.app, parts = KN.SUBJECTS.map((s) => [s, pw(P.stats[s]) - pw(old[s])]).filter(([, d]) => d < 0);
+      const sum = parts.reduce((x, [, d]) => x + d, 0);
+      if (sum < 0) logChange('power', sum, `忘却（${day - P.statDay}日経過）：${parts.map(([s, d]) => `${s}${d}`).join('・')}`);
+    }
+    P.statDay = day;
+  }
   initKnowledge();
   const opCache = {};
   const opK = (o) => opCache[o.id] || (opCache[o.id] = KN.synth(o.stats, KN.hash(o.id), Date.now(), 0.15));
@@ -173,6 +184,7 @@
   function overturn(r) {
     const start = P.rank.rp - r.from;
     P.rank.rp = Math.max(0, P.rank.rp - r.from + r.to);
+    logChange('rp', r.to - r.from, '直接対決で逆転');
     P.rank.winStreak += 1;
     savePlayer();
     return { before: rankView(start), after: rankView(P.rank.rp) };
@@ -221,6 +233,10 @@
 
   const type = () => D.types.find((t) => t.id === state.typeId);
   const char = () => type().characters[state.gender];
+  /* 選択画面で見ているナビ（閲覧用）。契約中のナビ（type/char）とは別で、「契約する」→確認を押したときだけ入れ替わる */
+  const vType = () => D.types.find((t) => t.id === state.view.typeId) || type();
+  const vChar = () => vType().characters[state.view.gender];
+  const browse = () => { state.view = { typeId: state.typeId, gender: state.gender }; };
 
   /* テーマ：data の color だけを正として CSS 変数に流す */
   function applyTheme(t) {
@@ -237,7 +253,7 @@
 
   /* ---------- 画面 ---------- */
   function renderSelect() {
-    root.innerHTML = window.SelectView.render({ D, t: type(), confirmed: state.confirmed, sel: state.sel });
+    root.innerHTML = window.SelectView.render({ D, t: vType(), confirmed: state.confirmed, sel: state.sel, current: state.confirmed ? char() : null });
   }
 
   /* 今日の復習キュー：定着度が 60% を下回った単元（低い順） */
@@ -321,7 +337,7 @@
           ${window.Mechs ? window.Mechs.Squad(P.stats, t.color, P.defense.focus) : ''}
           ${UI.StatsCard(P.stats, P.defense.focus, window.Battle.power)}
         </div>
-        <div class="lobby__side"><p class="side-label">そのほか</p>${UI.RecommendCard(recommend(), t, c)}<div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>${Settings()}${UI.DefenseLog(P.defenseLog.map((d) => Object.assign({}, d, { ago: agoOf(d) })), P.defense, window.Defense.rates(P.defense.order, P.defense.focus, { now, myK: () => P.K, player: P, opponents: window.OPPONENTS, opK, opStats, examSet }).avg)}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
+        <div class="lobby__side"><p class="side-label">そのほか</p>${UI.RecommendCard(recommend(), t, c)}<div class="tiles">${UI.LevelCard(P.level)}${UI.TodayCard(P.today)}</div>${Settings()}${UI.DefenseLog(P.defenseLog.map((d) => Object.assign({}, d, { ago: agoOf(d) })), P.defense, window.Defense.rates(P.defense.order, P.defense.focus, { now, myK: () => P.K, player: P, opponents: window.OPPONENTS, opK, opStats, examSet }).avg, { max: DEF_LOSS_CAP, lost: P.defDay && P.defDay.d === KN.dayOf(now()) ? P.defDay.lost : 0 })}${UI.MissionList(P.missions)}<div class="demo"><button class="reset" data-action="advance">試作：3日進める（忘却の確認）</button><button class="reset" data-action="reset">試作データをリセット</button></div></div>
       </div>
       ${UI.BottomNav()}
       ${state.replay != null && P.defenseLog[state.replay] ? Replay(P.defenseLog[state.replay]) : ''}
@@ -343,9 +359,10 @@
   }
 
   function render() {
-    applyTheme(type());
-    refreshStats();
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
+    if (!state.view || (route !== 'select' && state.confirmed)) browse(); // 選択画面を離れたら、閲覧中の候補は捨てる
+    applyTheme(route === 'select' || !state.confirmed ? vType() : type());
+    refreshStats();
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
     window.Battle.unmount(); window.Training.unmount(); if (window.Report) window.Report.unmount(); window.MyBase.unmount(); window.Defense.unmount();
     if ((route === 'arena' || route === 'match') && state.confirmed && paused()) { location.hash = 'home'; return; } // 休止中は対戦しない
@@ -430,19 +447,19 @@
 
   root.addEventListener('click', (e) => {
     const b = e.target.closest('button, li[data-action]'); if (!b) return;
-    if (b.dataset.seltype) { state.typeId = b.dataset.seltype; state.sel = { step: 'char', picked: null, expr: 0, line: 0, detail: false, confirming: false }; render(); window.scrollTo(0, 0); return; }
-    if (b.dataset.selchar) { state.gender = b.dataset.selchar; window.SelectView.pick(root, type(), state.sel, b.dataset.selchar); return; }
-    if (b.dataset.type) { state.typeId = b.dataset.type; render(); return; }
-    if (b.dataset.gender) { state.gender = b.dataset.gender; render(); return; }
+    if (b.dataset.seltype) { state.view.typeId = b.dataset.seltype; state.sel = { step: 'char', picked: null, expr: 0, line: 0, detail: false, confirming: false }; render(); window.scrollTo(0, 0); return; }
+    if (b.dataset.selchar) { state.view.gender = b.dataset.selchar; window.SelectView.pick(root, vType(), state.sel, b.dataset.selchar); return; }
+    if (b.dataset.type) { state.view.typeId = b.dataset.type; render(); return; }
+    if (b.dataset.gender) { state.view.gender = b.dataset.gender; render(); return; }
     if (b.dataset.statsSubject) { state.statsSubject = b.dataset.statsSubject; render(); window.scrollTo(0, 0); return; }
     if (b.dataset.elective) { setElective(b.dataset.electiveSubject, b.dataset.elective); render(); return; }
     switch (b.dataset.action) {
       case 'sel-back': state.sel = { step: 'type', picked: null, expr: 0, line: 0, detail: false, confirming: false }; render(); window.scrollTo(0, 0); break;
-      case 'sel-detail': state.sel.detail = !state.sel.detail; window.SelectView.overlay(root, 'detail', state.sel.detail, D, type(), char()); break;
-      case 'sel-confirm': state.sel.confirming = true; window.SelectView.overlay(root, 'confirm', true, D, type(), char()); break;
+      case 'sel-detail': state.sel.detail = !state.sel.detail; window.SelectView.overlay(root, 'detail', state.sel.detail, D, vType(), vChar()); break;
+      case 'sel-confirm': state.sel.confirming = true; window.SelectView.overlay(root, 'confirm', true, D, vType(), vChar()); break;
       case 'sel-cancel': state.sel.confirming = false; window.SelectView.overlay(root, 'confirm', false); break;
-      case 'confirm': state.sel.confirming = false; state.confirmed = true; state.lineIdx = 0; state.expr = 'smile'; persist(); confirmFx(); go('home'); break;
-      case 'change-nav': state.sel = { step: 'type', picked: null, expr: 0, line: 0, detail: false, confirming: false }; go('select'); break;
+      case 'confirm': state.typeId = state.view.typeId; state.gender = state.view.gender; state.sel.confirming = false; state.confirmed = true; state.lineIdx = 0; state.expr = 'smile'; persist(); confirmFx(); go('home'); break;
+      case 'change-nav': browse(); state.sel = { step: 'type', picked: null, expr: 0, line: 0, detail: false, confirming: false }; go('select'); break;
       case 'back-home': go('home'); break;
       case 'talk': state.lineIdx++; setDialogue(currentLine(), state.lineIdx % 2 ? 'smile' : 'default'); break;
       case 'match': go('arena'); break;

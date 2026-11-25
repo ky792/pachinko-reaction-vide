@@ -521,3 +521,5 @@ i.bar{display:block;font-style:normal}
   .su__cf{grid-area:cf}
   .sv-sum__kv{grid-template-columns:repeat(2,1fr)}
 }
+.a-rate em{font-style:normal;font-family:var(--f-num);font-size:12px;margin-top:2px}.a-rate em.up{color:#3DDC97}.a-rate em.down{color:#FF8C96}
+.a-row .wr{white-space:nowrap}

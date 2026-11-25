@@ -151,11 +151,13 @@
     K.seen[q.id] = now;
     if (qr && !recent) qr[q.id] = qrat - 4 * (s - expect); // 問題の難しさは全員の解答で少しずつ調整（本番はサーバーで集計）
     const gap = u.n ? Math.max(0, now - u.last) / DAY : 0;
+    // その日の始まりの定着度（画面に出ていた値）は、この解答で記憶の持ちが伸びる前の値で固定する
+    { const dd = dayOf(now); if (u.md !== dd) { u.md = dd; u.ms = retention(u, now); u.mw = 0; } }
     u.S = ans.correct ? (u.n ? Math.min(60, u.S * (1.25 + 0.75 * Math.min(1, gap / u.S))) : 1.5) : Math.max(1, u.S * 0.6);
     if (ans.correct && ans.time != null) u.ratio = u.ratio * 0.65 + (ans.time / REF[q.difficulty]) * 0.35;
-    // 習熟：その日の始まりの値から +35% まで。誤答した日は 70% 止まり。同じ問題の覚えた答えでの正解はほとんど伸びない
-    const m0 = mastery(u), d = dayOf(now);
-    if (u.md !== d) { u.md = d; u.ms = m0 * Math.exp(-Math.max(0, now - (u.last || now)) / DAY / (u.S || 1)); u.mw = 0; }
+    // 定着度の上限：単元ごとに「その日はじめて見た定着度 + 35 ポイント」まで（1日の合計。1問ごとではない）。
+    // 誤答した日は 70% 止まり。同じ問題の覚えた答えでの正解はほとんど伸びない
+    const m0 = mastery(u);
     if (!ans.correct) u.mw = 1;
     const cap = Math.min(u.ms + M_DAY, u.mw ? Math.max(u.ms, M_WRONG) : 1);
     const gain = ans.correct ? (recent ? 0.02 : 0.12 * (1 + Math.min(1, gap / Math.max(1, u.S)))) : -0.08;

@@ -225,3 +225,4 @@
 .dialogue__next{position:absolute;right:12px;bottom:6px;font-size:9px;font-style:normal;color:var(--theme);animation:gsBlink 1.2s infinite}
 @keyframes gsFloat{50%{transform:translateY(-6px)}}
 @media (prefers-reduced-motion:reduce){.hn *,.hn *::before{animation:none!important}}
+.gs-current{position:relative;z-index:2;margin:0 16px 10px;padding:6px 10px;font-size:12px;color:#cfe;background:rgba(10,16,32,.7);border-left:3px solid var(--c,#3B9BFF)}

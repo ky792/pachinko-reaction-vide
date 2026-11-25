@@ -190,10 +190,11 @@
     </section>`;
   }
 
-  const DefenseLog = (log, def, rate) => `<section class="missions holo-panel defense" aria-label="防衛">
+  const DefenseLog = (log, def, rate, cap) => `<section class="missions holo-panel defense" aria-label="防衛">
     <div class="missions__head"><span class="eyebrow">防衛編成</span><span class="muted">防衛率の予測 <b>${rate}%</b></span></div>
     <button class="df-sum" data-action="defense">${def.order.map((s, k) => `<span class="${s === def.focus ? 'f' : ''}">${k === 0 ? '<small>城門</small>' : ''}${esc(s)}${s === def.focus ? '★' : ''}</span>`).join('<i>›</i>')}<em>編集</em></button>
-    <div class="missions__head" style="margin-top:10px"><span class="eyebrow">防衛記録</span><span class="muted">あなたに挑んだ人</span></div>
+    <div class="missions__head" style="margin-top:10px"><span class="eyebrow">防衛記録</span><span class="muted">あなたに挑んだ人 · タップでリプレイ</span></div>
+    ${cap ? `<p class="def-cap">防衛で失うRPは1日 ${cap.max} まで（今日 ${cap.lost}/${cap.max}）。防衛戦は4時間に1回、留守中の分はホームを開いたときにまとめて反映（最大3回）</p>` : ''}
     <ul>${log.map((d, i) => `<li class="def ${d.win ? 'ok' : 'ng'}" data-action="replay" data-i="${i}" role="button" tabindex="0" aria-label="${esc(d.name)}との防衛のリプレイ"><span class="def__r">${d.win ? '防衛' : '突破'}</span><span class="def__n"><b>${esc(d.name)}</b><small>${esc(d.rank)} · ${esc(d.ago)}${d.lost && d.lost.length ? ` · 落とした：${d.lost.map(esc).join('・')}` : ''}</small></span><span class="def__s">${esc(d.score)}</span><span class="def__rp">${d.rp > 0 ? '+' : ''}${d.rp}</span><span class="def__go" aria-hidden="true">›</span></li>`).join('')}</ul>
   </section>`;
 

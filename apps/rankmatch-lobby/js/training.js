@@ -55,7 +55,7 @@
       <div class="m-board">
         <div class="m-side me"><small>${esc(t.subject)} · 演習</small><b>${t.answers.filter((x) => x.correct).length}<small>正解</small></b></div>
         <div class="m-round"><span>Q${t.i + 1}<small>/${t.qs.length}</small></span></div>
-        <div class="m-side op"><small>経過</small><b class="js-el">0</b></div>
+        <div class="m-side op"><small>経過（秒）</small><b class="js-el">${a ? a.time.toFixed(1) : "0.0"}</b></div>
       </div>
       <div class="m-dots" aria-hidden="true">${t.qs.map((_, k) => { const x = t.answers[k]; return `<i class="${x ? (x.correct ? 'ok' : 'ng') : k === t.i ? 'now' : ''}"></i>`; }).join('')}</div>
       <section class="m-q">
@@ -105,7 +105,7 @@
       ${MechGrowth(s, b, a, ctx)}
       <section class="holo-panel t-growth">
         <div class="missions__head"><span class="eyebrow">${esc(s)} の学力ステータス</span><span class="muted">${window.Battle.power(b)} → <b>${window.Battle.power(a)}</b></span></div>
-        ${['acc', 'speed', 'app'].map((k) => { const d = a[k] - b[k]; return `<div class="t-axis"><span>${AXL[k]}</span><div class="bar"><i style="width:${Math.min(a[k], b[k])}%"></i><em class="${d < 0 ? 'neg' : ''}" style="left:${Math.min(a[k], b[k])}%;width:${Math.abs(d)}%"></em></div><b>${a[k]}</b><small class="${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d >= 0 ? '+' : ''}${d}</small></div>`; }).join('')}
+        ${['acc', 'speed', 'app'].map((k) => { const d = a[k] - b[k]; return `<div class="t-axis"><span>${AXL[k]}</span><div class="bar"><i style="width:${Math.min(a[k], b[k])}%"></i><em class="${d < 0 ? 'neg' : ''}" style="left:${Math.min(a[k], b[k])}%;width:${Math.abs(d)}%"></em></div><b><span class="t-was">${b[k]} →</span> ${a[k]}</b><small class="${d > 0 ? 'up' : d < 0 ? 'down' : ''}">${d >= 0 ? '+' : ''}${d}</small></div>`; }).join('')}
       </section>
       <section class="holo-panel r-review">
         <div class="missions__head"><span class="eyebrow">単元ごとの変化</span><span class="muted">正答予測 / 定着</span></div>
@@ -139,14 +139,14 @@
   }
   function ask() {
     // 解答時間は「問題が画面に表示されてから選択肢をタップするまで」。描画が終わった次のフレームから測る
-    t.t0 = Infinity; draw(); stopTick();
-    requestAnimationFrame(() => requestAnimationFrame(() => { t.t0 = performance.now(); }));
-    tick = setInterval(() => { const el = root.querySelector('.js-el'); if (el && isFinite(t.t0)) el.textContent = Math.floor((performance.now() - t.t0) / 1000) + 's'; }, 250);
+    // 問題を DOM に差し込んだ瞬間から計る（描画のフレーム待ちはしない：描画が間引かれる環境で開始が遅れ、時間が短く出てしまうため）
+    stopTick(); draw(); t.t0 = performance.now();
+    const upd = () => { const el = root && root.querySelector('.js-el'); if (el) el.textContent = ((performance.now() - t.t0) / 1000).toFixed(1); };
+    tick = setInterval(upd, 100);
   }
   function answer(choice) {
     if (t.phase !== 'question' || t.answers[t.i]) return;
     stopTick();
-    if (!isFinite(t.t0)) return; // 表示が終わる前のタップは数えない
     const q = t.qs[t.i], time = +((performance.now() - t.t0) / 1000).toFixed(1), correct = choice === q.answer;
     const delta = ctx.recordAnswer(q, { correct, time });
     if (window.SFX) window.SFX.play(correct ? 'correct' : 'wrong');

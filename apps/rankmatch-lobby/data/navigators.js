@@ -96,7 +96,7 @@
         characters: {
           m: {
             id: 'kaito', name: 'カイト', romaji: 'KAITO', title: '熱血コーチ',
-            bio: '指をさして限界の先を示す、関西弁の熱血ナビ。理屈より行動。迷っている背中を全力で押してくる。',
+            bio: '拳を突き上げて吠える、関西弁の熱血ナビ。理屈より行動。迷っている背中を全力で押してくる。',
             catch: 'まだいけるやろ！限界は、もうちょい先や！',
             visual: char('kaito', [48, 21], 1),
             silhouette: { hair: 'spiky', accessory: 'none' },
@@ -129,7 +129,7 @@
         characters: {
           m: {
             id: 'toma', name: 'トウマ', romaji: 'TOUMA', title: '毒舌のライバル',
-            bio: 'ヘッドホンと指輪がトレードマークの生意気なナビ。口は悪いが、本気で君の成長を望んでいる。',
+            bio: '片耳のピアスと不敵な笑みがトレードマークの生意気なナビ。口は悪いが、本気で君の成長を望んでいる。',
             catch: '…まだその程度？マジで受験する気あんの？',
             expressionLabels: { default: '通常', smile: '挑発', serious: '本気' },
             visual: char('toma', [47, 20], 1),
@@ -142,11 +142,11 @@
           },
           f: {
             id: 'ruka', name: 'ルカ', romaji: 'RUKA', title: 'からかい上手のライバル',
-            bio: 'お団子ヘアとチョーカーの小悪魔系ナビ。からかうのが趣味だけど、負けると本気で悔しがる。たまに照れる。',
+            bio: '猫耳フードに風船ガムの小悪魔系ナビ。からかうのが趣味だけど、負けると本気で悔しがる。たまに照れる。',
             catch: 'ふーん、やるじゃん？…でも、次は絶対負けないから。',
             expressionLabels: { default: '通常', smile: 'からかい', special: '照れ（レア）' },
             visual: char('ruka', [34, 15], 1),
-            silhouette: { hair: 'twin', accessory: 'earring' },
+            silhouette: { hair: 'long', accessory: 'horns' },
             battleLines: { start: '勝率{rate}%だって。{focus}で勝負してみたら？', areaWin: '{subject}取ったじゃん。ふーん。', areaLose: '{subject}取られちゃった〜。どうするの？', win: '勝ったね。……ちょっとだけ、かっこよかったかも。', lose: '{weak}で負けたね。次も負けたら笑っちゃうよ？', train: '{subject}+{gain}。ふーん、がんばったじゃん。' },
             matchLines: { correct: 'ふーん、やるじゃん？', wrong: 'あれれ〜？{unit}、苦手なんだ？', streak: '{n}問連続……ちょっとだけ、すごいかも。', timeout: 'ぼーっとしてた？かわいいね。', win: '……べ、別に。おめでと。', lose: 'あーあ、負けちゃった。次はちゃんと勝ってよね。' },
             matchExpr: { wrong: 'smile', timeout: 'smile', win: 'special' },

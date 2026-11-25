@@ -15,8 +15,8 @@
   const AXL = { speed: '速さ', acc: '正確さ', app: '応用' };
   /* 押し合い：数値の差＋ゆらぎ（正規分布 σ）で勝ち負け。3 回のうち先に 2 回取ったほうが陣地を取る。
      σ は「同格 50%／総合差 20 で 65:35／総合差 50 で 85:15、格下でも陣地単位で 2〜3 割」になるようシミュレーションで調整（tools/sim_battle.js） */
-  const RULE = { gate: 1.02, momentum: 1.03, focus: 1.15, focusUnit: 1.15, boost: 1.10, counter: 1.06, sigma: 4, toWin: 3, exWin: 2, minSolved: 5, uses: 2, duelQ: 5, duelSec: 30 };
-  /* 戦術：三すくみ（確実 → 速攻 → 応用 → 確実 の順に強い）。相性で勝つと全押し合い +6% */
+  const RULE = { gate: 1.02, momentum: 1.03, focus: 1.15, focusUnit: 1.15, boost: 1.10, counter: 1.03, cands: 4, sigma: 4, toWin: 3, exWin: 2, minSolved: 5, uses: 2, duelQ: 5, duelSec: 30 };
+  /* 戦術：三すくみ（確実 → 速攻 → 応用 → 確実 の順に強い）。相性で勝つと全押し合い +3% */
   const TAC = {
     sure: { name: '確実にいく', desc: '正確さ+12%・速さ−8%', acc: 1.12, speed: 0.92, app: 1 },
     rush: { name: '速攻', desc: '速さ+12%・正確さ−8%', acc: 0.92, speed: 1.12, app: 1 },
@@ -60,8 +60,8 @@
     if (gate === subject) { fo *= RULE.gate; notesOp.push('城門 +2%'); }
     const tm = TAC[opt.tacMe], to = TAC[opt.tacOp];
     if (tm) notesMe.push(tm.name); if (to) notesOp.push(to.name);
-    if (opt.tacMe && opt.tacOp && BEATS[opt.tacMe] === opt.tacOp) { fm *= RULE.counter; notesMe.push('戦術の相性 +6%'); }
-    if (opt.tacMe && opt.tacOp && BEATS[opt.tacOp] === opt.tacMe) { fo *= RULE.counter; notesOp.push('戦術の相性 +6%'); }
+    if (opt.tacMe && opt.tacOp && BEATS[opt.tacMe] === opt.tacOp) { fm *= RULE.counter; notesMe.push('戦術の相性 +3%'); }
+    if (opt.tacMe && opt.tacOp && BEATS[opt.tacOp] === opt.tacMe) { fo *= RULE.counter; notesOp.push('戦術の相性 +3%'); }
     if (mom > 0) { fm *= RULE.momentum; notesMe.push('勢い +3%'); }
     if (mom < 0) { fo *= RULE.momentum; notesOp.push('勢い +3%'); }
     const raw = [
@@ -82,13 +82,40 @@
     return { subject, idx, ex, gauge: (w - l) * 50, win: w >= RULE.exWin, wins: [w, l], notesMe, notesOp, units: [u1, u2], tacMe: opt.tacMe, tacOp: opt.tacOp };
   }
 
+  /* 作戦どおりに戦った陣地：ナビの提案どおりの戦術（相手の傾向に相性勝ち）、候補 4 つから最も不利な単元をバン（相手も 1 つ外す）。
+     実戦の「おまかせ」と同じ決め方なので、勝率予測はこれで計算する（me.plan が true のとき） */
+  /* 押し合う単元の確定：候補 4 つから、攻める側が 1 つ外し（ban）、守る側の防衛データも 1 つ外す（攻める側にいちばん有利な単元）。
+     残りが 3 つなら 1 つは抽選で外れる。外し合いなので、片方だけが有利な単元を選び放題にはならない */
+  function finalUnits(me, op, subject, cands, ban, r, now) {
+    const gap = (u) => KN.unitValue(me.K, subject, u, 'acc', now) - KN.unitValue(op.K, subject, u, 'acc', now);
+    let left = cands.filter((u) => u !== ban);
+    const dban = left.length > 2 ? left.slice().sort((x, y) => gap(y) - gap(x))[0] : null;
+    left = left.filter((u) => u !== dban);
+    while (left.length > 2) left.splice(Math.floor(r() * left.length), 1);
+    if (left.length < 2) left = cands.slice(0, 2);
+    return { units: left, dban };
+  }
+  function planArea(me, op, subject, idx, r, now, mom) {
+    const cands = drawUnits(me, op, subject, r, RULE.cands);
+    const gap = (u) => KN.unitValue(me.K, subject, u, 'acc', now) - KN.unitValue(op.K, subject, u, 'acc', now);
+    const ban = me.plan && me.plan.noBan ? null : cands.slice().sort((x, y) => gap(x) - gap(y))[0];
+    const { units } = finalUnits(me, op, subject, cands, ban, r, now);
+    const st = op.style, tacMe = st && !(me.plan && me.plan.noTac) ? Object.keys(BEATS).find((k) => BEATS[k] === st) : null;
+    const tacOp = st ? (r() < 0.6 ? st : ['sure', 'rush', 'apply'][Math.floor(r() * 3)]) : null;
+    return resolveArea(me, op, subject, idx, r, now, mom, { units, tacMe, tacOp, focusUnit: me.focusUnit });
+  }
+  /* 陣地単位の勝率（勢いなしで、その陣地を取れる割合） */
+  function areaRate(me, op, subject, now, n = 240) {
+    let w = 0; for (let i = 1; i <= n; i++) { const r = KN.rng(i * 104729 + 7); if ((me.plan ? planArea : resolveArea)(me, op, subject, 0, r, now, 0, { focusUnit: me.focusUnit }).win) w++; }
+    return Math.round((w / n) * 100);
+  }
   const needWin = (n) => Math.floor(n / 2) + 1; // 対象の陣地の過半数（5→3、3→2）
   function resolveBattle(me, op, seed, now) {
     const r = KN.rng(seed), areas = []; let myW = 0, opW = 0, mom = 0;
     const act = me.active || op.active, order = (me.order || op.order).filter((s) => !act || act.includes(s)), need = needWin(order.length);
     order.forEach((subject, idx) => {
       if (myW >= need || opW >= need) { areas.push({ subject, idx, skipped: true }); return; }
-      const a = resolveArea(me, op, subject, idx, r, now, mom, { focusUnit: me.focusUnit });
+      const a = me.plan ? planArea(me, op, subject, idx, r, now, mom) : resolveArea(me, op, subject, idx, r, now, mom, { focusUnit: me.focusUnit });
       a.win ? myW++ : opW++; mom = a.win ? 1 : -1; areas.push(a);
     });
     return { areas, myW, opW, win: myW >= need, seed, need };
@@ -112,12 +139,13 @@
   }
 
   /* ナビの提案：同じ情報を性格ごとの視点で読むだけ */
+  const ord = (op) => op.order.filter((s) => !op.active || op.active.includes(s)); // 受験型の対象の陣地だけ
   const ADVICE = {
-    logic: (me, op, now) => op.order.reduce((best, s) => (winRate(Object.assign({}, me, { focus: s }), op, now, 150) > winRate(Object.assign({}, me, { focus: best }), op, now, 150) ? s : best)),
+    logic: (me, op, now) => ord(op).reduce((best, s) => (winRate(Object.assign({}, me, { focus: s }), op, now, 150) > winRate(Object.assign({}, me, { focus: best }), op, now, 150) ? s : best)),
     halo: (me) => weakest(me.S),
-    ignite: (me, op) => op.order[0],
+    ignite: (me, op) => ord(op)[0],
     vex: (me, op) => strongest(op.S),
-    echo: (me, op) => op.order.reduce((best, s) => (Math.abs(power(me.S[s]) - power(op.S[s])) < Math.abs(power(me.S[best]) - power(op.S[best])) ? s : best)),
+    echo: (me, op) => ord(op).reduce((best, s) => (Math.abs(power(me.S[s]) - power(op.S[s])) < Math.abs(power(me.S[best]) - power(op.S[best])) ? s : best)),
   };
 
   /* ================= 表示部品 ================= */
@@ -183,16 +211,21 @@
   function PlanView(b, ctx) {
     const o = b.op, n = navOf(ctx.D, o.nav), mt = ctx.type, now = ctx.now();
     const me = b.me(), op = b.opSide(), h = b.hint;
-    const rates = {}; b.order.forEach((s) => { rates[s] = winRate(Object.assign({}, me, { focus: s }), op, now, 160); });
-    const rate = rates[b.focus];
-    const sug = ADVICE[mt.id](me, op, now);
-    const line = fmt(ctx.char.battleLines.start, { rate: rates[sug], focus: sug });
-    const unitOpts = SUBJECTS.map((s) => `<optgroup label="${s}">${(KN.units()[s] || []).map((u) => `<option value="${esc(s + '/' + u)}" ${b.focusUnit === s + '/' + u ? 'selected' : ''}>${esc(u)}</option>`).join('')}</optgroup>`).join('');
+    // 勝率は 2 種類に分けて出す：試合全体（いまの攻め順・主戦場・重点単元で、各陣地はナビの提案どおりに戦った場合）と、陣地ごと（その陣地を取れる見込み）
+    const rate = winRate(me, op, now, 500);
+    const area = {}; b.order.forEach((s) => { area[s] = areaRate(me, op, s, now); });
+    const delta = b.lastRate != null && b.lastRate !== rate ? rate - b.lastRate : 0; b.lastRate = rate;
+    const sug0 = ADVICE[mt.id](me, op, now), sug = b.order.includes(sug0) ? sug0 : b.order[0];
+    const line = fmt(ctx.char.battleLines.start, { rate: sug === b.focus ? rate : winRate(Object.assign({}, me, { focus: sug }), op, now, 300), focus: sug });
+    // 重点単元に選べるのは、押し合いに出うる単元（両者が 5 問以上解いた単元）だけ。出る見込みも添える
+    const elig = (s) => (KN.units()[s] || []).filter((u) => solved(me.K, s, u) >= RULE.minSolved && solved(op.K, s, u) >= RULE.minSolved);
+    const chance = (s, u) => { const L = elig(s), tot = L.reduce((x, v) => x + KN.meta(s, v).weight, 0); return L.length <= 2 ? 100 : Math.min(100, Math.round((KN.meta(s, u).weight / tot) * 200)); };
+    const unitOpts = b.order.map((s) => { const L = elig(s); return L.length ? `<optgroup label="${s}">${L.map((u) => `<option value="${esc(s + '/' + u)}" ${b.focusUnit === s + '/' + u ? 'selected' : ''}>${esc(u)}（出る見込み 約${chance(s, u)}%）</option>`).join('')}</optgroup>` : ''; }).join('');
     return `<div class="match-screen phase-plan" style="--oc:${b.oc}">
       <header class="m-head"><button class="link" data-action="back">← 相手を選び直す</button><span class="eyebrow">作戦</span></header>
       <div class="a-vs">
         <div class="a-vs__side me">${UI.Portrait({ char: ctx.char, cls: 'portrait--face portrait--vs' })}<b>${esc(ctx.player.name)}</b><small>${esc(ctx.rankLabel)} · 学力 ${totalPower(me.S)}</small></div>
-        <div class="a-rate"><span>勝率予測</span><b>${rate}<small>%</small></b></div>
+        <div class="a-rate"><span>試合の勝率予測</span><b>${rate}<small>%</small></b>${delta ? `<em class="${delta > 0 ? 'up' : 'down'}">${delta > 0 ? '▲ +' : '▼ '}${delta}</em>` : ''}</div>
         <div class="a-vs__side op">${UI.Portrait({ char: n.char, cls: 'portrait--face portrait--vs portrait--op' })}<b>${esc(o.name)}</b><small>${esc(o.rank)} · 学力 ${totalPower(op.S)}</small></div>
       </div>
       ${Map3D('相手の陣地 · ドラッグで回転')}
@@ -213,10 +246,10 @@
           return `<div class="a-row-wrap"><button class="a-row ${s === b.focus ? 'is-focus' : ''}" data-focus="${s}" aria-pressed="${s === b.focus}">
             <span class="no">${k + 1}</span><span class="s" style="--sc:${SC(s)}">${window.Mechs ? `<span class="mx-ico">${window.Mechs.svg(s, { color: mt.color, cov: me.S[s].coverage, ret: me.S[s].retention })}</span>` : ''}${esc(s)}${s === b.focus ? '<i>★</i>' : ''}</span>
             <span class="v me">${a}</span><span class="duel"><i class="l" style="width:${(a / (a + c)) * 100}%"></i></span><span class="v op">${c}</span>
-            <span class="wr ${s === sug ? 'sug' : ''}">${rates[s]}%</span>
+            <span class="wr ${s === sug ? 'sug' : ''}" title="この陣地を取れる見込み">陣地 ${area[s]}%</span>
           </button><span class="a-mv"><button data-mv="${k}:-1" aria-label="${s}を前へ" ${k === 0 ? 'disabled' : ''}>▲</button><button data-mv="${k}:1" aria-label="${s}を後へ" ${k === b.order.length - 1 ? 'disabled' : ''}>▼</button></span></div>`;
         }).join('')}</div>
-        <p class="muted">右端はその科目を主戦場にしたときの勝率。${b.order.length < 5 ? `受験型「${esc(ctx.examLabel ? ctx.examLabel() : '')}」なので対象は ${b.order.length} 陣地。` : ''}先に${needWin(b.order.length)}つ取った方の勝ちなので、取りやすい科目を前に置くと勢い（+3%）が乗る。</p>
+        <p class="muted">右端＝その陣地を取れる見込み（押し合い 3 回のうち 2 回勝つ割合）。上の数字は試合全体の勝率。どちらも、いまの主戦場・重点単元で、各陣地の戦術とバンをナビの提案どおりにした場合。主戦場（★）は「${esc(sug)}」がおすすめ。${b.order.length < 5 ? `受験型「${esc(ctx.examLabel ? ctx.examLabel() : '')}」なので対象は ${b.order.length} 陣地。` : ''}先に${needWin(b.order.length)}つ取った方の勝ちなので、取りやすい科目を前に置くと勢い（+3%）が乗る。</p>
       </section>
       <section class="m-panel">
         <h2 class="panel__title">重点単元<small class="panel__note">その単元の押し合いが +15%</small></h2>
@@ -388,10 +421,10 @@
     const uv = (K, u) => Math.round(KN.prob((K.units[KN.key(d.subject, u)] || {}).r || KN.STD - 150, KN.STD) * 100);
     const solvedMe = (u) => solved(me.K, d.subject, u);
     return `<section class="a-decide" style="--sc:${SC(d.subject)}" aria-label="第${b.live.k + 1}陣の作戦">
-      <div class="a-decide__head"><span class="eyebrow">第${b.live.k + 1}陣 · 作戦</span><h2>${esc(d.subject)}</h2><span class="muted">陣地 ${b.res.myW}-${b.res.opW}（先に3つ）</span></div>
+      <div class="a-decide__head"><span class="eyebrow">第${b.live.k + 1}陣 · 作戦</span><h2>${esc(d.subject)}</h2><span class="muted">陣地 ${b.res.myW}-${b.res.opW}（先に${b.res.need}つ）</span></div>
       <h3>戦術<small>相手は「${esc(TAC[b.hint.style].name)}」を好む。確実→速攻→応用→確実 の順に強い</small></h3>
       <div class="a-tacs">${Object.keys(TAC).map((k) => `<button data-tac="${k}" aria-pressed="${d.tac === k}"><b>${TAC[k].name}</b><small>${TAC[k].desc}</small>${k === sug ? '<em>ナビの提案</em>' : ''}</button>`).join('')}</div>
-      <h3>押し合う単元<small>3つから1つ外せる（外さなければ1つは抽選で外れる）</small></h3>
+      <h3>押し合う単元<small>4つから1つ外せる。相手の防衛データも、あなたに有利な単元を1つ外してくる（残りが3つなら1つは抽選で外れる）</small></h3>
       <div class="a-cands-u">${d.cands.map((u) => `<button data-ban="${esc(u)}" aria-pressed="${d.ban === u}"><b>${esc(u)}</b><small>あなた ${solvedMe(u) ? uv(me.K, u) + '%' : '未学習'} · 相手 ${uv(op.K, u)}%</small>${d.ban === u ? '<em>✕ 外す</em>' : ''}</button>`).join('')}</div>
       <h3>介入<small>この試合で残り ${b.live.uses} 回</small></h3>
       <div class="a-inter">
@@ -463,7 +496,7 @@
   }
 
   function ResultView(b, ctx) {
-    const res = b.res, an = analyze(res), r = b.ranks, rpd = b.rpNow;
+    const res = b.res, an = analyze(res), r = b.ranks, rpd = r.after.rp - r.before.rp; // 増減は前後の値から（表示どうしが必ず一致）
     const ev = res.win ? 'win' : 'lose';
     const weak = an.weak ? `${an.weak.unit || an.weak.subject}の${AXL[an.weak.axis]}` : '';
     const line = b.duelMsg || fmt(ctx.char.battleLines[ev], { weak });
@@ -476,8 +509,8 @@
       <section class="r-rank holo-panel">
         <div class="rank__badge"><b>${esc(r.after.label)}</b><small>RANK</small></div>
         <div class="rank__body">
-          <div class="r-rp"><b class="js-rp" data-from="${r.before.rp}" data-to="${r.after.rp}">${r.before.rp.toLocaleString('ja-JP')}</b> RP <span class="delta ${rpd >= 0 ? 'up' : 'down'}">${rpd >= 0 ? '+' : ''}${rpd}</span></div>
-          <div class="bar"><i class="js-gauge" style="width:${r.before.pct}%" data-to="${r.after.pct}"></i></div>
+          <div class="r-rp"><b class="js-rp" data-from="${r.before.rp}" data-to="${r.after.rp}">${r.after.rp.toLocaleString('ja-JP')}</b> RP <span class="delta ${rpd >= 0 ? 'up' : 'down'}">${rpd >= 0 ? '+' : ''}${rpd}</span></div>
+          <div class="bar"><i class="js-gauge" style="width:${r.after.pct}%" data-from="${r.before.pct}" data-to="${r.after.pct}"></i></div>
           <span class="rank__meta">${promoted ? `<b class="promo">${esc(r.after.label)} に昇格！</b>` : r.after.next ? `${esc(r.after.next)} 昇格まで <b>${(r.after.nextAt - r.after.rp).toLocaleString('ja-JP')}</b> RP` : '最高ランク'} · 挑戦権 残り${ctx.player.tickets.now}</span>
         </div>
       </section>
@@ -618,8 +651,8 @@
     b.hint = hintsOf(o, opK, opS);
     if (ctx.privacy && !ctx.privacy().units) { b.hint.strong = null; b.hint.weak = null; b.hint.hidden = true; } // 自分が非公開なら相手のも見えない
     if (!b.active.includes(b.focus)) b.focus = b.order[0];
-    b.me = () => ({ K: ctx.myK(), S: ctx.player.stats, focus: b.focus, order: b.order, focusUnit: b.focusUnit, active: b.active });
-    b.opSide = () => ({ K: opK, S: opS, focus: o.focus, order: o.order, active: b.active });
+    b.me = () => ({ K: ctx.myK(), S: ctx.player.stats, focus: b.focus, order: b.order, focusUnit: b.focusUnit, active: b.active, plan: true });
+    b.opSide = () => ({ K: opK, S: opS, focus: o.focus, order: o.order, active: b.active, style: styleOf(o) });
     draw();
   }
 
@@ -649,7 +682,7 @@
     clearTimeout(timer);
     if (decided() || b.live.k >= b.order.length) { endMatch(); return; }
     const subject = b.order[b.live.k];
-    b.dec = { subject, cands: drawUnits(b.me(), b.opSide(), subject, b.live.r, 3), ban: null, tac: null, boost: null };
+    b.dec = { subject, cands: drawUnits(b.me(), b.opSide(), subject, b.live.r, RULE.cands), ban: null, tac: null, boost: null };
     b.dec.tac = suggestTac(); b.stage = 'decide'; b.comm = null;
     if (t3) t3.focus(ti(subject));
     if (b.auto) { autoDecide(); go(); return; }
@@ -667,9 +700,8 @@
   function go() {
     const d = b.dec, me = b.me(), op = b.opSide();
     if (d.boost) b.live.uses--;
-    let units = d.cands.filter((u) => u !== d.ban);
-    if (units.length > 2) units.splice(Math.floor(b.live.r() * units.length), 1); // バンしなければ 1 つは抽選で外れる
-    const area = resolveArea(me, op, d.subject, b.live.k, b.live.r, ctx.now(), b.live.mom, { units: units.slice(0, 2), tacMe: d.tac, tacOp: opTactic(b.op, b.live.r), focusUnit: b.focusUnit, boost: d.boost });
+    const fu = finalUnits(me, op, d.subject, d.cands, d.ban, b.live.r, ctx.now()); b.dban = fu.dban;
+    const area = resolveArea(me, op, d.subject, b.live.k, b.live.r, ctx.now(), b.live.mom, { units: fu.units, tacMe: d.tac, tacOp: opTactic(b.op, b.live.r), focusUnit: b.focusUnit, boost: d.boost });
     pushArea(area);
     b.stage = 'play'; b.ei = -1; b.areaDone = false;
     step();
@@ -688,7 +720,7 @@
     ctx.player.lastP = snap; // 次の対戦の基準（applyBattle で保存される）
     b.rpNow = b.res.win ? b.op.reward.win : b.op.reward.lose;
     b.ranks = ctx.applyBattle({ win: b.res.win, rp: b.rpNow, focus: b.focus, opName: b.op.name });
-    if (b.res.win && b.ranks.after.label !== b.ranks.before.label) b.finSet.add(b.res.areas.length - 1);
+    if (b.res.win && b.ranks.after.label !== b.ranks.before.label) { b.finSet.add(b.res.areas.length - 1); b.promoCut = true; }
   }
   function endMatch() {
     b.order.forEach((s) => { if (!b.res.areas.find((a) => a.subject === s)) b.res.areas.push({ subject: s, idx: b.res.areas.length, skipped: true }); });
@@ -700,9 +732,9 @@
     stop(); b.skipped = true;
     while (!decided() && b.live && b.live.k < b.order.length) {
       const subject = b.order[b.live.k];
-      if (!b.dec || b.dec.subject !== subject || b.stage !== 'decide') b.dec = { subject, cands: drawUnits(b.me(), b.opSide(), subject, b.live.r, 3), ban: null, tac: null, boost: null };
+      if (!b.dec || b.dec.subject !== subject || b.stage !== 'decide') b.dec = { subject, cands: drawUnits(b.me(), b.opSide(), subject, b.live.r, RULE.cands), ban: null, tac: null, boost: null };
       autoDecide();
-      const d = b.dec, units = d.cands.filter((u) => u !== d.ban).slice(0, 2);
+      const d = b.dec, units = finalUnits(b.me(), b.opSide(), subject, d.cands, d.ban, b.live.r, ctx.now()).units;
       pushArea(resolveArea(b.me(), b.opSide(), subject, b.live.k, b.live.r, ctx.now(), b.live.mom, { units, tacMe: d.tac, tacOp: opTactic(b.op, b.live.r), focusUnit: b.focusUnit }));
       b.stage = 'play';
     }
@@ -746,7 +778,10 @@
   }
   /* 効果音（2倍速なら待ち時間も半分） */
   const sfx = (name, ms, ...args) => { if (window.SFX && !reduce()) window.SFX.later(ms * (b && b.fast ? 0.5 : 1), name, ...args); };
-  function finish() { stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); window.scrollTo(0, 0); }
+  function finish() {
+    stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); window.scrollTo(0, 0);
+    if (b.promoCut) { b.promoCut = false; navCut('ランク昇格', `${b.ranks.after.label}に上がった。ここからが本番だよ。`, 'smile'); }
+  }
   function navCut(title, line, expr) {
     if (reduce()) return;
     document.querySelectorAll('.cutin').forEach((x) => x.remove());
@@ -757,11 +792,15 @@
 
   function animateResult() {
     const rp = root.querySelector('.js-rp'), g = root.querySelector('.js-gauge'); if (!rp) return;
-    if (reduce()) { rp.textContent = (+rp.dataset.to).toLocaleString('ja-JP'); g.style.width = g.dataset.to + '%'; return; }
-    const from = +rp.dataset.from, to = +rp.dataset.to, t0 = performance.now();
+    // 表示の正は「試合後のRP（ホームと同じ P.rank.rp）」。カウントアップは演出だけで、途中で止まっても最後は必ず試合後の値にそろえる
+    const from = +rp.dataset.from, to = +rp.dataset.to, fin = () => { rp.textContent = to.toLocaleString('ja-JP'); g.style.width = g.dataset.to + '%'; };
+    if (reduce()) { fin(); return; }
+    rp.textContent = from.toLocaleString('ja-JP'); g.style.width = g.dataset.from + '%';
+    const t0 = performance.now();
     setTimeout(() => { g.style.width = g.dataset.to + '%'; }, 300);
-    const f = (now) => { const p = Math.min(1, (now - t0 - 300) / 900); if (p >= 0) rp.textContent = Math.round(from + (to - from) * p).toLocaleString('ja-JP'); if (p < 1 && b && b.phase === 'result') requestAnimationFrame(f); };
+    const f = (now) => { if (!rp.isConnected) return; const p = Math.min(1, (now - t0 - 300) / 900); if (p >= 0) rp.textContent = Math.round(from + (to - from) * p).toLocaleString('ja-JP'); if (p < 1) requestAnimationFrame(f); else fin(); };
     requestAnimationFrame(f);
+    setTimeout(() => { if (rp.isConnected) fin(); }, 1400); // 描画が間引かれる環境でも確実に最終値へ
   }
 
   /* 直接対決 */
@@ -774,10 +813,10 @@
     });
     b.duel = { subject, qs, i: 0, me: [], op: [], attack: !!attack, bet: null };
     b.phase = 'duel'; draw(); sfx('duelStart', 0);
+    navCut('直接対決', attack ? `${subject}は、私たちの手で取りに行く。` : `${subject}、取り返すよ。集中して。`, 'serious');
   }
   function duelAsk() {
-    const d = b.duel; d.t0 = performance.now(); b.phase = 'duelq'; draw();
-    requestAnimationFrame(() => requestAnimationFrame(() => { d.t0 = performance.now(); })); // 表示が終わってから計測（練習と同じ基準）
+    const d = b.duel; b.phase = 'duelq'; draw(); d.t0 = performance.now(); // 問題を差し込んだ瞬間から計る（演習と同じ基準）
     clearInterval(tick);
     tick = setInterval(() => {
       const left = Math.max(0, RULE.duelSec - (performance.now() - d.t0) / 1000);
@@ -860,7 +899,7 @@
       case 'skip': if (b.phase === 'battle') skipAll(); break;
       case 'detail': b.detail = !b.detail; draw(); break;
       case 'go': if (b.stage === 'decide') go(); break;
-      case 'redraw': if (b.stage === 'decide' && b.live.uses > 0) { b.live.uses--; b.dec.cands = drawUnits(b.me(), b.opSide(), b.dec.subject, b.live.r, 3, null); b.dec.ban = null; show(); } break;
+      case 'redraw': if (b.stage === 'decide' && b.live.uses > 0) { b.live.uses--; b.dec.cands = drawUnits(b.me(), b.opSide(), b.dec.subject, b.live.r, RULE.cands, null); b.dec.ban = null; show(); } break;
       case 'duel-attack': if (b.stage === 'decide') duelOpen(b.dec.subject, true); break;
       case 'sfx': if (window.SFX) window.SFX.toggle(); draw(); break;
       case 'again': drop3d(); b = { phase: 'pick', cands: candidates(), fast: b.fast, full: b.full }; draw(); break;
@@ -893,5 +932,5 @@
   }
   function unmount() { stop(); drop3d(); document.querySelectorAll('.cutin').forEach((x) => x.remove()); window.removeEventListener('resize', onResize); if (root) { root.removeEventListener('click', onClick); root.removeEventListener('change', onChange); } document.removeEventListener('keydown', onKey); b = null; root = null; }
 
-  window.Battle = { RULE, TAC, BEATS, drawUnits, resolveArea, mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
+  window.Battle = { areaRate, planArea, RULE, TAC, BEATS, drawUnits, resolveArea, mount, unmount, resolveBattle, winRate, analyze, totalPower, power, SUBJECTS, AXL };
 })();

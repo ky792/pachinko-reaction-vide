@@ -118,7 +118,7 @@
     const info = INFO[subject], lv = level(st.coverage || 0);
     const fade = (st.retention == null ? 1 : st.retention) < 0.5; // 科目平均の定着が半分を切ったら要復習
     return `<div class="mcard mcard--lv${lv} ${fade ? 'is-fading' : ''} ${extra}" style="--mc:${color}">
-      <span class="mcard__badge">Lv${lv + 1}</span>${fade ? '<span class="mcard__warn">要復習</span>' : ''}
+      <span class="mcard__badge">Lv${lv + 1}</span><span class="mcard__sub" aria-hidden="true">${esc(subject.slice(0, 1))}</span>${fade ? '<span class="mcard__warn">要復習</span>' : ''}
       <div class="mcard__art">${svg(subject, { color, cov: st.coverage, ret: st.retention })}</div>
       <b class="mcard__pw">${st.acc + st.speed + st.app}</b>
       <span class="mcard__name">${esc(info.name)}<small>${esc(subject)}</small></span>
@@ -126,12 +126,14 @@
     </div>`;
   }
 
+  // 部隊一覧では科目の固定色で塗る（全機が自分のチーム色だと見分けにくいため。戦闘中はチーム色）
+  const SCOL = (s) => (window.SUBJECT_COLOR && window.SUBJECT_COLOR[s]) || '#9aa';
   /* ホームの部隊パネル：5 体と合計戦闘力。タップでその科目の知識データへ */
   function Squad(stats, color, focus) {
     const S = Object.keys(INFO), total = S.reduce((a, s) => a + stats[s].acc + stats[s].speed + stats[s].app, 0);
     return `<section class="squad holo-panel" aria-label="部隊">
       <div class="squad__head"><span class="eyebrow">MY SQUAD · 部隊の戦闘力</span><b>${total}</b></div>
-      <div class="squad__row">${S.map((s) => `<button data-action="stats" data-subject="${s}" aria-label="${s}機 ${esc(INFO[s].name)}の詳細">${card(s, stats[s], color, s === focus ? 'is-focus' : '')}</button>`).join('')}</div>
+      <div class="squad__row">${S.map((s) => `<button data-action="stats" data-subject="${s}" aria-label="${s}機 ${esc(INFO[s].name)}の詳細">${card(s, stats[s], SCOL(s), s === focus ? 'is-focus' : '')}</button>`).join('')}</div>
       <p class="squad__note">戦闘力は科目の学力そのもの。範囲を広げると装甲が増え、定着するほどコアが光る。忘れかけるとくすむ。</p>
     </section>`;
   }
