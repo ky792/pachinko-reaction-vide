@@ -1,0 +1,28 @@
+[
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 0%（80% 未満）",
+  "id": "s01-003",
+  "who": "baku",
+  "text": "は？",
+  "asr": "ん?",
+  "ratio": 0.0,
+  "audio": "episodes/shorts001_s99/voices/s01-003.wav"
+ },
+ {
+  "kind": "速さ",
+  "where": "",
+  "expect": "",
+  "level": "低",
+  "reason": "1秒あたり 6.9 音（この話者のふつうは 4.6）。脱落・早口の疑い",
+  "id": "s01-008",
+  "who": "baku",
+  "text": "もう90％って書くなや……",
+  "asr": "もう90%って書くのや",
+  "ratio": 0.947,
+  "audio": "episodes/shorts001_s99/voices/s01-008.wav"
+ }
+]
