@@ -79,7 +79,7 @@ const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
   const cur = withMon[idx];
   const prev: Line | null = idx > 0 ? withMon[idx - 1] : null;
   const local = f - cur.start;
-  const boot = interpolate(f, [0, 6], [0.02, 1], {...clamp, easing: OUT});
+  const boot = 1; // 0フレーム目から中身を見せる（フック）
   const cta = f - ep.cta_start;
   const render = (l: Line, lf: number) => (
     <MonitorBody m={l.monitor!} f={lf} dur={l.end - l.start} fps={fps}
@@ -101,7 +101,7 @@ const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
           background: 'linear-gradient(180deg, transparent, rgba(95,212,255,0.07), transparent)'}} />
         <div style={{position: 'absolute', top: 12, left: 22, fontFamily: EN, fontWeight: 700, fontSize: 18, color: 'rgba(95,212,255,0.7)',
           letterSpacing: 4}}>NAGIBAKU LAB / ANALYSIS</div>
-        <div style={{position: 'absolute', inset: 0, opacity: cta >= 0 ? interpolate(cta, [0, 8], [1, 0.25], clamp) : 1}}>
+        <div style={{position: 'absolute', inset: 0, opacity: cta >= 0 ? interpolate(cta, [0, 8], [1, 0.06], clamp) : 1}}>
           {prev && local < 8 && (
             <div style={{position: 'absolute', inset: 0, opacity: interpolate(local, [0, 7], [1, 0], clamp)}}>
               {render(prev, f - prev.start)}
@@ -163,7 +163,7 @@ const Subtitle: React.FC<{ep: Episode}> = ({ep}) => {
   const {top, left, width} = LAYOUT.sub;
   return (
     <div style={{position: 'absolute', top, left, width, display: 'flex', justifyContent: 'center',
-      translate: `0 ${interpolate(a, [0, 6], [14, 0], {...clamp, easing: OUT})}px`, opacity: interpolate(a, [0, 3], [0, 1], clamp)}}>
+      translate: l.start === 0 ? undefined : `0 ${interpolate(a, [0, 6], [14, 0], {...clamp, easing: OUT})}px`, opacity: l.start === 0 ? 1 : interpolate(a, [0, 3], [0, 1], clamp)}}>
       <div style={{position: 'relative', background: 'rgba(255,255,255,0.96)', borderRadius: 26, padding: '18px 34px 16px',
         border: `5px solid ${col}`, boxShadow: '0 10px 26px rgba(0,0,0,0.35)'}}>
         <div style={{position: 'absolute', top: -26, [l.who === 'nagi' ? 'left' : 'right']: 26, background: col, color: '#fff', fontFamily: JP,
@@ -211,7 +211,7 @@ const Bust: React.FC<{ep: Episode; who: Who}> = ({ep, who}) => {
   return (
     <div style={{position: 'absolute', left: x - 300, width: 600, top: bottom - h, height: h,
       translate: `${shake}px ${-env * 12 + hopY + breathe - reactHop - ctaHop}px`, scale: `${(active ? 1 : 0.94) * (1 + env * 0.025)}`,
-      transformOrigin: '50% 100%', filter: active ? 'none' : 'brightness(0.82) saturate(0.9)',
+      transformOrigin: '50% 100%', filter: active ? 'none' : 'brightness(0.93) saturate(0.92)',
       WebkitMaskImage: 'linear-gradient(180deg, #000 82%, transparent 100%)'}}>
       <div style={{position: 'absolute', inset: 0}}>
         <Img src={src} style={{position: 'absolute', bottom: 0, left: '50%', translate: '-50% 0', height: h, clipPath: 'inset(29.6% 0 0 0)'}} />
