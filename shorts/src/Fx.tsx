@@ -154,7 +154,7 @@ export const BigWord: React.FC<{ep: Episode}> = ({ep}) => {
   const s = spring({frame: a, fps, config: {damping: 9, stiffness: 300}});
   const out = interpolate(f, [l.end + 2, l.end + 10], [1, 0], clamp);
   return (
-    <div style={{position: 'absolute', left: 240, width: 600, top: LAYOUT.chars.bottom - LAYOUT.chars.h + 20, textAlign: 'center',
+    <div style={{position: 'absolute', left: l.who === 'baku' ? 60 : 480, width: 480, top: LAYOUT.chars.bottom - LAYOUT.chars.h - 10, textAlign: 'center',
       fontFamily: JP, fontWeight: 900, fontSize: 210, color: l.who === 'baku' ? C.orange : C.blue, WebkitTextStroke: '12px #fff',
       paintOrder: 'stroke fill', rotate: `${l.who === 'baku' ? 10 : -10}deg`, scale: `${interpolate(s, [0, 1], [2.2, 1])}`, opacity: out,
       filter: 'drop-shadow(0 8px 0 rgba(0,0,0,0.3))'}}>
