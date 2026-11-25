@@ -144,10 +144,16 @@ const Cta: React.FC<{ep: Episode; f: number; fps: number}> = ({ep, f, fps}) => {
 
 // ───────── 字幕（話している人の名前つき）
 const wrap = (t: string) => {
-  if (t.length <= 15 || !t.includes('、')) return [t];
-  const idx = [...t].map((c, i) => (c === '、' ? i : -1)).filter((i) => i > 3 && i < t.length - 3);
-  if (!idx.length) return [t];
-  const cut = idx.reduce((a, b) => (Math.abs(b - t.length / 2) < Math.abs(a - t.length / 2) ? b : a));
+  // 1行16字まで。読点を優先し、なければ「で・に・は・を・が・も・の」の後ろで、真ん中に近いところで折る
+  if (t.length <= 16) return [t];
+  const cands: {i: number; score: number}[] = [];
+  [...t].forEach((c, i) => {
+    if (i < 4 || i > t.length - 5) return;
+    if (c === '、') cands.push({i, score: Math.abs(i + 1 - t.length / 2)});
+    else if ('でにはをがもの'.includes(c)) cands.push({i, score: Math.abs(i + 1 - t.length / 2) + 2});
+  });
+  if (!cands.length) return [t.slice(0, Math.ceil(t.length / 2)), t.slice(Math.ceil(t.length / 2))];
+  const cut = cands.reduce((x, y) => (y.score < x.score ? y : x)).i;
   return [t.slice(0, cut + 1), t.slice(cut + 1)];
 };
 const NUM = /(約?[0-9.]+[％%連回])/;
@@ -169,7 +175,7 @@ const Subtitle: React.FC<{ep: Episode}> = ({ep}) => {
         <div style={{position: 'absolute', top: -26, [l.who === 'nagi' ? 'left' : 'right']: 26, background: col, color: '#fff', fontFamily: JP,
           fontWeight: 900, fontSize: 30, padding: '2px 22px', borderRadius: 999}}>{l.who === 'nagi' ? 'ナギ' : 'バク'}</div>
         {wrap(l.text).map((row, i) => (
-          <div key={i} style={{fontFamily: JP, fontWeight: 900, fontSize: 52, lineHeight: 1.32, color: C.navy, textAlign: 'center', whiteSpace: 'nowrap'}}>
+          <div key={i} style={{fontFamily: JP, fontWeight: 900, fontSize: 50, lineHeight: 1.32, color: C.navy, textAlign: 'center', whiteSpace: 'nowrap'}}>
             {row.split(NUM).map((s, j) => (NUM.test(s) ? <span key={j} style={{color: l.who === 'nagi' ? C.blue : C.orange}}>{s}</span> : s))}
           </div>
         ))}
@@ -269,7 +275,7 @@ export const ShortsEpisode: React.FC<{ep: Episode}> = ({ep}) => {
 const Sounds: React.FC<{ep: Episode; bgmVol: (f: number) => number}> = ({ep, bgmVol}) => {
   return (
     <>
-      <Audio src={staticFile(ep.bgm.file)} loop volume={bgmVol} />
+      <Audio src={staticFile(ep.bgm.bed)} />
       {ep.lines.map((l) => (
         <Sequence key={l.id} from={l.start} durationInFrames={l.end - l.start + 6}>
           <Audio src={staticFile(l.audio)} />

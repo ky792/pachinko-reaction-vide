@@ -51,7 +51,7 @@ export type Episode = {
   fps: number;
   total: number;
   cta_start: number;
-  bgm: {file: string; gain: number; cut_at: number};
+  bgm: {file: string; gain: number; cut_at: number; bed: string};
   cta: {dur: number; line1: string; line2: string; button: string; faces: Record<Who, string>};
   lines: Line[];
 };

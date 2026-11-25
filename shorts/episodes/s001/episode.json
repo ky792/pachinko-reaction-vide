@@ -8,7 +8,7 @@
  "tempo": 1.1,
  "gap": 0.14,
  "tail": 0.7,
- "bgm": {"file": "bg/bgm_main.wav", "gain": 0.16, "cut_before": "s01-009"},
+ "bgm": {"file": "bg/bgm_main.wav", "gain": 0.22, "cut_before": "s01-009"},
  "lines": [
   {"id": "s01-001", "face": "sweat", "monitor": {"type": "hook", "value": "90％", "label": "継続率"}, "pre": 0},
   {"id": "s01-002", "face": "normal", "tap": true, "monitor": {"type": "scan", "label": "ANALYZING", "text": "継続率90％で駆け抜ける確率"}, "se": "res"},
