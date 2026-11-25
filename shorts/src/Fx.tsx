@@ -57,18 +57,41 @@ export const shakeAt = (ep: Episode, f: number) => {
   return {x: (random(`sx${f}`) - 0.5) * 2 * amp, y: (random(`sy${f}`) - 0.5) * 2 * amp};
 };
 
-// カメラを掛ける入れ物（テーマ文字と字幕は掛けない＝いつでも読める）
-export const Camera: React.FC<{ep: Episode; children: React.ReactNode}> = ({ep, children}) => {
+// カメラ：モニターとキャラで別々に寄る（テーマ文字・字幕には掛けない＝いつでも読める）
+// モニターに寄るときは上辺を固定して下へ広げる（上のテーマ文字に被らない）。キャラに寄るときは顔を中心に広げる（モニターより手前なので被っても読める）
+export const camParts = (ep: Episode, f: number, fps: number) => {
+  const c = camAt(ep, f, fps);
+  const toChar = c.y > LAYOUT.monitor.top + LAYOUT.monitor.height;   // 寄る先がキャラ側か
+  const w = interpolate(c.y, [FOCUS.monitor.y, FOCUS.baku.y], [0, 1], clamp);
+  return {
+    mon: 1 + (c.z - 1) * (1 - w),
+    chr: 1 + (c.z - 1) * w,
+    cx: c.x,
+    cy: toChar ? c.y : FOCUS.baku.y,
+  };
+};
+
+export const MonitorCam: React.FC<{ep: Episode; children: React.ReactNode}> = ({ep, children}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
-  const c = camAt(ep, f, fps);
+  const p = camParts(ep, f, fps);
   const s = shakeAt(ep, f);
-  // 寄る先を画面の中心に少し近づける（寄りながらパン）
-  const pan = (c.z - 1) * 1.4;
-  const tx = (540 - c.x) * Math.min(pan, 0.6), ty = (1000 - c.y) * Math.min(pan, 0.6);
   return (
-    <div style={{position: 'absolute', inset: 0, transformOrigin: `${c.x}px ${c.y}px`,
-      transform: `translate(${tx + s.x}px, ${ty + s.y}px) scale(${c.z})`}}>
+    <div style={{position: 'absolute', inset: 0, transformOrigin: `540px ${LAYOUT.monitor.top}px`,
+      transform: `translate(${s.x}px, ${s.y}px) scale(${Math.min(p.mon, 1.1)})`}}>
+      {children}
+    </div>
+  );
+};
+
+export const CharCam: React.FC<{ep: Episode; children: React.ReactNode}> = ({ep, children}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const p = camParts(ep, f, fps);
+  const s = shakeAt(ep, f);
+  return (
+    <div style={{position: 'absolute', inset: 0, transformOrigin: `${p.cx}px ${p.cy}px`,
+      transform: `translate(${s.x * 1.2}px, ${s.y * 1.2}px) scale(${p.chr})`}}>
       {children}
     </div>
   );
@@ -130,10 +153,9 @@ export const BigWord: React.FC<{ep: Episode}> = ({ep}) => {
   const a = f - l.start;
   const s = spring({frame: a, fps, config: {damping: 9, stiffness: 300}});
   const out = interpolate(f, [l.end + 2, l.end + 10], [1, 0], clamp);
-  const x = l.who === 'baku' ? 860 : 220;
   return (
-    <div style={{position: 'absolute', left: x - 200, width: 400, top: LAYOUT.chars.bottom - LAYOUT.chars.h - 70, textAlign: 'center',
-      fontFamily: JP, fontWeight: 900, fontSize: 150, color: l.who === 'baku' ? C.orange : C.blue, WebkitTextStroke: '12px #fff',
+    <div style={{position: 'absolute', left: 240, width: 600, top: LAYOUT.chars.bottom - LAYOUT.chars.h + 20, textAlign: 'center',
+      fontFamily: JP, fontWeight: 900, fontSize: 210, color: l.who === 'baku' ? C.orange : C.blue, WebkitTextStroke: '12px #fff',
       paintOrder: 'stroke fill', rotate: `${l.who === 'baku' ? 10 : -10}deg`, scale: `${interpolate(s, [0, 1], [2.2, 1])}`, opacity: out,
       filter: 'drop-shadow(0 8px 0 rgba(0,0,0,0.3))'}}>
       {l.word}

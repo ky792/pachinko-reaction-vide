@@ -3,7 +3,7 @@ import {AbsoluteFill, Img, Sequence, interpolate, spring, staticFile, useCurrent
 import {Audio} from '@remotion/media';
 import {C, EN, Episode, JP, LAYOUT, Line, OUT, Who, clamp} from './theme';
 import {MonitorBody, panelSounds} from './Monitor';
-import {BigWord, Camera, Sparks, SpeedLines, Sweep, camAt} from './Fx';
+import {BigWord, CharCam, MonitorCam, Sparks, SpeedLines, Sweep, camAt} from './Fx';
 
 // 30秒ナギバク研究所：共通の画面（上＝テーマ／中央＝分析モニター／下＝ナギとバク）
 // 回ごとの違いは src/data/<id>.json（shorts/scripts/build.py が episode.json と声から作る）だけ
@@ -263,15 +263,17 @@ export const ShortsEpisode: React.FC<{ep: Episode}> = ({ep}) => {
         scale: `${1.06 + (camAt(ep, f, fps).z - 1) * 0.5 + Math.sin(f / 90) * 0.01}`}} />
       <div style={{position: 'absolute', inset: 0,
         background: 'linear-gradient(180deg, rgba(10,26,63,0.85) 0%, rgba(10,26,63,0.35) 30%, rgba(10,26,63,0.2) 60%, rgba(10,26,63,0.75) 100%)'}} />
-      <Camera ep={ep}>
+      <MonitorCam ep={ep}>
         <MonitorFrame ep={ep} />
         <Sweep ep={ep} />
         <Sparks ep={ep} />
-        <SpeedLines ep={ep} />
-        <TapBeam ep={ep} />
+      </MonitorCam>
+      <SpeedLines ep={ep} />
+      <TapBeam ep={ep} />
+      <CharCam ep={ep}>
         <Bust ep={ep} who="nagi" />
         <Bust ep={ep} who="baku" />
-      </Camera>
+      </CharCam>
       <Theme ep={ep} />
       <BigWord ep={ep} />
       <Subtitle ep={ep} />
