@@ -1,5 +1,17 @@
 {
- "episode": "episodes/shorts001",
+ "episode": "episodes/nagi45_001_s7",
  "model": "large-v3-turbo",
- "_run": "final2"
+ "trim": true,
+ "trim_only": [
+  "n01-001",
+  "n01-003",
+  "n01-006",
+  "n01-008",
+  "n01-010",
+  "n01-014",
+  "n01-018",
+  "n01-021",
+  "n01-022"
+ ],
+ "_run": "n45-7"
 }
