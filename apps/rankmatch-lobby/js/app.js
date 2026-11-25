@@ -200,9 +200,11 @@
     }));
     const learned = cands.filter((x) => x.n), fading = learned.filter((x) => x.R < 0.6).sort((a, b) => a.R - b.R || b.w - a.w);
     const low = learned.slice().sort((a, b) => a.p - b.p || b.w - a.w), fresh = cands.filter((x) => !x.n).sort((a, b) => b.w - a.w);
-    const pick = fading[0] ? { x: fading[0], why: `定着度が${Math.round(fading[0].R * 100)}%まで下がっている単元です。今の復習がいちばん効きます。` }
-      : low[0] ? { x: low[0], why: `学習済みの単元の中で、正答予測が最も低い単元です（${Math.round(low[0].p * 100)}%）。` }
-      : { x: fresh[0], why: '入試での出題頻度が高い、まだ解いていない単元です。' };
+    // 理由はナビの名前つきで出るので、契約中のナビ自身の口調で言わせる
+    const V = char().voice.rec, say = (k, o) => V[k].replace(/\{(\w+)\}/g, (_, n) => o[n]);
+    const pick = fading[0] ? { x: fading[0], why: say('fading', { unit: fading[0].unit, R: Math.round(fading[0].R * 100) }) }
+      : low[0] ? { x: low[0], why: say('low', { unit: low[0].unit, p: Math.round(low[0].p * 100) }) }
+      : { x: fresh[0], why: say('fresh', { unit: fresh[0].unit }) };
     const x = pick.x, acc = x.n ? (x.c != null ? `${Math.round((x.c / x.n) * 100)}%（${x.c}/${x.n}問）` : '—') : '未学習';
     return Object.assign({}, P.recommend, { subject: x.s, unit: x.unit, accuracy: acc, why: pick.why, questions: 10 });
   }

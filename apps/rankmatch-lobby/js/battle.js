@@ -308,7 +308,7 @@
     echo: { start: '戦場の流れが見えます。静かに、確かに進みましょう。', enter: '{subject}の陣へ。{mech}、相手の癖を見極めて。', critMe: '見事な一撃。積み重ねた知が形になりました。', critOp: '深い一撃を受けました。{mech}、呼吸を整えて。' },
   };
   function commSay(b, ctx, key, subject, expr) {
-    const L = COMM[ctx.type.id] || COMM.logic, mech = window.Mechs && subject ? window.Mechs.INFO[subject].name : '';
+    const L = (ctx.char.voice && ctx.char.voice.comm) || COMM[ctx.type.id] || COMM.logic, mech = window.Mechs && subject ? window.Mechs.INFO[subject].name : '';
     b.comm = { text: fmt(L[key], { subject: subject || '', mech }), expr: expr || 'serious', key };
   }
   /* 通信ウィンドウ（ホログラム）：再描画のたびに出現アニメが再生される */
@@ -393,7 +393,7 @@
       </div>
       <div class="fin__hp">${bar('me', meWin ? hpW : hpL, !meWin)}${bar('op', meWin ? hpL : hpW, meWin)}</div>
       <div class="fin__pilot ${meWin ? 'me' : 'op'}" style="--pc:${nav.type.color}"><div class="fin__pface">${UI.Portrait({ char: nav.char, expr: 'serious', cls: 'portrait--face' })}</div>
-        <p><small>${esc(nav.char.name)}</small>「${esc(fmt(SHOUT[nav.type.id] || SHOUT.logic, { tech: M.TECH[s] }))}」</p></div>
+        <p><small>${esc(nav.char.name)}</small>「${esc(fmt((nav.char.voice && nav.char.voice.shout) || SHOUT[nav.type.id] || SHOUT.logic, { tech: M.TECH[s] }))}」</p></div>
       <div class="fin__name fin-txt"><small>${meWin ? '決め技' : '敵の決め技'}</small><b>${esc(M.TECH[s])}</b></div>
       <div class="fin__comm">${Comm(b, ctx)}</div>
     </div>`;
@@ -780,7 +780,7 @@
   const sfx = (name, ms, ...args) => { if (window.SFX && !reduce()) window.SFX.later(ms * (b && b.fast ? 0.5 : 1), name, ...args); };
   function finish() {
     stop(); if (t3) t3.focus(null); b.phase = 'result'; draw(); window.scrollTo(0, 0);
-    if (b.promoCut) { b.promoCut = false; navCut('ランク昇格', `${b.ranks.after.label}に上がった。ここからが本番だよ。`, 'smile'); }
+    if (b.promoCut) { b.promoCut = false; navCut('ランク昇格', fmt(ctx.char.voice.promo, { rank: b.ranks.after.label }), 'smile'); }
   }
   function navCut(title, line, expr) {
     if (reduce()) return;
@@ -813,7 +813,7 @@
     });
     b.duel = { subject, qs, i: 0, me: [], op: [], attack: !!attack, bet: null };
     b.phase = 'duel'; draw(); sfx('duelStart', 0);
-    navCut('直接対決', attack ? `${subject}は、私たちの手で取りに行く。` : `${subject}、取り返すよ。集中して。`, 'serious');
+    navCut('直接対決', fmt(ctx.char.voice[attack ? 'duelAtk' : 'duelBack'], { subject }), 'serious');
   }
   function duelAsk() {
     const d = b.duel; b.phase = 'duelq'; draw(); d.t0 = performance.now(); // 問題を差し込んだ瞬間から計る（演習と同じ基準）

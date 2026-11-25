@@ -101,10 +101,11 @@
     switch (d.action) {
       case 'df-best': {
         mark(); const o = bestOrder(D.focus); D.order = o; ctx.save();
-        st.line = `城門は${o[0]}、本丸は${o[4]}。この並びがいちばん守れるはずだよ。`;
+        const ex = ctx.examSet(), on = o.filter((x) => ex.includes(x)); // 受験型の対象の陣地で、最初＝城門・最後＝本丸
+        st.line = ctx.char.voice.defBest.replace('{gate}', on[0]).replace('{keep}', on[on.length - 1]);
         draw(); break;
       }
-      case 'df-snap': mark(); ctx.snapDefense(); st.line = '登録したよ。ここからはこの学力で守る。'; draw(); break;
+      case 'df-snap': mark(); ctx.snapDefense(); st.line = ctx.char.voice.defSnap; draw(); break;
       case 'df-reset': mark(); D.order = KN.SUBJECTS.slice(); st.line = ''; ctx.save(); draw(); break;
       case 'df-exit': unmount(); ctx.exit(); break;
     }
