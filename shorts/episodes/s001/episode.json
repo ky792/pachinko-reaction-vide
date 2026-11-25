@@ -2,27 +2,149 @@
  "_note": "30秒ナギバク研究所 #1。セリフの文字は台本（voice_episode/script）から読む。ここには顔・モニター・間・効果音だけを書く",
  "id": "s001",
  "no": 1,
- "theme": ["なんで継続率{90％}は", "駆け抜けるの？"],
+ "theme": [
+  "なんで継続率{90％}は",
+  "駆け抜けるの？"
+ ],
  "voice_episode": "episodes/shorts001",
  "script": "s01",
  "tempo": 1.1,
  "gap": 0.14,
  "tail": 0.7,
- "bgm": {"file": "bg/bgm_main.wav", "gain": 0.22, "cut_before": "s01-009"},
+ "bgm": {
+  "file": "bg/bgm_s001.m4a",
+  "start": 7.0,
+  "gain": 0.09,
+  "cut_before": "s01-009",
+  "_note": "2026-11-25 ユーザー指定のBGM（1000010960.mp4 の音）。静かな頭7秒を飛ばし、曲が入るところから使う。声の約2割の大きさ"
+ },
  "lines": [
-  {"id": "s01-001", "face": "sweat", "monitor": {"type": "hook", "value": "90％", "label": "継続率"}, "pre": 0},
-  {"id": "s01-002", "face": "normal", "tap": true, "monitor": {"type": "scan", "label": "ANALYZING", "text": "継続率90％で駆け抜ける確率"}, "se": "res"},
-  {"id": "s01-003", "face": "surprised", "pop": true, "se": "pop", "gap": 0.08},
-  {"id": "s01-004", "face": "normal", "tap": true, "monitor": {"type": "icons", "count": 10, "label": "継続率90％のRUSH × 10回"}, "se": "res"},
-  {"id": "s01-005", "face": "normal", "tap": true,
-   "monitor": {"type": "formula", "rows": [["0.9", "10", "≒ 34.9％", "10回とも駆け抜けない"], ["1 − 0.9", "10", "≒ 65.1％", "1回でも駆け抜ける"]], "big": "約65％", "big_at_end": 1.0},
-   "react": {"who": "baku", "face": "surprised", "at_end": 0.9}},
-  {"id": "s01-006", "face": "surprised", "pop": true, "se": "emphasis", "gap": 0.1},
-  {"id": "s01-007", "face": "excited", "tap": true,
-   "monitor": {"type": "steps", "p": 0.9, "n": 10, "label": "10連以上する確率", "note": "初当たり＝1連目／継続9回", "formula": ["0.9", "9", "≒ 38.7％"], "big": "約39％", "big_at_end": 1.0},
-   "se": "res"},
-  {"id": "s01-008", "face": "angry", "shake": true, "monitor": {"type": "glitch", "value": "90％"}, "se": "pop"},
-  {"id": "s01-009", "face": "smug", "pre": 0.85, "monitor": {"type": "clean", "value": "90％", "label": "継続率"}, "se": "ochi", "ochi": true}
+  {
+   "id": "s01-001",
+   "face": "sweat",
+   "monitor": {
+    "type": "hook",
+    "value": "90％",
+    "label": "継続率"
+   },
+   "pre": 0
+  },
+  {
+   "id": "s01-002",
+   "face": "normal",
+   "tap": true,
+   "monitor": {
+    "type": "scan",
+    "label": "ANALYZING",
+    "text": "継続率90％で駆け抜ける確率"
+   },
+   "se": "res"
+  },
+  {
+   "id": "s01-003",
+   "face": "surprised",
+   "pop": true,
+   "se": "pop",
+   "gap": 0.08
+  },
+  {
+   "id": "s01-004",
+   "face": "normal",
+   "tap": true,
+   "monitor": {
+    "type": "icons",
+    "count": 10,
+    "label": "継続率90％のRUSH × 10回"
+   },
+   "se": "res"
+  },
+  {
+   "id": "s01-005",
+   "face": "normal",
+   "tap": true,
+   "monitor": {
+    "type": "formula",
+    "rows": [
+     [
+      "0.9",
+      "10",
+      "≒ 34.9％",
+      "10回とも駆け抜けない"
+     ],
+     [
+      "1 − 0.9",
+      "10",
+      "≒ 65.1％",
+      "1回でも駆け抜ける"
+     ]
+    ],
+    "big": "約65％",
+    "big_at_end": 1.0
+   },
+   "react": {
+    "who": "baku",
+    "face": "surprised",
+    "at_end": 0.9
+   }
+  },
+  {
+   "id": "s01-006",
+   "face": "surprised",
+   "pop": true,
+   "se": "emphasis",
+   "gap": 0.1
+  },
+  {
+   "id": "s01-007",
+   "face": "excited",
+   "tap": true,
+   "monitor": {
+    "type": "steps",
+    "p": 0.9,
+    "n": 10,
+    "label": "10連以上する確率",
+    "note": "初当たり＝1連目／継続9回",
+    "formula": [
+     "0.9",
+     "9",
+     "≒ 38.7％"
+    ],
+    "big": "約39％",
+    "big_at_end": 1.0
+   },
+   "se": "res"
+  },
+  {
+   "id": "s01-008",
+   "face": "angry",
+   "shake": true,
+   "monitor": {
+    "type": "glitch",
+    "value": "90％"
+   },
+   "se": "pop"
+  },
+  {
+   "id": "s01-009",
+   "face": "smug",
+   "pre": 0.85,
+   "monitor": {
+    "type": "clean",
+    "value": "90％",
+    "label": "継続率"
+   },
+   "se": "ochi",
+   "ochi": true
+  }
  ],
- "cta": {"dur": 2.4, "line1": "チャンネル登録で", "line2": "次の研究も見る", "button": "チャンネル登録", "faces": {"nagi": "normal", "baku": "normal"}}
+ "cta": {
+  "dur": 2.4,
+  "line1": "チャンネル登録で",
+  "line2": "次の研究も見る",
+  "button": "チャンネル登録",
+  "faces": {
+   "nagi": "normal",
+   "baku": "normal"
+  }
+ }
 }

@@ -117,7 +117,7 @@ def main(eid, estimate=False):
     cut, cta, T = bgm['cut_at'] / FPS, cta_start / FPS, total / FPS
     bed = SH / 'public' / eid / 'bgm_bed.wav'
     expr = f"if(lt(t,{cut:.3f}),1,if(lt(t,{cta:.3f}),0,0.8*min(1,(t-{cta:.3f})/0.4)))"
-    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-stream_loop', '-1', '-i', str(SH / 'public' / bgm['file']), '-t', f'{T:.3f}',
+    subprocess.run(['ffmpeg', '-v', 'error', '-y', '-ss', f"{bgm.get('start', 0):.3f}", '-stream_loop', '-1', '-i', str(SH / 'public' / bgm['file']), '-t', f'{T:.3f}',
                     '-af', f"volume={bgm['gain']},volume='{expr}':eval=frame", '-ar', '48000', '-ac', '2', str(bed)], check=True)
     bgm['bed'] = f'{eid}/bgm_bed.wav'
     data = {'estimate': estimate, 'id': eid, 'no': ep['no'], 'theme': ep['theme'], 'fps': FPS, 'total': total, 'cta_start': cta_start,
