@@ -251,7 +251,7 @@
 
   const timeSlot = () => { const h = new Date().getHours(); return h < 11 ? 'morning' : h < 18 ? 'day' : 'night'; };
   const lineOrder = () => [timeSlot(), 'catch', ...['morning', 'day', 'night'].filter((k) => k !== timeSlot())];
-  const currentLine = () => { const k = lineOrder()[state.lineIdx % lineOrder().length]; return k === 'catch' ? char().catch : char().lines[k]; };
+  const currentLine = () => { const k = lineOrder()[state.lineIdx % lineOrder().length]; return UI.line(k === 'catch' ? char().catch : char().lines[k]); };
 
   /* ---------- 画面 ---------- */
   function renderSelect() {
@@ -360,11 +360,16 @@
     </aside>`;
   }
 
+  /* ナビのセリフに差し込む実データ */
+  function navVars() {
+    const T = P.today, rec = recommend();
+    window.NAV_VARS = { weak: rec.unit, weakS: rec.subject, fade: reviewQueue().length, streak: T.streakDays, min: T.minutes, acc: T.solved ? Math.round((T.correct / T.solved) * 100) : 0, tickets: P.tickets.now };
+  }
   function render() {
     const route = location.hash.replace('#', '') || (state.confirmed ? 'home' : 'select');
     if (!state.view || (route !== 'select' && state.confirmed)) browse(); // 選択画面を離れたら、閲覧中の候補は捨てる
     applyTheme(route === 'select' || !state.confirmed ? vType() : type());
-    refreshStats();
+    refreshStats(); navVars();
     const base = { D, player: P, type: type(), char: char(), rankLabel: rankView(P.rank.rp).label, exit: () => go('home') };
     window.Battle.unmount(); window.Training.unmount(); if (window.Report) window.Report.unmount(); window.MyBase.unmount(); window.Defense.unmount();
     if ((route === 'arena' || route === 'match') && state.confirmed && paused()) { location.hash = 'home'; return; } // 休止中は対戦しない
@@ -489,8 +494,8 @@
     if (k === 'units') { P.privacy.units = e.target.checked; savePlayer(); render(); }
     if (k === 'sfx' && window.SFX) { window.SFX.setMute(!e.target.checked); render(); }
   });
-  root.addEventListener('pointerover', (e) => { if (e.target.closest('[data-action="match"]') && state.expr !== 'serious') setDialogue(char().lines.match, 'serious'); });
-  root.addEventListener('focusin', (e) => { if (e.target.closest('[data-action="match"]') && state.expr !== 'serious') setDialogue(char().lines.match, 'serious'); });
+  root.addEventListener('pointerover', (e) => { if (e.target.closest('[data-action="match"]') && state.expr !== 'serious') setDialogue(UI.line(char().lines.match), 'serious'); });
+  root.addEventListener('focusin', (e) => { if (e.target.closest('[data-action="match"]') && state.expr !== 'serious') setDialogue(UI.line(char().lines.match), 'serious'); });
 
   window.addEventListener('hashchange', render);
   render();

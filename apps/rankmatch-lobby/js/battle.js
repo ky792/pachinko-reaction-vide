@@ -555,7 +555,7 @@
       </ul><p class="muted">本番では、相手もあとで同じ問題を解いて決着します（試作では相手の知識データから回答を予測）。</p></section>
       <section class="m-panel"><h2 class="panel__title">勝負問を選ぶ<small class="panel__note">何問目で勝負をかけるか（問題は始まるまで見えない）</small></h2>
         <div class="d-bets">${d.qs.map((q, k) => `<button data-bet="${k}" aria-pressed="${d.bet === k}">Q${k + 1}<small>${'★'.repeat(q.difficulty)}</small></button>`).join('')}</div></section>
-      ${NavLine(ctx, ctx.char.lines.match, 'serious')}
+      ${NavLine(ctx, UI.line(ctx.char.lines.match), 'serious')}
       <button class="btn btn--main" data-action="duel-start" ${d.bet == null ? 'disabled' : ''}>${d.bet == null ? '勝負問を選んでください' : '直接対決を始める'}</button>
     </div>`;
   }

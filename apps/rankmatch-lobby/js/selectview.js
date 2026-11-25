@@ -8,7 +8,7 @@
   const HOLO = '#6FD3FF'; // タイプ未選択時のホログラム色
 
   const artOf = (c, expr) => (c.visual && c.visual.expr && c.visual.expr[expr]) || (c.visual && c.visual.src) || '';
-  const lineOf = (c, i) => { const L = [c.catch, c.lines.morning, c.lines.day, c.lines.night, c.lines.match]; return L[i % L.length]; };
+  const lineOf = (c, i) => { const L = [c.catch, c.lines.morning, c.lines.day, c.lines.night, c.lines.match]; return UI.line(L[i % L.length]); };
 
   /* 性格の五角形レーダー（強さには関係しない） */
   function Radar(axes, stats) {

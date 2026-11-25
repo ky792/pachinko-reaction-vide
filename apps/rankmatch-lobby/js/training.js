@@ -37,7 +37,7 @@
       </ul>
       ${t.focusUnits.length ? `<p class="t-focus">優先して出題：${t.focusUnits.map((u) => `<b>${esc(u)}</b>`).join('・')}</p>` : '<p class="muted">忘れかけ・未学習の単元から優先して出題します。</p>'}
     </section>
-    ${NavLine(ctx, !tips().intro && ctx.char.lines.lookup ? ctx.char.lines.lookup : ctx.char.lines.day, 'default')}
+    ${NavLine(ctx, !tips().intro && ctx.char.lines.lookup ? ctx.char.lines.lookup : UI.line(ctx.char.lines.day), 'default')}
     <button class="btn btn--main" data-action="start">${esc(t.subject)}の演習を始める</button>
   </div>`;
   }
@@ -99,7 +99,7 @@
     const sum = ['speed', 'acc', 'app'].reduce((x, k) => x + (a[k] - b[k]), 0);
     const correct = t.answers.filter((x) => x.correct).length;
     const units = {}; t.answers.forEach((x) => { const u = units[x.delta.unit] || (units[x.delta.unit] = { before: x.delta.before, after: x.delta.after, ok: 0, n: 0, memo: 0 }); u.after = x.delta.after; if (x.delta.recent && x.correct) u.memo++; u.n++; if (x.correct) u.ok++; });
-    const line = sum > 0 ? fmt(ctx.char.battleLines.train, { subject: s, gain: sum }) : ctx.char.lines.night;
+    const line = sum > 0 ? fmt(ctx.char.battleLines.train, { subject: s, gain: sum }) : UI.line(ctx.char.lines.night);
     return `<div class="match-screen phase-result is-win">
       <header class="r-head"><span class="eyebrow">TRAINING RESULT · ${esc(s)}</span><strong class="t-up">学力 ${sum >= 0 ? '+' : ''}${sum}</strong><span class="r-score">${correct}/${t.answers.length} 正解 · 範囲 ${pct(b.coverage)}% → ${pct(a.coverage)}%</span></header>
       ${MechGrowth(s, b, a, ctx)}
@@ -151,7 +151,7 @@
       return Object.assign({}, q, { choices: order.map((i) => q.choices[i]), answer: order.indexOf(q.answer) });
     });
     setTips({ intro: true });
-    t.i = 0; t.answers = []; t.streak = 0; t.phase = 'question'; t.navLine = ctx.char.lines.day; t.navExpr = 'default'; ask();
+    t.i = 0; t.answers = []; t.streak = 0; t.phase = 'question'; t.navLine = UI.line(ctx.char.lines.day); t.navExpr = 'default'; ask();
   }
   function ask() {
     // 解答時間は「問題が画面に表示されてから選択肢をタップするまで」。描画が終わった次のフレームから測る

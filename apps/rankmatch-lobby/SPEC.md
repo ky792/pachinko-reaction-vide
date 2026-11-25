@@ -282,3 +282,4 @@ apps/rankmatch-lobby/
 - 場面とデータ：ホームの会話（lines）、演習（matchLines）、対戦（battleLines）、戦闘中の通信（voice.comm）、決め技の叫び（voice.shout）、直接対決の開始（voice.duelAtk / duelBack）、ランク昇格（voice.promo）、防衛編成（voice.defBest / defSnap）、おすすめ学習の理由（voice.rec）、調べて解くことへの一言（lines.lookup）。
 - 新しい場面でナビをしゃべらせるときは、10 人分のセリフを追加してから使う。`node tools/check_voice.js` で抜けを確認する。
 - システムのお知らせ（トースト、画面の説明文）はナビの発言として出さない。
+- セリフに事実（弱点の単元・連続日数・学習時間・正答率・挑戦権など）を入れるときは、決め打ちで書かず差し込み（{weak} {fade} {streak} {min} {acc} {tickets}）にする。値は app の navVars() が描画のたびに実データから入れる（UI.line で埋める）。

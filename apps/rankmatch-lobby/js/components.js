@@ -210,6 +210,8 @@
     }).join('')}</ul>
   </section>`;
 
+  /* ナビのセリフの差し込み：{weak} などを、いまのプレイヤーの実データ（window.NAV_VARS、app が描画のたびに更新）で埋める */
+  const line = (s) => String(s || '').replace(/\{(\w+)\}/g, (m, k) => { const v = window.NAV_VARS && window.NAV_VARS[k]; return v != null ? v : m; });
   const Dialogue = (data, char, line, expr) => `<div class="dialogue" aria-live="polite">
     <span class="dialogue__name">${esc(char.name)}<em>${esc(exprLabel(data, char, expr))}</em></span>
     <p>${esc(line)}</p><i class="dialogue__next" aria-hidden="true">▼</i>
@@ -220,5 +222,5 @@
       .map(([l, d, on]) => `<button class="bnav__item" ${on ? 'aria-current="page"' : ''} ${l === 'ナビ' ? 'data-action="change-nav"' : l === 'マイ陣地' ? 'data-action="base"' : l === '対戦' ? 'data-action="match"' : l === '学習' ? 'data-action="train"' : ''}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>${l}</button>`).join('')}
   </nav>`;
 
-  window.UI = { esc, Emblem, Portrait, TypeTabs, GenderToggle, NavigatorProfile, TopBar, RankCard, LevelCard, TodayCard, RecommendCard, ArenaCTA, StatsCard, DefenseLog, MissionList, Dialogue, BottomNav };
+  window.UI = { line, esc, Emblem, Portrait, TypeTabs, GenderToggle, NavigatorProfile, TopBar, RankCard, LevelCard, TodayCard, RecommendCard, ArenaCTA, StatsCard, DefenseLog, MissionList, Dialogue, BottomNav };
 })();
