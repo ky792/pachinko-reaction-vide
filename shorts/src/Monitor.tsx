@@ -56,7 +56,9 @@ const Hook: React.FC<P> = ({m, f, fps}) => {
   return (
     <>
       <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', scale: `${pulse}`}}>
-        <svg width={460} height={460} style={{position: 'absolute'}}>
+        <svg width={460} height={460} style={{position: 'absolute', overflow: 'visible'}}>
+          <circle cx={230} cy={230} r={R + 30} stroke="#9be9ff" strokeWidth={3} fill="none" strokeDasharray="4 10" transform={`rotate(${f * 2} 230 230)`} opacity={0.8} />
+          <circle cx={230} cy={230} r={R - 30} stroke="#9be9ff" strokeWidth={2} fill="none" strokeDasharray="40 20" transform={`rotate(${-f * 3} 230 230)`} opacity={0.5} />
           <circle cx={230} cy={230} r={R} stroke="rgba(255,255,255,0.12)" strokeWidth={26} fill="none" />
           <circle cx={230} cy={230} r={R} stroke={C.cyan} strokeWidth={26} fill="none" strokeLinecap="round"
             strokeDasharray={`${L * fill} ${L}`} transform="rotate(-90 230 230)" />
@@ -106,8 +108,8 @@ const RushIcon: React.FC<{i: number; size: number; appear: number; state?: 'ok' 
     <div
       style={{
         width: size, height: size * 1.02, borderRadius: size * 0.18, position: 'relative',
-        background: out ? `linear-gradient(160deg, #ffb066, ${C.orange})` : `linear-gradient(160deg, #4f8bff, ${C.blue})`,
-        border: '4px solid rgba(255,255,255,0.9)', boxShadow: '0 6px 0 rgba(0,0,0,0.25)',
+        background: out ? 'linear-gradient(160deg, rgba(255,160,80,0.55), rgba(255,138,31,0.3))' : 'linear-gradient(160deg, rgba(95,212,255,0.35), rgba(42,108,255,0.18))',
+        border: `3px solid ${out ? '#ffc48a' : '#9be9ff'}`, boxShadow: `0 0 16px ${out ? 'rgba(255,138,31,0.8)' : 'rgba(95,212,255,0.7)'}, inset 0 0 14px ${out ? 'rgba(255,138,31,0.5)' : 'rgba(95,212,255,0.45)'}`,
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         scale: `${appear < 0 ? 0 : s}`, opacity: appear < 0 ? 0 : 1,
       }}
@@ -187,11 +189,12 @@ const Steps: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
           const x = (972 - (m.n * W + (m.n - 1) * GAP)) / 2 + k * (W + GAP);
           const h = H * v * grow(k);
           const last = k === m.n - 1;
-          const col = last && hl ? C.orange : k === 0 ? C.cyan : C.blue;
+          const col = last && hl ? 'linear-gradient(180deg, #ffd0a0, rgba(255,138,31,0.45))' : 'linear-gradient(180deg, #c8f3ff, rgba(95,212,255,0.25))';
           return (
             <React.Fragment key={k}>
-              <div style={{position: 'absolute', left: x, top: base - h, width: W, height: h, borderRadius: '10px 10px 0 0', background: col,
-                boxShadow: last && hl ? `0 0 24px ${C.orange}` : 'none'}} />
+              <div style={{position: 'absolute', left: x, top: base - h, width: W, height: h, borderRadius: '6px 6px 0 0', background: col,
+                border: `2px solid ${last && hl ? '#ffc48a' : '#9be9ff'}`, borderBottom: 'none',
+                boxShadow: last && hl ? `0 0 24px ${C.orange}` : '0 0 12px rgba(95,212,255,0.6)'}} />
               <div style={{position: 'absolute', left: x - 10, width: W + 20, top: base + 8, textAlign: 'center', fontFamily: JP, fontWeight: 800,
                 fontSize: 24, color: last && hl ? C.orange : C.paper}}>{k + 1}連</div>
               {(k === 0 || last) && (

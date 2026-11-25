@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Img, Sequence, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {Audio} from '@remotion/media';
 import {C, EN, Episode, JP, LAYOUT, Line, OUT, Who, clamp} from './theme';
 import {MonitorBody, panelSounds} from './Monitor';
@@ -86,36 +86,107 @@ const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
     <MonitorBody m={l.monitor!} f={lf} dur={l.end - l.start} fps={fps}
       bigAt={l.monitor!.big_at !== undefined ? l.monitor!.big_at - l.start : undefined} />
   );
-  // セリフが変わってもモニターが変わらない間も、細かく動かす（走査線）
-  const scanY = (f * 6) % (height + 200) - 100;
+  // ホログラム：半透明の投影面＋走査線＋ちらつき＋ときどき横ずれ。切り替わりは下から投影されて現れる
+  const scanY = (f * 7) % (height + 200) - 100;
+  const flick = 0.93 + random(`fl${Math.floor(f / 2)}`) * 0.07 - (f % 97 < 2 ? 0.25 : 0);
+  const band = f % 61 < 3 ? {y: random(`by${Math.floor(f / 61)}`) * height, dx: (random(`bx${f}`) - 0.5) * 30} : null;
+  const mat = prev ? interpolate(local, [0, 9], [0, 1], {...clamp, easing: OUT}) : 1;
   return (
-    <div style={{position: 'absolute', left, top, width, height}}>
-      <div style={{position: 'absolute', inset: -10, borderRadius: 38, background: 'linear-gradient(180deg,#ffffff,#cfe0ff)',
-        boxShadow: '0 20px 50px rgba(0,0,0,0.45)'}} />
-      <div style={{position: 'absolute', inset: 0, borderRadius: 30, overflow: 'hidden',
-        background: `radial-gradient(120% 90% at 50% 20%, ${C.navy2}, ${C.navy})`, clipPath: `inset(${(1 - boot) * 50}% 0 ${(1 - boot) * 50}% 0)`}}>
-        {/* 細い罫線のグリッド */}
-        <div style={{position: 'absolute', inset: 0, opacity: 0.18,
-          backgroundImage: 'linear-gradient(rgba(95,212,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(95,212,255,0.6) 1px, transparent 1px)',
-          backgroundSize: '54px 54px'}} />
-        <div style={{position: 'absolute', left: 0, right: 0, top: scanY, height: 120,
-          background: 'linear-gradient(180deg, transparent, rgba(95,212,255,0.07), transparent)'}} />
-        <div style={{position: 'absolute', top: 12, left: 22, fontFamily: EN, fontWeight: 700, fontSize: 18, color: 'rgba(95,212,255,0.7)',
-          letterSpacing: 4}}>NAGIBAKU LAB / ANALYSIS</div>
-        <div style={{position: 'absolute', inset: 0, opacity: cta >= 0 ? interpolate(cta, [0, 8], [1, 0], clamp) : 1}}>
-          {prev && local < 8 && (
-            <div style={{position: 'absolute', inset: 0, opacity: interpolate(local, [0, 7], [1, 0], clamp)}}>
-              {render(prev, f - prev.start)}
+    <div style={{position: 'absolute', left, top, width, height, perspective: 1600}}>
+      <div style={{position: 'absolute', inset: 0, transform: 'rotateX(4deg)', transformOrigin: '50% 100%', opacity: flick}}>
+        {/* 投影面 */}
+        <div style={{position: 'absolute', inset: 0, borderRadius: 18,
+          background: 'linear-gradient(180deg, rgba(18,70,160,0.62), rgba(8,30,80,0.72))',
+          boxShadow: `0 0 0 2px rgba(95,212,255,0.85), 0 0 34px rgba(95,212,255,0.55), inset 0 0 60px rgba(95,212,255,0.25)`}} />
+        <HoloFrame w={width} h={height} f={f} />
+        <div style={{position: 'absolute', inset: 0, borderRadius: 18, overflow: 'hidden'}}>
+          <HexGrid w={width} h={height} f={f} />
+          <div style={{position: 'absolute', inset: 0, opacity: 0.22, mixBlendMode: 'screen',
+            backgroundImage: 'repeating-linear-gradient(180deg, rgba(150,230,255,0.5) 0 2px, transparent 2px 5px)'}} />
+          <div style={{position: 'absolute', left: 0, right: 0, top: scanY, height: 90,
+            background: 'linear-gradient(180deg, transparent, rgba(140,230,255,0.16), transparent)'}} />
+          <div style={{position: 'absolute', top: 12, left: 24, fontFamily: EN, fontWeight: 700, fontSize: 18, color: 'rgba(140,230,255,0.85)',
+            letterSpacing: 5, textShadow: '0 0 8px rgba(95,212,255,0.9)'}}>NAGI // HOLO-ANALYSIS</div>
+          <div style={{position: 'absolute', top: 12, right: 24, fontFamily: EN, fontWeight: 700, fontSize: 18, color: 'rgba(140,230,255,0.85)',
+            letterSpacing: 3}}>{f % 30 < 18 ? '● LINK' : '○ LINK'}</div>
+          <div style={{position: 'absolute', inset: 0, opacity: cta >= 0 ? interpolate(cta, [0, 8], [1, 0], clamp) : 1,
+            filter: 'drop-shadow(0 0 6px rgba(95,212,255,0.75))'}}>
+            {prev && local < 8 && (
+              <div style={{position: 'absolute', inset: 0, opacity: interpolate(local, [0, 7], [1, 0], clamp)}}>
+                {render(prev, f - prev.start)}
+              </div>
+            )}
+            <div style={{position: 'absolute', inset: 0, clipPath: `inset(${(1 - mat) * 100}% 0 0 0)`}}>
+              {render(cur, local)}
             </div>
-          )}
-          <div style={{position: 'absolute', inset: 0, opacity: prev ? interpolate(local, [0, 6], [0, 1], clamp) : 1,
-            translate: prev ? `0 ${interpolate(local, [0, 8], [26, 0], {...clamp, easing: OUT})}px` : undefined}}>
-            {render(cur, local)}
+            {mat < 1 && (
+              <div style={{position: 'absolute', left: 0, right: 0, top: (1 - mat) * height - 3, height: 6, background: '#dff7ff',
+                boxShadow: '0 0 24px 8px rgba(95,212,255,0.9)'}} />
+            )}
           </div>
+          {band && (
+            <div style={{position: 'absolute', left: band.dx, right: -band.dx, top: band.y, height: 26, background: 'rgba(140,230,255,0.18)',
+              mixBlendMode: 'screen'}} />
+          )}
+          {cta >= 0 && <Cta ep={ep} f={cta} fps={fps} />}
         </div>
-        {cta >= 0 && <Cta ep={ep} f={cta} fps={fps} />}
       </div>
     </div>
+  );
+};
+
+// ホログラムの枠：四隅のL字・目盛り・回るリング
+const HoloFrame: React.FC<{w: number; h: number; f: number}> = ({w, h, f}) => {
+  const L = 54, col = '#9be9ff';
+  const corner = (x: number, y: number, sx: number, sy: number) => (
+    <path d={`M ${x} ${y + sy * L} L ${x} ${y} L ${x + sx * L} ${y}`} stroke={col} strokeWidth={6} fill="none" strokeLinecap="round" />
+  );
+  return (
+    <svg width={w + 40} height={h + 40} style={{position: 'absolute', left: -20, top: -20, overflow: 'visible',
+      filter: 'drop-shadow(0 0 8px rgba(95,212,255,0.95))'}}>
+      {corner(8, 8, 1, 1)}{corner(w + 32, 8, -1, 1)}{corner(8, h + 32, 1, -1)}{corner(w + 32, h + 32, -1, -1)}
+      {Array.from({length: 24}, (_, i) => (
+        <line key={i} x1={80 + i * ((w - 120) / 23)} y1={h + 30} x2={80 + i * ((w - 120) / 23)} y2={h + (i % 4 === 0 ? 18 : 24)}
+          stroke={col} strokeWidth={2} opacity={0.7} />
+      ))}
+      <g transform={`translate(${w - 20} 60) rotate(${f * 3})`}>
+        <circle r={22} stroke={col} strokeWidth={2} fill="none" strokeDasharray="6 6" />
+        <circle r={12} stroke={col} strokeWidth={2} fill="none" opacity={0.6} />
+      </g>
+      <g transform={`translate(60 ${h - 20}) rotate(${-f * 2})`}>
+        <circle r={20} stroke={col} strokeWidth={2} fill="none" strokeDasharray="3 7" />
+      </g>
+    </svg>
+  );
+};
+
+// 六角形の格子（ゆっくり流れる）
+const HexGrid: React.FC<{w: number; h: number; f: number}> = ({w, h, f}) => (
+  <svg width={w} height={h} style={{position: 'absolute', inset: 0, opacity: 0.16}}>
+    <defs>
+      <pattern id="hex" width={42} height={72.75} patternUnits="userSpaceOnUse" patternTransform={`translate(0 ${(f * 0.6) % 72.75})`}>
+        <path d="M21 0 L42 12.1 L42 36.4 L21 48.5 L0 36.4 L0 12.1 Z M21 48.5 L21 72.75" stroke="#8fe3ff" strokeWidth={1.4} fill="none" />
+      </pattern>
+    </defs>
+    <rect width={w} height={h} fill="url(#hex)" />
+  </svg>
+);
+
+// ナギのタブレットからホログラムへ伸びる投影光（ナギが話している間は強く）
+const HoloBeam: React.FC<{ep: Episode}> = ({ep}) => {
+  const f = useCurrentFrame();
+  const l = lineAt(ep, f);
+  const nagi = !!l && l.who === 'nagi' && f < l.end + 4;
+  const tap = !!l && l.tap && l.who === 'nagi' ? interpolate(f - l.start, [3, 6, 18], [0, 1, 0], clamp) : 0;
+  const base = (nagi ? 0.2 : 0.08) + tap * 0.25 + Math.sin(f / 5) * 0.02;
+  if (f >= ep.cta_start) return null;
+  const {left, width, top, height} = LAYOUT.monitor;
+  const tx = LAYOUT.chars.nagiX, ty = LAYOUT.chars.bottom - LAYOUT.chars.h * 0.18;
+  const by = top + height;
+  return (
+    <div style={{position: 'absolute', inset: 0, opacity: base,
+      clipPath: `polygon(${tx - 30}px ${ty}px, ${tx + 30}px ${ty}px, ${left + width}px ${by}px, ${left}px ${by}px)`,
+      background: 'linear-gradient(0deg, rgba(160,235,255,1), rgba(95,212,255,0.25))'}} />
   );
 };
 
@@ -268,6 +339,7 @@ export const ShortsEpisode: React.FC<{ep: Episode}> = ({ep}) => {
         <Sweep ep={ep} />
         <Sparks ep={ep} />
       </MonitorCam>
+      <HoloBeam ep={ep} />
       <SpeedLines ep={ep} />
       <TapBeam ep={ep} />
       <CharCam ep={ep}>
