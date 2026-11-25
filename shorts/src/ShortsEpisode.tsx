@@ -88,7 +88,7 @@ const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
   );
   // ホログラム：半透明の投影面＋走査線＋ちらつき＋ときどき横ずれ。切り替わりは下から投影されて現れる
   const scanY = (f * 7) % (height + 200) - 100;
-  const flick = 0.93 + random(`fl${Math.floor(f / 2)}`) * 0.07 - (f % 97 < 2 ? 0.25 : 0);
+  const flick = f < 20 ? 1 : 0.93 + random(`fl${Math.floor(f / 2)}`) * 0.07 - (f > 30 && f % 97 < 2 ? 0.25 : 0);
   const band = f % 61 < 3 ? {y: random(`by${Math.floor(f / 61)}`) * height, dx: (random(`bx${f}`) - 0.5) * 30} : null;
   const mat = prev ? interpolate(local, [0, 9], [0, 1], {...clamp, easing: OUT}) : 1;
   return (
