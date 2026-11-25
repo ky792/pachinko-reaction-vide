@@ -1,0 +1,28 @@
+[
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 0%（80% 未満）",
+  "id": "s01-003",
+  "who": "baku",
+  "text": "は？",
+  "asr": "はぁ?",
+  "ratio": 0.0,
+  "audio": "episodes/shorts001/voices/s01-003.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ワ",
+  "expect": "ワ",
+  "reason": "台本は「ワ」、聞こえたのは「ハー」",
+  "level": "低",
+  "id": "s01-003",
+  "who": "baku",
+  "text": "は？",
+  "asr": "はぁ?",
+  "ratio": 0.0,
+  "audio": "episodes/shorts001/voices/s01-003.wav"
+ }
+]
