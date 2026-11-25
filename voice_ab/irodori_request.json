@@ -1,11 +1,11 @@
 {
  "action": "lines",
- "episode": "episodes/shorts001",
+ "episode": "episodes/nagi45_001",
  "who": "baku",
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "sh8_s7",
+   "name": "n45_s7",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -16,7 +16,7 @@
    ]
   },
   {
-   "name": "sh8_s21",
+   "name": "n45_s21",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -27,7 +27,7 @@
    ]
   },
   {
-   "name": "sh8_s88",
+   "name": "n45_s88",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -38,7 +38,7 @@
    ]
   },
   {
-   "name": "sh8_s3",
+   "name": "n45_s3",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -47,20 +47,6 @@
     "--seed",
     "3"
    ]
-  },
-  {
-   "name": "sh8_s42",
-   "ref": "voice_ab/vc_out/ref__からかい.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
-   "extra": [
-    "--duration-scale",
-    "0.88",
-    "--seed",
-    "42"
-   ]
   }
- ],
- "only": [
-  "s01-008"
  ]
 }
