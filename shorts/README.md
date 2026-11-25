@@ -38,7 +38,7 @@
 - 最後：暗転 → ナギバク研究所（チャンネルアイコン `public/series/channel_icon.png`）＋チャンネル登録
 
 ## 45秒解析の時計UI（固定・変更禁止）
-- 採用デザイン：`shorts/assets_src/analysis_clock_design.png`（2026-11-25）。レトロな機械式懐中時計×近未来の研究所UI
+- 採用デザイン：`shorts/assets_src/analysis_clock_design.png`（2026-11-25 v2・アニメ調に変更。写実版v1は `analysis_clock_design_v1_realistic.png`）。機械式懐中時計×研究所UI
 - 素材：`public/series/nagi45/clock/`（`python shorts/scripts/make_clock_assets.py` で採用デザインから切り出す）
   - card.png（背景つき全体・描かれた秒針／数字／ゲージ／発光を消した土台）・body.png（時計本体の切り抜き）・glow.png（シアンの発光）・gauge.png（外周ゲージの点灯）・gear_a〜d.png＋gearwin.png（回す歯車と見える窓）・geometry.json（中心・半径・歯車）
   - 音：boot.wav（起動）・tick.wav（秒針）・gears_loop.wav（歯車の駆動）・stop.wav（停止）

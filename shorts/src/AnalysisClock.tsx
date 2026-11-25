@@ -6,6 +6,7 @@ import geo from '../public/series/nagi45/clock/geometry.json';
 // ─────────────────────────────────────────────────────────────
 // 45秒解析の時計UI（シリーズ固定・2026-11-25 採用デザイン）
 // デザイン：レトロな機械式懐中時計×研究所UI。真鍮ゴールドの枠・アイボリーの文字盤・スケルトンの歯車・ローマ数字・赤い秒針・シアンの発光・ダークネイビー
+// 2026-11-25 v2：アニメ調のデザインに変更（ユーザー指示）。元の写実版は shorts/assets_src/analysis_clock_design_v1_realistic.png
 // 素材：public/series/nagi45/clock/（shorts/scripts/make_clock_assets.py が採用デザイン画像 shorts/assets_src/analysis_clock_design.png から切り出す）
 // 使い方：<AnalysisClock start={解析開始のフレーム} seconds={45} title="今回の題" />（台本や解説とは独立。時間は動画のフレームから計算）
 // 動き：赤い秒針は1秒ごとにカチッと動く（60秒で一周の文字盤、残り45秒＝9時 → 反時計回り → 0秒＝12時）。
@@ -15,9 +16,9 @@ import geo from '../public/series/nagi45/clock/geometry.json';
 
 const P = 'series/nagi45/clock';
 const S = geo.size;            // 素材の座標系（1254）
-const CREAM = '#f3ead2';
+const CREAM = '#ffffff';
 const CYAN = '#5fe3ff';
-const SERIF = '"Noto Serif CJK JP", "Noto Serif JP", "DejaVu Serif", serif';
+const SERIF = '"Noto Sans", "Noto Sans CJK JP", sans-serif';   // v2 は太いイタリックのゴシック
 const clamp = {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'} as const;
 const OUT = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -82,12 +83,13 @@ const Mechanism: React.FC<{t: ClockTiming; glowOn: number; f: number; fps: numbe
       <svg width={S} height={S} style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
         <g transform={`rotate(${ang} ${geo.cx} ${geo.cy})`} style={{filter: 'drop-shadow(4px 6px 3px rgba(0,0,0,0.45))'}}>
           <path d={`M ${geo.cx - 5} ${geo.cy + 70} L ${geo.cx - 3.2} ${geo.cy - geo.hand_len + 50} L ${geo.cx} ${geo.cy - geo.hand_len} L ${geo.cx + 3.2} ${geo.cy - geo.hand_len + 50} L ${geo.cx + 5} ${geo.cy + 70} Z`}
-            fill="#e8341c" stroke="#5a0d05" strokeWidth={2.5} />
-          <path d={`M ${geo.cx} ${geo.cy - geo.hand_len + 2} q -16 34 0 62 q 16 -28 0 -62 Z`} fill="#e8341c" stroke="#5a0d05" strokeWidth={2.5} />
-          <circle cx={geo.cx} cy={geo.cy + 86} r={20} fill="#e8341c" stroke="#5a0d05" strokeWidth={3} />
-          <circle cx={geo.cx} cy={geo.cy} r={26} fill="#c8a25a" stroke="#4a3412" strokeWidth={3} />
-          <circle cx={geo.cx} cy={geo.cy} r={15} fill="#e8341c" stroke="#5a0d05" strokeWidth={2} />
-          <circle cx={geo.cx} cy={geo.cy} r={6} fill="#9fd8ff" />
+            fill="#f2481e" stroke="#2a1a3a" strokeWidth={3} />
+          <path d={`M ${geo.cx} ${geo.cy - geo.hand_len + 2} q -18 36 0 66 q 18 -30 0 -66 Z`} fill="#f2481e" stroke="#2a1a3a" strokeWidth={3} />
+          <circle cx={geo.cx} cy={geo.cy + 88} r={20} fill="#f2481e" stroke="#2a1a3a" strokeWidth={3.5} />
+          <circle cx={geo.cx} cy={geo.cy} r={46} fill="#3a3f52" stroke="#1e1a2e" strokeWidth={3} />
+          <circle cx={geo.cx} cy={geo.cy} r={34} fill="#f2481e" stroke="#2a1a3a" strokeWidth={3.5} />
+          <circle cx={geo.cx} cy={geo.cy} r={19} fill="#d9dbe3" stroke="#2a1a3a" strokeWidth={3} />
+          <circle cx={geo.cx - 5} cy={geo.cy - 5} r={6} fill="#ffffff" />
         </g>
       </svg>
     </>
@@ -95,7 +97,7 @@ const Mechanism: React.FC<{t: ClockTiming; glowOn: number; f: number; fps: numbe
 };
 
 const Digits: React.FC<{secs: number; size: number; warn: boolean}> = ({secs, size, warn}) => (
-  <span style={{fontFamily: SERIF, fontWeight: 900, fontStyle: 'italic', fontSize: size, color: warn ? '#ffb4a8' : CREAM, letterSpacing: -2,
+  <span style={{fontFamily: SERIF, fontWeight: 900, fontStyle: 'italic', fontSize: size, color: warn ? '#ffb4a8' : CREAM, letterSpacing: -3,
     display: 'inline-block', transform: 'skewX(-10deg)', textShadow: warn ? '0 0 18px rgba(255,60,40,0.8)' : '0 0 14px rgba(95,227,255,0.35)'}}>
     00:{String(secs).padStart(2, '0')}
   </span>
@@ -115,7 +117,7 @@ const Complete: React.FC<{a: number}> = ({a}) => {
       <div style={{position: 'absolute', left: -60, right: -60, top: 270, height: 4, background: CYAN, boxShadow: `0 0 14px ${CYAN}`, transform: `skewY(-4deg) translateX(${-shift}px)`}} />
       <div style={{position: 'absolute', left: 0, right: 0, top: 62, textAlign: 'center', transform: `skewY(-4deg) translateX(${-shift * 0.4}px)`}}>
         <div style={{fontFamily: SERIF, fontStyle: 'italic', fontWeight: 700, fontSize: 44, letterSpacing: 14, color: CREAM}}>ANALYSIS COMPLETE</div>
-        <div style={{fontFamily: SERIF, fontWeight: 900, fontSize: 138, color: '#fff', lineHeight: 1.1, letterSpacing: 10, textShadow: `0 0 24px ${CYAN}, 0 0 4px ${CYAN}`}}>解析完了</div>
+        <div style={{fontFamily: '"Noto Sans CJK JP", sans-serif', fontWeight: 900, fontSize: 138, color: '#fff', lineHeight: 1.1, letterSpacing: 10, textShadow: `0 0 24px ${CYAN}, 0 0 4px ${CYAN}`}}>解析完了</div>
       </div>
     </div>
   );
