@@ -51,7 +51,6 @@ const BigStamp: React.FC<{text: string; f: number; fps: number; color?: string}>
 // ───────── hook：「継続率 90％」リング
 const Hook: React.FC<P> = ({m, f, fps}) => {
   const fill = interpolate(f, [0, 14], [0, 0.9], {...clamp, easing: OUT});
-  const num = Math.round(interpolate(f, [0, 12], [0, 90], {...clamp, easing: OUT}));
   const R = 190, L = 2 * Math.PI * R;
   const pulse = 1 + Math.sin(f / 7) * 0.012;
   return (
@@ -68,7 +67,7 @@ const Hook: React.FC<P> = ({m, f, fps}) => {
         </svg>
         <div style={{textAlign: 'center'}}>
           <div style={{fontFamily: JP, fontWeight: 800, fontSize: 44, color: C.paper}}>{m.label}</div>
-          <div style={{fontFamily: JP, fontWeight: 900, fontSize: 150, color: C.white, lineHeight: 1}}>{num}<span style={{fontSize: 90}}>％</span></div>
+          <div style={{fontFamily: JP, fontWeight: 900, fontSize: 150, color: C.white, lineHeight: 1}}>{m.value.replace('％', '')}<span style={{fontSize: 90}}>％</span></div>
         </div>
       </div>
       <div style={{position: 'absolute', bottom: 34, left: 0, right: 0, textAlign: 'center', fontFamily: JP, fontWeight: 700, fontSize: 34,
@@ -174,7 +173,7 @@ const Formula: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
 // ───────── steps：10連以上（0.9⁹）
 const Steps: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
   const vals = Array.from({length: m.n}, (_, k) => Math.pow(m.p, k));
-  const W = 66, GAP = 18, H = 250, base = 470;
+  const W = 66, GAP = 18, H = 250, base = 455;
   const grow = (k: number) => interpolate(f, [6 + k * 4, 16 + k * 4], [0, 1], {...clamp, easing: OUT});
   const hl = f >= 6 + m.n * 4 + 4;
   const fAt = Math.round(dur * 0.55);
@@ -203,7 +202,7 @@ const Steps: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
           );
         })}
       </div>
-      <div style={{position: 'absolute', top: 536, left: 0, right: 0, textAlign: 'center', fontFamily: EN, fontWeight: 900, fontSize: 46,
+      <div style={{position: 'absolute', top: 518, left: 0, right: 0, textAlign: 'center', fontFamily: EN, fontWeight: 900, fontSize: 46,
         color: C.white, opacity: interpolate(f, [fAt, fAt + 6], [0, 1], clamp)}}>
         <Sup base={m.formula[0]} exp={m.formula[1]} size={46} />
         <span style={{marginLeft: 16, color: C.orange}}>{m.formula[2]}</span>

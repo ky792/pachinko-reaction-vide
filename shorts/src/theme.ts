@@ -19,9 +19,9 @@ export const OUT = Easing.bezier(0.16, 1, 0.3, 1);
 // 画面の区画（1080×1920）。Shorts の操作UI（右の縦ボタン列・下の説明欄）に重要な情報を置かない
 export const LAYOUT = {
   title: {top: 150, height: 290},
-  monitor: {left: 54, top: 452, width: 972, height: 600},
-  sub: {top: 1070, left: 70, width: 860},
-  chars: {bottom: 1660, nagiX: 285, bakuX: 700, h: 470},
+  monitor: {left: 54, top: 448, width: 972, height: 592},
+  sub: {top: 1084, left: 70, width: 860},
+  chars: {bottom: 1750, nagiX: 280, bakuX: 705, h: 540},
 };
 
 export type Who = 'nagi' | 'baku';
