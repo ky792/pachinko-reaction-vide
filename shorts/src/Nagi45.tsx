@@ -43,8 +43,8 @@ const Timer: React.FC<{ep: Episode}> = ({ep}) => {
   const move = interpolate(a, [34, 48], [0, 1], {...clamp, easing: OUT});
   const boot = spring({frame: a, fps, config: {damping: 11, stiffness: 200}});
   const x = interpolate(move, [0, 1], [540, 168]);
-  const y = interpolate(move, [0, 1], [880, 268]);
-  const sc = interpolate(move, [0, 1], [1.15, 0.5]) * interpolate(boot, [0, 1], [0.3, 1]);
+  const y = interpolate(move, [0, 1], [920, 268]);
+  const sc = interpolate(move, [0, 1], [0.95, 0.5]) * interpolate(boot, [0, 1], [0.3, 1]);
   const pulse = secs <= 5 && !done ? 1 + 0.07 * Math.max(0, Math.cos(((el % 1) * Math.PI * 2))) : 1;
   const endA = f - t.end;
   const fade = interpolate(endA, [40, 52], [1, 0], clamp);
@@ -65,7 +65,7 @@ const Timer: React.FC<{ep: Episode}> = ({ep}) => {
       </svg>
       <div style={{position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
         <div style={{fontFamily: EN, fontWeight: 800, fontSize: 30, letterSpacing: 8, color: col}}>{done ? 'COMPLETE' : 'ANALYSIS'}</div>
-        <div style={{fontFamily: '"Noto Sans Mono", "DejaVu Sans Mono", monospace', fontWeight: 800, fontSize: 132, color: '#fff', lineHeight: 1.05,
+        <div style={{fontFamily: '"Noto Sans Mono", "DejaVu Sans Mono", monospace', fontWeight: 800, fontSize: 112, color: '#fff', lineHeight: 1.05,
           textShadow: `0 0 18px ${col}`}}>00:{String(secs).padStart(2, '0')}</div>
       </div>
     </div>
@@ -83,7 +83,7 @@ const TopBar: React.FC<{ep: Episode}> = ({ep}) => {
       translate: `${interpolate(a, [0, 12], [60, 0], {...clamp, easing: OUT})}px 0`}}>
       <div style={{transformOrigin: '0 0', scale: '0.5', width: 1100, marginBottom: -74}}><Logo /></div>
       <div style={{fontFamily: JP, fontWeight: 900, fontSize: 46, lineHeight: 1.25, color: '#fff', WebkitTextStroke: `10px ${C.navy}`, paintOrder: 'stroke fill'}}>
-        {ep.title}
+        {String(ep.title).split('\n').map((r, i) => <div key={i}>{r}</div>)}
       </div>
     </div>
   );
@@ -109,7 +109,7 @@ const TitleBurst: React.FC<{ep: Episode}> = ({ep}) => {
         <Logo />
       </div>
       <div style={{position: 'absolute', left: 60, right: 60, top: 600, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 60, color: '#fff',
-        WebkitTextStroke: `12px ${C.navy}`, paintOrder: 'stroke fill', opacity: interpolate(a, [8, 14], [0, 1], clamp)}}>{ep.title}</div>
+        WebkitTextStroke: `12px ${C.navy}`, paintOrder: 'stroke fill', opacity: interpolate(a, [8, 14], [0, 1], clamp)}}>{String(ep.title).replace('\n', '')}</div>
     </AbsoluteFill>
   );
 };
@@ -151,7 +151,7 @@ const BigCap: React.FC<{ep: Episode}> = ({ep}) => {
   const e = active(ep, 'bigcap', f);
   if (!e) return null;
   const a = f - e.f0;
-  const s = spring({frame: a, fps, config: {damping: 9, stiffness: 300}});
+  const s = e.f0 === 0 ? 1 : spring({frame: a, fps, config: {damping: 9, stiffness: 300}});
   const out = interpolate(f, [e.f1 - 5, e.f1], [1, 0], clamp);
   const col = e.color === 'red' ? '#ff2d2d' : e.color === 'blue' ? C.blue : e.color === 'white' ? '#fff' : C.orange;
   return (
