@@ -1,0 +1,15 @@
+[
+ {
+  "kind": "誤読",
+  "where": "ナヤ",
+  "expect": "ナヤ",
+  "reason": "台本は「ナヤ」、聞こえたのは「ノヨ」",
+  "level": "低",
+  "id": "s01-008",
+  "who": "baku",
+  "text": "もう90％って書くなや……",
+  "asr": "もう90%って書くのよ",
+  "ratio": 0.895,
+  "audio": "episodes/shorts001_n88/voices/s01-008.wav"
+ }
+]
