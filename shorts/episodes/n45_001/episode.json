@@ -20,20 +20,10 @@
  },
  "timer_end_fx": [
   {
-   "type": "stamp",
-   "text": "解析完了",
-   "color": "cyan",
-   "size": 190,
-   "y": 720,
-   "dur": 1.4,
-   "rot": -4,
-   "dim": true
-  },
-  {
    "type": "flash",
    "dur": 0.2,
    "color": "#bff4ff",
-   "op": 0.7
+   "op": 0.5
   }
  ],
  "note": "※初当たり＝1連目・毎回90％継続の理論値。実機は算出条件が異なる場合あり",

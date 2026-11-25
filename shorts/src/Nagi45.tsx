@@ -5,6 +5,7 @@ import {C, EN, Episode, Ev, JP, LAYOUT, OUT, clamp} from './theme';
 import {Bust, HoloBeam, MonitorFrame, Subtitle, TapBeam} from './ShortsEpisode';
 import {CharCam, MonitorCam, camAt} from './Fx';
 import {panelSounds} from './Monitor';
+import {AnalysisClock, ClockSounds} from './AnalysisClock';
 
 // ナギの45秒解析：シリーズ共通の画面
 // 研究所はおしゃれ・キャラはかわいい・解説は真面目・編集はバカ。演出は episode.json の fx（→ build45.py が events にする）で呼び出す
@@ -96,20 +97,18 @@ const TitleBurst: React.FC<{ep: Episode}> = ({ep}) => {
   const t = ep.timer;
   if (!t) return null;
   const a = f - t.start;
-  if (a < 0 || a > 50) return null;
+  if (a < 0 || a > 60) return null;
   const s = spring({frame: a, fps, config: {damping: 10, stiffness: 260}});
-  const out = interpolate(a, [36, 48], [1, 0], clamp);
+  const out = interpolate(a, [46, 58], [1, 0], clamp);
   return (
     <AbsoluteFill style={{opacity: out}}>
       <div style={{position: 'absolute', inset: 0, background: '#fff', opacity: interpolate(a, [0, 2, 8], [0, 0.9, 0], clamp)}} />
       <div style={{position: 'absolute', inset: 0, background: 'rgba(6,16,42,0.55)'}} />
-      <Rays cx={540} cy={560} f={f} color="rgba(95,212,255,0.5)" />
-      <div style={{position: 'absolute', left: 0, right: 0, top: 380, display: 'flex', justifyContent: 'center',
-        scale: `${interpolate(s, [0, 1], [2.6, 1])}`, rotate: `${interpolate(s, [0, 1], [-8, 0])}deg`}}>
+      <Rays cx={540} cy={800} f={f} color="rgba(95,212,255,0.35)" />
+      <div style={{position: 'absolute', left: 0, right: 0, top: 110, display: 'flex', justifyContent: 'center',
+        scale: `${interpolate(s, [0, 1], [2.2, 0.85])}`, rotate: `${interpolate(s, [0, 1], [-8, 0])}deg`}}>
         <Logo />
       </div>
-      <div style={{position: 'absolute', left: 30, right: 30, top: 600, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 52, whiteSpace: 'nowrap', color: '#fff',
-        WebkitTextStroke: `12px ${C.navy}`, paintOrder: 'stroke fill', opacity: interpolate(a, [8, 14], [0, 1], clamp)}}>{String(ep.title).replace('\n', '')}</div>
     </AbsoluteFill>
   );
 };
@@ -278,9 +277,8 @@ export const Nagi45: React.FC<{ep: Episode}> = ({ep}) => {
       </CharCam>
       <Sparkle ep={ep} />
       <Boom ep={ep} />
-      <TopBar ep={ep} />
       <TitleBurst ep={ep} />
-      <Timer ep={ep} />
+      {ep.timer && <AnalysisClock start={ep.timer.start} seconds={ep.timer.seconds} title={ep.title} />}
       <Stamp ep={ep} />
       <BigCap ep={ep} />
       <Subtitle ep={ep} />
@@ -337,10 +335,10 @@ const Sounds45: React.FC<{ep: Episode}> = ({ep}) => {
       {ep.lines.filter((l) => l.monitor).flatMap((l) => panelSounds(l.monitor!, l.end - l.start).map((o, i) => se(`ps-${l.id}-${i}`, l.start + o.at, `se/${o.src}.wav`, o.vol)))}
       {ep.lines.filter((l) => l.monitor?.big_at !== undefined).map((l) => se(`big-${l.id}`, l.monitor!.big_at, 'se/emphasis.wav', 0.45))}
       {(ep.events ?? []).filter((e: Ev) => e.sound).map((e: Ev, i) => se(`ev-${i}`, e.f0 + (e.sound_delay ?? 0), e.sound, e.vol ?? 0.5))}
-      {t && se('t-start', t.start, `${SERIES}/timer_start.wav`, 0.55)}
-      {t && se('t-30', t.start + 15 * 30, `${SERIES}/timer_beep30.wav`, 0.4)}
-      {t && [5, 4, 3, 2, 1].map((s) => se(`t-c${s}`, t.end - s * 30, `${SERIES}/timer_count.wav`, 0.4))}
-      {t && se('t-done', t.end, `${SERIES}/complete.wav`, 0.6)}
+      {t && <ClockSounds start={t.start} seconds={t.seconds} />}
+      {t && se('t-30', t.start + 15 * 30, `${SERIES}/timer_beep30.wav`, 0.28)}
+      {t && [5, 4, 3, 2, 1].map((s) => se(`t-c${s}`, t.end - s * 30 + 3, `${SERIES}/timer_count.wav`, 0.2))}
+      {t && se('t-done', t.end + 10, `${SERIES}/complete.wav`, 0.4)}
       {(ep as any).cta45 && se('cta-pop', (ep as any).cta45.at + 28, 'se/pop.wav', 0.45)}
       {(ep as any).cta45 && se('cta-kira', (ep as any).cta45.at + 30, 'se/kira.wav', 0.3)}
     </>

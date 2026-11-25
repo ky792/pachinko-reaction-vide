@@ -93,3 +93,46 @@ save(E / 'whoosh.wav', w, 0.55)
 n = int(SR * 0.35)
 save(E / 'thump.wav', np.sin(2 * np.pi * np.cumsum(np.linspace(150, 45, n)) / SR) * np.exp(-t(0.35) * 9), 0.95)
 print('ok')
+
+# ───────── 45秒解析の時計UI（機械式）
+C = S / 'clock'
+
+
+def click(f0=3200, d=0.018, decay=320):
+    tt = t(d)
+    return (np.sin(2 * np.pi * f0 * tt) * 0.6 + rng.standard_normal(len(tt)) * 0.5) * np.exp(-tt * decay)
+
+
+def place(buf, x, at):
+    i = int(SR * at)
+    buf[i:i + len(x)] += x[:max(0, len(buf) - i)]
+
+
+# 秒針のカチッ（2段の金属音）
+x = np.zeros(int(SR * 0.08)); place(x, click(3600), 0); place(x, click(2400, decay=260) * 0.6, 0.012)
+save(C / 'tick.wav', x, 0.7)
+# 起動：ゼンマイを巻くラチェット（だんだん速く）→ 起動のうなり → キンッ
+n = int(SR * 1.3); x = np.zeros(n)
+at = 0.0
+for k in range(12):
+    place(x, click(2800 + k * 60, decay=380) * 0.7, at); at += 0.075 - k * 0.0035
+hum = np.sin(2 * np.pi * np.cumsum(np.linspace(60, 140, int(SR * 0.7))) / SR) * np.linspace(0, 1, int(SR * 0.7)) ** 2 * 0.5
+place(x, hum, 0.55)
+place(x, tone(2637, 0.45, 'sin', r=0.4) * 0.5 + tone(3951, 0.45, 'sin', r=0.4) * 0.25, 0.85)
+save(C / 'boot.wav', x, 0.8)
+# 歯車の微かな駆動音（ループ用・46秒）：低いうなり＋細かい歯の音
+n = int(SR * 46); tt = np.arange(n) / SR
+whir = lowpass(rng.standard_normal(n), 60) * 0.35 + np.sin(2 * np.pi * 52 * tt) * 0.08
+teeth = np.zeros(n)
+for k in np.arange(0, 46, 0.125):
+    place(teeth, click(1800, d=0.01, decay=500) * 0.12, k)
+save(C / 'gears_loop.wav', whir * (0.8 + 0.2 * np.sin(2 * np.pi * 0.5 * tt)) + teeth, 0.5)
+# 停止：ガチャン（低い金属音）→ ゼンマイがほどけて止まる
+n = int(SR * 1.1); x = np.zeros(n)
+clunk = (np.sin(2 * np.pi * np.cumsum(np.linspace(220, 90, int(SR * 0.25))) / SR) + lowpass(rng.standard_normal(int(SR * 0.25)), 8) * 0.6) * np.exp(-t(0.25) * 14)
+place(x, clunk, 0)
+at = 0.18
+for k in range(9):
+    place(x, click(2200 - k * 120, decay=300) * (0.6 - k * 0.05), at); at += 0.05 + k * 0.018
+save(C / 'stop.wav', x, 0.85)
+print('clock se ok')
