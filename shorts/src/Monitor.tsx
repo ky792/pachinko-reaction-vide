@@ -318,8 +318,8 @@ const Dist: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
       )}
       {mode === 'cum' && (
         <>
-          <div style={{position: 'absolute', left: xc(2), width: xc(10) - xc(2), top: 96, textAlign: 'center', fontFamily: JP, fontWeight: 900,
-            fontSize: 34, color: '#9be9ff', opacity: cumP, textShadow: '0 0 8px #06204f'}}>7連以下 <span style={{fontFamily: EN, fontSize: 52}}>約52.2%</span></div>
+          <div style={{position: 'absolute', left: xc(1), width: 420, top: 96, textAlign: 'center', fontFamily: JP, fontWeight: 900,
+            fontSize: 34, color: '#9be9ff', opacity: cumP, textShadow: '0 0 8px #06204f', whiteSpace: 'nowrap'}}>7連以下 <span style={{fontFamily: EN, fontSize: 52}}>約52.2%</span></div>
           <div style={{position: 'absolute', left: xc(7) - 2, top: 120, width: 4, height: BASE - 120, background: '#fff', opacity: cumP * 0.9}} />
           <div style={{position: 'absolute', left: xc(7) - 60, width: 120, top: BASE + 34, textAlign: 'center', fontFamily: JP, fontWeight: 800, fontSize: 22,
             color: '#fff', opacity: cumP}}>中央値7連</div>

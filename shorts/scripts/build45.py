@@ -73,7 +73,7 @@ def main(eid, estimate=False):
     need_fixed = tm.get('lead', 0.5) + tm.get('tail', 0.6) + sum(gap_of(order.index(k), ep['lines'][order.index(k)]) for k in win[1:])
     talk = sum(raw[k] for k in win)
     win_tempo = base
-    room = tm['seconds'] - need_fixed
+    room = tm['seconds'] - need_fixed - tm.get('hold_target', 0)   # hold_target：数字のドンのあと等に残したい間の合計
     if talk / base > room:
         win_tempo = talk / room
         if win_tempo > tm.get('max_tempo', 1.2):

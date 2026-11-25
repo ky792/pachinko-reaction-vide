@@ -7,15 +7,16 @@
  "voice_episode": "episodes/nagi45_001",
  "script": "n01",
  "tempo": 1.1,
- "gap": 0.2,
+ "gap": 0.16,
  "timer": {
   "start_after": "n01-005",
   "first": "n01-006",
   "last": "n01-019",
   "seconds": 45,
-  "lead": 0.45,
-  "tail": 0.5,
-  "max_tempo": 1.2
+  "lead": 0.35,
+  "tail": 0.4,
+  "max_tempo": 1.2,
+  "hold_target": 0.6
  },
  "timer_end_fx": [
   {
@@ -407,7 +408,7 @@
   {
    "id": "n01-017",
    "face": "normal",
-   "gap": 0.35,
+   "gap": 0.3,
    "hold": 1.4,
    "cam": {
     "focus": "monitor",
@@ -498,7 +499,7 @@
   {
    "id": "n01-020",
    "face": "normal",
-   "pre": 1.5,
+   "pre": 1.3,
    "cam": {
     "focus": "center",
     "zoom": 1.0,
@@ -588,7 +589,7 @@
   {
    "id": "n01-023",
    "face": "normal",
-   "pre": 1.0,
+   "pre": 0.85,
    "cam": {
     "focus": "nagi",
     "zoom": 1.45,

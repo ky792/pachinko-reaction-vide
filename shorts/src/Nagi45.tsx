@@ -108,7 +108,7 @@ const TitleBurst: React.FC<{ep: Episode}> = ({ep}) => {
         scale: `${interpolate(s, [0, 1], [2.6, 1])}`, rotate: `${interpolate(s, [0, 1], [-8, 0])}deg`}}>
         <Logo />
       </div>
-      <div style={{position: 'absolute', left: 60, right: 60, top: 600, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 60, color: '#fff',
+      <div style={{position: 'absolute', left: 30, right: 30, top: 600, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 52, whiteSpace: 'nowrap', color: '#fff',
         WebkitTextStroke: `12px ${C.navy}`, paintOrder: 'stroke fill', opacity: interpolate(a, [8, 14], [0, 1], clamp)}}>{String(ep.title).replace('\n', '')}</div>
     </AbsoluteFill>
   );
