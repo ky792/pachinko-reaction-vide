@@ -1,0 +1,117 @@
+{
+ "n01-001": {
+  "sha1": "598d8031c207c392c1d508607404040f043442b0",
+  "model": "large-v3-turbo",
+  "text": "なんで継続率90%って全然続かんねん"
+ },
+ "n01-002": {
+  "sha1": "12677e4e27ee71d1d74ad988cdc06f04f8f42beb",
+  "model": "large-v3-turbo",
+  "text": "そもそも継続率90%って何年ぐらいするものだと思ってる?"
+ },
+ "n01-003": {
+  "sha1": "c7768d433d500bd25b9d5f0ca219ab90fe347eba",
+  "model": "large-v3-turbo",
+  "text": "獲得率90%やったら10連ぐらいはするやろ"
+ },
+ "n01-004": {
+  "sha1": "c01f22cb14864dbbb62c66cad78419657e8e819e",
+  "model": "large-v3-turbo",
+  "text": "そこがズレてる"
+ },
+ "n01-005": {
+  "sha1": "821fb34c37c965eb9385d43ad05635a2c5798dbc",
+  "model": "large-v3-turbo",
+  "text": "解析開始"
+ },
+ "n01-006": {
+  "sha1": "e0839bddec477cf9aa7955b23ff03d85ab1ef3c5",
+  "model": "large-v3-turbo",
+  "text": "なんか始まったな"
+ },
+ "n01-007": {
+  "sha1": "31c6f9c4af40eee0813c73d0021ee5ebfe75ed8b",
+  "model": "large-v3-turbo",
+  "text": "確かに継続率90%も平均年チャンスは10連でも最も発生しやすいのは何連だと思う?"
+ },
+ "n01-008": {
+  "sha1": "c863532e24103c39933e0ec9ca6b4f7235bcc16a",
+  "model": "large-v3-turbo",
+  "text": "八連…とか?"
+ },
+ "n01-009": {
+  "sha1": "84c2346c3fa0fc09400f61283f0e1b34d851acd2",
+  "model": "large-v3-turbo",
+  "text": "一連、つまり駆け抜け"
+ },
+ "n01-010": {
+  "sha1": "d3a4460f85768364c048a4b9be03b1f0cd339d52",
+  "model": "large-v3-turbo",
+  "text": "はぁ?"
+ },
+ "n01-011": {
+  "sha1": "5979574bcddf1351d78665bc86a8dc3ad80368a3",
+  "model": "large-v3-turbo",
+  "text": "1連で終わる確率は10%2連は9%3連は8.1%"
+ },
+ "n01-012": {
+  "sha1": "076616525bf90d90a5f2e4f9ccc6facf34701ac4",
+  "model": "large-v3-turbo",
+  "text": "レンちゃん数が増えるほどその回数で終わる確率は低くなるんだ"
+ },
+ "n01-013": {
+  "sha1": "9ace51c9660581880c41a53a26224c840beb2ef1",
+  "model": "large-v3-turbo",
+  "text": "半分以上は7年以下で終了10年以上する確率は約30%しかない"
+ },
+ "n01-014": {
+  "sha1": "6419fd521f45582019fa621d75ee4357b187293b",
+  "model": "large-v3-turbo",
+  "text": "ほな、なんで平均10連なん?"
+ },
+ "n01-015": {
+  "sha1": "0f16f6aef7bcd88ab25641a7fa102287ff98ffda",
+  "model": "large-v3-turbo",
+  "text": "20連30連と続く一部の大連ちゃんが平均を引き上げてるからだよ"
+ },
+ "n01-016": {
+  "sha1": "6079cd1c0207a4a5b66873a7162fbd57548a9ead",
+  "model": "large-v3-turbo",
+  "text": "さらにラッシュに10回突入した場合一度でも駆け抜ける確率は"
+ },
+ "n01-017": {
+  "sha1": "6042ad74c06d9f7ef52ca438c69723e84d7bbf8b",
+  "model": "large-v3-turbo",
+  "text": "約65%"
+ },
+ "n01-018": {
+  "sha1": "61e5233240f2fb1b28599439f0cae4386bf4c044",
+  "model": "large-v3-turbo",
+  "text": "高すぎるやろ"
+ },
+ "n01-019": {
+  "sha1": "01abfb46bd29cc3845e96480760405e7cae6d92f",
+  "model": "large-v3-turbo",
+  "text": "平均10連と10連するのが普通っていうのは別の話なんだよ"
+ },
+ "n01-020": {
+  "sha1": "2d987a3150ae9377bb5cb9e8fb065858125cbb80",
+  "model": "large-v3-turbo",
+  "text": "メーカーも公表数値と実際の体感にはズレがあるんだよ"
+ },
+ "n01-021": {
+  "sha1": "ff0d4fd7b8fc5407071fb03b76176a4659b43c07",
+  "model": "large-v3-turbo",
+  "text": "ほな、体感継続率に合わせて公表したらどうや?"
+ },
+ "n01-022": {
+  "sha1": "c9e2e1c3855f239b5b934f227266cc33beda8d69",
+  "model": "large-v3-turbo",
+  "text": "90%の代は実際は85%って言ったらええんや"
+ },
+ "n01-023": {
+  "sha1": "5df65d11d1503aad487afda4ae339b2f2c0f754b",
+  "model": "large-v3-turbo",
+  "text": "それ虚偽のステックだよ"
+ }
+}
