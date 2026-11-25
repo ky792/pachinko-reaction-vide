@@ -1,0 +1,41 @@
+[
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 0%（80% 未満）",
+  "id": "s01-003",
+  "who": "baku",
+  "text": "は？",
+  "asr": "はぁー",
+  "ratio": 0.0,
+  "audio": "episodes/shorts001_s21/voices/s01-003.wav"
+ },
+ {
+  "kind": "誤読",
+  "where": "ワ",
+  "expect": "ワ",
+  "reason": "台本は「ワ」、聞こえたのは「ハー」",
+  "level": "低",
+  "id": "s01-003",
+  "who": "baku",
+  "text": "は？",
+  "asr": "はぁー",
+  "ratio": 0.0,
+  "audio": "episodes/shorts001_s21/voices/s01-003.wav"
+ },
+ {
+  "kind": "脱落",
+  "where": "ッテ",
+  "expect": "ッテ",
+  "reason": "台本の「ッテ」が聞こえない",
+  "level": "低",
+  "id": "s01-008",
+  "who": "baku",
+  "text": "もう90％って書くなや……",
+  "asr": "もう90%書くのや",
+  "ratio": 0.889,
+  "audio": "episodes/shorts001_s21/voices/s01-008.wav"
+ }
+]
