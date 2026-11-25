@@ -276,6 +276,7 @@ const Dist: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
   const meanX = mode === 'mean' ? interpolate(f, [tA(0.25), tA(0.8)], [xc(7), xc(10)], {...clamp, easing: OUT}) : xc(10);
   const tailGlow = mode === 'mean' ? interpolate(f, [tA(0.15), tA(0.3)], [0, 1], clamp) : 0;
   const colOf = (k: number) => {
+    if (mode === 'pctdecay') return k === 1 ? '#ffb27a' : k <= 3 ? '#c8f3ff' : 'rgba(200,243,255,0.75)';
     if (mode === 'mode1' || mode === 'pct') return k === 1 ? '#ffb27a' : k <= 3 && mode === 'pct' ? '#c8f3ff' : 'rgba(200,243,255,0.75)';
     if (mode === 'cum') {
       if (k <= 7 && cumP > (k - 1) / 7) return '#9be9ff';
@@ -286,17 +287,17 @@ const Dist: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
     return 'rgba(200,243,255,0.8)';
   };
   const lbl = (k: number, text: string, at: number, col = '#fff') => (
-    <div key={`l${k}`} style={{position: 'absolute', left: xc(k) - 70, width: 140, top: BASE - H * (P1(k) / 0.1) - 46, textAlign: 'center', fontFamily: EN,
-      fontWeight: 900, fontSize: 30, color: col, opacity: interpolate(f - at, [0, 5], [0, 1], clamp),
-      scale: `${interpolate(f - at, [0, 6], [1.6, 1], {...clamp, easing: OUT})}`}}>{text}</div>
+    <div key={`l${k}${text}`} style={{position: 'absolute', left: xc(k) - 20, width: 220, top: BASE - H * (P1(k) / 0.1) - 46, textAlign: 'left', fontFamily: EN,
+      fontWeight: 900, fontSize: 30, color: col, opacity: interpolate(f - at, [0, 5], [0, 1], clamp), whiteSpace: 'nowrap',
+      transformOrigin: '0 50%', scale: `${interpolate(f - at, [0, 6], [1.6, 1], {...clamp, easing: OUT})}`}}>{text}</div>
   );
   return (
     <>
       <Label f={m.intro ? f : 99}>{m.label}</Label>
-      {mode === 'decay' && (
+      {(mode === 'decay' || mode === 'pctdecay') && (
         <svg width={972} height={592} style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
           <path d={`M ${xc(1)} ${BASE - H - 20} Q ${xc(8)} ${BASE - H * 0.35} ${xc(28)} ${BASE - 30}`} stroke={C.orange} strokeWidth={8} fill="none"
-            strokeDasharray={1200} strokeDashoffset={interpolate(f, [4, 30], [1200, 0], clamp)} strokeLinecap="round" />
+            strokeDasharray={1200} strokeDashoffset={interpolate(f - (mode === 'pctdecay' ? (m.delay ?? 0) + 30 : 0), [4, 30], [1200, 0], clamp)} strokeLinecap="round" />
         </svg>
       )}
       {Array.from({length: N}, (_, i) => {
@@ -312,6 +313,25 @@ const Dist: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
       <div style={{position: 'absolute', right: 30, top: BASE + 8, fontFamily: JP, fontWeight: 700, fontSize: 22, color: C.paper}}>連→</div>
       {mode === 'mode1' && lbl(1, '最頻値', 6, C.orange)}
       {mode === 'pct' && [lbl(1, '10%', tA(0.08), C.orange), lbl(2, '9%', tA(0.4)), lbl(3, '8.1%', tA(0.68))]}
+      {mode === 'pctdecay' && (
+        <div style={{position: 'absolute', left: xc(5), top: 110, display: 'flex', flexDirection: 'column', gap: 6}}>
+          {[['1連で終了', '10%', C.orange], ['2連で終了', '9%', '#c8f3ff'], ['3連で終了', '8.1%', '#c8f3ff']].map(([a, b, c], i) => {
+            const at = (m.delay ?? 0) + 4 + i * 10;
+            return (
+              <div key={a} style={{display: 'flex', alignItems: 'baseline', gap: 16, opacity: interpolate(f - at, [0, 5], [0, 1], clamp),
+                translate: `${interpolate(f - at, [0, 8], [40, 0], {...clamp, easing: OUT})}px 0`}}>
+                <span style={{fontFamily: JP, fontWeight: 900, fontSize: 34, color: C.paper, width: 190}}>{a}</span>
+                <span style={{fontFamily: EN, fontWeight: 900, fontSize: 52, color: c as string}}>{b}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+      {m.keep_pct && [lbl(1, '10%', -99, C.orange), lbl(2, '9%', -99), lbl(3, '8.1%', -99)]}
+      {mode === 'pctdecay' && (
+        <div style={{position: 'absolute', left: xc(13), top: 300, fontFamily: JP, fontWeight: 900, fontSize: 34, color: C.orange,
+          opacity: interpolate(f - (m.delay ?? 0), [44, 52], [0, 1], clamp)}}>連チャン数が増えるほど<br />その回数で終わる確率は↓</div>
+      )}
       {mode === 'decay' && (
         <div style={{position: 'absolute', left: xc(9), top: BASE - H + 10, fontFamily: JP, fontWeight: 900, fontSize: 38, color: C.orange,
           opacity: interpolate(f, [16, 24], [0, 1], clamp)}}>連チャン数が増えるほど<br />そこで終わる確率は↓</div>
@@ -404,6 +424,7 @@ export const panelSounds = (m: Monitor, dur: number): {at: number; src: string; 
   if (m.type === 'steps') return [...Array.from({length: m.n}, (_, k) => ({at: 6 + k * 4, src: 'pop', vol: 0.16 + k * 0.012})),
     {at: Math.round(dur * 0.3), src: 'res', vol: 0.3}];
   if (m.type === 'hook') return [{at: 0, src: 'res', vol: 0.35}];
+  if (m.type === 'dist' && m.mode === 'pctdecay') return [0, 10, 20].map((d) => ({at: (m.delay ?? 0) + 4 + d, src: 'pop', vol: 0.3}));
   if (m.type === 'dist' && m.intro) return Array.from({length: 8}, (_, i) => ({at: 2 + i * 3, src: 'pop', vol: 0.18}));
   if (m.type === 'versus') return [{at: 4, src: 'pop', vol: 0.3}, {at: 12, src: 'pop', vol: 0.3}, {at: 20, src: 'thump', vol: 0.5}];
   if (m.type === 'warn') return [];

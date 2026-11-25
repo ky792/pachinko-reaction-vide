@@ -149,6 +149,11 @@ def main(eid, estimate=False):
             r = L['react']
             r['at'] = L['start'] + round(r.get('at_start', 0) * FPS) if 'at_start' in r else L['end'] - round(r.get('at_end', 0.5) * FPS)
 
+    for L in lines:
+        m = L.get('monitor')
+        if m and m.get('delay') == 'line':
+            m['delay'] = L['end'] - L['start'] + round(m.get('delay_extra', 0.3) * FPS)
+
     # fx → events
     events = []
     by = {L['id']: L for L in lines}

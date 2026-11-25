@@ -29,6 +29,12 @@ export const camAt = (ep: Episode, f: number, fps: number): Cam => {
   for (const l of ep.lines) {
     if (l.start > f) break;
     cam = camOfLine(l, Math.min(f, l.end) - l.start, cam, fps);
+    const ca = (l as any).cam_after;
+    if (ca && f > l.end) {   // セリフのあとの間で、モニターなどへ戻る
+      const p = spring({frame: f - l.end, fps, config: {damping: 16, stiffness: 200}});
+      const to = {z: ca.zoom, ...FOCUS[(ca.focus ?? 'center') as keyof typeof FOCUS]};
+      cam = {z: cam.z + (to.z - cam.z) * p, x: cam.x + (to.x - cam.x) * p, y: cam.y + (to.y - cam.y) * p};
+    }
   }
   // 登録誘導では引きに戻す
   if (f >= ep.cta_start) {

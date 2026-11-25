@@ -78,7 +78,7 @@ export const MonitorFrame: React.FC<{ep: Episode}> = ({ep}) => {
     if (l.start <= f) idx = i;
   });
   const cur = withMon[idx];
-  const prev: Line | null = idx > 0 ? withMon[idx - 1] : null;
+  const prev: Line | null = idx > 0 && !withMon[idx].monitor?.cont ? withMon[idx - 1] : null;
   const local = f - cur.start;
   const boot = 1; // 0フレーム目から中身を見せる（フック）
   const cta = f - ep.cta_start;

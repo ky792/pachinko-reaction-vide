@@ -11,12 +11,12 @@
  "timer": {
   "start_after": "n01-005",
   "first": "n01-006",
-  "last": "n01-019",
+  "last": "n01-017",
   "seconds": 45,
   "lead": 0.35,
   "tail": 0.4,
   "max_tempo": 1.2,
-  "hold_target": 0.6
+  "hold_target": 3.2
  },
  "timer_end_fx": [
   {
@@ -231,7 +231,7 @@
    "face": "surprised",
    "gap": 0.12,
    "nosub": true,
-   "hold": 0.6,
+   "hold": 3.0,
    "cam": {
     "focus": "baku",
     "zoom": 2.4,
@@ -271,49 +271,21 @@
      "sound_delay": 3,
      "vol": 0.4
     }
-   ]
+   ],
+   "cam_after": {
+    "focus": "monitor",
+    "zoom": 1.08
+   },
+   "monitor": {
+    "type": "dist",
+    "mode": "pctdecay",
+    "label": "連チャン数ごとの終了確率",
+    "delay": "line",
+    "delay_extra": 0.25
+   }
   },
   {
    "id": "n01-011",
-   "face": "normal",
-   "cam": {
-    "focus": "center",
-    "zoom": 1.0,
-    "mode": "snap"
-   },
-   "monitor": {
-    "type": "dist",
-    "mode": "pct",
-    "label": "連チャン数ごとの終了確率"
-   },
-   "fx": [
-    {
-     "type": "shake",
-     "amp": 0,
-     "dur": 0.1,
-     "sound": "se/whoosh.wav",
-     "vol": 0.45
-    }
-   ]
-  },
-  {
-   "id": "n01-012",
-   "face": "normal",
-   "cam": {
-    "focus": "monitor",
-    "zoom": 1.06,
-    "mode": "push"
-   },
-   "monitor": {
-    "type": "dist",
-    "mode": "decay",
-    "label": "連チャン数ごとの終了確率"
-   },
-   "gap": 0.15,
-   "fx": []
-  },
-  {
-   "id": "n01-013",
    "face": "normal",
    "tap": true,
    "cam": {
@@ -324,18 +296,20 @@
    "monitor": {
     "type": "dist",
     "mode": "cum",
-    "label": "連チャン数ごとの終了確率"
+    "label": "連チャン数ごとの終了確率",
+    "cont": true
    },
-   "hold": 1.0,
+   "hold": 0.2,
    "react": {
     "who": "baku",
     "face": "surprised",
     "at_end": 0.9
    },
-   "fx": []
+   "fx": [],
+   "gap": 0.1
   },
   {
-   "id": "n01-014",
+   "id": "n01-012",
    "face": "surprised",
    "cam": {
     "focus": "baku",
@@ -352,7 +326,7 @@
    ]
   },
   {
-   "id": "n01-015",
+   "id": "n01-013",
    "face": "normal",
    "tap": true,
    "cam": {
@@ -368,7 +342,7 @@
    "fx": []
   },
   {
-   "id": "n01-016",
+   "id": "n01-014",
    "face": "normal",
    "tap": true,
    "cam": {
@@ -396,10 +370,10 @@
    "fx": []
   },
   {
-   "id": "n01-017",
+   "id": "n01-015",
    "face": "normal",
    "gap": 0.3,
-   "hold": 1.4,
+   "hold": 0.6,
    "cam": {
     "focus": "monitor",
     "zoom": 1.1,
@@ -442,14 +416,14 @@
    ]
   },
   {
-   "id": "n01-018",
+   "id": "n01-016",
    "face": "sweat",
    "cam": {
     "focus": "baku",
     "zoom": 1.35,
     "mode": "snap"
    },
-   "hold": 0.5,
+   "hold": 0.1,
    "fx": [
     {
      "type": "deform",
@@ -463,14 +437,14 @@
    ]
   },
   {
-   "id": "n01-019",
+   "id": "n01-017",
    "face": "normal",
    "cam": {
     "focus": "center",
     "zoom": 1.0,
     "mode": "snap"
    },
-   "hold": 1.0,
+   "hold": 0.2,
    "monitor": {
     "type": "versus",
     "label": "",
@@ -487,7 +461,7 @@
    "fx": []
   },
   {
-   "id": "n01-020",
+   "id": "n01-018",
    "face": "normal",
    "pre": 1.3,
    "cam": {
@@ -511,7 +485,7 @@
    "fx": []
   },
   {
-   "id": "n01-021",
+   "id": "n01-019",
    "face": "excited",
    "cam": {
     "focus": "baku",
@@ -537,7 +511,7 @@
    ]
   },
   {
-   "id": "n01-022",
+   "id": "n01-020",
    "face": "smug",
    "gap": 0.12,
    "cam": {
@@ -577,7 +551,7 @@
    ]
   },
   {
-   "id": "n01-023",
+   "id": "n01-021",
    "face": "normal",
    "pre": 0.85,
    "cam": {
