@@ -129,11 +129,11 @@
         characters: {
           m: {
             id: 'toma', name: 'トウマ', romaji: 'TOUMA', title: '毒舌のライバル',
-            bio: '片耳のピアスと不敵な笑みがトレードマークの生意気なナビ。口は悪いが、本気で君の成長を望んでいる。',
+            bio: 'ラベンダーの髪とピアスだらけの片耳、あごに下ろした黒マスクがトレードマークの生意気なナビ。口は悪いが、本気で君の成長を望んでいる。',
             catch: '…まだその程度？マジで受験する気あんの？',
             expressionLabels: { default: '通常', smile: '挑発', serious: '本気' },
-            visual: char('toma', [47, 20], 1),
-            silhouette: { hair: 'swept', accessory: 'earring' },
+            visual: Object.assign(char('toma', [35, 18], 1), { expr: { smile: 'assets/navigators/chars/toma_smile.webp', special: 'assets/navigators/chars/toma_special.webp', serious: 'assets/navigators/chars/toma_special.webp' } }),
+            silhouette: { hair: 'messy', accessory: 'earring' },
             battleLines: { start: '勝率{rate}%。{focus}で殴れば勝てるんじゃない？知らないけど。', areaWin: '{subject}取ったね。ま、当然。', areaLose: '{subject}取られてんじゃん。だっさ。', win: '…勝ったか。ま、悪くなかったんじゃない。', lose: '{weak}で負けとか。演習サボってたでしょ。', train: '{subject}+{gain}。…ちょっとはマシになったじゃん。' },
             matchLines: { correct: 'へえ、それくらいは解けるんだ。', wrong: '…マジで？{unit}、基礎からやり直せば？', streak: '{n}連続？…まぐれじゃないなら続けてみなよ。', timeout: '時間切れとか。考えてる間に相手は進んでるけど。', win: '…ま、今日のところは認めてやるよ。', lose: 'その程度で終わる気？次は勝てよ。' },
             matchExpr: { wrong: 'smile', timeout: 'smile', lose: 'serious' },
