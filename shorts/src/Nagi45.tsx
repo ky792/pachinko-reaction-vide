@@ -286,7 +286,36 @@ export const Nagi45: React.FC<{ep: Episode}> = ({ep}) => {
       <Subtitle ep={ep} />
       <Flash ep={ep} />
       {black && <AbsoluteFill style={{background: '#000'}} />}
+      <Cta45 ep={ep} />
       {!ep.estimate && <Sounds45 ep={ep} />}
+    </AbsoluteFill>
+  );
+};
+
+// ───────── 暗転のあとのチャンネル登録の誘導（声なし・オチの暗転はそのまま残す）
+const Cta45: React.FC<{ep: Episode}> = ({ep}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const c = (ep as any).cta45;
+  if (!c || f < c.at) return null;
+  const a = f - c.at;
+  const s = spring({frame: a, fps, config: {damping: 13}});
+  const press = a > 24 && a < 31;
+  const done = a >= 28;
+  const ring = interpolate(a, [28, 44], [0, 1], clamp);
+  return (
+    <AbsoluteFill style={{background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 46}}>
+      <div style={{opacity: s, translate: `0 ${(1 - s) * 60}px`}}><Logo scale={0.9} /></div>
+      <div style={{textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 64, color: '#fff', lineHeight: 1.35, opacity: interpolate(a, [6, 12], [0, 1], clamp)}}>
+        {c.line1}<br /><span style={{color: C.cyan}}>{c.line2}</span>
+      </div>
+      <div style={{position: 'relative', opacity: interpolate(a, [10, 16], [0, 1], clamp), scale: `${interpolate(a, [10, 18], [0.6, 1], {...clamp, easing: OUT})}`}}>
+        <div style={{position: 'absolute', inset: -14 - ring * 34, borderRadius: 999, border: `5px solid ${C.cyan}`, opacity: done ? 1 - ring : 0}} />
+        <div style={{padding: '26px 64px', borderRadius: 999, fontFamily: JP, fontWeight: 900, fontSize: 58, background: done ? '#fff' : C.blue,
+          color: done ? C.blue : '#fff', border: '5px solid #fff', scale: press ? '0.9' : '1', boxShadow: `0 0 30px ${C.cyan}`}}>
+          {done ? '✓ 登録済み' : `＋ ${c.button}`}
+        </div>
+      </div>
     </AbsoluteFill>
   );
 };
@@ -310,6 +339,8 @@ const Sounds45: React.FC<{ep: Episode}> = ({ep}) => {
       {t && se('t-30', t.start + 15 * 30, `${SERIES}/timer_beep30.wav`, 0.4)}
       {t && [5, 4, 3, 2, 1].map((s) => se(`t-c${s}`, t.end - s * 30, `${SERIES}/timer_count.wav`, 0.4))}
       {t && se('t-done', t.end, `${SERIES}/complete.wav`, 0.6)}
+      {(ep as any).cta45 && se('cta-pop', (ep as any).cta45.at + 28, 'se/pop.wav', 0.45)}
+      {(ep as any).cta45 && se('cta-kira', (ep as any).cta45.at + 30, 'se/kira.wav', 0.3)}
     </>
   );
 };

@@ -169,6 +169,11 @@ def main(eid, estimate=False):
 
     end_at = lines[-1]['end'] + round(ep.get('black_after', 0.05) * FPS)
     total = end_at + round(ep.get('black_hold', 0.8) * FPS)
+    cta = ep.get('cta')
+    cta_at = None
+    if cta:   # 暗転のあと、黒い画面にチャンネル登録の誘導（声は足さない）
+        cta_at = total
+        total = cta_at + round(cta.get('dur', 2.2) * FPS)
 
     # BGM：リズムが入るところから、ループ区間を回して全編ぶん。オチの最後（暗転）で止める
     bgm = dict(ep['bgm'])
@@ -186,7 +191,7 @@ def main(eid, estimate=False):
     bgm['cut_at'] = end_at
 
     data = {'estimate': estimate, 'id': eid, 'no': ep['no'], 'title': ep['title'], 'theme': [ep['title']], 'note': ep.get('note'), 'fps': FPS, 'total': total,
-            'cta_start': total + 9999, 'end_at': end_at, 'timer': {'start': T0, 'end': T1, 'seconds': tm['seconds']}, 'bgm': bgm, 'cta': {},
+            'cta_start': total + 9999, 'end_at': end_at, 'cta45': ({**cta, 'at': cta_at} if cta else None), 'timer': {'start': T0, 'end': T1, 'seconds': tm['seconds']}, 'bgm': bgm, 'cta': cta or {},
             'events': events, 'lines': lines}
     (SH / 'src' / 'data' / f'{eid}.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
     print(f'{eid}: {total} フレーム（{total / FPS:.2f}秒）')
