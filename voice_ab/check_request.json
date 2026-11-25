@@ -1,6 +1,6 @@
 {
- "episode": "episodes/shorts001_s7",
+ "episode": "episodes/shorts001_s21",
  "model": "large-v3-turbo",
  "trim": true,
- "_run": "7"
+ "_run": "21"
 }
