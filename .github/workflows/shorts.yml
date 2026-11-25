@@ -43,11 +43,11 @@ jobs:
       - name: Stills
         run: |
           mkdir -p out/pub
-          for f in $STILLS; do npx remotion still "Shorts-$EP" "out/pub/frame_$(printf %04d $f).jpg" --frame=$f --scale=0.5 --image-format=jpeg; done
+          for f in $STILLS; do npx remotion still "Shorts-${EP//_/-}" "out/pub/frame_$(printf %04d $f).jpg" --frame=$f --scale=0.5 --image-format=jpeg; done
       - name: Render MP4
         if: env.FULL == '1'
         run: |
-          npx remotion render "Shorts-$EP" out/raw.mp4 --codec=h264 --crf=18 --concurrency=4
+          npx remotion render "Shorts-${EP//_/-}" out/raw.mp4 --codec=h264 --crf=18 --concurrency=4
           # 音量を YouTube の基準（-14 LUFS）にそろえる（映像はそのまま）
           ffmpeg -v error -y -i out/raw.mp4 -c:v copy -af loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000 -c:a aac -b:a 192k -movflags +faststart out/$EP.mp4
           ffprobe -v error -show_entries format=duration:stream=width,height,codec_name -of compact out/$EP.mp4

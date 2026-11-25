@@ -10,12 +10,12 @@ const meta: CalculateMetadataFunction<{ep: Episode}> = ({props}) => ({durationIn
 export const RemotionRoot: React.FC = () => (
   <>
     {Object.entries(NAGI45).map(([id, ep]) => (
-      <Composition key={id} id={`Shorts-${id}`} component={Nagi45} durationInFrames={ep.total} fps={30} width={1080} height={1920}
+      <Composition key={id} id={`Shorts-${id.replace(/_/g, "-")}`} component={Nagi45} durationInFrames={ep.total} fps={30} width={1080} height={1920}
         defaultProps={{ep}} calculateMetadata={meta} />
     ))}
     {/* 旧「30秒ナギバク研究所」（ナギの45秒解析に移行済み・参考に残す） */}
     {Object.entries(EPISODES).map(([id, ep]) => (
-      <Composition key={id} id={`Shorts-${id}`} component={ShortsEpisode} durationInFrames={ep.total} fps={30} width={1080} height={1920}
+      <Composition key={id} id={`Shorts-${id.replace(/_/g, "-")}`} component={ShortsEpisode} durationInFrames={ep.total} fps={30} width={1080} height={1920}
         defaultProps={{ep}} calculateMetadata={meta} />
     ))}
   </>
