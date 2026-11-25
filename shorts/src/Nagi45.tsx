@@ -304,10 +304,12 @@ const Cta45: React.FC<{ep: Episode}> = ({ep}) => {
   const done = a >= 28;
   const ring = interpolate(a, [28, 44], [0, 1], clamp);
   return (
-    <AbsoluteFill style={{background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 46}}>
-      <div style={{opacity: s, translate: `0 ${(1 - s) * 60}px`}}><Logo scale={0.9} /></div>
-      <div style={{textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 64, color: '#fff', lineHeight: 1.35, opacity: interpolate(a, [6, 12], [0, 1], clamp)}}>
-        {c.line1}<br /><span style={{color: C.cyan}}>{c.line2}</span>
+    <AbsoluteFill style={{background: '#000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 54}}>
+      {/* チャンネルのアイコンと名前（ナギバク研究所） */}
+      <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 26, opacity: s, translate: `0 ${(1 - s) * 60}px`}}>
+        <Img src={staticFile(c.icon ?? 'series/channel_icon.png')} style={{width: 380, height: 380, borderRadius: 999, boxShadow: `0 0 0 8px #fff, 0 0 40px ${C.cyan}`,
+          rotate: `${interpolate(a, [0, 10], [-8, 0], {...clamp, easing: OUT})}deg`}} />
+        <div style={{fontFamily: JP, fontWeight: 900, fontSize: 92, color: '#fff', letterSpacing: 2}}>{c.name ?? 'ナギバク研究所'}</div>
       </div>
       <div style={{position: 'relative', opacity: interpolate(a, [10, 16], [0, 1], clamp), scale: `${interpolate(a, [10, 18], [0.6, 1], {...clamp, easing: OUT})}`}}>
         <div style={{position: 'absolute', inset: -14 - ring * 34, borderRadius: 999, border: `5px solid ${C.cyan}`, opacity: done ? 1 - ring : 0}} />

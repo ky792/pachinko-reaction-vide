@@ -604,8 +604,8 @@
  ],
  "cta": {
   "dur": 2.3,
-  "line1": "次の解析も",
-  "line2": "見逃さないで",
+  "icon": "series/channel_icon.png",
+  "name": "ナギバク研究所",
   "button": "チャンネル登録"
  }
 }
