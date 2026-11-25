@@ -1,5 +1,5 @@
 {
- "episode": "episodes/nagi45_001_s7",
+ "episode": "episodes/nagi45_001_s3",
  "model": "large-v3-turbo",
  "trim": true,
  "trim_only": [
@@ -13,5 +13,5 @@
   "n01-021",
   "n01-022"
  ],
- "_run": "n45-7"
+ "_run": "n45-3"
 }

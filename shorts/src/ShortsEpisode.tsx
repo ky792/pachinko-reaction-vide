@@ -215,18 +215,19 @@ const Cta: React.FC<{ep: Episode; f: number; fps: number}> = ({ep, f, fps}) => {
 };
 
 // ───────── 字幕（話している人の名前つき）
-const wrap = (t: string) => {
-  // 1行16字まで。読点を優先し、なければ「で・に・は・を・が・も・の」の後ろで、真ん中に近いところで折る
-  if (t.length <= 16) return [t];
+const wrap = (t: string, max = 16): string[] => {
+  // 1行 max 字まで。句点→読点→「で・に・は・を・が・も・の」の後ろの順で、真ん中に近いところで折る（3行以上にもなる）
+  if (t.length <= max) return [t];
   const cands: {i: number; score: number}[] = [];
   [...t].forEach((c, i) => {
     if (i < 4 || i > t.length - 5) return;
-    if (c === '、') cands.push({i, score: Math.abs(i + 1 - t.length / 2)});
-    else if ('でにはをがもの'.includes(c)) cands.push({i, score: Math.abs(i + 1 - t.length / 2) + 2});
+    const mid = Math.abs(i + 1 - t.length / 2);
+    if ('。？！'.includes(c)) cands.push({i, score: mid - 3});
+    else if (c === '、') cands.push({i, score: mid});
+    else if ('でにはをがもの'.includes(c)) cands.push({i, score: mid + 2});
   });
-  if (!cands.length) return [t.slice(0, Math.ceil(t.length / 2)), t.slice(Math.ceil(t.length / 2))];
-  const cut = cands.reduce((x, y) => (y.score < x.score ? y : x)).i;
-  return [t.slice(0, cut + 1), t.slice(cut + 1)];
+  const cut = cands.length ? cands.reduce((x, y) => (y.score < x.score ? y : x)).i : Math.ceil(t.length / 2) - 1;
+  return [...wrap(t.slice(0, cut + 1), max), ...wrap(t.slice(cut + 1), max)];
 };
 const NUM = /(約?[0-9.]+[％%連回])/;
 
@@ -247,8 +248,8 @@ export const Subtitle: React.FC<{ep: Episode}> = ({ep}) => {
         border: `5px solid ${col}`, boxShadow: '0 10px 26px rgba(0,0,0,0.35)'}}>
         <div style={{position: 'absolute', top: -26, [l.who === 'nagi' ? 'left' : 'right']: 26, background: col, color: '#fff', fontFamily: JP,
           fontWeight: 900, fontSize: 30, padding: '2px 22px', borderRadius: 999}}>{l.who === 'nagi' ? 'ナギ' : 'バク'}</div>
-        {wrap(l.text).map((row, i) => (
-          <div key={i} style={{fontFamily: JP, fontWeight: 900, fontSize: 50, lineHeight: 1.32, color: C.navy, textAlign: 'center', whiteSpace: 'nowrap'}}>
+        {wrap(l.text).map((row, i, rows) => (
+          <div key={i} style={{fontFamily: JP, fontWeight: 900, fontSize: rows.length >= 3 ? 46 : 50, lineHeight: 1.32, color: C.navy, textAlign: 'center', whiteSpace: 'nowrap'}}>
             {row.split(NUM).map((s, j) => (NUM.test(s) ? <span key={j} style={{color: l.who === 'nagi' ? C.blue : C.orange}}>{s}</span> : s))}
           </div>
         ))}

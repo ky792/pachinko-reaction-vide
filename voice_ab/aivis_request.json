@@ -7,8 +7,8 @@
   "name": "コハク"
  },
  "style": "ねむたい",
- "speed": 0.95,
+ "speed": 1.2,
  "intonation": 0.65,
  "kana_only": false,
- "_run": "nagi45-1"
+ "_run": "nagi45-speed1.2"
 }
