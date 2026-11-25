@@ -167,7 +167,7 @@ const Formula: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
         <div style={{width: `${65.1 * barP}%`, background: C.orange, display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontFamily: JP, fontWeight: 800, fontSize: 30, color: '#fff'}}>65.1％</div>
       </div>
-      <BigStamp text={m.big} f={f - (bigAt ?? 1e9)} fps={fps} />
+      <BigStamp text={m.big} f={f - (bigAt ?? 1e9)} fps={fps} color={m.big_color ?? C.orange} />
     </>
   );
 };
@@ -210,7 +210,7 @@ const Steps: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
         <Sup base={m.formula[0]} exp={m.formula[1]} size={46} />
         <span style={{marginLeft: 16, color: C.orange}}>{m.formula[2]}</span>
       </div>
-      <BigStamp text={m.big} f={f - (bigAt ?? 1e9)} fps={fps} />
+      <BigStamp text={m.big} f={f - (bigAt ?? 1e9)} fps={fps} color={m.big_color ?? C.orange} />
     </>
   );
 };
@@ -246,7 +246,149 @@ const Clean: React.FC<P> = ({m, f}) => (
   </div>
 );
 
-const PANELS: Record<string, React.FC<P>> = {hook: Hook, scan: Scan, icons: Icons, formula: Formula, steps: Steps, glitch: Glitch, clean: Clean};
+// ───────── qa：大きい数字1つ＋問いかけ（「平均10連。でも最も多いのは？」）
+const Qa: React.FC<P> = ({m, f, dur}) => {
+  const qAt = Math.round(dur * (m.q_at ?? 0.45));
+  return (
+    <>
+      <Label f={f}>{m.label}</Label>
+      <div style={{position: 'absolute', top: 120, left: 0, right: 0, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 180, color: '#fff',
+        lineHeight: 1, opacity: interpolate(f, [2, 8], [0, 1], clamp), scale: `${interpolate(f, [2, 10], [1.3, 1], {...clamp, easing: OUT})}`}}>{m.value}</div>
+      <div style={{position: 'absolute', top: 360, left: 40, right: 40, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 56, color: C.orange,
+        opacity: interpolate(f - qAt, [0, 6], [0, 1], clamp), translate: `0 ${interpolate(f - qAt, [0, 8], [24, 0], {...clamp, easing: OUT})}px`}}>{m.question}</div>
+    </>
+  );
+};
+
+// ───────── dist：連チャン数の確率分布（1〜30連）。mode で見せ方を変える
+// mode1＝最頻値（1連）を強調／pct＝1〜3連の％／decay＝右へ下がる矢印／cum＝7連以下・10連以上を塗る／mean＝平均が大連チャンに引き上げられる
+const P1 = (k: number, p = 0.9) => (1 - p) * Math.pow(p, k - 1);
+const Dist: React.FC<P> = ({m, f, dur, fps, bigAt}) => {
+  const N = 30, X0 = 70, X1 = 910, BASE = 455, H = 280;
+  const slot = (X1 - X0) / N, bw = slot * 0.72;
+  const xc = (k: number) => X0 + (k - 0.5) * slot;
+  const grow = (k: number) => (m.intro ? interpolate(f, [2 + k * 0.8, 10 + k * 0.8], [0, 1], {...clamp, easing: OUT}) : 1);
+  const mode = m.mode as string;
+  const tA = (r: number) => Math.round(dur * r);
+  // 塗り分け
+  const cumP = interpolate(f, [tA(0.05), tA(0.05) + 14], [0, 1], clamp);
+  const tailP = interpolate(f, [tA(0.5), tA(0.5) + 14], [0, 1], clamp);
+  const meanX = mode === 'mean' ? interpolate(f, [tA(0.25), tA(0.8)], [xc(7), xc(10)], {...clamp, easing: OUT}) : xc(10);
+  const tailGlow = mode === 'mean' ? interpolate(f, [tA(0.15), tA(0.3)], [0, 1], clamp) : 0;
+  const colOf = (k: number) => {
+    if (mode === 'mode1' || mode === 'pct') return k === 1 ? '#ffb27a' : k <= 3 && mode === 'pct' ? '#c8f3ff' : 'rgba(200,243,255,0.75)';
+    if (mode === 'cum') {
+      if (k <= 7 && cumP > (k - 1) / 7) return '#9be9ff';
+      if (k >= 10 && tailP > 0) return '#ffb27a';
+      return 'rgba(200,243,255,0.35)';
+    }
+    if (mode === 'mean') return k >= 20 ? `rgba(255,178,122,${0.5 + tailGlow * 0.5})` : 'rgba(200,243,255,0.6)';
+    return 'rgba(200,243,255,0.8)';
+  };
+  const lbl = (k: number, text: string, at: number, col = '#fff') => (
+    <div key={`l${k}`} style={{position: 'absolute', left: xc(k) - 70, width: 140, top: BASE - H * (P1(k) / 0.1) - 46, textAlign: 'center', fontFamily: EN,
+      fontWeight: 900, fontSize: 30, color: col, opacity: interpolate(f - at, [0, 5], [0, 1], clamp),
+      scale: `${interpolate(f - at, [0, 6], [1.6, 1], {...clamp, easing: OUT})}`}}>{text}</div>
+  );
+  return (
+    <>
+      <Label f={m.intro ? f : 99}>{m.label}</Label>
+      {mode === 'decay' && (
+        <svg width={972} height={592} style={{position: 'absolute', inset: 0, overflow: 'visible'}}>
+          <path d={`M ${xc(1)} ${BASE - H - 20} Q ${xc(8)} ${BASE - H * 0.35} ${xc(28)} ${BASE - 30}`} stroke={C.orange} strokeWidth={8} fill="none"
+            strokeDasharray={1200} strokeDashoffset={interpolate(f, [4, 30], [1200, 0], clamp)} strokeLinecap="round" />
+        </svg>
+      )}
+      {Array.from({length: N}, (_, i) => {
+        const k = i + 1;
+        const h = H * (P1(k) / 0.1) * grow(k);
+        const glow = mode === 'mean' && k >= 20 ? `0 0 ${10 + 14 * tailGlow}px rgba(255,138,31,0.9)` : k === 1 && (mode === 'mode1') ? '0 0 20px rgba(255,138,31,0.9)' : '0 0 8px rgba(95,212,255,0.6)';
+        return <div key={k} style={{position: 'absolute', left: xc(k) - bw / 2, width: bw, top: BASE - h, height: h, background: colOf(k), borderRadius: '4px 4px 0 0', boxShadow: glow}} />;
+      })}
+      <div style={{position: 'absolute', left: X0, right: 972 - X1, top: BASE, height: 3, background: '#9be9ff'}} />
+      {[1, 5, 10, 15, 20, 25, 30].map((k) => (
+        <div key={k} style={{position: 'absolute', left: xc(k) - 30, width: 60, top: BASE + 8, textAlign: 'center', fontFamily: EN, fontWeight: 700, fontSize: 22, color: C.paper}}>{k}</div>
+      ))}
+      <div style={{position: 'absolute', right: 30, top: BASE + 8, fontFamily: JP, fontWeight: 700, fontSize: 22, color: C.paper}}>連→</div>
+      {mode === 'mode1' && lbl(1, '最頻値', 6, C.orange)}
+      {mode === 'pct' && [lbl(1, '10%', tA(0.08), C.orange), lbl(2, '9%', tA(0.4)), lbl(3, '8.1%', tA(0.68))]}
+      {mode === 'decay' && (
+        <div style={{position: 'absolute', left: xc(9), top: BASE - H + 10, fontFamily: JP, fontWeight: 900, fontSize: 38, color: C.orange,
+          opacity: interpolate(f, [16, 24], [0, 1], clamp)}}>連チャン数が増えるほど<br />そこで終わる確率は↓</div>
+      )}
+      {mode === 'cum' && (
+        <>
+          <div style={{position: 'absolute', left: xc(1) - bw / 2, width: xc(7) - xc(1) + bw, top: 130, textAlign: 'center', fontFamily: JP, fontWeight: 900,
+            fontSize: 34, color: '#9be9ff', opacity: cumP}}>7連以下<br /><span style={{fontFamily: EN, fontSize: 52}}>約52.2%</span></div>
+          <div style={{position: 'absolute', left: xc(7) - 2, top: 120, width: 4, height: BASE - 120, background: '#fff', opacity: cumP * 0.9}} />
+          <div style={{position: 'absolute', left: xc(7) - 60, width: 120, top: BASE + 34, textAlign: 'center', fontFamily: JP, fontWeight: 800, fontSize: 22,
+            color: '#fff', opacity: cumP}}>中央値7連</div>
+          <div style={{position: 'absolute', left: xc(10) - bw / 2, right: 972 - X1, top: 210, textAlign: 'center', fontFamily: JP, fontWeight: 900,
+            fontSize: 34, color: C.orange, opacity: tailP}}>10連以上 <span style={{fontFamily: EN, fontSize: 52}}>約38.7%</span></div>
+        </>
+      )}
+      {mode === 'mean' && (
+        <>
+          {[[1, '最頻値1連', C.orange], [7, '中央値7連', '#9be9ff']].map(([k, t, c]) => (
+            <React.Fragment key={String(k)}>
+              <div style={{position: 'absolute', left: xc(k as number) - 2, top: 140, width: 4, height: BASE - 140, background: c as string, opacity: 0.8}} />
+              <div style={{position: 'absolute', left: xc(k as number) - 80, width: 160, top: 104, textAlign: 'center', fontFamily: JP, fontWeight: 800, fontSize: 24, color: c as string}}>{t}</div>
+            </React.Fragment>
+          ))}
+          <div style={{position: 'absolute', left: meanX - 3, top: 160, width: 6, height: BASE - 160, background: '#fff', boxShadow: '0 0 16px #fff'}} />
+          <div style={{position: 'absolute', left: meanX - 90, width: 180, top: 168, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 34, color: '#fff'}}>平均10連</div>
+          <div style={{position: 'absolute', left: xc(20) - bw / 2, right: 972 - X1, top: 260, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 28,
+            color: C.orange, opacity: tailGlow}}>20連以上 約13.5%<br />30連以上 約4.7%</div>
+          {/* 大連チャンが平均を右へ押す矢印 */}
+          <div style={{position: 'absolute', left: meanX + 14, top: 230, fontFamily: JP, fontWeight: 900, fontSize: 60, color: C.orange,
+            opacity: interpolate(f, [tA(0.25), tA(0.3), tA(0.8), tA(0.85)], [0, 1, 1, 0], clamp), translate: `${Math.sin(f / 2) * 6}px 0`}}>◀◀</div>
+        </>
+      )}
+      {m.big && <BigStamp text={m.big} f={f - (bigAt ?? 1e9)} fps={fps} color={m.big_color ?? C.orange} />}
+    </>
+  );
+};
+
+// ───────── versus：2つを並べて比べる（平均10連 ≠ 10連が普通）
+const Versus: React.FC<P> = ({m, f}) => {
+  const card = (c: {label: string; value: string}, i: number) => {
+    const a = f - 4 - i * 8;
+    return (
+      <div style={{width: 360, height: 300, borderRadius: 20, border: '3px solid #9be9ff', background: 'rgba(95,212,255,0.12)', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', gap: 14, opacity: interpolate(a, [0, 5], [0, 1], clamp),
+        scale: `${interpolate(a, [0, 8], [0.7, 1], {...clamp, easing: OUT})}`, boxShadow: '0 0 18px rgba(95,212,255,0.5)'}}>
+        <div style={{fontFamily: JP, fontWeight: 800, fontSize: 36, color: C.paper, textAlign: 'center', lineHeight: 1.3}}>{c.label}</div>
+        <div style={{fontFamily: JP, fontWeight: 900, fontSize: 92, color: i ? C.orange : '#fff', lineHeight: 1}}>{c.value}</div>
+      </div>
+    );
+  };
+  const sa = f - 20;
+  return (
+    <>
+      <Label f={f}>{m.label}</Label>
+      <div style={{position: 'absolute', top: 130, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 110}}>
+        {card(m.a, 0)}{card(m.b, 1)}
+      </div>
+      <div style={{position: 'absolute', top: 210, left: 0, right: 0, textAlign: 'center', fontFamily: EN, fontWeight: 900, fontSize: 120, color: C.orange,
+        opacity: interpolate(sa, [0, 4], [0, 1], clamp), scale: `${interpolate(sa, [0, 8], [2.4, 1], {...clamp, easing: OUT})}`}}>{m.sign}</div>
+    </>
+  );
+};
+
+// ───────── warn：赤い警告（オチ）
+const Warn: React.FC<P> = ({m, f}) => {
+  const blink = Math.floor(f / 5) % 2 === 0;
+  return (
+    <div style={{position: 'absolute', inset: 0, background: blink ? 'rgba(226,32,43,0.35)' : 'rgba(226,32,43,0.18)', display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center', gap: 20}}>
+      <div style={{fontFamily: EN, fontWeight: 900, fontSize: 54, color: '#ffd0d0', letterSpacing: 8}}>⚠ WARNING</div>
+      <div style={{fontFamily: JP, fontWeight: 900, fontSize: 104, color: '#fff', WebkitTextStroke: '8px #e2202b', paintOrder: 'stroke fill'}}>{m.text}</div>
+    </div>
+  );
+};
+
+const PANELS: Record<string, React.FC<P>> = {hook: Hook, scan: Scan, icons: Icons, formula: Formula, steps: Steps, glitch: Glitch, clean: Clean,
+  qa: Qa, dist: Dist, versus: Versus, warn: Warn};
 
 export const MonitorBody: React.FC<P> = (p) => {
   const Comp = PANELS[p.m.type];
@@ -262,5 +404,8 @@ export const panelSounds = (m: Monitor, dur: number): {at: number; src: string; 
   if (m.type === 'steps') return [...Array.from({length: m.n}, (_, k) => ({at: 6 + k * 4, src: 'pop', vol: 0.16 + k * 0.012})),
     {at: Math.round(dur * 0.3), src: 'res', vol: 0.3}];
   if (m.type === 'hook') return [{at: 0, src: 'res', vol: 0.35}];
+  if (m.type === 'dist' && m.intro) return Array.from({length: 8}, (_, i) => ({at: 2 + i * 3, src: 'pop', vol: 0.18}));
+  if (m.type === 'versus') return [{at: 4, src: 'pop', vol: 0.3}, {at: 12, src: 'pop', vol: 0.3}, {at: 20, src: 'thump', vol: 0.5}];
+  if (m.type === 'warn') return [];
   return [];
 };

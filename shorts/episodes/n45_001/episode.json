@@ -1,0 +1,604 @@
+{
+ "_note": "ナギの45秒解析 #1。セリフは台本（voice_episode/script）が正。ここは顔・カメラ・モニター・演出（fx）・間だけ",
+ "id": "n45_001",
+ "series": "nagi45",
+ "no": 1,
+ "title": "なんで継続率90％は駆け抜けるの？",
+ "voice_episode": "episodes/nagi45_001",
+ "script": "n01",
+ "tempo": 1.1,
+ "gap": 0.2,
+ "timer": {
+  "start_after": "n01-005",
+  "first": "n01-006",
+  "last": "n01-019",
+  "seconds": 45,
+  "lead": 0.45,
+  "tail": 0.5,
+  "max_tempo": 1.2
+ },
+ "timer_end_fx": [
+  {
+   "type": "stamp",
+   "text": "解析完了",
+   "color": "cyan",
+   "size": 190,
+   "y": 720,
+   "dur": 1.4,
+   "rot": -4,
+   "dim": true
+  },
+  {
+   "type": "flash",
+   "dur": 0.2,
+   "color": "#bff4ff",
+   "op": 0.7
+  }
+ ],
+ "note": "※初当たりを1連目とし、毎回90％で継続する理論値。実機は継続率の算出条件が異なる場合があります",
+ "bgm": {
+  "file": "series/nagi45/bgm.m4a",
+  "start": 7.0,
+  "loop_end": 62.0,
+  "gain": 0.09
+ },
+ "black_after": 0.03,
+ "black_hold": 0.8,
+ "lines": [
+  {
+   "id": "n01-001",
+   "face": "angry",
+   "cam": {
+    "focus": "baku",
+    "zoom": 2.3,
+    "mode": "snap"
+   },
+   "nosub": true,
+   "monitor": {
+    "type": "hook",
+    "value": "90％",
+    "label": "継続率"
+   },
+   "fx": [
+    {
+     "type": "bigcap",
+     "text": "なんで継続率90％って\n全然続かんねん！",
+     "dur": "line",
+     "extra": 0.15,
+     "y": 250,
+     "size": 92,
+     "rot": -3
+    },
+    {
+     "type": "speed",
+     "who": "baku",
+     "dur": "line",
+     "full": true
+    },
+    {
+     "type": "shake",
+     "amp": 16,
+     "dur": 0.45,
+     "sound": "se/thump.wav",
+     "vol": 0.7
+    }
+   ]
+  },
+  {
+   "id": "n01-002",
+   "face": "normal",
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "fx": [
+    {
+     "type": "shake",
+     "amp": 0,
+     "dur": 0.1,
+     "sound": "se/whoosh.wav",
+     "vol": 0.5
+    }
+   ]
+  },
+  {
+   "id": "n01-003",
+   "face": "smug",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.3,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "clean",
+    "value": "10連？",
+    "label": "バクの予想"
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "stretch",
+     "who": "baku",
+     "dur": 0.6,
+     "sound": "se/boing.wav",
+     "vol": 0.35
+    }
+   ]
+  },
+  {
+   "id": "n01-004",
+   "face": "normal",
+   "cam": {
+    "focus": "nagi",
+    "zoom": 1.25,
+    "mode": "snap"
+   },
+   "fx": [
+    {
+     "type": "shake",
+     "amp": 8,
+     "dur": 0.25,
+     "sound": "se/thump.wav",
+     "vol": 0.5
+    }
+   ]
+  },
+  {
+   "id": "n01-005",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "scan",
+    "label": "ANALYZING",
+    "text": "継続率90％の連チャン分布"
+   },
+   "fx": []
+  },
+  {
+   "id": "n01-006",
+   "face": "surprised",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.12,
+    "mode": "push"
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "tilt",
+     "who": "baku",
+     "deg": -12,
+     "dur": "line",
+     "extra": 0.3
+    }
+   ]
+  },
+  {
+   "id": "n01-007",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.06,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "qa",
+    "label": "平均連チャン数",
+    "value": "10連",
+    "question": "でも、最も発生しやすいのは？",
+    "q_at": 0.5
+   },
+   "fx": []
+  },
+  {
+   "id": "n01-008",
+   "face": "smug",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.2,
+    "mode": "snap"
+   },
+   "gap": 0.15,
+   "fx": []
+  },
+  {
+   "id": "n01-009",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "dist",
+    "mode": "mode1",
+    "intro": true,
+    "label": "連チャン数ごとの終了確率",
+    "big": "1連",
+    "big_at": "start",
+    "big_color": "#ff2d2d"
+   },
+   "fx": [
+    {
+     "type": "shake",
+     "amp": 14,
+     "at": 0.07,
+     "dur": 0.35
+    }
+   ]
+  },
+  {
+   "id": "n01-010",
+   "face": "surprised",
+   "gap": 0.12,
+   "nosub": true,
+   "hold": 0.6,
+   "cam": {
+    "focus": "baku",
+    "zoom": 2.4,
+    "mode": "snap"
+   },
+   "fx": [
+    {
+     "type": "bigcap",
+     "text": "はぁ！？",
+     "dur": "line",
+     "extra": 0.15,
+     "color": "red",
+     "size": 230,
+     "y": 230,
+     "rot": -6
+    },
+    {
+     "type": "speed",
+     "who": "baku",
+     "dur": "line",
+     "extra": 0.2,
+     "full": true
+    },
+    {
+     "type": "shake",
+     "amp": 26,
+     "dur": 0.5,
+     "sound": "se/thump.wav",
+     "vol": 0.8
+    },
+    {
+     "type": "deform",
+     "kind": "squash",
+     "who": "baku",
+     "dur": 0.8,
+     "sound": "se/boing.wav",
+     "sound_delay": 3,
+     "vol": 0.4
+    }
+   ]
+  },
+  {
+   "id": "n01-011",
+   "face": "normal",
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "dist",
+    "mode": "pct",
+    "label": "連チャン数ごとの終了確率"
+   },
+   "fx": [
+    {
+     "type": "shake",
+     "amp": 0,
+     "dur": 0.1,
+     "sound": "se/whoosh.wav",
+     "vol": 0.45
+    }
+   ]
+  },
+  {
+   "id": "n01-012",
+   "face": "normal",
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.06,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "dist",
+    "mode": "decay",
+    "label": "連チャン数ごとの終了確率"
+   },
+   "gap": 0.15,
+   "fx": []
+  },
+  {
+   "id": "n01-013",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.08,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "dist",
+    "mode": "cum",
+    "label": "連チャン数ごとの終了確率"
+   },
+   "hold": 1.0,
+   "react": {
+    "who": "baku",
+    "face": "surprised",
+    "at_end": 0.9
+   },
+   "fx": []
+  },
+  {
+   "id": "n01-014",
+   "face": "surprised",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.25,
+    "mode": "snap"
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "wobble",
+     "who": "baku",
+     "dur": 0.6
+    }
+   ]
+  },
+  {
+   "id": "n01-015",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.08,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "dist",
+    "mode": "mean",
+    "label": "平均を引き上げるのは大連チャン"
+   },
+   "fx": []
+  },
+  {
+   "id": "n01-016",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.1,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "formula",
+    "rows": [
+     [
+      "0.9",
+      "10",
+      "≒ 34.9％",
+      "10回とも駆け抜けない"
+     ],
+     [
+      "1 − 0.9",
+      "10",
+      "≒ 65.1％",
+      "1回でも駆け抜ける"
+     ]
+    ]
+   },
+   "fx": []
+  },
+  {
+   "id": "n01-017",
+   "face": "normal",
+   "gap": 0.35,
+   "hold": 1.4,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.1,
+    "mode": "snap"
+   },
+   "react": {
+    "who": "baku",
+    "face": "surprised",
+    "at_start": 0.1
+   },
+   "fx": [
+    {
+     "type": "boom",
+     "x": 540,
+     "y": 760,
+     "dur": 0.9,
+     "sound": "se/boom.wav",
+     "vol": 0.75
+    },
+    {
+     "type": "stamp",
+     "text": "65％",
+     "color": "red",
+     "size": 380,
+     "y": 560,
+     "dur": 1.7,
+     "rot": -6
+    },
+    {
+     "type": "shake",
+     "amp": 32,
+     "dur": 0.7
+    },
+    {
+     "type": "flash",
+     "dur": 0.25,
+     "color": "#fff",
+     "op": 0.9
+    }
+   ]
+  },
+  {
+   "id": "n01-018",
+   "face": "sweat",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.35,
+    "mode": "snap"
+   },
+   "hold": 0.5,
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "deflate",
+     "who": "baku",
+     "dur": "line",
+     "extra": 0.4,
+     "sound": "se/boing.wav",
+     "vol": 0.3
+    }
+   ]
+  },
+  {
+   "id": "n01-019",
+   "face": "normal",
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "hold": 1.0,
+   "monitor": {
+    "type": "versus",
+    "label": "",
+    "a": {
+     "label": "平均",
+     "value": "10連"
+    },
+    "b": {
+     "label": "10連するのが",
+     "value": "普通"
+    },
+    "sign": "≠"
+   },
+   "fx": []
+  },
+  {
+   "id": "n01-020",
+   "face": "normal",
+   "pre": 1.5,
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "versus",
+    "label": "",
+    "a": {
+     "label": "公表",
+     "value": "90％"
+    },
+    "b": {
+     "label": "体感",
+     "value": "？？"
+    },
+    "sign": "≠"
+   },
+   "fx": []
+  },
+  {
+   "id": "n01-021",
+   "face": "excited",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.25,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "qa",
+    "label": "バクの提案",
+    "value": "体感継続率",
+    "question": "に合わせて公表！",
+    "q_at": 0.3
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "stretch",
+     "who": "baku",
+     "dur": 0.7,
+     "sound": "se/boing.wav",
+     "vol": 0.3
+    }
+   ]
+  },
+  {
+   "id": "n01-022",
+   "face": "smug",
+   "gap": 0.12,
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.4,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "versus",
+    "label": "",
+    "a": {
+     "label": "公表",
+     "value": "90％"
+    },
+    "b": {
+     "label": "バク案",
+     "value": "85％"
+    },
+    "sign": "→"
+   },
+   "fx": [
+    {
+     "type": "sparkle",
+     "who": "baku",
+     "dur": "line",
+     "extra": 1.0,
+     "sound": "se/kira.wav",
+     "vol": 0.5
+    },
+    {
+     "type": "sparkle_snd2",
+     "at": "end",
+     "dur": 0.1,
+     "sound": "se/kira.wav",
+     "vol": 0.35
+    }
+   ]
+  },
+  {
+   "id": "n01-023",
+   "face": "normal",
+   "pre": 1.0,
+   "cam": {
+    "focus": "nagi",
+    "zoom": 1.45,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "warn",
+    "text": "虚偽のスペック"
+   },
+   "fx": []
+  }
+ ]
+}
