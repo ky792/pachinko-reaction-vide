@@ -9,5 +9,9 @@
  "style": "ねむたい",
  "speed": 0.95,
  "intonation": 0.65,
- "kana_only": false
+ "kana_only": false,
+ "only": [
+  "02_debut-006",
+  "05_genjou-003"
+ ]
 }
