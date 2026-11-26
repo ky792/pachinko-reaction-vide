@@ -520,8 +520,8 @@ const Cost: React.FC<P> = ({m, f}) => {
               <div style={{position: 'absolute', left: c.x - W / 2 - 8, width: W + 16, top: gapTop, height: gapH, border: '4px solid #fff', borderRadius: 6,
                 background: `${c.col}55`, opacity: interpolate(da, [0, 5], [0, 1], clamp)}} />
             )}
-            <div style={{position: 'absolute', left: c.x - 110, width: 220, top: Math.min(top, avgY) - 58, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 36,
-              color: '#fff', opacity: g, textShadow: '0 0 8px #06204f'}}>コスト約<span style={{fontFamily: EN, fontSize: 46}}>{yen(cost)}</span>円</div>
+            <div style={{position: 'absolute', left: c.x - 130, width: 260, top: Math.min(top, avgY) - 58, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 32,
+              color: '#fff', opacity: g, textShadow: '0 0 8px #06204f', whiteSpace: 'nowrap'}}>コスト約<span style={{fontFamily: EN, fontSize: 46}}>{yen(cost)}</span>円</div>
             <div style={{position: 'absolute', left: c.x - 110, width: 220, top: base + 8, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 34,
               color: c.n === 17 ? C.paper : c.col, opacity: interpolate(a, [0, 5], [0, 1], clamp), whiteSpace: 'nowrap'}}>
               <span style={{fontFamily: EN, fontSize: 42}}>{c.n}</span>回転

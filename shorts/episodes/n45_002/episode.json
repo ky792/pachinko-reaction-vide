@@ -411,7 +411,12 @@
     "zoom": 1.3,
     "mode": "snap"
    },
-   "fx": []
+   "fx": [],
+   "react": {
+    "who": "baku",
+    "face": "surprised",
+    "at_end": -0.12
+   }
   },
   {
    "id": "n02-018",
