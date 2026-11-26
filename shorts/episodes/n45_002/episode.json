@@ -1,0 +1,470 @@
+{
+ "_note": "ナギの45秒解析 #2 ボーダーの正体。セリフは台本（voice_episode/script）が正。ここは顔・カメラ・モニター・演出（fx）・間だけ。ナギの早口を避けるため tempo 1.0・max_tempo 1.0（45秒に入らなければ止まる）",
+ "id": "n45_002",
+ "series": "nagi45",
+ "no": 2,
+ "title": "パチンコの\nボーダーの正体",
+ "voice_episode": "episodes/nagi45_002",
+ "script": "n02",
+ "tempo": 1.0,
+ "gap": 0.25,
+ "timer": {
+  "start_after": "n02-005",
+  "first": "n02-006",
+  "last": "n02-012",
+  "seconds": 45,
+  "lead": 0.35,
+  "tail": 0.4,
+  "max_tempo": 1.0,
+  "hold_target": 1.2
+ },
+ "timer_end_fx": [
+  {
+   "type": "flash",
+   "dur": 0.2,
+   "color": "#bff4ff",
+   "op": 0.5
+  }
+ ],
+ "note": "※等価交換・出玉性能などの条件を固定した理論値",
+ "bgm": {
+  "file": "series/nagi45/bgm.m4a",
+  "start": 7.0,
+  "loop_end": 62.0,
+  "gain": 0.09
+ },
+ "black_after": 0.0,
+ "black_hold": 0.5,
+ "lines": [
+  {
+   "id": "n02-001",
+   "face": "confused",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.9,
+    "mode": "snap"
+   },
+   "nosub": true,
+   "monitor": {
+    "type": "clean",
+    "value": "ボーダー",
+    "label": "パチンコの"
+   },
+   "fx": [
+    {
+     "type": "bigcap",
+     "text": "パチンコの\nボーダーって\nあるやん？",
+     "dur": "line",
+     "extra": 0.15,
+     "y": 190,
+     "size": 118,
+     "rot": -3,
+     "color": "white"
+    },
+    {
+     "type": "shake",
+     "amp": 10,
+     "dur": 0.35,
+     "sound": "se/thump.wav",
+     "vol": 0.55
+    }
+   ]
+  },
+  {
+   "id": "n02-002",
+   "face": "normal",
+   "cam": {
+    "focus": "nagi",
+    "zoom": 1.2,
+    "mode": "snap"
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-003",
+   "face": "confused",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.3,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "versus",
+    "label": "",
+    "a": {
+     "label": "ボーダー",
+     "value": "17回転"
+    },
+    "b": {
+     "label": "実際",
+     "value": "15回転"
+    },
+    "sign": "−2"
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "tilt",
+     "who": "baku",
+     "deg": 8,
+     "dur": "line"
+    }
+   ]
+  },
+  {
+   "id": "n02-004",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "scan",
+    "label": "ANALYZING",
+    "text": "ボーダーの仕組み"
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-005",
+   "face": "confused",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.35,
+    "mode": "snap"
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "wobble",
+     "who": "baku",
+     "dur": 0.7,
+     "sound": "se/boing.wav",
+     "vol": 0.3
+    }
+   ]
+  },
+  {
+   "id": "n02-006",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.05,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "balance"
+   },
+   "react": {
+    "who": "baku",
+    "face": "normal",
+    "at_start": 1.2
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "look",
+     "who": "baku",
+     "deg": -7,
+     "at": 1.3,
+     "dur": 2.6
+    }
+   ]
+  },
+  {
+   "id": "n02-007",
+   "face": "normal",
+   "tap": true,
+   "hold": 0.6,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.06,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "calc",
+    "big": "約59円",
+    "big_at_end": 1.25,
+    "big_at_end_only": true
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "nod",
+     "who": "baku",
+     "at": 2.2,
+     "dur": 1.1,
+     "times": 2
+    }
+   ]
+  },
+  {
+   "id": "n02-008",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.06,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "cost",
+    "stage": 1
+   },
+   "react": {
+    "who": "baku",
+    "face": "surprised",
+    "at_end": 1.0
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-009",
+   "face": "normal",
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.08,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "cost",
+    "stage": 2,
+    "cont": true
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "nod",
+     "who": "baku",
+     "at": 1.0,
+     "dur": 1.2,
+     "times": 2
+    }
+   ]
+  },
+  {
+   "id": "n02-010",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.08,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "cost",
+    "stage": 3,
+    "cont": true
+   },
+   "react": {
+    "who": "baku",
+    "face": "happy",
+    "at_end": 1.2
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-011",
+   "face": "normal",
+   "tap": true,
+   "hold": 0.6,
+   "cam": {
+    "focus": "monitor",
+    "zoom": 1.06,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "accum",
+    "big": "約14,000円",
+    "big_at_end": 1.9,
+    "big_at_end_only": true
+   },
+   "react": {
+    "who": "baku",
+    "face": "surprised",
+    "at_end": 1.4
+   },
+   "fx": [
+    {
+     "type": "shake",
+     "amp": 0,
+     "at": 0,
+     "dur": 0.1
+    }
+   ]
+  },
+  {
+   "id": "n02-012",
+   "face": "normal",
+   "tap": true,
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "border",
+    "big": "ボーダー"
+   },
+   "react": {
+    "who": "baku",
+    "face": "normal",
+    "at_start": 0.4
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "nod",
+     "who": "baku",
+     "at": 2.4,
+     "dur": 1.4,
+     "times": 2
+    }
+   ]
+  },
+  {
+   "id": "n02-013",
+   "face": "normal",
+   "pre": 1.3,
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.25,
+    "mode": "snap"
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-014",
+   "face": "normal",
+   "cam": {
+    "focus": "center",
+    "zoom": 1.0,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "versus",
+    "label": "",
+    "a": {
+     "label": "期待収支",
+     "value": "プラス"
+    },
+    "b": {
+     "label": "実際の収支",
+     "value": "？"
+    },
+    "sign": "≠"
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-015",
+   "face": "sad",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.3,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "clean",
+    "value": "全然ない",
+    "label": "ボーダーを超える台"
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-016",
+   "face": "despair",
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.4,
+    "mode": "push"
+   },
+   "monitor": {
+    "type": "hold",
+    "label": "保留",
+    "text": "保留4つ"
+   },
+   "fx": [
+    {
+     "type": "deform",
+     "kind": "deflate",
+     "who": "baku",
+     "dur": "line",
+     "extra": 0.3
+    }
+   ]
+  },
+  {
+   "id": "n02-017",
+   "face": "normal",
+   "cam": {
+    "focus": "nagi",
+    "zoom": 1.3,
+    "mode": "snap"
+   },
+   "fx": []
+  },
+  {
+   "id": "n02-018",
+   "face": "smug",
+   "pre": 0.95,
+   "cam": {
+    "focus": "baku",
+    "zoom": 1.45,
+    "mode": "snap"
+   },
+   "monitor": {
+    "type": "versus",
+    "label": "",
+    "a": {
+     "label": "いま",
+     "value": "17回転"
+    },
+    "b": {
+     "label": "バク案",
+     "value": "10回転"
+    },
+    "sign": "→"
+   },
+   "fx": [
+    {
+     "type": "bulb",
+     "who": "baku",
+     "at": -0.75,
+     "dur": 1.1,
+     "sound": "se/hirameki.wav",
+     "vol": 0.55
+    },
+    {
+     "type": "deform",
+     "kind": "stretch",
+     "who": "baku",
+     "at": -0.75,
+     "dur": 0.6
+    },
+    {
+     "type": "sparkle",
+     "who": "baku",
+     "dur": "line",
+     "extra": 0.5,
+     "sound": "se/kira.wav",
+     "vol": 0.45
+    }
+   ]
+  },
+  {
+   "id": "n02-019",
+   "face": "normal",
+   "gap": 0.35,
+   "cam": {
+    "focus": "nagi",
+    "zoom": 1.4,
+    "mode": "snap"
+   },
+   "fx": []
+  }
+ ]
+}

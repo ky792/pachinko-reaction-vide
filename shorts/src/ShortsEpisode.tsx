@@ -296,6 +296,8 @@ export const Bust: React.FC<{ep: Episode; who: Who}> = ({ep, who}) => {
     if (ev.kind === 'stretch') { const w = Math.exp(-k / 8) * Math.cos(k * 0.7); sx *= 1 - 0.2 * w; sy *= 1 + 0.35 * w; }
     if (ev.kind === 'deflate') { const w = interpolate(k, [0, 8], [0, 1], clamp) * interpolate(u, [0.85, 1], [1, 0], clamp); sy *= 1 - 0.16 * w; sx *= 1 + 0.06 * w; dy += 30 * w; rot += -4 * w; }
     if (ev.kind === 'tilt') { const w = interpolate(k, [0, 8], [0, 1], {...clamp, easing: OUT}) * interpolate(u, [0.85, 1], [1, 0], clamp); rot += (ev.deg ?? -10) * w; dy -= 14 * w; }
+    if (ev.kind === 'nod') { const n = ev.times ?? 2, per = (ev.f1 - ev.f0) / n; const w = Math.pow(Math.max(0, Math.sin((k / per) * Math.PI)), 1.5); dy += 16 * w; rot += (who === 'baku' ? -3 : 3) * w; sy *= 1 - 0.025 * w; }
+    if (ev.kind === 'look') { const w = interpolate(k, [0, 8], [0, 1], {...clamp, easing: OUT}) * interpolate(u, [0.85, 1], [1, 0], clamp); rot += (ev.deg ?? -6) * w; dy -= 10 * w; }
     if (ev.kind === 'wobble') { rot += Math.sin(k * 1.3) * 6 * Math.exp(-k / 14); sx *= 1 + Math.sin(k * 1.7) * 0.06 * Math.exp(-k / 14); }
   }
   // タブレット操作（ナギ）：画面をタップした光

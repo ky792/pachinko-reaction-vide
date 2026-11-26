@@ -234,6 +234,35 @@ const Sparkle: React.FC<{ep: Episode}> = ({ep}) => {
   );
 };
 
+// ───────── ひらめきの電球（events: bulb）。バクの頭の上にポンと点く
+const Bulb: React.FC<{ep: Episode}> = ({ep}) => {
+  const f = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const e = active(ep, 'bulb', f);
+  if (!e) return null;
+  const o = FACE[(e.who ?? 'baku') as 'nagi' | 'baku'];
+  const a = f - e.f0;
+  const s = spring({frame: a, fps, config: {damping: 9, stiffness: 280}});
+  const lit = a >= 5;
+  const out = interpolate(f, [e.f1 - 5, e.f1], [1, 0], clamp);
+  const cx = o.x + 120, cy = o.y - 330;
+  return (
+    <svg width={1080} height={1920} style={{position: 'absolute', inset: 0, opacity: out}}>
+      {lit && Array.from({length: 10}, (_, i) => {
+        const ang = (i / 10) * Math.PI * 2 - Math.PI / 2;
+        const r0 = 92, r1 = 92 + 36 + Math.sin(a / 2 + i) * 8;
+        return <line key={i} x1={cx + Math.cos(ang) * r0} y1={cy + Math.sin(ang) * r0} x2={cx + Math.cos(ang) * r1} y2={cy + Math.sin(ang) * r1}
+          stroke="#ffe14a" strokeWidth={10} strokeLinecap="round" />;
+      })}
+      <g transform={`translate(${cx} ${cy}) scale(${interpolate(s, [0, 1], [0.2, 1])}) rotate(${interpolate(s, [0, 1], [-25, 8])})`}>
+        <circle cx={0} cy={-10} r={62} fill={lit ? '#fff3a0' : '#e8eef8'} stroke="#3a2a10" strokeWidth={8} style={{filter: lit ? 'drop-shadow(0 0 30px #ffe14a)' : undefined}} />
+        <rect x={-30} y={44} width={60} height={34} rx={8} fill="#9aa6b8" stroke="#3a2a10" strokeWidth={8} />
+        <path d="M -16 4 L -6 30 M 16 4 L 6 30" stroke="#c48a00" strokeWidth={6} strokeLinecap="round" />
+      </g>
+    </svg>
+  );
+};
+
 // ───────── フラッシュ（events: flash）
 const Flash: React.FC<{ep: Episode}> = ({ep}) => {
   const f = useCurrentFrame();
@@ -276,6 +305,7 @@ export const Nagi45: React.FC<{ep: Episode}> = ({ep}) => {
         <Bust ep={ep} who="baku" />
       </CharCam>
       <Sparkle ep={ep} />
+      <Bulb ep={ep} />
       <Boom ep={ep} />
       <TitleBurst ep={ep} />
       {ep.timer && <AnalysisClock start={ep.timer.start} seconds={ep.timer.seconds} title={ep.title} />}

@@ -407,8 +407,247 @@ const Warn: React.FC<P> = ({m, f}) => {
   );
 };
 
+// ════════════ #2 ボーダー回の図解（数字は丸める前の値から計算して表示する）
+// 色：平均回収額＝青／マイナス＝赤／±0＝グレー／プラス＝緑
+const BC = {avg: '#4f8dff', minus: '#ff4a4a', zero: '#a9b4c8', plus: '#3ddc84'};
+const AVG = 1000 / 17;                 // 1回転あたりの平均回収額 58.8235…円
+const COST = (n: number) => 1000 / n;  // 1回転あたりのコスト
+const yen = (v: number, d = 0) => v.toLocaleString('ja-JP', {minimumFractionDigits: d, maximumFractionDigits: d});
+const signed = (v: number) => (Math.round(v) === 0 ? '±0' : `${v > 0 ? '＋' : '−'}${yen(Math.abs(v))}`);
+const pop = (f: number, at: number) => ({
+  opacity: interpolate(f - at, [0, 5], [0, 1], clamp),
+  translate: `0 ${interpolate(f - at, [0, 8], [18, 0], {...clamp, easing: OUT})}px`,
+});
+
+// ───────── 図解① balance：天秤（遊技コスト ⇔ 平均回収額）が釣り合って「期待収支 ±0」
+const Balance: React.FC<P> = ({m, f, dur}) => {
+  const settle = interpolate(f, [Math.round(dur * 0.15), Math.round(dur * 0.6)], [0, 1], {...clamp, easing: OUT});
+  const wob = Math.sin(f / 3) * 4 * (1 - settle);
+  const ang = interpolate(settle, [0, 1], [-11, 0]) + wob;   // 左（コスト）が重い状態から水平へ
+  const zeroAt = Math.round(dur * 0.62);
+  const cx = 486, py = 250, arm = 300;
+  const rad = (ang * Math.PI) / 180;
+  const end = (s: number) => ({x: cx + s * arm * Math.cos(rad), y: py + s * arm * Math.sin(rad)});
+  const L = end(-1), R = end(1);
+  const plate = (p: {x: number; y: number}, label: string, col: string) => (
+    <>
+      <line x1={p.x} y1={p.y} x2={p.x - 70} y2={p.y + 110} stroke="#cfe9ff" strokeWidth={3} />
+      <line x1={p.x} y1={p.y} x2={p.x + 70} y2={p.y + 110} stroke="#cfe9ff" strokeWidth={3} />
+      <path d={`M ${p.x - 92} ${p.y + 110} Q ${p.x} ${p.y + 150} ${p.x + 92} ${p.y + 110} Z`} fill={col} opacity={0.9} />
+      <text x={p.x} y={p.y + 196} textAnchor="middle" fontFamily={JP} fontWeight={900} fontSize={40} fill={col}>{label}</text>
+    </>
+  );
+  return (
+    <>
+      <div style={{position: 'absolute', top: 28, left: 0, right: 0, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 50, color: '#fff', ...pop(f, 2)}}>
+        ボーダー <span style={{color: C.cyan, fontFamily: EN, fontSize: 64}}>17</span>回転<span style={{fontSize: 36, color: C.paper}}>／1000円</span>
+      </div>
+      <svg width={972} height={592} style={{position: 'absolute', inset: 0}}>
+        <polygon points={`${cx - 60},540 ${cx + 60},540 ${cx + 10},${py} ${cx - 10},${py}`} fill="rgba(200,230,255,0.55)" />
+        <line x1={L.x} y1={L.y} x2={R.x} y2={R.y} stroke="#e8f6ff" strokeWidth={12} strokeLinecap="round" />
+        <circle cx={cx} cy={py} r={16} fill={C.cyan} />
+        {plate(L, '遊技コスト', '#ffb27a')}
+        {plate(R, '平均回収額', BC.avg)}
+      </svg>
+      <div style={{position: 'absolute', top: 150, left: 0, right: 0, textAlign: 'center', ...pop(f, zeroAt)}}>
+        <span style={{display: 'inline-block', padding: '8px 30px', borderRadius: 999, background: 'rgba(169,180,200,0.25)', border: `3px solid ${BC.zero}`,
+          fontFamily: JP, fontWeight: 900, fontSize: 46, color: '#fff'}}>期待収支 <span style={{fontFamily: EN, fontSize: 56}}>±0</span></span>
+      </div>
+    </>
+  );
+};
+
+// ───────── 図解② calc：1000円 ÷ 17回転 ＝ 約58.82円 → 「約59円」
+const Calc: React.FC<P> = ({f, dur, bigAt}) => {
+  const t1 = Math.round(dur * 0.12), t2 = Math.round(dur * 0.3), t3 = Math.round(dur * 0.5);
+  const b = bigAt ?? Math.round(dur * 0.85);
+  const shown = interpolate(f, [t3, t3 + 16], [0, AVG], clamp);
+  const s = spring({frame: f - b, fps: 30, config: {damping: 11, stiffness: 260}});
+  return (
+    <>
+      <Label f={f}>通常時1回転あたりの平均回収額</Label>
+      <div style={{position: 'absolute', top: 128, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: 22,
+        fontFamily: JP, fontWeight: 900, color: '#fff'}}>
+        <span style={{fontSize: 70, ...pop(f, t1)}}>1000円</span>
+        <span style={{fontSize: 70, color: C.cyan, ...pop(f, t2)}}>÷</span>
+        <span style={{fontSize: 70, ...pop(f, t2)}}>17回転</span>
+      </div>
+      <div style={{position: 'absolute', top: 236, left: 0, right: 0, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 64, color: C.paper, ...pop(f, t3)}}>
+        ＝ <span style={{fontFamily: EN}}>{shown.toFixed(2)}</span>円
+      </div>
+      <div style={{position: 'absolute', top: 318, left: 0, right: 0, textAlign: 'center', opacity: f >= b ? 1 : 0,
+        scale: `${interpolate(s, [0, 1], [1.8, 1])}`}}>
+        <span style={{fontFamily: JP, fontWeight: 900, fontSize: 150, color: BC.avg, WebkitTextStroke: '6px #fff', paintOrder: 'stroke fill', lineHeight: 1}}>約59円</span>
+      </div>
+      <div style={{position: 'absolute', top: 488, left: 60, right: 60, textAlign: 'center', fontFamily: JP, fontWeight: 700, fontSize: 25, lineHeight: 1.35,
+        color: 'rgba(220,240,255,0.9)', ...pop(f, b + 8)}}>毎回もらえるお金ではなく、大当たり・RUSHの出玉を含めた期待値</div>
+    </>
+  );
+};
+
+// ───────── 図解③ cost：回転率ごとの「1回転あたりのコスト」と平均回収額（青い線）。stage 1→2→3 で順番に出す
+// stage1＝17回転（±0）と15回転（約67円）／stage2＝15回転の差（約−8円）／stage3＝19回転（約53円・約＋6円）
+const Cost: React.FC<P> = ({m, f}) => {
+  const stage = m.stage ?? 1;
+  const base = 490, k = 4.5;                      // 1円＝4.5px（0円から描く）
+  const avgY = base - AVG * k;
+  const cols = [{n: 15, x: 300, col: BC.minus, st: 1, at: 10}, {n: 17, x: 520, col: BC.zero, st: 1, at: 0}, {n: 19, x: 740, col: BC.plus, st: 3, at: 4}];
+  const W = 120;
+  return (
+    <>
+      <Label f={stage === 1 ? f : 99}>1000円あたりの回転数と1回転のコスト</Label>
+      {/* 平均回収額の線（固定） */}
+      <div style={{position: 'absolute', left: 190, right: 60, top: avgY - 3, height: 6, background: BC.avg, boxShadow: `0 0 14px ${BC.avg}`,
+        opacity: stage === 1 ? interpolate(f, [0, 6], [0, 1], clamp) : 1}} />
+      <div style={{position: 'absolute', left: 22, width: 160, top: avgY - 40, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 28, lineHeight: 1.2,
+        color: BC.avg}}>平均回収額<br /><span style={{fontFamily: EN, fontSize: 40}}>約59</span>円</div>
+      <div style={{position: 'absolute', left: 190, right: 60, top: base, height: 3, background: 'rgba(200,230,255,0.7)'}} />
+      {cols.map((c) => {
+        if (stage < c.st) return null;
+        const a = stage === c.st ? f - c.at : 99;
+        const g = interpolate(a, [0, 14], [0, 1], {...clamp, easing: OUT});
+        const cost = COST(c.n);
+        const h = cost * k * g;
+        const top = base - h;
+        const d = AVG - cost;                     // 1回転あたりの期待収支
+        const diffOn = c.n === 15 ? stage >= 2 : c.n === 19 ? stage >= 3 : true;
+        const da = c.n === 15 && stage === 2 ? f - 4 : c.n === 19 ? a - 16 : 99;
+        const gapTop = Math.min(avgY, top), gapH = Math.abs(avgY - top);
+        return (
+          <React.Fragment key={c.n}>
+            <div style={{position: 'absolute', left: c.x - W / 2, width: W, top, height: h, borderRadius: '8px 8px 0 0',
+              background: `linear-gradient(180deg, ${c.col}, ${c.col}66)`, boxShadow: `0 0 16px ${c.col}88`}} />
+            {/* 差の部分を塗る（線より上＝コスト超過、線より下＝余り） */}
+            {c.n !== 17 && diffOn && (
+              <div style={{position: 'absolute', left: c.x - W / 2 - 8, width: W + 16, top: gapTop, height: gapH, border: `4px solid #fff`, borderRadius: 6,
+                background: `${c.col}55`, opacity: interpolate(da, [0, 5], [0, 1], clamp)}} />
+            )}
+            <div style={{position: 'absolute', left: c.x - 100, width: 200, top: top - 56, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 38,
+              color: '#fff', opacity: g}}>約<span style={{fontFamily: EN, fontSize: 46}}>{yen(cost)}</span>円</div>
+            <div style={{position: 'absolute', left: c.x - 100, width: 200, top: base + 10, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 36,
+              color: c.n === 17 ? C.paper : c.col, opacity: interpolate(a, [0, 5], [0, 1], clamp)}}>
+              <span style={{fontFamily: EN, fontSize: 44}}>{c.n}</span>回転{c.n === 17 && <span style={{fontSize: 24, color: BC.zero}}>（ボーダー）</span>}
+            </div>
+            {diffOn && (
+              <div style={{position: 'absolute', left: c.x + W / 2 + 6, width: 150, top: (c.n === 17 ? avgY - 70 : gapTop + gapH / 2 - 30), fontFamily: JP, fontWeight: 900,
+                fontSize: 34, color: c.n === 17 ? BC.zero : c.col, whiteSpace: 'nowrap', textShadow: '0 0 8px #06204f',
+                opacity: interpolate(c.n === 17 ? a - 8 : da, [0, 5], [0, 1], clamp)}}>
+                {c.n === 17 ? '±0' : <>約<span style={{fontFamily: EN, fontSize: 44}}>{signed(d)}</span>円</>}
+              </div>
+            )}
+          </React.Fragment>
+        );
+      })}
+    </>
+  );
+};
+
+// ───────── 図解④ accum：1000回転で積み重なる差（丸める前の1回転あたりの差×回転数）
+const Accum: React.FC<P> = ({f, dur, bigAt}) => {
+  const run0 = 6, run1 = Math.round(dur * 0.62);
+  const p = interpolate(f, [run0, run1], [0, 1], {...clamp, easing: (t) => t * t * (3 - 2 * t)});
+  const spins = Math.round(1000 * p);
+  const rows = [{n: 15, col: BC.minus}, {n: 17, col: BC.zero}, {n: 19, col: BC.plus}];
+  const MAX = (AVG - COST(15)) * -1000;           // 7843.1…（バーの最大幅の基準）
+  const ZX = 486, HALF = 300;
+  const b = bigAt ?? Math.round(dur * 0.85);
+  const s = spring({frame: f - b, fps: 30, config: {damping: 11, stiffness: 240}});
+  const gap = (AVG - COST(19)) * 1000 - (AVG - COST(15)) * 1000;   // 14,035.1…
+  return (
+    <>
+      <div style={{position: 'absolute', top: 26, left: 0, right: 0, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 40, color: C.paper}}>
+        <span style={{fontFamily: EN, fontSize: 64, color: '#fff'}}>{yen(spins)}</span> 回転させると
+      </div>
+      <div style={{position: 'absolute', left: ZX - 2, top: 110, width: 4, height: 300, background: 'rgba(220,235,255,0.6)'}} />
+      {rows.map((r, i) => {
+        const v = (AVG - COST(r.n)) * spins;
+        const w = (Math.abs(v) / MAX) * HALF;
+        const y = 128 + i * 96;
+        return (
+          <React.Fragment key={r.n}>
+            <div style={{position: 'absolute', left: 30, width: 170, top: y + 6, fontFamily: JP, fontWeight: 900, fontSize: 34, color: r.n === 17 ? C.paper : r.col}}>
+              <span style={{fontFamily: EN, fontSize: 42}}>{r.n}</span>回転の台
+            </div>
+            <div style={{position: 'absolute', top: y, height: 62, borderRadius: 8, background: r.col, boxShadow: `0 0 14px ${r.col}99`,
+              left: v < 0 ? ZX - w : ZX, width: Math.max(w, r.n === 17 ? 6 : 0)}} />
+            <div style={{position: 'absolute', top: y + 4, fontFamily: EN, fontWeight: 900, fontSize: 46, color: '#fff', textShadow: `0 0 10px ${r.col}`,
+              whiteSpace: 'nowrap', ...(v < 0 ? {left: ZX + 18} : {right: 972 - ZX + 18})}}>
+              {r.n === 17 ? '±0円' : `約${signed(v)}円`}
+            </div>
+          </React.Fragment>
+        );
+      })}
+      <div style={{position: 'absolute', top: 418, left: 0, right: 0, textAlign: 'center', fontFamily: JP, fontWeight: 800, fontSize: 30, color: C.paper,
+        opacity: interpolate(f, [run1, run1 + 6], [0, 1], clamp)}}>15回転と19回転の差 <span style={{fontFamily: EN, fontSize: 38, color: '#fff'}}>{yen(gap)}</span>円</div>
+      {f >= b && (
+        <div style={{position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+          background: `rgba(6,16,42,${interpolate(f - b, [0, 4], [0, 0.78], clamp)})`}}>
+          <div style={{fontFamily: JP, fontWeight: 900, fontSize: 56, color: '#fff', opacity: s}}>1000回転で</div>
+          <div style={{fontFamily: JP, fontWeight: 900, fontSize: 150, lineHeight: 1.05, color: C.orange, WebkitTextStroke: '6px #fff', paintOrder: 'stroke fill',
+            scale: `${interpolate(s, [0, 1], [1.8, 1])}`, whiteSpace: 'nowrap'}}>約14,000円</div>
+          <div style={{fontFamily: JP, fontWeight: 900, fontSize: 56, color: '#fff', opacity: s}}>の差</div>
+        </div>
+      )}
+    </>
+  );
+};
+
+// ───────── 図解⑤ border：平均回収額 ＝ 遊技コスト。その境界線がボーダー（左＝マイナス・右＝プラス）
+const Border: React.FC<P> = ({f, dur, bigAt}) => {
+  const lineAt = Math.round(dur * 0.35);
+  const b = bigAt ?? Math.round(dur * 0.75);
+  const glow = interpolate(f - b, [0, 6], [0, 1], clamp);
+  const X0 = 90, X1 = 882, BX = 486;
+  const draw = interpolate(f, [lineAt, lineAt + 14], [0, 1], {...clamp, easing: OUT});
+  return (
+    <>
+      <div style={{position: 'absolute', top: 60, left: 0, right: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 24,
+        fontFamily: JP, fontWeight: 900, fontSize: 66, ...pop(f, 2)}}>
+        <span style={{color: BC.avg}}>平均回収額</span>
+        <span style={{color: '#fff', fontSize: 80}}>＝</span>
+        <span style={{color: '#ffb27a'}}>遊技コスト</span>
+      </div>
+      {/* 回転率の数直線：左はマイナス、右はプラス、真ん中がボーダー */}
+      <div style={{position: 'absolute', left: X0, width: (BX - X0) * draw, top: 300, height: 70, background: `linear-gradient(90deg, ${BC.minus}cc, ${BC.minus}33)`,
+        borderRadius: '12px 0 0 12px', marginLeft: (BX - X0) * (1 - draw)}} />
+      <div style={{position: 'absolute', left: BX, width: (X1 - BX) * draw, top: 300, height: 70, background: `linear-gradient(90deg, ${BC.plus}33, ${BC.plus}cc)`,
+        borderRadius: '0 12px 12px 0'}} />
+      <div style={{position: 'absolute', left: X0 + 20, top: 312, fontFamily: JP, fontWeight: 900, fontSize: 36, color: '#fff', opacity: draw}}>マイナス</div>
+      <div style={{position: 'absolute', right: 972 - X1 + 20, top: 312, fontFamily: JP, fontWeight: 900, fontSize: 36, color: '#fff', opacity: draw}}>プラス</div>
+      <div style={{position: 'absolute', left: X0, right: 972 - X1, top: 386, textAlign: 'center', fontFamily: JP, fontWeight: 700, fontSize: 26, color: C.dim,
+        opacity: draw}}>← 回らない　　　回転率　　　回る →</div>
+      <div style={{position: 'absolute', left: BX - 4, top: 250, width: 8, height: 170, background: '#fff', borderRadius: 4,
+        boxShadow: `0 0 ${8 + glow * 26}px ${glow ? C.cyan : '#fff'}`, opacity: draw}} />
+      <div style={{position: 'absolute', left: BX - 200, width: 400, top: 430, textAlign: 'center', opacity: glow, scale: `${interpolate(glow, [0, 1], [1.6, 1])}`}}>
+        <span style={{fontFamily: JP, fontWeight: 900, fontSize: 84, color: C.cyan, WebkitTextStroke: '5px #fff', paintOrder: 'stroke fill'}}>ボーダー</span>
+      </div>
+    </>
+  );
+};
+
+// ───────── hold：保留ランプが1つずつ点く（保留4つ）
+const HoldLamps: React.FC<P> = ({m, f, dur}) => (
+  <>
+    <Label f={f}>{m.label ?? '保留'}</Label>
+    <div style={{position: 'absolute', top: 190, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 46}}>
+      {[0, 1, 2, 3].map((i) => {
+        const at = 6 + i * Math.round(dur * 0.12);
+        const on = f >= at;
+        const s = spring({frame: f - at, fps: 30, config: {damping: 10, stiffness: 260}});
+        return (
+          <div key={i} style={{width: 150, height: 150, borderRadius: 999, border: '5px solid #cfe9ff',
+            background: on ? 'radial-gradient(circle at 35% 30%, #ffffff, #9be9ff 40%, #2a6cff)' : 'rgba(255,255,255,0.08)',
+            boxShadow: on ? '0 0 30px rgba(95,212,255,0.9)' : 'none', scale: on ? `${interpolate(s, [0, 1], [1.4, 1])}` : '1'}} />
+        );
+      })}
+    </div>
+    <div style={{position: 'absolute', top: 410, left: 0, right: 0, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 54, color: '#fff',
+      ...pop(f, 6 + 3 * Math.round(dur * 0.12) + 6)}}>{m.text ?? '保留4つ'}</div>
+  </>
+);
+
 const PANELS: Record<string, React.FC<P>> = {hook: Hook, scan: Scan, icons: Icons, formula: Formula, steps: Steps, glitch: Glitch, clean: Clean,
-  qa: Qa, dist: Dist, versus: Versus, warn: Warn};
+  qa: Qa, dist: Dist, versus: Versus, warn: Warn, balance: Balance, calc: Calc, cost: Cost, accum: Accum, border: Border, hold: HoldLamps};
 
 export const MonitorBody: React.FC<P> = (p) => {
   const Comp = PANELS[p.m.type];
@@ -428,5 +667,11 @@ export const panelSounds = (m: Monitor, dur: number): {at: number; src: string; 
   if (m.type === 'dist' && m.intro) return Array.from({length: 8}, (_, i) => ({at: 2 + i * 3, src: 'pop', vol: 0.18}));
   if (m.type === 'versus') return [{at: 4, src: 'pop', vol: 0.3}, {at: 12, src: 'pop', vol: 0.3}, {at: 20, src: 'thump', vol: 0.5}];
   if (m.type === 'warn') return [];
+  if (m.type === 'balance') return [{at: 2, src: 'pop', vol: 0.3}, {at: Math.round(dur * 0.62), src: 'res', vol: 0.35}];
+  if (m.type === 'calc') return [{at: Math.round(dur * 0.12), src: 'pop', vol: 0.28}, {at: Math.round(dur * 0.3), src: 'pop', vol: 0.28}, {at: Math.round(dur * 0.5), src: 'res', vol: 0.3}];
+  if (m.type === 'cost') return (m.stage ?? 1) === 1 ? [{at: 0, src: 'pop', vol: 0.25}, {at: 10, src: 'pop', vol: 0.3}] : (m.stage === 2 ? [{at: 4, src: 'res', vol: 0.3}] : [{at: 4, src: 'pop', vol: 0.3}, {at: 20, src: 'res', vol: 0.3}]);
+  if (m.type === 'accum') return Array.from({length: 10}, (_, i) => ({at: 6 + Math.round((dur * 0.62 - 6) * i / 10), src: 'pop', vol: 0.14 + i * 0.012}));
+  if (m.type === 'border') return [{at: 2, src: 'pop', vol: 0.3}, {at: Math.round(dur * 0.35), src: 'res', vol: 0.3}];
+  if (m.type === 'hold') return [0, 1, 2, 3].map((i) => ({at: 6 + i * Math.round(dur * 0.12), src: 'pop', vol: 0.3 + i * 0.04}));
   return [];
 };
