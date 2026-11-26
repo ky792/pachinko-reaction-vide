@@ -1,7 +1,7 @@
 {
- "episode": "episodes/nagi45_002",
+ "episode": "episodes/nagi45_002_try",
  "model": "large-v3-turbo",
  "trim": true,
- "trim_only": ["n02-016"],
- "_run": "n45-002-fix"
+ "trim_only": ["t-001","t-002","t-003","t-004"],
+ "_run": "n45-002-try"
 }
