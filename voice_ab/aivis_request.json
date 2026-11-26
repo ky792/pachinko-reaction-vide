@@ -10,5 +10,11 @@
  "speed": 0.95,
  "intonation": 0.65,
  "kana_only": false,
- "_run": "n45-002-border"
+ "_run": "n45-002-fix-reading",
+ "only": [
+  "n02-009",
+  "n02-011",
+  "n02-012",
+  "n02-019"
+ ]
 }
