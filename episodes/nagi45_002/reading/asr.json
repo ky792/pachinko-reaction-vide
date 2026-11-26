@@ -1,0 +1,97 @@
+{
+ "n02-001": {
+  "sha1": "b9ba28742bf8a1fb24a5990c9f2751b51458d2a9",
+  "model": "large-v3-turbo",
+  "text": "なあナギ、パチンコのボーダーってあるやん?"
+ },
+ "n02-002": {
+  "sha1": "896145fd06a5fddccca35d1195042c330553d60e",
+  "model": "large-v3-turbo",
+  "text": "うん。"
+ },
+ "n02-003": {
+  "sha1": "f00f949753bb4d4934faa35777c30ada51d39814",
+  "model": "large-v3-turbo",
+  "text": "ボーダー17回転の台が15回転しか回らんかったとしてたった2回転でそんなに変わるもんなん?"
+ },
+ "n02-004": {
+  "sha1": "0822ab9f85ab891628ccf67d15fdbbf81ae47017",
+  "model": "large-v3-turbo",
+  "text": "じゃあボダーの仕組みから説明するね"
+ },
+ "n02-005": {
+  "sha1": "bd4cfd5615af00aff761c641536c08aa40b9cad8",
+  "model": "large-v3-turbo",
+  "text": "あ、始まるんや"
+ },
+ "n02-006": {
+  "sha1": "772eefc68616d9cad34657e23d3e0849b7f71b8f",
+  "model": "large-v3-turbo",
+  "text": "ボーダーとは、機体収支がプラスマイナスゼロになる回転率のこと。"
+ },
+ "n02-007": {
+  "sha1": "3d825c27ad93e905eab6439f29225cd6bb012fcf",
+  "model": "large-v3-turbo",
+  "text": "例えば、10日交換でボーダー17回転の台なら、通常時1回転あたりの平均回収額は約59円。"
+ },
+ "n02-008": {
+  "sha1": "c361ee02cda149161aae86907137a051af63945d",
+  "model": "large-v3-turbo",
+  "text": "でも1000円で15回転しか回らなければ1回転に約67円かかる"
+ },
+ "n02-009": {
+  "sha1": "efdf8c18dd68d7e7df781fb0117149f2461855eb",
+  "model": "large-v3-turbo",
+  "text": "つまり1回転あたり約8円のマイナス"
+ },
+ "n02-010": {
+  "sha1": "7f95e29095e1b155b3e9f16bbe98780e9a6a0efb",
+  "model": "large-v3-turbo",
+  "text": "逆に19回転ならコストは153円106円のプラスになる"
+ },
+ "n02-011": {
+  "sha1": "af23e5ee80ab04a863560c2b9aca0ca1e425d9c5",
+  "model": "large-v3-turbo",
+  "text": "1000回転させればその差は約14000円にもなるんだ"
+ },
+ "n02-012": {
+  "sha1": "3d69095731b140e506177150e365da07e07552b0",
+  "model": "large-v3-turbo",
+  "text": "定金回収額とコストが釣り合う境界線、それがボーダーだよ。"
+ },
+ "n02-013": {
+  "sha1": "a488ad5ada424fce39cd47788319e6cd81dd7b38",
+  "model": "large-v3-turbo",
+  "text": "なるほどな、でもボーダー越えてても負けるやん"
+ },
+ "n02-014": {
+  "sha1": "7b1947ff7beed099f8a1d31fc988d22a38ed9eff",
+  "model": "large-v3-turbo",
+  "text": "期待収支と実際の収支は別物だからね"
+ },
+ "n02-015": {
+  "sha1": "2e1a081e1c251bd463b84e7a9cff7b4450de341a",
+  "model": "large-v3-turbo",
+  "text": "そもそも最近、ボーダー越える台なんか全然ないで!"
+ },
+ "n02-016": {
+  "sha1": "81d81d5d33278881e0d9fbb20a7e593155bdd241",
+  "model": "large-v3-turbo",
+  "text": "保留4つとなっただけで嬉しいもん"
+ },
+ "n02-017": {
+  "sha1": "392212aafecc74fcdc399944099a3bf15a35dd4c",
+  "model": "large-v3-turbo",
+  "text": "随分ハードルが低いね"
+ },
+ "n02-018": {
+  "sha1": "a7ab07b5519b165ba664191ff6f36f77f99bb417",
+  "model": "large-v3-turbo",
+  "text": "ほなメーカーがボーダー10回転の台作れや"
+ },
+ "n02-019": {
+  "sha1": "b70889dac22f711c107a0e9f27b985e6565bcf4c",
+  "model": "large-v3-turbo",
+  "text": "お店側近い店にするだけじゃない?"
+ }
+}
