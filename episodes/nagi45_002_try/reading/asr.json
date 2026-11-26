@@ -1,0 +1,42 @@
+{
+ "t-001": {
+  "sha1": "e6ba78e63a29fd2d5aacb0bc2a5829fdd51b5c08",
+  "model": "large-v3-turbo",
+  "text": "保留4つ!止まっただけで嬉しいもん!"
+ },
+ "t-002": {
+  "sha1": "9668917e325bbd3289e0074086994cd07b050b88",
+  "model": "large-v3-turbo",
+  "text": "保留4つ止まっただけで嬉しいもん"
+ },
+ "t-003": {
+  "sha1": "d922c8ee2d2524e51aa223cb777264a2552a3ad1",
+  "model": "large-v3-turbo",
+  "text": "保留4つ、たまっただけで嬉しいもん"
+ },
+ "t-004": {
+  "sha1": "a39ee0a61bf0896aedad0a51b0c6ac7125fb6fcb",
+  "model": "large-v3-turbo",
+  "text": "保留4つたまっただけで嬉しいもん"
+ },
+ "t-005": {
+  "sha1": "96e0ea6b9c46427cc911e1171b45fbe8506b3552",
+  "model": "large-v3-turbo",
+  "text": "つまり1回転あたり約8円のマイナス"
+ },
+ "t-006": {
+  "sha1": "0de587427d3a1414f5bdfc4f99386e11ea437e2d",
+  "model": "large-v3-turbo",
+  "text": "つまり1回転あたり約8円のマイナス"
+ },
+ "t-007": {
+  "sha1": "eaa68962215237b220545b76ceee8fe4847b5522",
+  "model": "large-v3-turbo",
+  "text": "逆に19回転ならコストは153円、106円のトラスになる。"
+ },
+ "t-008": {
+  "sha1": "11e022c99160ae707a7f7dff901871a454934108",
+  "model": "large-v3-turbo",
+  "text": "逆に19回転ならコストは約53円、それで約6円のプラス。"
+ }
+}
