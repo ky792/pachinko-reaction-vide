@@ -1,6 +1,6 @@
 {
  "action": "lines",
- "episode": "episodes/nagi45_002",
+ "episode": "episodes/nagi45_002_try",
  "who": "nagi",
  "model": {
   "uuid": "22e8ed77-94fe-4ef2-871f-a86f94e9a579",
@@ -10,11 +10,5 @@
  "speed": 0.95,
  "intonation": 0.65,
  "kana_only": false,
- "_run": "n45-002-fix-reading",
- "only": [
-  "n02-009",
-  "n02-011",
-  "n02-012",
-  "n02-019"
- ]
+ "_run": "n45-002-try"
 }
