@@ -1,0 +1,14 @@
+# 出典一覧（概要欄・画面用）
+- 平和公式X @HEIWA_PR（2026/11/6・11/20） https://x.com/HEIWA_PR
+- キュインちゃんねる@HEIWA『YOUTOPYA』お披露目＆デビュー配信 https://www.youtube.com/watch?v=o0qqkPmvuqk
+- 【YOUTOPYA】第0話『YOUTOPYA始動』 https://www.youtube.com/watch?v=wwRATiqpD4E
+- 娯楽産業「平和 公式新ぱちインフルエンサー『YOUTOPYA』デビュー」
+- P-BOMB「平和、新VTuberユニット『YOUTOPYA』がデビュー」 https://p-bomb.co.jp/industry/maker/15703/
+- P-BOMB「平和、ファン向け公式サイト『キュインPORTAL』を公開」 https://p-bomb.co.jp/industry/maker/14355/
+- キュインPORTAL https://9in-portal.com/
+- 日本生産性本部 余暇創研『レジャー白書2026』／グリーンべると（p-town.dmm.com/specials/news/10596, 10279）
+- 『レジャー白書2025』／グリーンべると（p-town.dmm.com/specials/news/9424）
+- 1geki.jp ハルルナ紹介（2021年7月30日デビュー）
+- TVアニメ『戦国乙女〜桃色パラドックス〜』（アニメハック）
+- パチンコ新台『PA海物語 極JAPAN Withナギナミ』発表（グリーンべると p-town.dmm.com/specials/news/9300）
+- 三洋グループ ナギナミ「NAGINAMI EP」配信（p-town.dmm.com/specials/news/2304）
