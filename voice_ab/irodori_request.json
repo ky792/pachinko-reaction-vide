@@ -5,7 +5,18 @@
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "news03_s21",
+   "name": "garo2_fix_s53",
+   "ref": "voice_ab/vc_out/ref__からかい.m4a",
+   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
+   "extra": [
+    "--duration-scale",
+    "0.88",
+    "--seed",
+    "53"
+   ]
+  },
+  {
+   "name": "news03b_s21",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
@@ -14,32 +25,13 @@
     "--seed",
     "21"
    ]
-  },
-  {
-   "name": "news03_s88",
-   "ref": "voice_ab/vc_out/ref__からかい.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
-   "extra": [
-    "--duration-scale",
-    "0.88",
-    "--seed",
-    "88"
-   ]
-  },
-  {
-   "name": "news03_s7",
-   "ref": "voice_ab/vc_out/ref__からかい.m4a",
-   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
-   "extra": [
-    "--duration-scale",
-    "0.88",
-    "--seed",
-    "7"
-   ]
   }
  ],
  "only": [
-  "01_op-007",
-  "07_muzu-003"
+  "04_chigai-006",
+  "04_chigai-011",
+  "05_genjou-009",
+  "06_ip-007",
+  "08_kiki-005"
  ]
 }
