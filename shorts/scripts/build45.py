@@ -142,6 +142,8 @@ def main(eid, estimate=False):
         if m and 'big' in m:
             if m.get('big_at') == 'start' or m.get('big_at_start'):
                 m['big_at'] = L['start'] + 2
+            elif 'big_at_end' in m and m.get('big_at_end_only'):   # 語尾の数字（「…は約59円」）：声の終わりから数えて出す
+                m['big_at'] = L['end'] - round(m['big_at_end'] * FPS)
             else:
                 g = last_pause(L['env'])
                 m['big_at'] = L['start'] + g if g is not None else L['end'] - round(m.get('big_at_end', 1.0) * FPS)
