@@ -155,9 +155,14 @@ const BigCap: React.FC<{ep: Episode}> = ({ep}) => {
   const col = e.color === 'red' ? '#ff2d2d' : e.color === 'blue' ? C.blue : e.color === 'white' ? '#fff' : C.orange;
   return (
     <div style={{position: 'absolute', left: 30, right: 30, top: e.y ?? 300, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: e.size ?? 130,
-      lineHeight: 1.12, color: col, WebkitTextStroke: '16px #fff', paintOrder: 'stroke fill', filter: 'drop-shadow(0 10px 0 rgba(0,0,0,0.35))',
+      lineHeight: 1.12, color: col, WebkitTextStroke: `${e.stroke_w ?? 16}px ${e.stroke ?? '#fff'}`, paintOrder: 'stroke fill', filter: 'drop-shadow(0 10px 0 rgba(0,0,0,0.35))',
       scale: `${interpolate(s, [0, 1], [2.0, 1])}`, rotate: `${(e.rot ?? -4) * (1 - s * 0.3)}deg`, opacity: out}}>
-      {String(e.text).split('\n').map((r, i) => <div key={i}>{r}</div>)}
+      {/* line_colors：行ごとの色（読みやすさのため、強調したい行だけ色を変える） */}
+      {String(e.text).split('\n').map((r, i) => {
+        const lc = e.line_colors?.[i];
+        const c2 = lc === 'orange' ? C.orange : lc === 'red' ? '#ff2d2d' : lc === 'cyan' ? C.cyan : lc === 'white' ? '#fff' : undefined;
+        return <div key={i} style={c2 ? {color: c2} : undefined}>{r}</div>;
+      })}
     </div>
   );
 };

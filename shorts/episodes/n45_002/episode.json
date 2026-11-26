@@ -47,19 +47,26 @@
    "nosub": true,
    "monitor": {
     "type": "clean",
-    "value": "17回転",
-    "label": "ボーダー"
+    "value": "",
+    "label": ""
    },
    "fx": [
     {
      "type": "bigcap",
-     "text": "パチンコの\nボーダーって\nあるやん？",
+     "text": "パチンコの\nボーダーって\n結局なに？",
      "dur": "line",
      "extra": 0.15,
-     "y": 190,
-     "size": 118,
+     "y": 250,
+     "size": 132,
      "rot": -3,
-     "color": "white"
+     "color": "white",
+     "stroke": "#0a1a3f",
+     "stroke_w": 20,
+     "line_colors": [
+      null,
+      null,
+      "orange"
+     ]
     },
     {
      "type": "shake",
