@@ -346,6 +346,26 @@ const Cta45: React.FC<{ep: Episode}> = ({ep}) => {
           {done ? '✓ 登録済み' : `＋ ${c.button}`}
         </div>
       </div>
+      {/* 横動画（本編）への誘導：特定の動画は出さず、横長の画面アイコン＋短い一言だけ（声なし） */}
+      {c.long && (() => {
+        const la = a - (c.long_at ?? 40);
+        const ls = spring({frame: la, fps, config: {damping: 14}});
+        return (
+          <div style={{display: 'flex', alignItems: 'center', gap: 26, opacity: la < 0 ? 0 : ls, translate: `0 ${(1 - ls) * 30}px`}}>
+            <div style={{position: 'relative', width: 150, height: 84, borderRadius: 12, border: `5px solid ${C.cyan}`, boxShadow: `0 0 18px ${C.cyan}`,
+              background: 'rgba(95,212,255,0.12)'}}>
+              <div style={{position: 'absolute', left: '50%', top: '50%', translate: '-35% -50%', width: 0, height: 0, borderTop: '18px solid transparent',
+                borderBottom: '18px solid transparent', borderLeft: `30px solid #fff`}} />
+              <div style={{position: 'absolute', left: 10, right: 10, bottom: 8, height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.25)'}}>
+                <div style={{width: `${interpolate(la, [0, 40], [0, 100], clamp)}%`, height: '100%', borderRadius: 3, background: C.orange}} />
+              </div>
+            </div>
+            <div style={{fontFamily: JP, fontWeight: 900, fontSize: 54, color: '#fff', lineHeight: 1.25}}>
+              {String(c.long).split('\n').map((r: string, i: number) => <div key={i}>{r}</div>)}
+            </div>
+          </div>
+        );
+      })()}
     </AbsoluteFill>
   );
 };
@@ -371,6 +391,7 @@ const Sounds45: React.FC<{ep: Episode}> = ({ep}) => {
       {t && se('t-done', t.end + 10, `${SERIES}/complete.wav`, 0.4)}
       {(ep as any).cta45 && se('cta-pop', (ep as any).cta45.at + 28, 'se/pop.wav', 0.45)}
       {(ep as any).cta45 && se('cta-kira', (ep as any).cta45.at + 30, 'se/kira.wav', 0.3)}
+      {(ep as any).cta45?.long && se('cta-long', (ep as any).cta45.at + ((ep as any).cta45.long_at ?? 40), 'se/whoosh.wav', 0.3)}
     </>
   );
 };

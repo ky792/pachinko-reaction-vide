@@ -424,9 +424,11 @@
  ],
  "bgm_cut_after": 0.0,
  "cta": {
-  "dur": 2.3,
+  "dur": 3.6,
   "icon": "series/channel_icon.png",
   "name": "ナギバク研究所",
-  "button": "チャンネル登録"
+  "button": "チャンネル登録",
+  "long": "研究の続きは\n本編で",
+  "long_at": 40
  }
 }
