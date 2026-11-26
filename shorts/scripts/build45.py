@@ -191,6 +191,8 @@ def main(eid, estimate=False):
     trim = f"atrim={a0}:{a1}," if a1 else f"atrim=start={a0},"
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-af', trim + 'asetpts=N/SR/TB,afade=t=in:d=0.02', '-ar', '48000', '-ac', '2', str(seg)], check=True)
     T, stop = total / FPS, end_at / FPS
+    if 'bgm_cut_after' in ep:   # オチの声の直後にBGMだけ止めて、絵は余韻で残す（暗転は black_after）
+        stop = (lines[-1]['end'] + round(ep['bgm_cut_after'] * FPS)) / FPS
     subprocess.run(['ffmpeg', '-v', 'error', '-y', '-stream_loop', '-1', '-i', str(seg), '-t', f'{T:.3f}', '-af',
                     f"volume={bgm['gain']},volume='if(lt(t,{stop:.3f}),1,0)':eval=frame", '-ar', '48000', '-ac', '2', str(bed)], check=True)
     seg.unlink()
