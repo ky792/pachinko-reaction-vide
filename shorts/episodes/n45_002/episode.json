@@ -38,7 +38,7 @@
  "lines": [
   {
    "id": "n02-001",
-   "face": "confused",
+   "face": "normal",
    "cam": {
     "focus": "baku",
     "zoom": 1.9,
@@ -82,7 +82,7 @@
   },
   {
    "id": "n02-003",
-   "face": "confused",
+   "face": "surprised",
    "cam": {
     "focus": "baku",
     "zoom": 1.3,
