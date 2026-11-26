@@ -1,9 +1,5 @@
 {
  "episode": "episodes/nagi45_002",
  "model": "large-v3-turbo",
- "trim": true,
- "trim_only": [
-  "n02-003"
- ],
- "_run": "n45-002-takeB"
+ "_run": "n45-002-renumber"
 }
