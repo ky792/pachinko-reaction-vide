@@ -489,19 +489,18 @@ const Calc: React.FC<P> = ({f, dur, bigAt}) => {
 // stage1＝17回転（±0）と15回転（約67円）／stage2＝15回転の差（約−8円）／stage3＝19回転（約53円・約＋6円）
 const Cost: React.FC<P> = ({m, f}) => {
   const stage = m.stage ?? 1;
-  const base = 490, k = 4.5;                      // 1円＝4.5px（0円から描く）
+  const base = 410, k = 4.3;                      // 1円＝4.3px（0円から描く）
   const avgY = base - AVG * k;
-  const cols = [{n: 15, x: 300, col: BC.minus, st: 1, at: 10}, {n: 17, x: 520, col: BC.zero, st: 1, at: 0}, {n: 19, x: 740, col: BC.plus, st: 3, at: 4}];
-  const W = 120;
+  const cols = [{n: 15, x: 340, col: BC.minus, st: 1, at: 10}, {n: 17, x: 580, col: BC.zero, st: 1, at: 0}, {n: 19, x: 820, col: BC.plus, st: 3, at: 4}];
+  const W = 124;
   return (
     <>
-      <Label f={stage === 1 ? f : 99}>1000円あたりの回転数と1回転のコスト</Label>
-      {/* 平均回収額の線（固定） */}
-      <div style={{position: 'absolute', left: 190, right: 60, top: avgY - 3, height: 6, background: BC.avg, boxShadow: `0 0 14px ${BC.avg}`,
+      <div style={{position: 'absolute', left: 215, right: 30, top: avgY - 3, height: 6, background: BC.avg, boxShadow: `0 0 14px ${BC.avg}`,
         opacity: stage === 1 ? interpolate(f, [0, 6], [0, 1], clamp) : 1}} />
-      <div style={{position: 'absolute', left: 22, width: 160, top: avgY - 40, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 28, lineHeight: 1.2,
-        color: BC.avg}}>平均回収額<br /><span style={{fontFamily: EN, fontSize: 40}}>約59</span>円</div>
-      <div style={{position: 'absolute', left: 190, right: 60, top: base, height: 3, background: 'rgba(200,230,255,0.7)'}} />
+      <div style={{position: 'absolute', left: 18, width: 190, top: avgY - 42, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 30, lineHeight: 1.2,
+        color: BC.avg}}>平均回収額<br /><span style={{fontFamily: EN, fontSize: 42}}>約59</span>円</div>
+      <div style={{position: 'absolute', left: 18, width: 190, top: base + 58, textAlign: 'center', fontFamily: JP, fontWeight: 800, fontSize: 26, color: C.paper}}>1回転の収支</div>
+      <div style={{position: 'absolute', left: 215, right: 30, top: base, height: 3, background: 'rgba(200,230,255,0.7)'}} />
       {cols.map((c) => {
         if (stage < c.st) return null;
         const a = stage === c.st ? f - c.at : 99;
@@ -509,30 +508,28 @@ const Cost: React.FC<P> = ({m, f}) => {
         const cost = COST(c.n);
         const h = cost * k * g;
         const top = base - h;
-        const d = AVG - cost;                     // 1回転あたりの期待収支
+        const d = AVG - cost;
         const diffOn = c.n === 15 ? stage >= 2 : c.n === 19 ? stage >= 3 : true;
-        const da = c.n === 15 && stage === 2 ? f - 4 : c.n === 19 ? a - 16 : 99;
+        const da = c.n === 15 && stage === 2 ? f - 4 : c.n === 19 ? a - 16 : c.n === 17 ? a - 8 : 99;
         const gapTop = Math.min(avgY, top), gapH = Math.abs(avgY - top);
         return (
           <React.Fragment key={c.n}>
             <div style={{position: 'absolute', left: c.x - W / 2, width: W, top, height: h, borderRadius: '8px 8px 0 0',
               background: `linear-gradient(180deg, ${c.col}, ${c.col}66)`, boxShadow: `0 0 16px ${c.col}88`}} />
-            {/* 差の部分を塗る（線より上＝コスト超過、線より下＝余り） */}
             {c.n !== 17 && diffOn && (
-              <div style={{position: 'absolute', left: c.x - W / 2 - 8, width: W + 16, top: gapTop, height: gapH, border: `4px solid #fff`, borderRadius: 6,
+              <div style={{position: 'absolute', left: c.x - W / 2 - 8, width: W + 16, top: gapTop, height: gapH, border: '4px solid #fff', borderRadius: 6,
                 background: `${c.col}55`, opacity: interpolate(da, [0, 5], [0, 1], clamp)}} />
             )}
-            <div style={{position: 'absolute', left: c.x - 100, width: 200, top: top - 56, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 38,
-              color: '#fff', opacity: g}}>約<span style={{fontFamily: EN, fontSize: 46}}>{yen(cost)}</span>円</div>
-            <div style={{position: 'absolute', left: c.x - 100, width: 200, top: base + 10, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 36,
-              color: c.n === 17 ? C.paper : c.col, opacity: interpolate(a, [0, 5], [0, 1], clamp)}}>
-              <span style={{fontFamily: EN, fontSize: 44}}>{c.n}</span>回転{c.n === 17 && <span style={{fontSize: 24, color: BC.zero}}>（ボーダー）</span>}
+            <div style={{position: 'absolute', left: c.x - 110, width: 220, top: Math.min(top, avgY) - 58, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 36,
+              color: '#fff', opacity: g, textShadow: '0 0 8px #06204f'}}>コスト約<span style={{fontFamily: EN, fontSize: 46}}>{yen(cost)}</span>円</div>
+            <div style={{position: 'absolute', left: c.x - 110, width: 220, top: base + 8, textAlign: 'center', fontFamily: JP, fontWeight: 900, fontSize: 34,
+              color: c.n === 17 ? C.paper : c.col, opacity: interpolate(a, [0, 5], [0, 1], clamp), whiteSpace: 'nowrap'}}>
+              <span style={{fontFamily: EN, fontSize: 42}}>{c.n}</span>回転
             </div>
             {diffOn && (
-              <div style={{position: 'absolute', left: c.x + W / 2 + 6, width: 150, top: (c.n === 17 ? avgY - 70 : gapTop + gapH / 2 - 30), fontFamily: JP, fontWeight: 900,
-                fontSize: 34, color: c.n === 17 ? BC.zero : c.col, whiteSpace: 'nowrap', textShadow: '0 0 8px #06204f',
-                opacity: interpolate(c.n === 17 ? a - 8 : da, [0, 5], [0, 1], clamp)}}>
-                {c.n === 17 ? '±0' : <>約<span style={{fontFamily: EN, fontSize: 44}}>{signed(d)}</span>円</>}
+              <div style={{position: 'absolute', left: c.x - 110, width: 220, top: base + 52, textAlign: 'center', fontFamily: JP, fontWeight: 900,
+                fontSize: 34, color: c.col, whiteSpace: 'nowrap', opacity: interpolate(da, [0, 5], [0, 1], clamp)}}>
+                {c.n === 17 ? <><span style={{fontFamily: EN, fontSize: 42}}>±0</span><span style={{fontSize: 24}}>（ボーダー）</span></> : <>約<span style={{fontFamily: EN, fontSize: 44}}>{signed(d)}</span>円</>}
               </div>
             )}
           </React.Fragment>
@@ -549,7 +546,7 @@ const Accum: React.FC<P> = ({f, dur, bigAt}) => {
   const spins = Math.round(1000 * p);
   const rows = [{n: 15, col: BC.minus}, {n: 17, col: BC.zero}, {n: 19, col: BC.plus}];
   const MAX = (AVG - COST(15)) * -1000;           // 7843.1…（バーの最大幅の基準）
-  const ZX = 486, HALF = 300;
+  const ZX = 560, HALF = 255;
   const b = bigAt ?? Math.round(dur * 0.85);
   const s = spring({frame: f - b, fps: 30, config: {damping: 11, stiffness: 240}});
   const gap = (AVG - COST(19)) * 1000 - (AVG - COST(15)) * 1000;   // 14,035.1…
@@ -565,7 +562,7 @@ const Accum: React.FC<P> = ({f, dur, bigAt}) => {
         const y = 128 + i * 96;
         return (
           <React.Fragment key={r.n}>
-            <div style={{position: 'absolute', left: 30, width: 170, top: y + 6, fontFamily: JP, fontWeight: 900, fontSize: 34, color: r.n === 17 ? C.paper : r.col}}>
+            <div style={{position: 'absolute', left: 24, width: 260, top: y + 8, fontFamily: JP, fontWeight: 900, fontSize: 34, whiteSpace: 'nowrap', color: r.n === 17 ? C.paper : r.col}}>
               <span style={{fontFamily: EN, fontSize: 42}}>{r.n}</span>回転の台
             </div>
             <div style={{position: 'absolute', top: y, height: 62, borderRadius: 8, background: r.col, boxShadow: `0 0 14px ${r.col}99`,

@@ -47,8 +47,8 @@
    "nosub": true,
    "monitor": {
     "type": "clean",
-    "value": "ボーダー",
-    "label": "パチンコの"
+    "value": "17回転",
+    "label": "ボーダー"
    },
    "fx": [
     {
