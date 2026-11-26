@@ -1,0 +1,111 @@
+name: Remotion news03 (YOUTOPYA)
+
+on:
+  push:
+    branches: [feat/news03-youtopya]
+    paths:
+      - "remotion/**"
+      - ".github/workflows/remotion-news03.yml"
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "MP4 まで書き出す（false なら確認用の静止画だけ）"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: remotion-news03
+  cancel-in-progress: true
+
+env:
+  COMP: News03
+
+jobs:
+  stills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Type check
+        run: npx -y -p typescript tsc --noEmit -p . || echo "::warning::型チェックで警告あり"
+      - name: Render still previews
+        run: |
+          mkdir -p out
+          FRAMES=$(python3 -c "import json;print(' '.join(str(x) for x in json.load(open('src/data/news03_stills.json'))))")
+          for f in $FRAMES; do
+            npx remotion still "$COMP" "out/frame_${f}.jpg" --frame=$f --scale=0.5 --image-format=jpeg
+          done
+      - name: Save to outputs-news03-stills branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-news03-stills
+          git add -A
+          git commit -q -m "Stills ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-news03-stills
+
+  render:
+    needs: stills
+    if: ${{ github.event_name == 'push' || inputs.full }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra ffmpeg
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render MP4
+        run: |
+          mkdir -p out
+          npx remotion render "$COMP" out/news03_youtopya.mp4 --codec=h264 --crf=20 --concurrency=4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/news03_youtopya.mp4
+      - name: Check audio (loudness / peaks)
+        run: |
+          ffmpeg -hide_banner -i out/news03_youtopya.mp4 -af ebur128=peak=true -f null - 2>&1 | tail -14
+      - name: Publish full video as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete news03-youtopya -y --cleanup-tag || true
+          gh release create news03-youtopya out/news03_youtopya.mp4 --target "$GITHUB_SHA" --prerelease \
+            --title "ナギバクニュース #03 YOUTOPYA（Remotion版）" --notes "feat/news03-youtopya で自動書き出し（1080p）"
+      - name: Make phone preview (720p)
+        run: |
+          mkdir -p preview
+          ffmpeg -v error -y -i out/news03_youtopya.mp4 -vf scale=1280:-2 -c:v libx264 -preset veryfast -crf 27 -c:a aac -b:a 128k preview/news03_preview.mp4
+      - name: Save preview to outputs-news03 branch
+        run: |
+          cd preview
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-news03
+          git add -A
+          git commit -q -m "Render ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-news03

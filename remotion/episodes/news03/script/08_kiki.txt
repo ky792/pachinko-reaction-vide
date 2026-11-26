@@ -1,0 +1,34 @@
+# ⑧ 将来的な遊技機化はあるのか？
+@chapter ⑧ 将来的な遊技機化
+@clear
+@dir face=normal
+バク: ところでナギ。これ、いずれ《YOUTOPYA|ユートピア》のパチンコが出たりせえへんの？
+@dir face=normal
+ナギ: 実は、メーカー公式《VTuber|ブイチューバー》が遊技機に登場した前例はすでにあるよ。
+@dir face=surprised
+バク: え、そうなん？
+@show naginami
+@dir face=normal
+ナギ: 《三洋|さんよう》の公式《VTuber|ブイチューバー》ユニット、ナギナミが登場する、《PA海物語 極JAPAN Withナギナミ|ピーエー、うみものがたり、きわみジャパン、ウィズ、ナギナミ》だね。
+@dir face=confused
+バク: ナギナミ……。
+# （バクがナギを見る）
+@silent 30 baku=confused look=nagi slow=1
+@dir face=smug look=nagi
+バク: なんか名前に親近感あるな。
+@dir face=normal pre=8
+ナギ: 気のせいだよ。
+@dir face=normal
+ナギ: このように、メーカーが展開している《VTuber|ブイチューバー》を遊技機のコンテンツに取り入れた例がある。
+@dir face=normal
+バク: ほな《平和|へいわ》も、いつか《YOUTOPYA|ユートピア》を台に登場させる可能性はあるんか。
+@show future
+@dir face=normal
+ナギ: 可能性としては考えられるね。ただし、現時点で《YOUTOPYA|ユートピア》の遊技機化が正式に発表されているわけではないよ。
+@step 1
+@dir face=normal
+ナギ: 《VTuber|ブイチューバー》としての人気と、遊技機としての需要も必ずしも一致するわけではないからね。
+@dir face=sad
+バク: まあ、そう簡単にはいかんか。
+@dir face=normal
+ナギ: 今後の活動やキャラクターの人気次第では、さまざまな展開があるかもしれないね。

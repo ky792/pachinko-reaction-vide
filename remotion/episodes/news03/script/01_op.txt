@@ -1,0 +1,21 @@
+# ① オープニング（研究所。バクがタブレットを眺めている）
+@chapter ① オープニング
+@show op_news
+@dir face=normal look=tablet
+バク: なあナギ、《平和|へいわ》って《VTuber|ブイチューバー》事務所でも始めたんか？
+@dir face=normal
+ナギ: いきなりどうしたの？
+@dir face=excited
+バク: なんか新人《VTuber|ブイチューバー》が《3人|さんにん》もデビューしとるやん。ハルルナもおるし、合わせて《5人|ごにん》やで？
+@step 1
+@dir face=normal
+ナギ: 《YOUTOPYA|ユートピア》だね。《平和|へいわ》が新しく立ち上げた《VTuber|ブイチューバー》ユニット。
+@dir face=happy
+バク: パチンコメーカーもアイドルを育てる時代になったんやなぁ。
+@dir face=normal
+ナギ: 実は今回の取り組み、単なる新台の宣伝とは少し違うんだ。
+@dir face=surprised
+バク: ほう？
+@dir face=normal
+ナギ: パチンコ業界が今後どうやってファンを獲得していくのか。そのヒントになるかもしれないね。
+# （ニュースタイトル演出）

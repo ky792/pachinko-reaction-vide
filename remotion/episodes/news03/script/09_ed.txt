@@ -1,0 +1,30 @@
+# ⑨ エンディング
+@chapter ⑨ エンディング
+@show ending
+@dir face=normal
+ナギ: 今回は、《平和|へいわ》の新《VTuber|ブイチューバー》ユニット、《YOUTOPYA|ユートピア》について紹介したよ。
+@dir face=normal
+ナギ: 遊技機以外にも、キャラクターや映像、音楽などのコンテンツを展開するパチンコメーカー。
+@dir face=normal
+ナギ: こうした取り組みが今後どのように成長していくのか、注目していきたいね。
+@dir face=happy front=0
+バク: みんなは、メーカー公式の《VTuber|ブイチューバー》についてどう思う？ コメントで教えてな。
+@dir face=happy
+ナギ: それじゃあ、また次回。
+# （エンディングBGMが流れ始める）
+@bgm ed
+@dir face=normal pre=40
+バク: ……なあナギ。
+@dir face=normal
+ナギ: ん？
+@dir face=excited
+バク: ウチらもパチンコになれへんかな。
+@dir face=normal
+ナギ: まずは知名度を上げないとね。
+# （2秒ほど沈黙）（バクがカメラの正面に移動する）
+@silent 60 baku=happy
+@front
+@dir face=happy pre=24
+バク: 《平和|へいわ》さん、お仕事待ってます。
+# （深々とお辞儀）（ナギが無言で見つめる）（暗転）
+@bow

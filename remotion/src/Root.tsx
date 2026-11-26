@@ -2,6 +2,7 @@ import {Composition} from 'remotion';
 import {NewsOpening} from './NewsOpening';
 import {NewsEpisode, calculateEpisodeMetadata} from './NewsEpisode';
 import {KyukeiEpisode, calculateKyuMetadata} from './KyukeiEpisode';
+import {LabNews03, calculateNews03Metadata} from './LabNews03';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -33,6 +34,16 @@ export const RemotionRoot: React.FC = () => {
         width={1920}
         height={1080}
         calculateMetadata={calculateKyuMetadata}
+      />
+      {/* ニュース回 第3回（YOUTOPYA・研究所ステージ）。尺は音声から自動 */}
+      <Composition
+        id="News03"
+        component={LabNews03}
+        durationInFrames={2400}
+        fps={30}
+        width={1920}
+        height={1080}
+        calculateMetadata={calculateNews03Metadata}
       />
     </>
   );
