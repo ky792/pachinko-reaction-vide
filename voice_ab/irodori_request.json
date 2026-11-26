@@ -5,15 +5,41 @@
  "checkpoint": "Aratako/Irodori-TTS-v4.1-Small-MF",
  "variants": [
   {
-   "name": "garo2_fix_s53",
+   "name": "news03_s21",
    "ref": "voice_ab/vc_out/ref__からかい.m4a",
    "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
    "extra": [
     "--duration-scale",
     "0.88",
     "--seed",
-    "53"
+    "21"
+   ]
+  },
+  {
+   "name": "news03_s88",
+   "ref": "voice_ab/vc_out/ref__からかい.m4a",
+   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
+   "extra": [
+    "--duration-scale",
+    "0.88",
+    "--seed",
+    "88"
+   ]
+  },
+  {
+   "name": "news03_s7",
+   "ref": "voice_ab/vc_out/ref__からかい.m4a",
+   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
+   "extra": [
+    "--duration-scale",
+    "0.88",
+    "--seed",
+    "7"
    ]
   }
+ ],
+ "only": [
+  "01_op-007",
+  "07_muzu-003"
  ]
 }
