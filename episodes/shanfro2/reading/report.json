@@ -1,42 +1,16 @@
 [
  {
-  "kind": "誤読（辞書語）",
-  "where": "ウ",
-  "expect": "うちて",
-  "reason": "台本は「ウ」、聞こえたのは「ー」（辞書語「打ち手」のところ）。声を作る前の検査でも同じ語が怪しいと出ている",
-  "level": "高",
-  "id": "00_op-005",
-  "who": "baku",
-  "text": "それはな、記憶から消しとる。打ち手はそうやって生きていくんや。",
-  "asr": "それはな、記憶から消しとる打ち手はそうやって生きていくんや",
-  "ratio": 0.966,
-  "audio": "episodes/shanfro2/voices/00_op-005.wav"
- },
- {
-  "kind": "全体のずれ",
-  "where": "",
-  "expect": "",
+  "kind": "誤読",
+  "where": "リオトル",
+  "expect": "リオトル",
+  "reason": "台本は「リオトル」、聞こえたのは「マヨコレ」",
   "level": "中",
-  "reason": "台本と文字起こしの一致が 79%（80% 未満）",
   "id": "08_matome-004",
   "who": "baku",
-  "text": "続く台やなくて、1回の当たりで塊を取る台やな。ハマっても、取り返す絵が見える。",
-  "asr": "続く弾やなくて一回目の当たりで逆回りのブル弾やなハマっても取り返す絵が見える",
-  "ratio": 0.791,
+  "text": "続く台やなくて、一発の当たりで塊を取る台やな。ハマっても、取り返す絵が見える。",
+  "asr": "続くだいやなくて一発の当たりでたまま横れだいなハマっても取り返す絵が見える",
+  "ratio": 0.86,
   "audio": "episodes/shanfro2/voices/08_matome-004.wav"
- },
- {
-  "kind": "全体のずれ",
-  "where": "",
-  "expect": "",
-  "level": "中",
-  "reason": "台本と文字起こしの一致が 55%（80% 未満）",
-  "id": "08_matome-009",
-  "who": "nagi",
-  "text": "賢明だね。",
-  "asr": "煙だね",
-  "ratio": 0.545,
-  "audio": "episodes/shanfro2/voices/08_matome-009.wav"
  },
  {
   "kind": "誤読",
@@ -247,58 +221,6 @@
   "audio": "episodes/shanfro2/voices/07_enshutsu-002.wav"
  },
  {
-  "kind": "誤読（辞書語）",
-  "where": "ダイ",
-  "expect": "ダイ",
-  "reason": "台本は「ダイ」、聞こえたのは「タマ」（辞書語「台」のところ）",
-  "level": "低",
-  "id": "08_matome-004",
-  "who": "baku",
-  "text": "続く台やなくて、1回の当たりで塊を取る台やな。ハマっても、取り返す絵が見える。",
-  "asr": "続く弾やなくて一回目の当たりで逆回りのブル弾やなハマっても取り返す絵が見える",
-  "ratio": 0.791,
-  "audio": "episodes/shanfro2/voices/08_matome-004.wav"
- },
- {
-  "kind": "誤読",
-  "where": "カタ",
-  "expect": "カタ",
-  "reason": "台本は「カタ」、聞こえたのは「ギャク」",
-  "level": "低",
-  "id": "08_matome-004",
-  "who": "baku",
-  "text": "続く台やなくて、1回の当たりで塊を取る台やな。ハマっても、取り返す絵が見える。",
-  "asr": "続く弾やなくて一回目の当たりで逆回りのブル弾やなハマっても取り返す絵が見える",
-  "ratio": 0.791,
-  "audio": "episodes/shanfro2/voices/08_matome-004.wav"
- },
- {
-  "kind": "誤読",
-  "where": "オト",
-  "expect": "オト",
-  "reason": "台本は「オト」、聞こえたのは「ノブ」",
-  "level": "低",
-  "id": "08_matome-004",
-  "who": "baku",
-  "text": "続く台やなくて、1回の当たりで塊を取る台やな。ハマっても、取り返す絵が見える。",
-  "asr": "続く弾やなくて一回目の当たりで逆回りのブル弾やなハマっても取り返す絵が見える",
-  "ratio": 0.791,
-  "audio": "episodes/shanfro2/voices/08_matome-004.wav"
- },
- {
-  "kind": "誤読（辞書語）",
-  "where": "イ",
-  "expect": "ダイ",
-  "reason": "台本は「イ」、聞こえたのは「ン」（辞書語「台」のところ）",
-  "level": "低",
-  "id": "08_matome-004",
-  "who": "baku",
-  "text": "続く台やなくて、1回の当たりで塊を取る台やな。ハマっても、取り返す絵が見える。",
-  "asr": "続く弾やなくて一回目の当たりで逆回りのブル弾やなハマっても取り返す絵が見える",
-  "ratio": 0.791,
-  "audio": "episodes/shanfro2/voices/08_matome-004.wav"
- },
- {
   "kind": "誤読",
   "where": "デ",
   "expect": "デ",
@@ -310,18 +232,5 @@
   "asr": "ちなみに通常時から4500個にたどり着くまで平均年約1200回転かかるよ",
   "ratio": 0.97,
   "audio": "episodes/shanfro2/voices/08_matome-007.wav"
- },
- {
-  "kind": "誤読",
-  "where": "ンメー",
-  "expect": "ンメー",
-  "reason": "台本は「ンメー」、聞こえたのは「ムリ」",
-  "level": "低",
-  "id": "08_matome-009",
-  "who": "nagi",
-  "text": "賢明だね。",
-  "asr": "煙だね",
-  "ratio": 0.545,
-  "audio": "episodes/shanfro2/voices/08_matome-009.wav"
  }
 ]
