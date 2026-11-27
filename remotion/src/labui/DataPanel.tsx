@@ -67,7 +67,7 @@ export const DataPanel: React.FC<Props> = ({from, title, rows, scan, result, hit
           <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline'}}>
             <Tag>DATA MONITOR</Tag>
             <Tag color={C.muted} size={16}>
-              SAMPLE SPEC
+              SPEC DATA
             </Tag>
           </div>
           <div style={{fontFamily: JP, fontWeight: 900, fontSize: 46, color: C.white, marginTop: 6}}>{title}</div>

@@ -91,7 +91,8 @@ export const LabEpisode: React.FC<{data: EpisodeData}> = ({data}) => {
   const mainEnd = data.frames;
   const lastLine = data.lines[data.lines.length - 1];
   const edAt = lastLine ? lastLine.from : mainEnd - 90;
-  const enterAt = at('logotitle')[0]?.to ?? 0;
+  const opEnd = at('logotitle')[0]?.to ?? 0;
+  const enterAt = f < opEnd ? 0 : opEnd; // 寸劇では最初からいて、OPのあと入り直す
   const hitFor = (ev: EpEvent) => data.events.find((e) => e.type === 'fx' && e.from >= ev.from && e.from < ev.to)?.from;
 
   return (

@@ -52,7 +52,7 @@ export const Monitor: React.FC<{
           <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <Tag>{label}</Tag>
             <Tag color={C.muted} size={16}>
-              SAMPLE
+              DATA
             </Tag>
           </div>
           <div style={{fontFamily: JP, fontWeight: 900, fontSize: 44, color: C.white, marginTop: 4}}>{title}</div>

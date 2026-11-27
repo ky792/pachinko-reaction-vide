@@ -37,7 +37,7 @@ export const IntroCard: React.FC<{from: number; to: number; who: 'nagi' | 'baku'
         src={staticFile(who === 'nagi' ? 'labui/nagi_point.png' : 'baku_stand.png')}
         style={{
           position: 'absolute',
-          [left ? 'left' : 'right']: who === 'nagi' ? 40 : 160,
+          [left ? 'left' : 'right']: who === 'nagi' ? 40 : 20,
           bottom: -20,
           height: who === 'nagi' ? 860 : 880,
           transform: `translateY(${(1 - body) * 400}px)`,
