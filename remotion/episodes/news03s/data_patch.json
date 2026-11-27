@@ -102,7 +102,9 @@
   "yt_views": {
    "tag": "NEWS FILE",
    "word": "7万回以上",
-   "sub": "デビュー配信アーカイブの再生回数（公開から1週間・2026年11月27日時点）"
+   "sub": "デビュー配信アーカイブの再生回数（公開から1週間・2026年11月27日時点）",
+   "img": "debut_thumb.jpg",
+   "credit": "画像：©HEIWA（キュインちゃんねる@HEIWA）"
   },
   "yt_mairo": {
    "tag": "NEWS FILE",
@@ -133,7 +135,11 @@
   "yt_naginami": {
    "tag": "NEWS FILE",
    "word": "ナギナミ",
-   "sub": "三洋グループのVTuber →『PA海物語 極JAPAN Withナギナミ』（2025年12月導入）"
+   "sub": "三洋グループのVTuber（海月ナギ・飛鮫ナミ）\n『PA海物語 極JAPAN Withナギナミ』\n2025年12月導入",
+   "imgs": [
+    "naginami_cab.jpg"
+   ],
+   "credit": "画像：©SANYO（パチ7）"
   },
   "yt_future": {
    "tag": "NEWS FILE",
@@ -148,6 +154,27 @@
     "haru.png",
     "luna.png"
    ]
+  },
+  "yt_otome5": {
+   "tag": "NEWS FILE",
+   "word": "乙女アタック",
+   "sub": "スマスロ『L戦国乙女5』\n（2026年6月導入）を使った企画\n先輩と新人で勝負",
+   "imgs": [
+    "otome5_cab.png"
+   ],
+   "credit": "画像：©HEIWA ©OLYMPIA（1geki）"
+  },
+  "yt_otome_kv": {
+   "tag": "NEWS FILE",
+   "word": "戦国乙女",
+   "sub": "2008年にパチンコで誕生した、平和のオリジナルIP",
+   "img": "otome_banner.png"
+  },
+  "yt_portal_kv": {
+   "tag": "NEWS FILE",
+   "word": "公式ファンサイト",
+   "sub": "2026年6月公開・平和のコンテンツをまとめたサイト",
+   "img": "portal_ogp.png"
   }
  },
  "analysis": {

@@ -459,8 +459,8 @@ const PanelFrame: React.FC<{seg: Segment; tag: string; children: React.ReactNode
 };
 
 // 公式画像のクレジット（©HEIWA）
-const ImgCredit: React.FC = () => (
-  <div style={{position: 'absolute', right: 26, top: -44, fontSize: 18, fontWeight: 700, color: 'rgba(255,255,255,0.88)', fontFamily: JP, letterSpacing: 1}}>画像：©HEIWA（キュインPORTAL）</div>
+const ImgCredit: React.FC<{text?: string}> = ({text}) => (
+  <div style={{position: 'absolute', right: 26, top: -44, fontSize: 18, fontWeight: 700, color: 'rgba(255,255,255,0.88)', fontFamily: JP, letterSpacing: 1}}>{text ?? '画像：©HEIWA（キュインPORTAL）'}</div>
 );
 
 // 手描き風のマル
@@ -748,7 +748,7 @@ const KeywordPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
             </div>
           </div>
         )}
-        <ImgCredit />
+        <ImgCredit text={data.credit} />
       </PanelFrame>
     );
   }
