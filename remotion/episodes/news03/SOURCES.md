@@ -17,3 +17,8 @@
 - SiGMA（警察庁データ：ホール数 1995年18,244店→2025年末6,464店） https://sigma.world/ja/news/japans-pachinko-industry-parlours-shrink-data/
 - パチ7『PA海物語 極JAPAN Withナギナミ』機種ページ https://pachiseven.jp/machines_v2/7264
 - 配信アーカイブの長さ・再生数・字幕：vidIQ（YouTube公開データ、2026-11-27取得）
+
+## 動画内で使った公式画像（©HEIWA）
+- 霧島ハル・霧島ルナ立ち絵、旭アカリ・ピピ・モンブラン・富士ユキナ立ち絵、ぱちインフルエンサー5人のイラスト：キュインPORTAL https://9in-portal.com/pachi-influencer ・ https://9in-portal.com/
+- YOUTOPYAキービジュアル：P-BOMB記事掲載の画像（画像内に©HEIWA表記） https://p-bomb.co.jp/industry/maker/15703/
+- 画面には「画像：©HEIWA（キュインPORTAL）」を表示。平和の画像利用ガイドラインは見つからず（利用条件は未確認・ユーザー判断で使用 2026-11-27）
