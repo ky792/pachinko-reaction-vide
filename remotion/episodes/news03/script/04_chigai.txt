@@ -1,9 +1,9 @@
 # ④ ハルルナとYOUTOPYAの違い
 @chapter ④ ハルルナとの違い
 @clear
-@dir face=confused
+@dir face=normal
 バク: でもさ、《平和|へいわ》にはもともとハルルナがおったわけやろ？
-@dir face=confused
+@dir face=normal
 バク: わざわざ《3人|さんにん》も増やす必要があったんか？
 @dir face=normal
 ナギ: そこが今回の重要なポイントだね。

@@ -10,10 +10,10 @@
 @show naginami
 @dir face=normal
 ナギ: 《三洋|さんよう》の公式《VTuber|ブイチューバー》ユニット、ナギナミが登場する、《PA海物語 極JAPAN Withナギナミ|ピーエー、うみものがたり、きわみジャパン、ウィズ、ナギナミ》だね。
-@dir face=confused
+@dir face=surprised
 バク: 《ナギナミ|なぎなみ》……。
 # （バクがナギを見る）
-@silent 30 baku=confused look=nagi slow=1
+@silent 30 baku=surprised look=nagi slow=1
 @dir face=smug look=nagi
 バク: なんか名前に親近感あるな。
 @dir face=normal pre=8

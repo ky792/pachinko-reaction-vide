@@ -5,7 +5,7 @@
 バク: でも、大手メーカーが本気で金かけたら人気出るんちゃう？
 @dir face=normal
 ナギ: そう簡単ではないと思うよ。
-@dir face=confused
+@dir face=surprised
 バク: 《なんでや？|ナンデヤ？》
 @show needs
 @dir face=normal

@@ -829,6 +829,7 @@ const Future: React.FC<PP> = ({v, st, from}) => (
   <div style={{padding: '34px 50px'}}>
     <Reveal at={from} style={{display: 'flex', alignItems: 'center', gap: 26}}>
       <span style={{fontSize: 46, color: 'white', fontWeight: 900}}>YOUTOPYA の遊技機化</span>
+      <Tag kind="fact" />
     </Reveal>
     <Reveal at={from + 8} style={{marginTop: 20, display: 'inline-block', fontSize: 50, fontWeight: 900, color: '#ff9aa2', border: '4px solid #ff9aa2', borderRadius: 14, padding: '6px 26px'}}>
       正式発表なし
@@ -836,14 +837,12 @@ const Future: React.FC<PP> = ({v, st, from}) => (
     <div style={{fontSize: 24, color: 'rgba(220,235,255,0.85)', marginTop: 10}}>（2026年11月27日時点）</div>
     {v >= 1 && (
       <Reveal at={st(1)} style={{marginTop: 34, display: 'flex', alignItems: 'center', gap: 26}}>
+        <Tag kind="view" />
         <span style={{fontSize: 36, color: 'white', fontWeight: 900}}>VTuberの人気</span>
         <span style={{fontSize: 40, color: CYAN, fontWeight: 900}}>≠</span>
         <span style={{fontSize: 36, color: 'white', fontWeight: 900}}>遊技機としての需要</span>
       </Reveal>
     )}
-    <div style={{position: 'absolute', right: 30, top: 34}}>
-      <Tag kind="view" />
-    </div>
   </div>
 );
 
