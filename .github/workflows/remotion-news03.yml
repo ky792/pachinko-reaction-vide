@@ -85,7 +85,7 @@ jobs:
           mkdir -p out
           npx remotion render "$COMP" out/raw.mp4 --codec=h264 --crf=20 --concurrency=4
           # 音割れ防止のリミッター（映像はそのまま）
-          ffmpeg -v error -y -i out/raw.mp4 -c:v copy -af "alimiter=limit=0.89:level=false" -c:a aac -b:a 192k out/news03_youtopya.mp4
+          ffmpeg -v error -y -i out/raw.mp4 -c:v copy -af "alimiter=limit=0.84:attack=0.5:release=50:level=false:asc=1" -c:a aac -b:a 192k out/news03_youtopya.mp4
           rm out/raw.mp4
           ffprobe -v error -show_entries format=duration -of csv=p=0 out/news03_youtopya.mp4
       - name: Check audio (loudness / peaks)
