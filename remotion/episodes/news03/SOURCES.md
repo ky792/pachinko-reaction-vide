@@ -12,3 +12,8 @@
 - TVアニメ『戦国乙女〜桃色パラドックス〜』（アニメハック）
 - パチンコ新台『PA海物語 極JAPAN Withナギナミ』発表（グリーンべると p-town.dmm.com/specials/news/9300）
 - 三洋グループ ナギナミ「NAGINAMI EP」配信（p-town.dmm.com/specials/news/2304）
+- 文春オンライン（レジャー白書2024：2023年の参加人口660万人・過去最低） https://bunshun.jp/articles/-/80759
+- グリーンべると（レジャー白書2023：2022年770万人） https://p-town.dmm.com/specials/news/7177
+- SiGMA（警察庁データ：ホール数 1995年18,244店→2025年末6,464店） https://sigma.world/ja/news/japans-pachinko-industry-parlours-shrink-data/
+- パチ7『PA海物語 極JAPAN Withナギナミ』機種ページ https://pachiseven.jp/machines_v2/7264
+- 配信アーカイブの長さ・再生数・字幕：vidIQ（YouTube公開データ、2026-11-27取得）

@@ -190,11 +190,11 @@ const Chara: React.FC<{who: Who}> = ({who}) => {
   if (who === 'baku' && FRONT_AT !== null && frame >= FRONT_AT - 50) {
     const p = interpolate(frame, [FRONT_AT - 50, FRONT_AT - 8], [0, 1], {...clamp, easing: Easing.inOut(Easing.cubic)});
     x = interpolate(p, [0, 1], [HOME.baku.x, 960]);
-    scaleK = interpolate(p, [0, 1], [1, 1.32]);
+    scaleK = interpolate(p, [0, 1], [1, 1.16]);
     if (BOW && frame >= BOW.at) {
       const b = interpolate(frame, [BOW.at, BOW.at + 16, BOW.at + 70, BOW.at + 90], [0, 1, 1, 0.85], {...clamp, easing: Easing.inOut(Easing.quad)});
-      bowRot = b * 24;
-      bowDrop = b * 70;
+      bowRot = b * 38;
+      bowDrop = b * 26;
     }
   }
   if (who === 'nagi' && BOW && frame >= FRONT_AT - 50) {
@@ -216,7 +216,8 @@ const Chara: React.FC<{who: Who}> = ({who}) => {
         justifyContent: 'center',
         alignItems: 'flex-end',
         translate: `${(1 - enter) * dir * 520 + lean * lookP}px ${-env * 10 + hopY + breathe + nod + bowDrop}px`,
-        rotate: `${sway + tilt * lookP + bowRot}deg`,
+        rotate: `${sway + tilt * lookP}deg`,
+        perspective: 900,
         scale: `${(speaking ? 1 : 0.965) * (1 + env * 0.015)}`,
         transformOrigin: '50% 100%',
         filter: speaking
@@ -224,7 +225,10 @@ const Chara: React.FC<{who: Who}> = ({who}) => {
           : 'drop-shadow(0 18px 26px rgba(5,10,40,0.4)) brightness(0.86) saturate(0.9)',
       }}
     >
-      <Img src={staticFile(`kyu/${who}_${face}.png`)} style={{height: h, maxWidth: 760, objectFit: 'contain'}} />
+      <Img
+        src={staticFile(`kyu/${who}_${face}.png`)}
+        style={{height: h, maxWidth: 760, objectFit: 'contain', rotate: `x ${-bowRot}deg`, transformOrigin: '50% 100%'}}
+      />
     </div>
   );
 };
@@ -287,19 +291,33 @@ const OpNews: React.FC<PP> = ({v, st}) => (
 );
 
 const Row: React.FC<{k: string; children: React.ReactNode; at: number}> = ({k, children, at}) => (
-  <Reveal at={at} style={{display: 'flex', alignItems: 'baseline', gap: 26, borderBottom: '1px solid rgba(120,200,255,0.25)', padding: '12px 0'}}>
-    <span style={{width: 210, fontSize: 26, color: CYAN, fontWeight: 800, letterSpacing: 2}}>{k}</span>
-    <span style={{fontSize: 38, color: 'white', fontWeight: 900}}>{children}</span>
+  <Reveal at={at} style={{display: 'flex', alignItems: 'baseline', gap: 26, borderBottom: '1px solid rgba(120,200,255,0.25)', padding: '7px 0'}}>
+    <span style={{width: 170, fontSize: 23, color: CYAN, fontWeight: 800, letterSpacing: 2}}>{k}</span>
+    <span style={{fontSize: 33, color: 'white', fontWeight: 900}}>{children}</span>
   </Reveal>
 );
 
-const Debut: React.FC<PP> = ({v, st, from}) => (
-  <div style={{padding: '30px 56px'}}>
+const Debut: React.FC<PP> = ({v, st, from}) =>
+  v >= 5 ? (
+    <div style={{padding: '30px 56px'}}>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <H>デビュー配信 アーカイブ</H>
+        <Tag kind="fact" />
+      </div>
+      <Reveal at={from} style={{marginTop: 50, textAlign: 'center'}}>
+        <div style={{fontSize: 30, color: CYAN, fontWeight: 800}}>再生回数</div>
+        <div style={{fontSize: 140, color: 'white', fontWeight: 900, lineHeight: 1.1}}>7万回 以上</div>
+        <div style={{fontSize: 26, color: 'rgba(220,235,255,0.9)', marginTop: 8}}>公開から1週間（2026年11月27日時点）</div>
+      </Reveal>
+      <Src>キュインちゃんねる@HEIWA（YouTube 公開データ）</Src>
+    </div>
+  ) : (
+  <div style={{padding: '24px 56px'}}>
     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <H>YOUTOPYA デビュー</H>
       <Tag kind="fact" />
     </div>
-    <div style={{marginTop: 14}}>
+    <div style={{marginTop: 6}}>
       <Row k="デビュー" at={from}>
         2026.11.20 <span style={{fontSize: 30}}>20:20〜 お披露目配信</span>
       </Row>
@@ -323,17 +341,10 @@ const Debut: React.FC<PP> = ({v, st, from}) => (
           <span style={{fontSize: 32}}>先輩 ハルルナ（霧島ハル・霧島ルナ）</span>
         </Row>
       )}
-      {v >= 5 && (
-        <Reveal at={st(5)} style={{marginTop: 18, display: 'flex', alignItems: 'baseline', gap: 20}}>
-          <span style={{fontSize: 26, color: CYAN, fontWeight: 800}}>アーカイブ再生</span>
-          <span style={{fontSize: 92, color: 'white', fontWeight: 900, lineHeight: 1}}>7万回+</span>
-          <span style={{fontSize: 22, color: 'rgba(220,235,255,0.85)'}}>公開から1週間（2026.11.27時点）</span>
-        </Reveal>
-      )}
     </div>
     <Src>平和公式X・キュインちゃんねる@HEIWA・娯楽産業・P-BOMB</Src>
   </div>
-);
+  );
 
 const Mark: React.FC<{ok: boolean; at: number}> = ({ok, at}) => {
   const frame = useCurrentFrame();
@@ -395,12 +406,12 @@ const MEMBERS = [
 ];
 
 const Members: React.FC<PP> = ({f, v, st}) => (
-  <div style={{padding: '24px 40px'}}>
+  <div style={{padding: '20px 34px'}}>
     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <H>MEMBER PROFILE</H>
       <Tag kind="fact" />
     </div>
-    <div style={{display: 'flex', gap: 22, marginTop: 18}}>
+    <div style={{display: 'flex', gap: 18, marginTop: 12}}>
       {MEMBERS.map((m, i) => {
         const at = st(i + 1);
         const shown = v >= i + 1;
@@ -410,7 +421,7 @@ const Members: React.FC<PP> = ({f, v, st}) => (
             key={m.name}
             style={{
               flex: 1,
-              height: 330,
+              height: 270,
               borderRadius: 20,
               background: `linear-gradient(170deg, ${m.color}33, rgba(10,24,56,0.85) 60%)`,
               border: `3px solid ${shown ? m.color : 'rgba(255,255,255,0.12)'}`,
@@ -421,13 +432,13 @@ const Members: React.FC<PP> = ({f, v, st}) => (
           >
             {/* 公式ビジュアルは利用条件を確認できないため使わず、テーマカラーの札で代替 */}
             <div style={{height: 10, width: 120, borderRadius: 5, background: m.color}} />
-            <div style={{fontSize: 38, fontWeight: 900, color: 'white', marginTop: 16, lineHeight: 1.15}}>{shown ? m.name : '？？？'}</div>
+            <div style={{fontSize: 34, fontWeight: 900, color: 'white', marginTop: 12, lineHeight: 1.15, whiteSpace: 'nowrap'}}>{shown ? m.name : '？？？'}</div>
             {shown && (
               <>
                 <div style={{fontSize: 30, color: m.color, fontWeight: 900, marginTop: 10}}>
                   {m.age}・{m.colorName}
                 </div>
-                <div style={{fontSize: 28, color: 'white', fontWeight: 800, marginTop: 18}}>{m.trait}</div>
+                <div style={{fontSize: 26, color: 'white', fontWeight: 800, marginTop: 12}}>{m.trait}</div>
                 <div style={{fontSize: 24, color: 'rgba(220,235,255,0.85)', marginTop: 8}}>{m.note}</div>
               </>
             )}
@@ -436,22 +447,22 @@ const Members: React.FC<PP> = ({f, v, st}) => (
       })}
     </div>
     {v >= 4 ? (
-      <Reveal at={st(4)} style={{marginTop: 14, fontSize: 26, color: 'white', fontWeight: 800}}>
+      <Reveal at={st(4)} style={{marginTop: 10, fontSize: 24, color: 'white', fontWeight: 800}}>
         キャラクターデザイン：MAIRO（ハルルナと同じ）
       </Reveal>
     ) : (
-      <div style={{marginTop: 14, fontSize: 20, color: 'rgba(200,225,255,0.7)'}}>※公式ビジュアルはキュインPORTAL・公式Xでご覧ください</div>
+      <div style={{marginTop: 10, fontSize: 19, color: 'rgba(200,225,255,0.7)'}}>※公式ビジュアルはキュインPORTAL・公式Xでご覧ください</div>
     )}
     <Src>娯楽産業（公式プロフィール）・キュインPORTAL</Src>
   </div>
 );
 
 const Col: React.FC<{title: string; color: string; items: string[]; at: number; sub: string}> = ({title, color, items, at, sub}) => (
-  <Reveal at={at} style={{flex: 1, borderRadius: 20, border: `3px solid ${color}`, background: 'rgba(255,255,255,0.05)', padding: '22px 28px'}}>
-    <div style={{fontSize: 44, fontWeight: 900, color}}>{title}</div>
+  <Reveal at={at} style={{flex: 1, borderRadius: 20, border: `3px solid ${color}`, background: 'rgba(255,255,255,0.05)', padding: '16px 26px'}}>
+    <div style={{fontSize: 40, fontWeight: 900, color}}>{title}</div>
     <div style={{fontSize: 22, color: 'rgba(220,235,255,0.85)', marginTop: 2}}>{sub}</div>
     {items.map((t, i) => (
-      <div key={t} style={{fontSize: 33, color: 'white', fontWeight: 800, marginTop: i === 0 ? 18 : 10}}>
+      <div key={t} style={{fontSize: 30, color: 'white', fontWeight: 800, marginTop: i === 0 ? 12 : 6}}>
         ・{t}
       </div>
     ))}
@@ -459,12 +470,12 @@ const Col: React.FC<{title: string; color: string; items: string[]; at: number; 
 );
 
 const Compare: React.FC<PP> = ({v, st}) => (
-  <div style={{padding: '28px 46px'}}>
+  <div style={{padding: '22px 46px'}}>
     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <H>活動の方向性</H>
       <Tag kind="fact" />
     </div>
-    <div style={{display: 'flex', gap: 30, marginTop: 20}}>
+    <div style={{display: 'flex', gap: 26, marginTop: 12}}>
       {v >= 1 ? (
         <Col title="ハルルナ" sub="2021年〜・双子" color={CYAN} items={['遊技機の紹介', '実機配信', '機種解説']} at={st(1)} />
       ) : (
@@ -477,7 +488,7 @@ const Compare: React.FC<PP> = ({v, st}) => (
       )}
     </div>
     {v >= 3 && (
-      <Reveal at={st(3)} style={{marginTop: 16, textAlign: 'center', fontSize: 28, color: 'white', fontWeight: 800}}>
+      <Reveal at={st(3)} style={{marginTop: 12, textAlign: 'center', fontSize: 25, color: 'white', fontWeight: 800}}>
         ※完全に分かれているわけではない（同じチャンネル・5人で活動）
       </Reveal>
     )}
@@ -492,21 +503,21 @@ const POP = [
   {y: '2025', v: 720},
 ];
 const Population: React.FC<PP> = ({f, v, st, from}) => {
-  const maxH = 250;
+  const maxH = 180;
   return (
-    <div style={{padding: '26px 46px'}}>
+    <div style={{padding: '20px 40px'}}>
       <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
         <H>パチンコ参加人口</H>
         <Tag kind="fact" />
       </div>
-      <div style={{display: 'flex', gap: 40, marginTop: 10}}>
-        <div style={{display: 'flex', alignItems: 'flex-end', gap: 34, height: 330, paddingLeft: 10}}>
+      <div style={{display: 'flex', gap: 30, marginTop: 4}}>
+        <div style={{display: 'flex', alignItems: 'flex-end', gap: 26, height: 300, paddingLeft: 4}}>
           {POP.map((d, i) => {
             const p = interpolate(f, [from + i * 6, from + i * 6 + 18], [0, 1], {...clamp, easing: OUT});
             const hi = d.y === '2025' && v >= 1;
             return (
-              <div key={d.y} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: 110}}>
-                <div style={{fontSize: hi ? 44 : 32, fontWeight: 900, color: hi ? CYAN : 'white', opacity: p}}>{d.v}万</div>
+              <div key={d.y} style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: 100}}>
+                <div style={{fontSize: hi ? 38 : 28, fontWeight: 900, whiteSpace: 'nowrap', color: hi ? CYAN : 'white', opacity: p}}>{d.v}万</div>
                 <div
                   style={{
                     width: 84,
@@ -521,18 +532,18 @@ const Population: React.FC<PP> = ({f, v, st, from}) => {
             );
           })}
         </div>
-        <div style={{flex: 1, paddingTop: 30}}>
+        <div style={{flex: 1, paddingTop: 22}}>
           {v >= 1 && (
             <Reveal at={st(1)}>
               <div style={{fontSize: 28, color: CYAN, fontWeight: 900}}>直近は回復</div>
-              <div style={{fontSize: 60, color: 'white', fontWeight: 900}}>前年比 +30万人</div>
+              <div style={{fontSize: 50, color: 'white', fontWeight: 900, whiteSpace: 'nowrap'}}>前年比 +30万人</div>
               <div style={{fontSize: 22, color: 'rgba(220,235,255,0.85)'}}>2023年は過去最低の660万人</div>
             </Reveal>
           )}
           {v >= 2 && (
-            <Reveal at={st(2)} style={{marginTop: 26, borderTop: '1px solid rgba(120,200,255,0.3)', paddingTop: 18}}>
+            <Reveal at={st(2)} style={{marginTop: 16, borderTop: '1px solid rgba(120,200,255,0.3)', paddingTop: 12}}>
               <div style={{fontSize: 28, color: ORANGE, fontWeight: 900}}>長期では大きく縮小</div>
-              <div style={{fontSize: 34, color: 'white', fontWeight: 900, marginTop: 4}}>
+              <div style={{fontSize: 31, color: 'white', fontWeight: 900, marginTop: 2, whiteSpace: 'nowrap'}}>
                 ホール数 18,244店 → 6,464店
               </div>
               <div style={{fontSize: 22, color: 'rgba(220,235,255,0.85)'}}>1995年（ピーク）→ 2025年末</div>
@@ -540,7 +551,7 @@ const Population: React.FC<PP> = ({f, v, st, from}) => {
           )}
         </div>
       </div>
-      <Src>日本生産性本部『レジャー白書』2023〜2026（参加人口は推計値）・警察庁（ホール数）</Src>
+      <Src>日本生産性本部『レジャー白書』2023〜2026（推計値）・警察庁（ホール数）</Src>
     </div>
   );
 };
@@ -731,7 +742,7 @@ const Portal: React.FC<PP> = ({v, st, from}) => (
     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <Reveal at={from}>
         <div style={{fontSize: 24, color: CYAN, fontWeight: 800, letterSpacing: 4}}>2026.06.09 OPEN</div>
-        <div style={{fontSize: 64, color: 'white', fontWeight: 900}}>キュインPORTAL</div>
+        <div style={{fontSize: 58, color: 'white', fontWeight: 900}}>キュインPORTAL</div>
       </Reveal>
       <Tag kind="fact" />
     </div>
@@ -745,11 +756,11 @@ const Portal: React.FC<PP> = ({v, st, from}) => (
       </Reveal>
     )}
     {v >= 2 && (
-      <Reveal at={st(2)} style={{marginTop: 30, borderRadius: 16, border: `3px solid ${ORANGE}`, padding: '16px 24px', background: 'rgba(255,138,31,0.08)'}}>
+      <Reveal at={st(2)} style={{marginTop: 18, borderRadius: 16, border: `3px solid ${ORANGE}`, padding: '10px 22px', background: 'rgba(255,138,31,0.08)'}}>
         <div style={{marginBottom: 8}}>
           <Tag kind="view" />
         </div>
-        <div style={{fontSize: 34, color: 'white', fontWeight: 900}}>遊技機単体ではなく、コンテンツ全体の価値を高める動き？</div>
+        <div style={{fontSize: 30, color: 'white', fontWeight: 900}}>遊技機単体ではなく、コンテンツ全体の価値を高める動き？</div>
       </Reveal>
     )}
     <Src>P-BOMB・ぱちんこドキュメント・9in-portal.com</Src>
@@ -762,31 +773,31 @@ const Needs: React.FC<PP> = ({v, st, from}) => (
       <H>VTuberを続けるのに必要なもの</H>
       <Tag kind="view" />
     </div>
-    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginTop: 18}}>
+    <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginTop: 12}}>
       {['キャラクター制作', 'モデル制作', '出演者', '動画制作', '配信設備', '継続的な企画'].map((t, i) => (
-        <Reveal key={t} at={from + 10 + i * 7} style={{fontSize: 31, color: 'white', fontWeight: 800, padding: '14px 18px', borderRadius: 12, border: '2px solid rgba(120,200,255,0.45)', textAlign: 'center'}}>
+        <Reveal key={t} at={from + 10 + i * 7} style={{fontSize: 28, color: 'white', fontWeight: 800, padding: '9px 14px', borderRadius: 12, border: '2px solid rgba(120,200,255,0.45)', textAlign: 'center'}}>
           {t}
         </Reveal>
       ))}
     </div>
-    <div style={{marginTop: 22, display: 'flex', flexDirection: 'column', gap: 10}}>
+    <div style={{marginTop: 14, display: 'flex', flexDirection: 'column', gap: 4}}>
       {v >= 1 && (
-        <Reveal at={st(1)} style={{fontSize: 34, color: 'white', fontWeight: 900}}>
+        <Reveal at={st(1)} style={{fontSize: 31, color: 'white', fontWeight: 900}}>
           企業の知名度 <span style={{color: CYAN}}>≠</span> キャラクターの人気
         </Reveal>
       )}
       {v >= 2 && (
-        <Reveal at={st(2)} style={{fontSize: 30, color: 'rgba(235,242,255,0.95)', fontWeight: 800}}>
+        <Reveal at={st(2)} style={{fontSize: 27, color: 'rgba(235,242,255,0.95)', fontWeight: 800}}>
           大事なのは「かけたお金」より「動画が面白いか」
         </Reveal>
       )}
       {v >= 3 && (
-        <Reveal at={st(3)} style={{fontSize: 30, color: 'rgba(235,242,255,0.95)', fontWeight: 800}}>
+        <Reveal at={st(3)} style={{fontSize: 27, color: 'rgba(235,242,255,0.95)', fontWeight: 800}}>
           企業公式ならではの責任・難しさ
         </Reveal>
       )}
       {v >= 4 && (
-        <Reveal at={st(4)} style={{fontSize: 30, color: CYAN, fontWeight: 800}}>
+        <Reveal at={st(4)} style={{fontSize: 27, color: CYAN, fontWeight: 800}}>
           公式だからこそ作れる映像・メーカーの知識を生かした企画も
         </Reveal>
       )}
@@ -795,19 +806,19 @@ const Needs: React.FC<PP> = ({v, st, from}) => (
 );
 
 const Naginami: React.FC<PP> = ({from}) => (
-  <div style={{padding: '30px 50px'}}>
+  <div style={{padding: '20px 46px'}}>
     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
       <H>メーカー公式VTuberの前例</H>
       <Tag kind="fact" />
     </div>
-    <Reveal at={from} style={{marginTop: 22}}>
-      <div style={{fontSize: 26, color: CYAN, fontWeight: 800}}>三洋グループのVTuberユニット（2019年7月デビュー）</div>
-      <div style={{fontSize: 70, color: 'white', fontWeight: 900}}>ナギナミ</div>
+    <Reveal at={from} style={{marginTop: 10}}>
+      <div style={{fontSize: 24, color: CYAN, fontWeight: 800}}>三洋グループのVTuberユニット（2019年7月デビュー）</div>
+      <div style={{fontSize: 60, color: 'white', fontWeight: 900, lineHeight: 1.15}}>ナギナミ</div>
       <div style={{fontSize: 26, color: 'rgba(220,235,255,0.9)'}}>海月ナギ・飛鮫ナミ</div>
     </Reveal>
-    <Reveal at={from + 16} style={{marginTop: 26, borderRadius: 16, border: `2px solid ${CYAN}`, padding: '16px 24px'}}>
+    <Reveal at={from + 16} style={{marginTop: 14, borderRadius: 16, border: `2px solid ${CYAN}`, padding: '10px 22px'}}>
       <div style={{fontSize: 24, color: CYAN, fontWeight: 800}}>登場した遊技機</div>
-      <div style={{fontSize: 44, color: 'white', fontWeight: 900}}>PA海物語 極JAPAN Withナギナミ</div>
+      <div style={{fontSize: 40, color: 'white', fontWeight: 900}}>PA海物語 極JAPAN Withナギナミ</div>
       <div style={{fontSize: 24, color: 'rgba(220,235,255,0.9)'}}>2025年12月 ホール導入（三洋物産・三洋販売）</div>
     </Reveal>
     <Src>グリーンべると（2020.12・2025.09）・パチ7</Src>
@@ -917,6 +928,18 @@ const Monitor: React.FC = () => {
         <span style={{fontSize: 16, color: 'rgba(200,225,255,0.7)', fontWeight: 700}}>{chap ? `${chap.mark} ${chap.title}` : ''}</span>
       </div>
       <div style={{position: 'absolute', left: 0, right: 0, top: 34, bottom: 0, scale: `1 ${open}`, opacity: Math.min(1, open * 1.4)}}>{body}</div>
+      {/* モニターの走査線（ごく弱く・ゆっくり） */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          height: 90,
+          top: ((frame * 1.6) % (MON.height + 90)) - 90,
+          background: 'linear-gradient(180deg, rgba(56,214,255,0), rgba(56,214,255,0.05), rgba(56,214,255,0))',
+          pointerEvents: 'none',
+        }}
+      />
     </div>
   );
 };
@@ -928,7 +951,7 @@ const TabletGlow: React.FC = () => {
   const out = interpolate(frame, [first.end + 30, first.end + 50], [1, 0], clamp);
   if (out <= 0) return null;
   return (
-    <div style={{position: 'absolute', left: 1430, top: 610, width: 230, opacity: out * appear(frame, 0, 14), rotate: '-6deg'}}>
+    <div style={{position: 'absolute', left: 1190, top: 690, width: 240, opacity: out * appear(frame, 0, 14), rotate: '-6deg'}}>
       <div style={{background: 'rgba(8,22,58,0.94)', border: `2px solid ${ORANGE}`, borderRadius: 14, padding: '12px 16px', fontFamily: JP}}>
         <div style={{fontSize: 14, color: ORANGE, fontWeight: 900, letterSpacing: 3}}>NEWS</div>
         <div style={{fontSize: 22, color: 'white', fontWeight: 900, lineHeight: 1.3, marginTop: 4}}>平和 新VTuber 3人デビュー</div>

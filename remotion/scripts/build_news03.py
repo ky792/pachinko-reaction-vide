@@ -22,10 +22,10 @@ import numpy as np
 FPS = 30
 ROOT = Path(__file__).resolve().parent.parent
 EP, WAV, OUT = ROOT / 'episodes/news03', ROOT / 'public/news03', ROOT / 'src/data/news03.json'
-GAP = 7            # セリフ間（約0.23秒）
-CH_GAP = 18        # 章の変わり目の間
+GAP = 5            # セリフ間（約0.17秒）
+CH_GAP = 12        # 章の変わり目の間
 TITLE_LEN = 100    # ニュースタイトル演出
-SHOW_PAUSE = 8     # パネルが切り替わる行は少し待ってから話す
+SHOW_PAUSE = 6     # パネルが切り替わる行は少し待ってから話す
 BOW_LEN = 150      # お辞儀→見つめる→暗転
 HEAD = 12
 
