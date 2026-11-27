@@ -1124,7 +1124,7 @@ const bgmVolume = (abs: number) => {
   const base = 0.24;
   let v = Math.min(interpolate(abs, [OP_FRAMES, OP_FRAMES + FPS], [0, base], clamp), base);
   for (const [a, b] of DUCKS) {
-    const k = Math.min(interpolate(abs, [a - 8, a], [1, 0], clamp), interpolate(abs, [b, b + 16], [0, 1], clamp));
+    const k = Math.max(interpolate(abs, [a - 8, a], [1, 0], clamp), interpolate(abs, [b, b + 16], [0, 1], clamp)); // 間の前後は1、間の中だけ0
     v = Math.min(v, base * k);
   }
   v *= interpolate(abs, [ED_BGM_AT - 16, ED_BGM_AT], [1, 0], clamp);
