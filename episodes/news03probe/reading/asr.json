@@ -1,32 +1,32 @@
 {
  "p-001": {
-  "sha1": "edbdf165d26affb6ef8307945dcb11a0df28fe1d",
+  "sha1": "7a18fb2ed4e9cf26dce8fea36f40bc3219b9cad0",
   "model": "large-v3-turbo",
-  "text": "おぉぉぉぉぉぉぉ!"
+  "text": "おぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉぉ"
  },
  "p-002": {
-  "sha1": "82dc8e032f8f69a0a660a06454ca5ed515cad353",
+  "sha1": "9af9a26bae9203482542e352f9f698f45a5ddc3b",
   "model": "large-v3-turbo",
-  "text": "はーーーい?"
+  "text": "ほお?当人じゃ…"
  },
  "p-003": {
-  "sha1": "1e0bf65ef8b0b8ff52efa59b9dc5cc8c37620776",
+  "sha1": "0b0638ef771cb32210c06413052c659a1e19b9bf",
   "model": "large-v3-turbo",
-  "text": "はぁー"
+  "text": "はぁ?どんじっちゃや?"
  },
  "p-004": {
-  "sha1": "adc293a740142887eb95b4359b4da6161303fd89",
+  "sha1": "07f2773181d35e7b12f15a6aae05ded9824d23ff",
   "model": "large-v3-turbo",
-  "text": "なんでや?"
+  "text": "はぁ!?"
  },
  "p-005": {
-  "sha1": "5dcd1ae05d93161c6e413a8eb0ada34f4ed432e8",
+  "sha1": "a620fc65980342bc9d5c11a5020aabf92ba92d8a",
   "model": "large-v3-turbo",
-  "text": "飲んでよ"
+  "text": "ん?これ?"
  },
  "p-006": {
-  "sha1": "e2deae5fca7e9ea226e7b2bd37c6ab0f4189e609",
+  "sha1": "75e7bf796ef6a05d2af0611d98f59fe49f340c0d",
   "model": "large-v3-turbo",
-  "text": "なんでよ"
+  "text": "ん?"
  }
 }
