@@ -1,6 +1,6 @@
 name: news03 fetch official images
 
-# ハルルナ・YOUTOPYA の公式画像（キュインPORTAL・©HEIWA）を取り込む。ユーザー指示（2026-11-27）
+# ハルルナ・YOUTOPYA ほかの画像（2回目：配信サムネ・乙女5筐体・戦国乙女バナー・キュインPORTAL・ナギナミ筐体）。（キュインPORTAL・©HEIWA）を取り込む。ユーザー指示（2026-11-27）
 on:
   push:
     branches: [feat/news03-youtopya]
@@ -33,8 +33,14 @@ jobs:
           get luna_i.webp    "$B/wp-content/themes/theme-kyuin-portal/assets/images/icon--runa.webp"
           get pachi_top.webp "$B/wp-content/uploads/2026/11/top-contents-pachi-k7q2m9xw.webp"
           get yt_kv.png      "https://p-bomb.co.jp/wp-content/uploads/2026/11/261121_201.png"
+          # 2回目（2026-11-28）
+          get debut_thumb.jpg "https://i.ytimg.com/vi/o0qqkPmvuqk/maxresdefault.jpg"
+          get otome5_cab.webp "https://images.1geki.jp/wp-content/uploads/2026/04/img_l_otome5.png?f=webp"
+          get otome_banner.webp "$B/wp-content/uploads/2026/08/contents-01.webp"
+          get portal_ogp.webp "$B/wp-content/uploads/2026/06/Kyuin-portal_ogp.webp"
+          get naginami_cab.jpg "https://contents.pachiseven.jp/imgs/s/machine/68d3a85c-ecb4-4b4e-8073-7d31ac1f02cb.jpg"
           sudo apt-get install -y webp >/dev/null 2>&1 || true
-          for f in $D/*.webp; do dwebp -quiet "$f" -o "${f%.webp}.png" && rm "$f"; done
+          for f in $D/*.webp; do [ -e "$f" ] || continue; if dwebp -quiet "$f" -o "${f%.webp}.png"; then rm "$f"; else ffmpeg -v error -y -i "$f" "${f%.webp}.png" && rm "$f"; fi; done
           ls -la $D
       - name: Commit
         run: |
