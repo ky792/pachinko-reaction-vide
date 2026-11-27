@@ -109,8 +109,6 @@ const SEGMENTS: Segment[] = (() => {
 
 // セリフ単位の補足メモ（パネルの下に出す）
 const NOTES: Record<string, string> = {
-  '02_debut-004': 'ハルルナ ＝ 霧島ハル・霧島ルナ（2021年7月デビューの双子ユニット）',
-  '03_member-011': '公式ビジュアルはキュインPORTAL・公式Xで',
   '05_genjou-003': '参加人口は推計値（日本生産性本部『レジャー白書2026』）',
   '06_ip-009': 'IP ＝ 知的財産（キャラクター・物語・作品のブランド）',
   '06_ip-019': '【ナギバクの考察】コンテンツ全体の価値を高める動き？',
@@ -460,6 +458,11 @@ const PanelFrame: React.FC<{seg: Segment; tag: string; children: React.ReactNode
   );
 };
 
+// 公式画像のクレジット（©HEIWA）
+const ImgCredit: React.FC = () => (
+  <div style={{position: 'absolute', right: 22, bottom: 10, fontSize: 18, fontWeight: 700, color: '#7a8aa6', fontFamily: JP}}>画像：©HEIWA（キュインPORTAL）</div>
+);
+
 // 手描き風のマル
 const HandCircle: React.FC<{at: number; x: number; y: number; w: number; h: number; color?: string}> = ({
   at: start,
@@ -711,6 +714,44 @@ const KeywordPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
   const word = String(data.word);
   const size = word.length <= 6 ? 130 : word.length <= 9 ? 104 : 84;
   const s = spring({frame: frame - seg.from - 6, fps, config: {damping: 11, stiffness: 170}});
+  if (data.img || data.imgs) {
+    const wide = !!data.img;
+    const im = spring({frame: frame - seg.from - 2, fps, config: {damping: 15, stiffness: 150}});
+    return (
+      <PanelFrame seg={seg} tag={data.tag}>
+        {wide ? (
+          <div style={{position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 20, fontWeight: 900}}>
+            <Img
+              src={staticFile(`news03/img/${data.img}`)}
+              style={{height: 300, borderRadius: 16, boxShadow: '0 12px 28px rgba(0,20,80,0.3)', opacity: Math.min(1, im * 1.4), scale: interpolate(im, [0, 1], [0.92, 1])}}
+            />
+            <div style={{fontSize: 78, color: BLUE_DEEP, marginTop: 10, opacity: Math.min(1, s * 1.4), letterSpacing: 4}}>{word}</div>
+            <div style={{fontSize: 26, color: '#43506b', marginTop: 2, whiteSpace: 'nowrap'}}>{data.sub}</div>
+          </div>
+        ) : (
+          <div style={{position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', fontWeight: 900}}>
+            <div style={{width: 520, height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', gap: 0, paddingBottom: 26}}>
+              {(data.imgs as string[]).map((f, i) => {
+                const sp = spring({frame: frame - seg.from - 2 - i * 6, fps, config: {damping: 15, stiffness: 150}});
+                return (
+                  <Img
+                    key={f}
+                    src={staticFile(`news03/img/${f}`)}
+                    style={{height: 420, maxWidth: 260, objectFit: 'contain', opacity: Math.min(1, sp * 1.4), translate: `0px ${(1 - sp) * 40}px`, filter: 'drop-shadow(0 10px 14px rgba(0,20,80,0.25))'}}
+                  />
+                );
+              })}
+            </div>
+            <div style={{flex: 1, paddingRight: 40}}>
+              <div style={{fontSize: Math.min(size, 110), color: BLUE_DEEP, opacity: Math.min(1, s * 1.4), translate: `${(1 - s) * 40}px 0px`}}>{word}</div>
+              <div style={{fontSize: 28, color: '#43506b', marginTop: 12, lineHeight: 1.5, whiteSpace: 'pre-line'}}>{data.sub}</div>
+            </div>
+          </div>
+        )}
+        <ImgCredit />
+      </PanelFrame>
+    );
+  }
   return (
     <PanelFrame seg={seg} tag={data.tag}>
       <div
@@ -882,7 +923,7 @@ const VersusPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
       <div
         style={{
           width: 450,
-          height: 330,
+          height: d.imgs ? 400 : 330,
           borderRadius: 22,
           background: 'white',
           border: `5px solid ${c}`,
@@ -890,14 +931,21 @@ const VersusPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: 14,
+          gap: d.imgs ? 6 : 14,
           opacity: Math.min(1, s * 1.4),
           translate: `0px ${(1 - s) * 50}px`,
           boxShadow: `0 16px 34px ${c}33`,
         }}
       >
+        {d.imgs && (
+          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-end', height: 190, marginBottom: -6}}>
+            {(d.imgs as string[]).map((f) => (
+              <Img key={f} src={staticFile(`news03/img/${f}`)} style={{height: 190, maxWidth: d.imgs.length > 2 ? 130 : 170, objectFit: 'contain'}} />
+            ))}
+          </div>
+        )}
         <div style={{fontSize: 32, fontWeight: 900, color: BLUE_DEEP, whiteSpace: 'nowrap'}}>{d.k}</div>
-        <div style={{fontSize: String(d.v).length > 4 ? 70 : 88, fontWeight: 900, color: c, whiteSpace: 'nowrap'}}>{d.v}</div>
+        <div style={{fontSize: d.imgs ? 60 : String(d.v).length > 4 ? 70 : 88, fontWeight: 900, color: c, whiteSpace: 'nowrap', lineHeight: 1.05}}>{d.v}</div>
         <div
           style={{
             fontSize: 25,
@@ -918,7 +966,7 @@ const VersusPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
   const vs = spring({frame: frame - seg.from - 16, fps, config: {damping: 9, stiffness: 220}});
   return (
     <PanelFrame seg={seg} tag={`VS｜${data.heading}`}>
-      <div style={{position: 'absolute', left: 0, right: 0, top: 50, display: 'flex', justifyContent: 'center', gap: 100}}>
+      <div style={{position: 'absolute', left: 0, right: 0, top: data.left.imgs ? 18 : 50, display: 'flex', justifyContent: 'center', gap: 100}}>
         <Side d={data.left} delay={4} bad={false} />
         <Side d={data.right} delay={12} bad />
       </div>
@@ -943,9 +991,50 @@ const VersusPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
       >
         VS
       </div>
-      <div style={{position: 'absolute', left: 0, right: 0, bottom: 34, textAlign: 'center', fontSize: 24, fontWeight: 700, color: '#6a7894'}}>
+      <div style={{position: 'absolute', left: 0, right: 0, bottom: data.left.imgs ? 40 : 34, textAlign: 'center', fontSize: 24, fontWeight: 700, color: '#6a7894'}}>
         {data.note}
       </div>
+      {data.left.imgs && <ImgCredit />}
+    </PanelFrame>
+  );
+};
+
+const GalleryPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
+  const frame = useCurrentFrame();
+  const {fps} = useVideoConfig();
+  const items = data.items as {img: string; name: string; sub: string; color: string}[];
+  const line = lineAt(frame);
+  const hl = line && seg.lines.includes(line as Timed) ? line.hl : null;
+  return (
+    <PanelFrame seg={seg} tag={`${data.tag}｜${data.heading}`}>
+      <div style={{position: 'absolute', left: 30, right: 30, top: 14, bottom: 34, display: 'flex', justifyContent: 'space-around', alignItems: 'flex-end'}}>
+        {items.map((it, i) => {
+          const on = mentionAt(seg, [it.name.split('・')[0]], 0.02) ?? seg.from + 8 + i * 8;
+          const sp = spring({frame: frame - on, fps, config: {damping: 14, stiffness: 160}});
+          const lit = hl === i;
+          const dim = hl != null && !lit;
+          return (
+            <div
+              key={i}
+              style={{
+                width: 330,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                opacity: Math.min(1, sp * 1.4) * (dim ? 0.45 : 1),
+                translate: `0px ${(1 - sp) * 40}px`,
+                scale: lit ? 1.04 : 1,
+                filter: dim ? 'grayscale(0.5)' : 'none',
+              }}
+            >
+              <Img src={staticFile(`news03/img/${it.img}`)} style={{height: 330, maxWidth: 330, objectFit: 'contain', filter: 'drop-shadow(0 10px 14px rgba(0,20,80,0.25))'}} />
+              <div style={{marginTop: 6, fontSize: 32, fontWeight: 900, color: BLUE_DEEP, whiteSpace: 'nowrap', borderBottom: `6px solid ${it.color}`, padding: '0 8px'}}>{it.name}</div>
+              <div style={{marginTop: 6, fontSize: 24, fontWeight: 800, color: '#43506b', whiteSpace: 'nowrap'}}>{it.sub}</div>
+            </div>
+          );
+        })}
+      </div>
+      <ImgCredit />
     </PanelFrame>
   );
 };
@@ -1002,6 +1091,8 @@ const Panel: React.FC<{seg: Segment}> = ({seg}) => {
       return <TablePanel seg={seg} data={data} />;
     case 'versus':
       return <VersusPanel seg={seg} data={data} />;
+    case 'gallery':
+      return <GalleryPanel seg={seg} data={data} />;
     default:
       return null;
   }

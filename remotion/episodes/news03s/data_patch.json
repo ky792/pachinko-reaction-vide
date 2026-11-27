@@ -96,7 +96,8 @@
   "yt_news": {
    "tag": "NEWS FILE",
    "word": "YOUTOPYA",
-   "sub": "平和の新VTuberユニット（3人組）／ハルルナと合わせて5人体制"
+   "sub": "平和の新VTuberユニット（3人組）／ハルルナと合わせて5人体制",
+   "img": "yt_kv.png"
   },
   "yt_views": {
    "tag": "NEWS FILE",
@@ -137,6 +138,15 @@
    "tag": "NEWS FILE",
    "word": "正式発表なし",
    "sub": "YOUTOPYAの遊技機化（2026年11月27日時点）／VTuberの人気＝遊技機の需要とは限らない"
+  },
+  "yt_harluna": {
+   "tag": "NEWS FILE",
+   "word": "ハルルナ",
+   "sub": "霧島ハル・霧島ルナ\n2021年デビューの平和公式VTuber\nデビュー配信の司会",
+   "imgs": [
+    "haru.png",
+    "luna.png"
+   ]
   }
  },
  "analysis": {
@@ -311,12 +321,21 @@
    "left": {
     "k": "ハルルナ（2021年〜）",
     "v": "機種解説",
-    "s": "遊技機の紹介・実機配信"
+    "s": "遊技機の紹介・実機配信",
+    "imgs": [
+     "haru.png",
+     "luna.png"
+    ]
    },
    "right": {
     "k": "YOUTOPYA（2026年〜）",
     "v": "日常",
-    "s": "ストーリー・キャラ中心"
+    "s": "ストーリー・キャラ中心",
+    "imgs": [
+     "akari.png",
+     "pipi.png",
+     "yukina.png"
+    ]
    },
    "note": "※完全に分かれているわけではない（同じチャンネル・5人で活動）"
   },
@@ -334,6 +353,32 @@
     "s": "長く展開・グッズや映像へ"
    },
    "note": "※実際の権利関係・契約内容は作品によって異なる（一般的な比較）"
+  }
+ },
+ "gallery": {
+  "yt_member": {
+   "tag": "NEWS FILE",
+   "heading": "YOUTOPYA メンバー（公式プロフィール）",
+   "items": [
+    {
+     "img": "akari.png",
+     "name": "旭アカリ",
+     "sub": "22歳・ピンク・まとめ役",
+     "color": "#ff7eb6"
+    },
+    {
+     "img": "pipi.png",
+     "name": "ピピ・モンブラン",
+     "sub": "21歳・黄色・関西弁",
+     "color": "#ffc61a"
+    },
+    {
+     "img": "yukina.png",
+     "name": "富士ユキナ",
+     "sub": "23歳・白・お姉さん",
+     "color": "#b8c4d8"
+    }
+   ]
   }
  }
 }

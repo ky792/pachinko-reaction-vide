@@ -92,7 +92,7 @@ for script in sorted((epdir / 'script').glob('*.txt')):
         pending_dir = {}
 
 data = {'title': patch['title'], 'chapters': patch['chapters'],
-        'panels': {k: patch.get(k, {}) for k in ('flow', 'keyword', 'analysis', 'spec_table', 'versus')},
+        'panels': {k: patch.get(k, {}) for k in ('flow', 'keyword', 'analysis', 'spec_table', 'versus', 'gallery')},
         'lines': lines}
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
