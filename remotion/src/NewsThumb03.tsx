@@ -35,13 +35,13 @@ const Outline: React.FC<{
   );
 };
 
-// 5人（左から ハル・ルナ・アカリ・ピピ・ユキナ）。height は画像の表示高さ、top は頭の位置合わせ
+// 5人（左から ハル・アカリ・ピピ・ユキナ・ルナ）。height は画像の表示高さ、top は頭の位置合わせ
 const MEMBERS: {src: string; left: number; top: number; height: number; z: number}[] = [
-  {src: 'haru.png', left: 548, top: 70, height: 900, z: 1},
-  {src: 'luna.png', left: 1046, top: 66, height: 900, z: 1},
-  {src: 'akari.png', left: 640, top: 92, height: 860, z: 2},
-  {src: 'yukina.png', left: 870, top: 60, height: 880, z: 2},
-  {src: 'pipi.png', left: 755, top: 110, height: 840, z: 3},
+  {src: 'haru.png', left: 455, top: 51, height: 760, z: 1},
+  {src: 'luna.png', left: 1043, top: 16, height: 760, z: 1},
+  {src: 'akari.png', left: 588, top: 46, height: 720, z: 2},
+  {src: 'yukina.png', left: 909, top: 53, height: 720, z: 2},
+  {src: 'pipi.png', left: 733, top: 38, height: 700, z: 3},
 ];
 
 export const NewsThumb03: React.FC = () => {
@@ -107,7 +107,7 @@ export const NewsThumb03: React.FC = () => {
           fontFamily: JP,
           fontWeight: 900,
           fontSize: 40,
-          padding: '8px 26px 8px 300px',
+          padding: '8px 26px 8px 350px',
           borderTop: '4px solid #fff',
           borderBottom: '4px solid #fff',
           borderRight: '4px solid #fff',
