@@ -12,14 +12,17 @@ import {
 } from 'remotion';
 import {Audio} from '@remotion/media';
 
-// ── #03 OP：ユーザー提供の曲（Gemini で作った「TOP OF THE HOUR」2026-11-28）の 5.31〜20.31秒を切り出した news_open_v2.wav に合わせたタイミング（30fps）
-// 0〜2.77秒: ため（曲のイントロ）／2.77秒＝曲のドロップ（原曲 8.08秒）／BPM150＝0.4秒（12フレーム）ごとのビート
-// 11.57秒: 大きいヒット（ロゴ・ドロップから22拍目）／13.97秒: 最後のヒット（28拍目）／14.2秒からフェードアウト
-const BEAT0 = 83;
+// ── #03 OP：ユーザー提供の曲（Gemini「TOP OF THE HOUR」2026-11-28）を 16秒に切り出した news_open_v2.wav に合わせたタイミング（30fps）
+// 曲は8小節（12.8秒）ごとのフレーズ。原曲 5.48〜21.48秒を使い、ドロップ（原曲8.08秒）で始まるフレーズが一周して
+// 次のフレーズの頭（原曲20.88秒）の一発で締める（2026-11-28「OPもいいとこで区切って」）
+// 0〜2.6秒: ため（イントロ）／2.6秒＝ドロップ／BPM150＝0.4秒（12フレーム）ごと
+// 12.2秒: ロゴ（6小節目の頭）／15.4秒: 最後の一発（フレーズの切れ目）→ 16秒で暗転
+export const OP03_FRAMES = 480;
+const BEAT0 = 78;
 const BEAT = 12;
 const beat = (n: number) => BEAT0 + BEAT * n;
-const LOGO_HIT = 347;
-const LAST_HIT = 419;
+const LOGO_HIT = 366;
+const LAST_HIT = 462;
 
 const BLUE = '#1f6bff';
 const BLUE_DEEP = '#061a4a';
@@ -663,6 +666,6 @@ export const NewsOpening03: React.FC = () => {
 
 const EndFade: React.FC<{fps: number}> = ({fps}) => {
   const frame = useCurrentFrame();
-  const o = interpolate(frame, [15 * fps - 12, 15 * fps], [0, 1], clamp);
+  const o = interpolate(frame, [OP03_FRAMES - 12, OP03_FRAMES], [0, 1], clamp);
   return <AbsoluteFill style={{background: '#020816', opacity: o}} />;
 };

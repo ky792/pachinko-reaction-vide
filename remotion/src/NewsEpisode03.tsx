@@ -12,7 +12,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import {Audio} from '@remotion/media';
-import {NewsOpening03} from './NewsOpening03';
+import {NewsOpening03, OP03_FRAMES} from './NewsOpening03';
 import {ENDING_BGM, ENDING_CARD_FRAMES, NagibakuEndCard, endingBgmTrimBefore} from './common/NagibakuEnding'; // 全動画共通のED（2026-11-28） // 2026-11-28 OP曲をユーザー提供の曲に差し替え
 import episode from './data/news03s.json';
 
@@ -30,7 +30,7 @@ const OUT = Easing.bezier(0.16, 1, 0.3, 1);
 
 // ───────────────────────── 尺の決まり
 const FPS = 30;
-const OP_FRAMES = 450; // OP 15秒
+const OP_FRAMES = OP03_FRAMES; // OP 16秒（曲のフレーズの切れ目で締める）
 const LEAD = 12; // OPのあと最初のセリフまで
 const GAP = 4; // セリフ間（0.12秒）
 const CH_GAP = 40; // 章の切り替え（アイキャッチ）
@@ -1202,9 +1202,9 @@ const EndFade: React.FC = () => {
 };
 
 // ───────────────────────── BGM
-// 本編：既存のニュース用BGM（news_bed）。「資金力以外は」の前と、⑦ナギの無言の間は止める。
+// 本編：ユーザー提供の曲（Gemini「The Morning Brief」2026-11-28）をループにした news_bed_v2.wav。「資金力以外は」の前と、⑦ナギの無言の間は止める。
 // 「それじゃあ、また次回」のあと全動画共通のED曲（common/ending_bgm.wav）に切り替え、本編の暗転後に共通エンドカード
-const BED_LEN = 1107; // news_bed.wav のフレーム数（36.92秒）
+const BED_LEN = 2749; // news_bed_v2.wav のフレーム数（91.63秒・42小節でつなぎ目なくループ）
 const ED_BGM_AT = (() => {
   const i = LINES.findIndex((l) => l.id === '09_ed-005');
   return i >= 0 ? LINES[i].end + 8 : END;
@@ -1254,7 +1254,7 @@ export const NewsEpisode03: React.FC = () => {
       </Sequence>
       {Array.from({length: Math.ceil((ED_BGM_AT - OP_FRAMES) / BED_LEN) + 1}).map((_, k) => (
         <Sequence key={`bed${k}`} from={OP_FRAMES + k * BED_LEN} durationInFrames={BED_LEN} name="BGM">
-          <Audio src={staticFile('news_bed.wav')} volume={(f) => bgmVolume(f + OP_FRAMES + k * BED_LEN)} />
+          <Audio src={staticFile('news_bed_v2.wav')} volume={(f) => bgmVolume(f + OP_FRAMES + k * BED_LEN)} />
         </Sequence>
       ))}
       <Sequence from={ED_BGM_AT} name="ED BGM（全動画共通）">

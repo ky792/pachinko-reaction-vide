@@ -20,7 +20,7 @@
 - ⑤のお金・依存の場面は効果音なし
 - 冒頭は長いロゴ・挨拶なしで会話から。重要性を示した直後に約3秒のニュースタイトル演出
 - エンディング：全動画共通のED（src/common/NagibakuEnding.tsx。絵 common/ending.png＋曲 common/ending_bgm.wav、2026-11-28 ユーザー指定）。最後の台詞のあたりから曲を流し、本編が暗転したらエンドカード10秒、サビ（原曲20.68秒）がカードの出だしに来るよう頭出し
-- OP曲：ユーザー提供の曲（Geminiで作成「TOP OF THE HOUR」、2026-11-28差し替え）の 5.31〜20.31秒を切り出した news_open_v2.wav（-12.5 LUFS／ピーク -1.6dB。EDは共通EDに変更したのでOPだけで使う）。OPのアニメ（NewsOpening03.tsx）はこの曲のドロップ（原曲8.08秒）・BPM150に合わせた。#02 のOP（NewsOpening.tsx・news_open.wav）はそのまま。本編BGMは既存の news_bed.wav
+- OP曲：ユーザー提供の曲（Geminiで作成「TOP OF THE HOUR」、2026-11-28差し替え）の 5.48〜21.48秒（16秒）を切り出した news_open_v2.wav（-12.3 LUFS／ピーク -1.6dB）。曲は8小節ごとのフレーズで、ドロップ（原曲8.08秒）からのフレーズが一周して次の頭（20.88秒）の一発で締める。OPのアニメ（NewsOpening03.tsx）はこれに合わせ、OPは16秒。#02 のOP（NewsOpening.tsx・news_open.wav）はそのまま。本編BGM：ユーザー提供の曲（Gemini「The Morning Brief」2026-11-28）の原曲20.91〜112.54秒（110BPM・42小節）を、つなぎ目を0.5秒クロスフェードしてループにした news_bed_v2.wav（前の news_bed.wav と同じ -19.2 LUFS にそろえたので声とのバランスは同じ）
 - サムネ：NewsThumb03.tsx（Still「News03Thumb」1280×720）。news03-thumb.yml で書き出し → outputs-news03-thumb ブランチ
 
 ## できなかったこと・制約

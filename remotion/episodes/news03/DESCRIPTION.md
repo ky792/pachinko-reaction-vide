@@ -21,7 +21,7 @@
 
 ▼クレジット
 声：AivisSpeech: コハク（ナギ）／Irodori-TTS（Aratako）＋ AivisSpeech: まお（バクの見本音声）※見本音声の元モデルは要確認
-BGM：オープニング・エンディング曲はオリジナル（Google Gemini で制作）
+BGM：オリジナル（Google Gemini で制作）
 効果音：自作（ホログラムSE）
 
 ▼タグ
