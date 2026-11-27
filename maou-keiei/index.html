@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#050208">
+<title>魔王経営記（仮）</title>
+<meta name="description" content="ナギバク研究所・バク開発の架空スマートパチスロ試作機シミュレーター。実際の金銭・換金とは一切関係ありません。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Shippori+Mincho+B1:wght@700;800&family=Cinzel:wght@600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/cabinet.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage" data-lamp="normal">
+    <!-- 側面ランプ -->
+    <div class="side-lamp left"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="side-lamp right"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <!-- 上部：ロゴ役物 -->
+    <div class="cab-top">
+      <div class="horn left"></div><div class="horn right"></div>
+      <canvas id="topper" width="1440" height="340"></canvas>
+    </div>
+
+    <!-- 液晶 -->
+    <div class="cab-lcd">
+      <div class="bezel">
+        <canvas id="lcd"></canvas>
+        <div class="glass"></div>
+      </div>
+      <div class="bolt b1"></div><div class="bolt b2"></div><div class="bolt b3"></div><div class="bolt b4"></div>
+    </div>
+
+    <!-- リール部 -->
+    <div class="cab-mid">
+      <div class="reel-panel">
+        <div class="info left">
+          <div class="seg"><canvas id="segCredit" width="180" height="76"></canvas><span>CREDIT</span></div>
+          <div class="seg"><canvas id="segGame" width="180" height="76"></canvas><span>GAME</span></div>
+        </div>
+        <div class="reel-window">
+          <canvas id="reels"></canvas>
+          <div class="reel-glass"></div>
+          <div class="eye-lamp" id="eyeLamp"><b></b></div>
+        </div>
+        <div class="info right">
+          <div class="seg"><canvas id="segPay" width="180" height="76"></canvas><span>PAY</span></div>
+          <div class="mode-plate" id="modePlate">通常時</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 操作部 -->
+    <div class="cab-deck">
+      <button class="btn-bet" id="btnBet" aria-label="MAX BET"><span>MAX<br>BET</span></button>
+      <button class="btn-push" id="btnPush" aria-label="PUSH"><span>PUSH</span></button>
+      <div class="lever-box"><button class="lever" id="lever" aria-label="レバー"><i class="rod"></i><i class="knob"></i></button></div>
+      <div class="stops">
+        <button class="stop" data-i="0" aria-label="左停止"><b></b><em></em></button>
+        <button class="stop" data-i="1" aria-label="中停止"><b></b><em></em></button>
+        <button class="stop" data-i="2" aria-label="右停止"><b></b><em></em></button>
+      </div>
+    </div>
+
+    <!-- 腰部パネル -->
+    <div class="cab-belly">
+      <canvas id="belly" width="1440" height="340"></canvas>
+    </div>
+    <div class="toast" id="toast"></div>
+  </div>
+</div>
+
+<!-- 液晶のみ表示（X用 16:9 録画） -->
+<canvas id="lcdFull" width="1920" height="1080"></canvas>
+
+<button id="devToggle" title="開発者メニュー (D)">DEV</button>
+<div id="devPanel" hidden></div>
+
+<script src="js/core.js"></script>
+<script src="js/config.js"></script>
+<script src="js/assets.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/art.js"></script>
+<script src="js/reels.js"></script>
+<script src="js/lcd.js"></script>
+<script src="js/seq.js"></script>
+<script src="js/game.js"></script>
+<script src="js/cabinet.js"></script>
+<script src="js/dev.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

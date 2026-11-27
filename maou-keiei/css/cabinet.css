@@ -1,0 +1,167 @@
+/* ==========================================================
+ * 筐体デザイン（設計サイズ 720x1280 / 9:16 を画面に合わせて拡縮）
+ * ========================================================== */
+:root {
+  --metal-d: #0b0910;
+  --metal-m: #1d1826;
+  --metal-l: #3a3348;
+  --chrome: linear-gradient(180deg, #f4f1ff 0%, #8d87a0 18%, #2a2533 50%, #a59fb8 82%, #ffffff 100%);
+  --gold: linear-gradient(180deg, #fff3b8 0%, #e0a83a 40%, #7a4a08 60%, #ffd76a 100%);
+  --blood: #c0102a;
+  --lamp: #a050ff;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; height: 100%; background: #030105; overflow: hidden;
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+  font-family: "Shippori Mincho B1", "Yu Mincho", serif; color: #eee;
+}
+body { background: radial-gradient(ellipse at 50% 30%, #1a0a22 0%, #050208 55%, #000 100%); }
+#viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; touch-action: manipulation; }
+#stage {
+  position: relative; width: 720px; height: 1280px; flex: none;
+  transform-origin: 50% 50%;
+  border-radius: 34px 34px 18px 18px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0) 6%, rgba(0,0,0,0) 94%, rgba(255,255,255,0.06) 100%),
+    linear-gradient(180deg, #17121f 0%, #0b0810 40%, #120d18 70%, #07050a 100%);
+  box-shadow: 0 0 0 3px #2a2433, 0 0 0 5px #0a080e, 0 30px 80px rgba(0,0,0,0.8), 0 0 120px rgba(140,40,255,0.18);
+}
+
+/* ---- 側面ランプ ---- */
+.side-lamp { position: absolute; top: 178px; width: 16px; height: 720px; display: flex; flex-direction: column; gap: 6px; padding: 4px 3px; z-index: 3;
+  background: linear-gradient(90deg, #000, #1a1420, #000); border-radius: 8px; box-shadow: inset 0 0 6px #000; }
+.side-lamp.left { left: 4px; } .side-lamp.right { right: 4px; }
+.side-lamp i { flex: 1; border-radius: 5px; background: var(--lamp); opacity: 0.25; box-shadow: 0 0 10px var(--lamp); transition: opacity .15s; }
+#stage[data-lamp="normal"] { --lamp: #9a50ff; }
+#stage[data-lamp="normal"] .side-lamp i { animation: lampBreath 3s ease-in-out infinite; }
+#stage[data-lamp="cz"] { --lamp: #ff2030; }
+#stage[data-lamp="cz"] .side-lamp i { animation: lampBlink .35s steps(2) infinite; }
+#stage[data-lamp="at"] { --lamp: #ffc23a; }
+#stage[data-lamp="at"] .side-lamp i { animation: lampChase 1s linear infinite; }
+#stage[data-lamp="upper"] .side-lamp i { animation: lampRainbow 1.2s linear infinite, lampChase .6s linear infinite; }
+#stage[data-lamp="off"] .side-lamp i { opacity: 0.05; box-shadow: none; }
+.side-lamp i:nth-child(2) { animation-delay: -.12s !important; } .side-lamp i:nth-child(3) { animation-delay: -.24s !important; }
+.side-lamp i:nth-child(4) { animation-delay: -.36s !important; } .side-lamp i:nth-child(5) { animation-delay: -.48s !important; }
+.side-lamp i:nth-child(6) { animation-delay: -.6s !important; } .side-lamp i:nth-child(7) { animation-delay: -.72s !important; }
+.side-lamp i:nth-child(8) { animation-delay: -.84s !important; }
+#stage.flashlamp .side-lamp i { opacity: 1 !important; background: #fff; box-shadow: 0 0 24px #fff; }
+@keyframes lampBreath { 0%,100% { opacity: .25; } 50% { opacity: .9; } }
+@keyframes lampBlink { 0% { opacity: 1; } 100% { opacity: .1; } }
+@keyframes lampChase { 0% { opacity: 1; } 60% { opacity: .15; } 100% { opacity: .15; } }
+@keyframes lampRainbow { 0% { background: #ff3b3b; box-shadow: 0 0 14px #ff3b3b; } 33% { background: #ffe03b; box-shadow: 0 0 14px #ffe03b; } 66% { background: #3bd8ff; box-shadow: 0 0 14px #3bd8ff; } 100% { background: #e43bff; box-shadow: 0 0 14px #e43bff; } }
+
+/* ---- 上部役物 ---- */
+.cab-top { position: absolute; left: 0; top: 0; width: 720px; height: 178px; z-index: 2;
+  clip-path: polygon(0 26%, 18% 8%, 36% 4%, 50% 0, 64% 4%, 82% 8%, 100% 26%, 100% 100%, 0 100%);
+  background: radial-gradient(ellipse at 50% 120%, #4a0a1a 0%, #14060e 55%, #050205 100%);
+  border-radius: 30px 30px 0 0; }
+.cab-top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--chrome); }
+#topper { position: absolute; left: 0; top: 0; width: 720px; height: 170px; }
+.horn { position: absolute; top: 8px; width: 70px; height: 120px; z-index: 4; pointer-events: none; }
+.horn::before { content: ""; position: absolute; inset: 0; border-radius: 0 100% 0 100%;
+  background: linear-gradient(160deg, #fff6dc 0%, #c8b48a 40%, #3a2a14 100%); box-shadow: inset -6px -6px 14px rgba(0,0,0,.6); }
+.horn.left { left: 18px; transform: rotate(-18deg); } .horn.right { right: 18px; transform: scaleX(-1) rotate(-18deg); }
+
+/* ---- 液晶 ---- */
+.cab-lcd { position: absolute; left: 0; top: 178px; width: 720px; height: 418px; padding: 16px 20px; }
+.bezel { position: relative; width: 680px; height: 386px; border-radius: 14px; padding: 4px;
+  background: var(--chrome); box-shadow: 0 0 0 4px #050307, 0 0 30px rgba(160,60,255,0.35), inset 0 0 0 2px rgba(0,0,0,.6); }
+#lcd { display: block; width: 672px; height: 378px; border-radius: 10px; background: #000; }
+.glass { position: absolute; inset: 4px; border-radius: 10px; pointer-events: none;
+  background: linear-gradient(125deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.02) 22%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 100%);
+  box-shadow: inset 0 0 30px rgba(0,0,0,.7); }
+.bolt { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff, #777 45%, #222 70%); box-shadow: 0 1px 2px #000; }
+.bolt.b1 { left: 6px; top: 6px; } .bolt.b2 { right: 6px; top: 6px; } .bolt.b3 { left: 6px; bottom: 6px; } .bolt.b4 { right: 6px; bottom: 6px; }
+
+/* ---- リール部 ---- */
+.cab-mid { position: absolute; left: 0; top: 596px; width: 720px; height: 300px; padding: 10px 26px; }
+.reel-panel { position: relative; height: 280px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(120,20,40,.45) 0%, rgba(0,0,0,0) 70%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 6px, rgba(0,0,0,0.02) 6px 12px),
+    linear-gradient(180deg, #2a0a16 0%, #12040a 100%);
+  box-shadow: inset 0 0 0 2px #5a1a2a, inset 0 0 0 4px #0a0206, inset 0 0 40px #000, 0 0 0 3px #2a2433; }
+.reel-window { position: relative; width: 502px; height: 262px; padding: 8px; border-radius: 10px;
+  background: var(--gold); box-shadow: 0 0 0 3px #1a0a06, 0 0 24px rgba(255,180,60,.25); }
+#reels { display: block; width: 486px; height: 246px; border-radius: 4px; background: #000; }
+.reel-glass { position: absolute; inset: 8px; border-radius: 4px; pointer-events: none;
+  background: linear-gradient(170deg, rgba(255,255,255,.18) 0%, rgba(255,255,255,0) 30%), linear-gradient(90deg, transparent 0 150px, rgba(10,4,6,.95) 150px 168px, transparent 168px 318px, rgba(10,4,6,.95) 318px 336px, transparent 336px); }
+.info { width: 64px; display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.seg { width: 64px; padding: 4px 3px 2px; border-radius: 6px; background: #050203; box-shadow: inset 0 0 0 2px #3a2a30, 0 1px 0 #444; text-align: center; }
+.seg canvas { display: block; width: 58px; height: 25px; margin: 0 auto; }
+.seg span { display: block; font: 700 9px/1.4 "Cinzel", serif; letter-spacing: 1px; color: #d9a640; }
+.mode-plate { width: 64px; padding: 6px 2px; border-radius: 6px; text-align: center; font: 800 11px/1.3 "Shippori Mincho B1", serif; color: #ffe08a;
+  background: linear-gradient(180deg, #3a0a1a, #120208); box-shadow: inset 0 0 0 1px #d9a640; }
+.eye-lamp { position: absolute; left: 50%; top: -30px; width: 84px; height: 30px; margin-left: -42px; border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background: linear-gradient(180deg, #2a0a10, #0a0204); box-shadow: inset 0 0 0 2px #6a3a10; overflow: hidden; }
+.eye-lamp b { position: absolute; left: 50%; top: 9px; width: 44px; height: 18px; margin-left: -22px; border-radius: 50%; background: #1a0408; transform: scaleY(0.12); transition: transform .25s, background .25s, box-shadow .25s; }
+.eye-lamp.on b { transform: scaleY(1); background: radial-gradient(ellipse at 50% 50%, #fff2c0 0 12%, #ff2030 14% 55%, #6a0010 100%); box-shadow: 0 0 24px #ff2030, 0 0 60px #ff2030; animation: eyePulse .5s ease-in-out infinite alternate; }
+@keyframes eyePulse { to { filter: brightness(1.5); } }
+
+/* ---- 操作部 ---- */
+.cab-deck { position: absolute; left: 0; top: 896px; width: 720px; height: 226px;
+  background: linear-gradient(180deg, #2a2433 0%, #120e18 14%, #1a1522 60%, #0a080e 100%);
+  box-shadow: inset 0 6px 0 rgba(255,255,255,.06), inset 0 -2px 0 #000; }
+.cab-deck::before { content: ""; position: absolute; left: 18px; right: 18px; top: 10px; height: 4px; background: var(--chrome); border-radius: 2px; opacity: .7; }
+.cab-deck button { -webkit-appearance: none; appearance: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; touch-action: manipulation; }
+.btn-bet { position: absolute; left: 170px; top: 30px; width: 96px; height: 58px; border-radius: 10px; color: #fff;
+  background: linear-gradient(180deg, #ff6a7a 0%, #c0102a 45%, #6a0010 100%);
+  box-shadow: 0 6px 0 #3a0008, 0 8px 14px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,.5); font: 900 15px/1.05 "Cinzel", serif; letter-spacing: 1px; }
+.btn-bet span { text-shadow: 0 1px 2px #000; }
+.btn-bet.press, .btn-bet:active { transform: translateY(5px); box-shadow: 0 1px 0 #3a0008, 0 2px 6px rgba(0,0,0,.7), inset 0 2px 0 rgba(255,255,255,.5); }
+.btn-push { position: absolute; left: 520px; top: 16px; width: 112px; height: 112px; border-radius: 50%; color: #fff;
+  background: radial-gradient(circle at 50% 35%, #ffb0ff 0%, #c040ff 25%, #5a0a9a 65%, #1a0230 100%);
+  box-shadow: 0 0 0 6px #1a1422, 0 0 0 9px #8a7aa0, 0 0 0 11px #0a080e, 0 10px 0 4px #050307, 0 0 40px rgba(190,80,255,.6);
+  font: 900 22px/1 "Cinzel", serif; letter-spacing: 2px; }
+.btn-push span { text-shadow: 0 0 8px #fff, 0 2px 2px #000; }
+.btn-push.press, .btn-push:active { transform: translateY(4px) scale(.97); filter: brightness(1.4); }
+.btn-push.ready { animation: pushGlow .4s ease-in-out infinite alternate; }
+@keyframes pushGlow { to { filter: brightness(1.6); box-shadow: 0 0 0 6px #1a1422, 0 0 0 9px #fff, 0 0 0 11px #0a080e, 0 10px 0 4px #050307, 0 0 80px #e080ff; } }
+.lever-box { position: absolute; left: 34px; top: 40px; width: 110px; height: 170px; }
+.lever { position: relative; width: 110px; height: 170px; background: transparent; }
+.lever::before { content: ""; position: absolute; left: 25px; bottom: 6px; width: 60px; height: 40px; border-radius: 10px; background: linear-gradient(180deg, #3a3348, #0a080e); box-shadow: inset 0 0 0 2px #5a5068, 0 4px 8px #000; }
+.lever .rod { position: absolute; left: 49px; bottom: 30px; width: 12px; height: 100px; border-radius: 6px; background: var(--chrome); transform-origin: 50% 100%; transform: rotate(-14deg); transition: transform .08s; }
+.lever .knob { position: absolute; left: 22px; top: 4px; width: 50px; height: 50px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff9aaa 0%, #e01030 35%, #5a0010 100%); box-shadow: 0 4px 10px rgba(0,0,0,.8), inset 0 -4px 8px rgba(0,0,0,.5); transition: transform .08s; }
+.lever.down .rod { transform: rotate(-14deg) scaleY(.55); }
+.lever.down .knob { transform: translate(14px, 50px); }
+.stops { position: absolute; left: 172px; top: 112px; width: 330px; height: 100px; display: flex; justify-content: space-between; }
+.stop { position: relative; width: 92px; height: 92px; border-radius: 50%; background: transparent; }
+.stop b { position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #2a2433 0%, #0a080e 70%); box-shadow: 0 0 0 5px #1a1422, 0 0 0 8px #6a6078, 0 8px 0 4px #050307; transition: background .1s, box-shadow .1s, transform .06s; }
+.stop.on b { background: radial-gradient(circle at 50% 38%, #e8fbff 0%, #3ab8ff 30%, #0a3a8a 75%, #04122a 100%); box-shadow: 0 0 0 5px #1a1422, 0 0 0 8px #9ad8ff, 0 8px 0 4px #050307, 0 0 30px rgba(60,180,255,.8); }
+.stop.navi b { background: radial-gradient(circle at 50% 38%, #fff6d0 0%, #ffb020 30%, #8a3a00 80%); box-shadow: 0 0 0 5px #1a1422, 0 0 0 8px #ffd34a, 0 8px 0 4px #050307, 0 0 36px rgba(255,180,40,.9); }
+.stop.navi.next b { animation: naviBlink .25s steps(2) infinite; }
+@keyframes naviBlink { 50% { filter: brightness(1.7); } }
+.stop.press b { transform: translateY(5px); }
+.stop em { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 400 40px/1 "Dela Gothic One", sans-serif; font-style: normal; color: #fff; text-shadow: 0 0 6px #000, 0 2px 0 #7a3000; pointer-events: none; }
+
+/* ---- 腰部 ---- */
+.cab-belly { position: absolute; left: 0; bottom: 0; width: 720px; height: 158px; border-radius: 0 0 18px 18px; overflow: hidden; }
+#belly { display: block; width: 720px; height: 170px; }
+
+/* ---- トースト ---- */
+.toast { position: absolute; left: 50%; top: 556px; transform: translate(-50%, 10px); padding: 8px 18px; border-radius: 20px; z-index: 10; pointer-events: none;
+  background: rgba(10,2,12,.9); box-shadow: inset 0 0 0 1px #d9a640; color: #ffe7c0; font: 800 14px/1.3 "Shippori Mincho B1", serif; white-space: nowrap; opacity: 0; transition: opacity .25s, transform .25s; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---- 液晶のみ表示（16:9録画用） ---- */
+#lcdFull { display: none; position: fixed; inset: 0; margin: auto; max-width: 100vw; max-height: 100vh; width: 100vw; height: 56.25vw; background: #000; }
+body.lcdonly #viewport { visibility: hidden; }
+body.lcdonly #lcdFull { display: block; }
+@media (min-aspect-ratio: 16/9) { #lcdFull { width: 177.78vh; height: 100vh; } }
+
+/* ---- 開発者メニュー ---- */
+#devToggle { position: fixed; right: 10px; top: 10px; z-index: 50; padding: 6px 10px; border: 1px solid #6a5a80; border-radius: 6px; background: rgba(20,10,30,.85); color: #d7b4ff; font: 700 11px/1 monospace; cursor: pointer; }
+#devPanel { position: fixed; right: 10px; top: 44px; z-index: 50; width: 300px; max-height: calc(100vh - 60px); overflow: auto; padding: 12px; border-radius: 10px;
+  background: rgba(12,6,20,.94); box-shadow: 0 0 0 1px #5a4a70, 0 10px 40px rgba(0,0,0,.6); font: 12px/1.5 system-ui, sans-serif; color: #ddd; }
+#devPanel h3 { margin: 10px 0 6px; font: 700 11px/1 system-ui, sans-serif; color: #c38bff; letter-spacing: 1px; }
+#devPanel h3:first-child { margin-top: 0; }
+#devPanel .row { display: flex; flex-wrap: wrap; gap: 4px; }
+#devPanel button, #devPanel select { padding: 5px 7px; border: 1px solid #4a3a60; border-radius: 5px; background: #1e1430; color: #eee; font: 12px system-ui, sans-serif; cursor: pointer; }
+#devPanel button:hover { background: #2e1f48; }
+#devPanel button.on { background: #6a2aa8; border-color: #c38bff; }
+#devPanel .stat { font: 11px/1.5 monospace; color: #aaa; white-space: pre; }
+body.rec #devToggle, body.rec #devPanel { display: none !important; }
+body.rec { cursor: none; }
