@@ -1,0 +1,45 @@
+name: news03 fetch official images
+
+# ハルルナ・YOUTOPYA の公式画像（キュインPORTAL・©HEIWA）を取り込む。ユーザー指示（2026-11-27）
+on:
+  push:
+    branches: [feat/news03-youtopya]
+    paths:
+      - ".github/workflows/news03-fetch-images.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          D=remotion/public/news03/img; mkdir -p $D
+          B=https://9in-portal.com
+          get() { curl -fsSL -A "Mozilla/5.0" -o "$D/$1" "$2" && echo "ok $1" || echo "NG $1"; }
+          get haru.webp      "$B/wp-content/themes/theme-kyuin-portal/assets/images/pachi-influencer__img--haru.webp"
+          get luna.webp      "$B/wp-content/themes/theme-kyuin-portal/assets/images/pachi-influencer__img--luna.webp"
+          get yukina.webp    "$B/wp-content/uploads/2026/11/char03-card-2f0e840d.webp"
+          get akari.webp     "$B/wp-content/uploads/2026/11/char04-card-1023db8b.webp"
+          get pipi.webp      "$B/wp-content/uploads/2026/11/char05-card-8f1fd9dc.webp"
+          get yukina_i.webp  "$B/wp-content/uploads/2026/11/char03-card-icon-cddd2eaf.webp"
+          get akari_i.webp   "$B/wp-content/uploads/2026/11/char04-card-icon-6c3798cd.webp"
+          get pipi_i.webp    "$B/wp-content/uploads/2026/11/char05-card-icon-9d9905c2.webp"
+          get haru_i.webp    "$B/wp-content/themes/theme-kyuin-portal/assets/images/icon--haru.webp"
+          get luna_i.webp    "$B/wp-content/themes/theme-kyuin-portal/assets/images/icon--runa.webp"
+          get pachi_top.webp "$B/wp-content/uploads/2026/11/top-contents-pachi-k7q2m9xw.webp"
+          get yt_kv.png      "https://p-bomb.co.jp/wp-content/uploads/2026/11/261121_201.png"
+          sudo apt-get install -y webp >/dev/null 2>&1 || true
+          for f in $D/*.webp; do dwebp -quiet "$f" -o "${f%.webp}.png" && rm "$f"; done
+          ls -la $D
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add remotion/public/news03/img
+          git commit -m "news03：ハルルナ・YOUTOPYA の公式画像（キュインPORTAL ©HEIWA）を取り込み [skip ci]" || exit 0
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
