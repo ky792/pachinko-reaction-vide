@@ -19,7 +19,8 @@
 - 無言の間：③バクがモニターを見て不満顔／④「資金力以外は」は跳ねずに淡々と＋BGM停止／⑦ナギが無言でバクを見る約1.8秒＋BGM停止／⑧バクがゆっくりナギを見る／⑨約2秒の沈黙→バクが正面へ→お辞儀→ナギが見つめる→暗転
 - ⑤のお金・依存の場面は効果音なし
 - 冒頭は長いロゴ・挨拶なしで会話から。重要性を示した直後に約3秒のニュースタイトル演出
-- OP曲・エンディングBGM：ユーザー提供の曲（Geminiで作成「TOP OF THE HOUR」、2026-11-28差し替え）の 5.31〜20.31秒を切り出した news_open_v2.wav（-12.5 LUFS／ピーク -1.6dB）。OPのアニメ（NewsOpening03.tsx）はこの曲のドロップ（原曲8.08秒）・BPM150に合わせた。#02 のOP（NewsOpening.tsx・news_open.wav）はそのまま。本編BGMは既存の news_bed.wav
+- エンディング：全動画共通のED（src/common/NagibakuEnding.tsx。絵 common/ending.png＋曲 common/ending_bgm.wav、2026-11-28 ユーザー指定）。最後の台詞のあたりから曲を流し、本編が暗転したらエンドカード10秒、サビ（原曲20.68秒）がカードの出だしに来るよう頭出し
+- OP曲：ユーザー提供の曲（Geminiで作成「TOP OF THE HOUR」、2026-11-28差し替え）の 5.31〜20.31秒を切り出した news_open_v2.wav（-12.5 LUFS／ピーク -1.6dB。EDは共通EDに変更したのでOPだけで使う）。OPのアニメ（NewsOpening03.tsx）はこの曲のドロップ（原曲8.08秒）・BPM150に合わせた。#02 のOP（NewsOpening.tsx・news_open.wav）はそのまま。本編BGMは既存の news_bed.wav
 - サムネ：NewsThumb03.tsx（Still「News03Thumb」1280×720）。news03-thumb.yml で書き出し → outputs-news03-thumb ブランチ
 
 ## できなかったこと・制約

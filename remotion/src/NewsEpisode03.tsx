@@ -12,7 +12,8 @@ import {
   useVideoConfig,
 } from 'remotion';
 import {Audio} from '@remotion/media';
-import {NewsOpening03} from './NewsOpening03'; // 2026-11-28 OP曲をユーザー提供の曲に差し替え
+import {NewsOpening03} from './NewsOpening03';
+import {ENDING_BGM, ENDING_CARD_FRAMES, NagibakuEndCard, endingBgmTrimBefore} from './common/NagibakuEnding'; // 全動画共通のED（2026-11-28） // 2026-11-28 OP曲をユーザー提供の曲に差し替え
 import episode from './data/news03s.json';
 
 // ニュース回#03（YOUTOPYA）：前回のニュース回（News02）と同じ画面。台本・資料・音声だけ差し替え
@@ -81,7 +82,8 @@ const buildTimeline = () => {
 };
 
 const {lines: LINES, chapterStarts: CHAPTER_STARTS, end: END} = buildTimeline();
-export const EPISODE03_FRAMES = END + TAIL;
+const MAIN_END = END + TAIL; // 本編の終わり（暗転）→ ここから全動画共通のエンドカード
+export const EPISODE03_FRAMES = MAIN_END + ENDING_CARD_FRAMES;
 
 export const calculateNews03sMetadata: CalculateMetadataFunction<Record<string, unknown>> = () => ({
   durationInFrames: EPISODE03_FRAMES,
@@ -1195,13 +1197,13 @@ const Flash: React.FC<{at: number; len?: number}> = ({at: a, len = 10}) => {
 
 const EndFade: React.FC = () => {
   const frame = useCurrentFrame();
-  const o = interpolate(frame, [EPISODE03_FRAMES - 30, EPISODE03_FRAMES], [0, 1], clamp);
+  const o = interpolate(frame, [MAIN_END - 30, MAIN_END], [0, 1], clamp);
   return <AbsoluteFill style={{background: '#020816', opacity: o}} />;
 };
 
 // ───────────────────────── BGM
 // 本編：既存のニュース用BGM（news_bed）。「資金力以外は」の前と、⑦ナギの無言の間は止める。
-// 「それじゃあ、また次回」のあとエンディングBGM（ニュースのジングル news_open）に切り替える
+// 「それじゃあ、また次回」のあと全動画共通のED曲（common/ending_bgm.wav）に切り替え、本編の暗転後に共通エンドカード
 const BED_LEN = 1107; // news_bed.wav のフレーム数（36.92秒）
 const ED_BGM_AT = (() => {
   const i = LINES.findIndex((l) => l.id === '09_ed-005');
@@ -1221,8 +1223,10 @@ const bgmVolume = (abs: number) => {
   v *= interpolate(abs, [ED_BGM_AT - 16, ED_BGM_AT], [1, 0], clamp);
   return v;
 };
+// ED曲は台詞の下では控えめ、エンドカード（サビ）で上げ、最後にフェードアウト
 const edVolume = (abs: number) =>
-  interpolate(abs, [ED_BGM_AT, ED_BGM_AT + 20], [0, 0.26], clamp) * interpolate(abs, [EPISODE03_FRAMES - 45, EPISODE03_FRAMES], [1, 0], clamp);
+  interpolate(abs, [ED_BGM_AT, ED_BGM_AT + 20, MAIN_END - 6, MAIN_END + 6], [0, 0.26, 0.26, 0.5], clamp) *
+  interpolate(abs, [EPISODE03_FRAMES - 45, EPISODE03_FRAMES], [1, 0], clamp);
 
 // ───────────────────────── 全体
 export const NewsEpisode03: React.FC = () => {
@@ -1253,8 +1257,15 @@ export const NewsEpisode03: React.FC = () => {
           <Audio src={staticFile('news_bed.wav')} volume={(f) => bgmVolume(f + OP_FRAMES + k * BED_LEN)} />
         </Sequence>
       ))}
-      <Sequence from={ED_BGM_AT} name="ED BGM">
-        <Audio src={staticFile('news_open_v2.wav')} volume={(f) => edVolume(f + ED_BGM_AT)} />
+      <Sequence from={ED_BGM_AT} name="ED BGM（全動画共通）">
+        <Audio
+          src={staticFile(ENDING_BGM)}
+          trimBefore={endingBgmTrimBefore(ED_BGM_AT, MAIN_END)}
+          volume={(f) => edVolume(f + ED_BGM_AT)}
+        />
+      </Sequence>
+      <Sequence from={MAIN_END} durationInFrames={ENDING_CARD_FRAMES} name="エンドカード（全動画共通）">
+        <NagibakuEndCard />
       </Sequence>
 
       {LINES.map((l) => (

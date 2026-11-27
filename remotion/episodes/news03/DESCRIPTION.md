@@ -17,10 +17,11 @@
 ・警察庁 統計（ホール数。業界報道経由）
 ・グリーンべると（ナギナミ関連・『PA海物語 極JAPAN Withナギナミ』発表）
 ※本動画は公開情報をもとにしたニュース解説と考察です。各社の公式見解ではありません。
-※画面の図解は自作です。ハルルナ・YOUTOPYAの画像は ©HEIWA（キュインPORTAL）。
+※画面の図解は自作です。ハルルナ・YOUTOPYAの画像は ©HEIWA（キュインPORTAL）、スマスロ戦国乙女5は ©HEIWA ©OLYMPIA、PA海物語 極JAPAN Withナギナミは ©SANYO。
 
 ▼クレジット
 声：AivisSpeech: コハク（ナギ）／Irodori-TTS（Aratako）＋ AivisSpeech: まお（バクの見本音声）※見本音声の元モデルは要確認
+BGM：オープニング・エンディング曲はオリジナル（Google Gemini で制作）
 効果音：自作（ホログラムSE）
 
 ▼タグ
