@@ -767,7 +767,7 @@ const AnalysisPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
   const TRACK = 560;
   return (
     <PanelFrame seg={seg} tag={`DATA｜${data.heading}`}>
-      <div style={{position: 'absolute', left: 70, right: 70, top: 60, display: 'flex', flexDirection: 'column', gap: 54}}>
+      <div style={{position: 'absolute', left: 70, right: 70, top: bars.length > 3 ? 30 : 60, display: 'flex', flexDirection: 'column', gap: bars.length > 3 ? 22 : 54}}>
         {bars.map((b, i) => {
           const on = mentionAt(seg, [String(b.value)], 0.35) ?? seg.from + 10 + i * 20;
           const p = interpolate(frame, [on, on + 28], [0, 1], {...clamp, easing: OUT});
@@ -797,7 +797,7 @@ const AnalysisPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
         })}
       </div>
       <div style={{position: 'absolute', left: 70, right: 70, bottom: 36, display: 'flex', flexDirection: 'column', gap: 8}}>
-        {(data.note as string[]).map((n, i) => (
+        {((data.note as string[]) ?? []).map((n, i) => (
           <div key={i} style={{fontSize: 26, fontWeight: 700, color: INK, opacity: interpolate(frame, [seg.from + 30 + i * 10, seg.from + 40 + i * 10], [0, 1], clamp)}}>
             <span style={{color: ORANGE}}>●</span> {n}
           </div>
