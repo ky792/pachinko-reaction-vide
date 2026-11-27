@@ -1,0 +1,67 @@
+[
+ {
+  "kind": "余分な音",
+  "where": "ォォォォォォ",
+  "expect": "",
+  "reason": "台本にない「ォォォォォォ」が聞こえる",
+  "level": "中",
+  "id": "p-001",
+  "who": "baku",
+  "text": "ほう？",
+  "asr": "おぉぉぉぉぉぉぉ!",
+  "ratio": 0.2,
+  "audio": "episodes/news03probe/voices/p-001.wav"
+ },
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 40%（80% 未満）",
+  "id": "p-002",
+  "who": "baku",
+  "text": "ほう？",
+  "asr": "はーーーい?",
+  "ratio": 0.4,
+  "audio": "episodes/news03probe/voices/p-002.wav"
+ },
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 50%（80% 未満）",
+  "id": "p-003",
+  "who": "baku",
+  "text": "ほう？",
+  "asr": "はぁー",
+  "ratio": 0.5,
+  "audio": "episodes/news03probe/voices/p-003.wav"
+ },
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 50%（80% 未満）",
+  "id": "p-005",
+  "who": "baku",
+  "text": "なんでや？",
+  "asr": "飲んでよ",
+  "ratio": 0.5,
+  "audio": "episodes/news03probe/voices/p-005.wav"
+ },
+ {
+  "kind": "全体のずれ",
+  "where": "",
+  "expect": "",
+  "level": "中",
+  "reason": "台本と文字起こしの一致が 75%（80% 未満）",
+  "id": "p-006",
+  "who": "baku",
+  "text": "なんでや？",
+  "asr": "なんでよ",
+  "ratio": 0.75,
+  "audio": "episodes/news03probe/voices/p-006.wav"
+ }
+]

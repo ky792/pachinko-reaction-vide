@@ -1,0 +1,32 @@
+{
+ "p-001": {
+  "sha1": "edbdf165d26affb6ef8307945dcb11a0df28fe1d",
+  "model": "large-v3-turbo",
+  "text": "おぉぉぉぉぉぉぉ!"
+ },
+ "p-002": {
+  "sha1": "82dc8e032f8f69a0a660a06454ca5ed515cad353",
+  "model": "large-v3-turbo",
+  "text": "はーーーい?"
+ },
+ "p-003": {
+  "sha1": "1e0bf65ef8b0b8ff52efa59b9dc5cc8c37620776",
+  "model": "large-v3-turbo",
+  "text": "はぁー"
+ },
+ "p-004": {
+  "sha1": "adc293a740142887eb95b4359b4da6161303fd89",
+  "model": "large-v3-turbo",
+  "text": "なんでや?"
+ },
+ "p-005": {
+  "sha1": "5dcd1ae05d93161c6e413a8eb0ada34f4ed432e8",
+  "model": "large-v3-turbo",
+  "text": "飲んでよ"
+ },
+ "p-006": {
+  "sha1": "e2deae5fca7e9ea226e7b2bd37c6ab0f4189e609",
+  "model": "large-v3-turbo",
+  "text": "なんでよ"
+ }
+}
