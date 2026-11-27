@@ -1,6 +1,8 @@
 {
  "episode": "episodes/news03",
  "model": "large-v3-turbo",
- "only": ["01_op-007"],
- "_run": 7
+ "trim": true,
+ "only": ["04_chigai-005", "05_genjou-008"],
+ "trim_only": ["04_chigai-005", "05_genjou-008"],
+ "_run": 8
 }
