@@ -1,15 +1,1 @@
-[
- {
-  "kind": "全体のずれ",
-  "where": "",
-  "expect": "",
-  "level": "中",
-  "reason": "台本と文字起こしの一致が 50%（80% 未満）",
-  "id": "01_op-007",
-  "who": "baku",
-  "text": "ほう？",
-  "asr": "ほぉ!",
-  "ratio": 0.5,
-  "audio": "episodes/news03/voices/01_op-007.wav"
- }
-]
+[]
