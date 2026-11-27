@@ -743,8 +743,8 @@ const KeywordPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
               })}
             </div>
             <div style={{flex: 1, paddingRight: 40}}>
-              <div style={{fontSize: Math.min(size, 110), color: BLUE_DEEP, opacity: Math.min(1, s * 1.4), translate: `${(1 - s) * 40}px 0px`}}>{word}</div>
-              <div style={{fontSize: 28, color: '#43506b', marginTop: 12, lineHeight: 1.5, whiteSpace: 'pre-line'}}>{data.sub}</div>
+              <div style={{fontSize: Math.min(size, 110, Math.floor(540 / word.length)), color: BLUE_DEEP, whiteSpace: 'nowrap', opacity: Math.min(1, s * 1.4), translate: `${(1 - s) * 40}px 0px`}}>{word}</div>
+              <div style={{fontSize: 26, color: '#43506b', marginTop: 12, lineHeight: 1.5, whiteSpace: 'pre'}}>{data.sub}</div>
             </div>
           </div>
         )}
