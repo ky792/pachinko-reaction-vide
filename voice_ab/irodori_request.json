@@ -14,6 +14,33 @@
     "--seed",
     "53"
    ]
+  },
+  {
+   "name": "shanfro2_s21",
+   "ref": "voice_ab/vc_out/ref__からかい.m4a",
+   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
+   "extra": [
+    "--duration-scale",
+    "0.88",
+    "--seed",
+    "21"
+   ]
+  },
+  {
+   "name": "shanfro2_s71",
+   "ref": "voice_ab/vc_out/ref__からかい.m4a",
+   "caption": "元気でノリのいい、関西弁の女の子。友達とパチンコの話で盛り上がっていて、ツッコミは勢いよく大げさ。",
+   "extra": [
+    "--duration-scale",
+    "0.88",
+    "--seed",
+    "71"
+   ]
   }
+ ],
+ "only": [
+  "00_op-005",
+  "08_matome-004",
+  "08_matome-010"
  ]
 }

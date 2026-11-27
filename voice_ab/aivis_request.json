@@ -10,5 +10,8 @@
  "speed": 0.95,
  "intonation": 0.65,
  "kana_only": false,
- "_run": 1
+ "_run": 2,
+ "only": [
+  "08_matome-009"
+ ]
 }
