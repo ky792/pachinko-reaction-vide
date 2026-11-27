@@ -1,0 +1,122 @@
+name: Remotion shanfro2 (新台解説・研究所UI)
+
+on:
+  push:
+    branches: [feat/shanfro-v2]
+    paths:
+      - "remotion/**"
+      - ".github/workflows/remotion-shanfro2.yml"
+  workflow_dispatch:
+    inputs:
+      full:
+        description: "MP4 まで書き出す（false なら確認用の静止画だけ）"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: remotion-shanfro2
+  cancel-in-progress: true
+
+env:
+  COMP: Shanfro2
+
+jobs:
+  stills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Type check
+        run: |
+          mkdir -p out
+          npx -y -p typescript tsc --noEmit -p . > out/tsc.txt 2>&1 || echo "::warning::型チェックで警告あり"
+          cat out/tsc.txt | head -50
+      - name: Render still previews
+        run: |
+          mkdir -p out
+          FRAMES=$(python3 -c "
+          import json
+          d=json.load(open('src/labui/ep/shanfro2.json'))
+          fr=sorted({e['from']+45 for e in d['events'] if e['type'] in ('show','fx','chapter','intro','logotitle','keyword')})
+          fr+= [d['lines'][i]['from']+10 for i in (0,8,20,40,60) if i < len(d['lines'])] + [d['frames']+120]
+          print(' '.join(str(x) for x in sorted(set(fr))))")
+          for f in $FRAMES; do
+            npx remotion still "$COMP" "out/frame_${f}.jpg" --frame=$f --scale=0.5 --image-format=jpeg
+          done
+      - name: Save to outputs-shanfro2-stills branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-shanfro2-stills
+          git add -A
+          git commit -q -m "Stills ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-shanfro2-stills
+
+  render:
+    needs: stills
+    if: ${{ inputs.full || contains(github.event.head_commit.message, '[render]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra ffmpeg
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render MP4
+        run: |
+          mkdir -p out
+          npx remotion render "$COMP" out/raw.mp4 --codec=h264 --crf=20 --concurrency=4
+          # 音割れ防止のリミッター（映像はそのまま）
+          ffmpeg -v error -y -i out/raw.mp4 -c:v copy -af "alimiter=limit=0.84:attack=0.5:release=50:level=false:asc=1" -c:a aac -b:a 192k out/shanfro2.mp4
+          rm out/raw.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 out/shanfro2.mp4
+      - name: Check audio (loudness / peaks)
+        run: |
+          ffmpeg -hide_banner -i out/shanfro2.mp4 -af ebur128=peak=true -f null - 2>&1 | tail -14
+      - name: Publish full video as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete shanfro2 -y --cleanup-tag || true
+          gh release create shanfro2 out/shanfro2.mp4 --target "$GITHUB_SHA" --prerelease \
+            --title "新台解説 eシャングリラ・フロンティア（研究所UI・Remotion版）" --notes "feat/shanfro-v2 で自動書き出し（1080p）"
+      - name: Make phone preview (720p)
+        run: |
+          mkdir -p preview
+          ffmpeg -v error -y -i out/shanfro2.mp4 -vf scale=1280:-2 -c:v libx264 -preset veryfast -crf 27 -c:a aac -b:a 128k preview/shanfro2_preview.mp4
+      - name: Save preview to outputs-shanfro2 branch
+        run: |
+          cd preview
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-shanfro2
+          git add -A
+          git commit -q -m "Render ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-shanfro2

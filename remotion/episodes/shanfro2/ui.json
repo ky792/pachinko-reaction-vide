@@ -1,0 +1,233 @@
+{
+ "_note": "シャンフロ回 v2（新台解説・研究所UI・2026-11-28 新背景）。数字はP-WORLD・パチ7・ちょんぼりすたのスペック表と、そこからのナギバク計算",
+ "voice_tempo": 1.1,
+ "gap": 0.12,
+ "chapter_dur": 2.6,
+ "bgm": "ep/shanfro/newmachine_matsuri.wav",
+ "bgm_gain": 0.16,
+ "op": {
+  "song": "ep/shanfro/op_brass.wav",
+  "song_gain": 0.6,
+  "intro": 2.2,
+  "logo": 2.4,
+  "title": 3.4
+ },
+ "title": {
+  "machine": "eシャングリラ・フロンティア",
+  "title": "神ゲーか、クソゲーか",
+  "date": "2026.12 SAMMY"
+ },
+ "intro": {
+  "nagi": {
+   "name": "ナギ",
+   "role": "ナギバク研究所 解析担当",
+   "profile": [
+    "数字しか信じない。",
+    "だいたい眠い。"
+   ]
+  },
+  "baku": {
+   "name": "バク",
+   "role": "ナギバク研究所 メカニック（自称エース）",
+   "profile": [
+    "打った台の話は止まらない。",
+    "発明品は、たまに煙が出る。"
+   ]
+  }
+ },
+ "ui": {
+  "data:spec": {
+   "title": "eシャングリラ・フロンティア",
+   "rows": [
+    {
+     "label": "図柄揃い確率",
+     "value": "約1/399.9"
+    },
+    {
+     "label": "RUSH突入率",
+     "value": "約54%"
+    },
+    {
+     "label": "RUSH継続率",
+     "value": "約75%"
+    },
+    {
+     "label": "RUSH",
+     "value": "ST134回・1/98.5"
+    }
+   ]
+  },
+  "donut:hatsu": {
+   "title": "通常時の当たり",
+   "center": [
+    "RUSH突入",
+    "約54%"
+   ],
+   "items": [
+    {
+     "label": "1500個＋RUSH",
+     "pct": 53,
+     "key": true
+    },
+    {
+     "label": "1500個のみ",
+     "pct": 46
+    },
+    {
+     "label": "300個＋RUSH",
+     "pct": 1
+    }
+   ]
+  },
+  "ren:rush": {
+   "spec": {
+    "title": "RUSH継続率の解析",
+    "st": {
+     "prob": 98.5,
+     "spins": 134
+    }
+   },
+   "smoke": false
+  },
+  "bar:rushhit": {
+   "title": "RUSH中の当たり",
+   "items": [
+    {
+     "label": "1500個",
+     "pct": 50
+    },
+    {
+     "label": "4500個",
+     "pct": 48,
+     "key": true
+    },
+    {
+     "label": "BOOST付",
+     "pct": 2
+    }
+   ]
+  },
+  "reel:rushavg": {
+   "label": "RUSH1回の平均出玉",
+   "digits": "8900",
+   "unit": "個",
+   "note": "入ってから（ナギバク計算）"
+  },
+  "donut:boost": {
+   "title": "超神ゲーBOOSTの上乗せ",
+   "center": [
+    "もう1回",
+    "約16%"
+   ],
+   "items": [
+    {
+     "label": "1500個",
+     "pct": 50,
+     "key": true
+    },
+    {
+     "label": "3000個",
+     "pct": 34
+    },
+    {
+     "label": "3000個＋もう1回",
+     "pct": 7
+    },
+    {
+     "label": "4500個＋もう1回",
+     "pct": 9
+    }
+   ]
+  },
+  "sim:boost": {
+   "title": "BOOSTに100回入ったら",
+   "counts": [
+    84,
+    14,
+    2
+   ],
+   "labels": [
+    "まわした回数",
+    "2回目の上乗せまで",
+    "3回目の上乗せまで"
+   ]
+  },
+  "verdict:boostavg": {
+   "label": "BOOST1回の平均",
+   "word": "約7300個",
+   "sub": "4500個＋上乗せ平均 約2800個"
+  },
+  "data:matome": {
+   "title": "まとめ",
+   "rows": [
+    {
+     "label": "図柄揃い",
+     "value": "約1/399.9"
+    },
+    {
+     "label": "RUSH継続率",
+     "value": "約75%"
+    },
+    {
+     "label": "RUSH中の4500個",
+     "value": "約50%"
+    },
+    {
+     "label": "BOOST1回の平均",
+     "value": "約7300個"
+    }
+   ]
+  },
+  "data:waku": {
+   "title": "サミー新筐体「アクセル枠」",
+   "rows": [
+    {
+     "label": "センターハンドル",
+     "value": "手首が楽"
+    },
+    {
+     "label": "アクセルギア",
+     "value": "押す・引く・振動"
+    },
+    {
+     "label": "セブンエアー",
+     "value": "＋手置きバイブ"
+    },
+    {
+     "label": "イヤホンジャック",
+     "value": "標準搭載"
+    }
+   ]
+  },
+  "data:reach": {
+   "title": "主要リーチの信頼度",
+   "rows": [
+    {
+     "label": "ウェザエモンSP",
+     "value": "約86%"
+    },
+    {
+     "label": "└ 赤タイトル",
+     "value": "約92%"
+    },
+    {
+     "label": "リュカオーンSP",
+     "value": "約66%"
+    }
+   ]
+  },
+  "data:custom": {
+   "title": "カスタム",
+   "rows": [
+    {
+     "label": "イキナリサンラク",
+     "value": "40%／90%／EX"
+    },
+    {
+     "label": "イキナリ神ゲー",
+     "value": "RUSH中・ON／OFF"
+    }
+   ]
+  }
+ }
+}

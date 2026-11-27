@@ -5,6 +5,7 @@ import {KyukeiEpisode, calculateKyuMetadata} from './KyukeiEpisode';
 import {NewsEpisode03, calculateNews03sMetadata} from './NewsEpisode03';
 import {NewsThumb03} from './NewsThumb03';
 import {NagibakuEndingPreview, ENDING_CARD_FRAMES} from './common/NagibakuEnding';
+import {ShanfroEpisode2, SHANFRO2_FRAMES} from './labui/ShanfroEpisode2';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -49,6 +50,8 @@ export const RemotionRoot: React.FC = () => {
       />
       {/* ニュース回#03 のサムネイル（1280×720） */}
       <Still id="News03Thumb" component={NewsThumb03} width={1280} height={720} />
+      {/* 新台解説：eシャングリラ・フロンティア（研究所UI版 v2・新背景） */}
+      <Composition id="Shanfro2" component={ShanfroEpisode2} durationInFrames={SHANFRO2_FRAMES} fps={30} width={1920} height={1080} />
       {/* 全動画共通のエンディング（確認用） */}
       <Composition id="NagibakuEnding" component={NagibakuEndingPreview} durationInFrames={ENDING_CARD_FRAMES} fps={30} width={1920} height={1080} />
     </>

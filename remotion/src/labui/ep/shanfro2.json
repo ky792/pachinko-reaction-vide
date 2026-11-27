@@ -1,0 +1,2476 @@
+{
+ "frames": 9584,
+ "base": "ep/shanfro2",
+ "song": {
+  "src": "ep/shanfro/op_brass.wav",
+  "gain": 0.6,
+  "from": 630
+ },
+ "bgm": {
+  "src": "ep/shanfro/newmachine_matsuri.wav",
+  "gain": 0.16,
+  "from": 945,
+  "to": 9584
+ },
+ "lines": [
+  {
+   "id": "00_op-001",
+   "who": "baku",
+   "text": "ナギ、シャンフロのスペック表見たか？ RUSH中の当たり、半分が4500個やで。",
+   "from": 18,
+   "to": 146,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "00_op-002",
+   "who": "nagi",
+   "text": "見たよ。そのかわり、継続率は約75%だね。",
+   "from": 150,
+   "to": 217,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "00_op-003",
+   "who": "baku",
+   "text": "継続を削って出玉に全振りした台はな、ハマっても一撃で全部返ってくんねん。ウチは何回も見てきた。",
+   "from": 221,
+   "to": 372,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "00_op-004",
+   "who": "nagi",
+   "text": "返ってこなかった日の話は？",
+   "from": 375,
+   "to": 417,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "00_op-005",
+   "who": "baku",
+   "text": "それはな、記憶から消しとる。打ち手はそうやって生きていくんや。",
+   "from": 421,
+   "to": 520,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "00_op-006",
+   "who": "nagi",
+   "text": "じゃあ、数字で確かめよう。この台が神ゲーなのか、クソゲーなのか。",
+   "from": 524,
+   "to": 626,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "01_gensaku-001",
+   "who": "nagi",
+   "text": "eシャングリラ・フロンティア。2026年12月デビューの、サミーのスマパチだね。",
+   "from": 1029,
+   "to": 1157,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "01_gensaku-002",
+   "who": "nagi",
+   "text": "原作は、クソゲー好きの主人公サンラクが、超人気の神ゲーに挑む話。ネット小説から、漫画にもアニメにもなってる。",
+   "from": 1161,
+   "to": 1334,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "01_gensaku-003",
+   "who": "baku",
+   "text": "鳥のマスクかぶった半裸の男やろ。クソゲーで鍛えた腕で、神ゲーの強敵をねじ伏せていくんや。",
+   "from": 1338,
+   "to": 1479,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "01_gensaku-004",
+   "who": "baku",
+   "text": "理不尽な台に揉まれてきたウチらと、やってることは一緒やな。",
+   "from": 1483,
+   "to": 1576,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "01_gensaku-005",
+   "who": "nagi",
+   "text": "サンラクはバグをねじ伏せるけど、ホールの釘はねじ伏せられないからね。",
+   "from": 1579,
+   "to": 1688,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "01_gensaku-006",
+   "who": "baku",
+   "text": "それは言わんといてや。せっかく気分上がってたのに。",
+   "from": 1692,
+   "to": 1772,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "01_gensaku-007",
+   "who": "nagi",
+   "text": "原作の見どころは、ユニークモンスターっていう強敵との、ギリギリの戦い。台も、そこを勝負どころにしてる。",
+   "from": 1776,
+   "to": 1939,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-001",
+   "who": "nagi",
+   "text": "スペックは、図柄揃いが約1/399.9。RUSH突入が約54%で、継続は約75%。",
+   "from": 2027,
+   "to": 2158,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-002",
+   "who": "baku",
+   "text": "399で突入54%なら、今のラッキートリガーの中では、入り口は広いほうやな。",
+   "from": 2162,
+   "to": 2284,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-003",
+   "who": "nagi",
+   "text": "図柄揃いの当たりは、どれも1500個。そのうち約53%で、RUSHに入る。",
+   "from": 2288,
+   "to": 2406,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-004",
+   "who": "nagi",
+   "text": "7で揃えば直行。7以外で揃ったら、ログインチャレンジに成功すればRUSH。",
+   "from": 2410,
+   "to": 2529,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-005",
+   "who": "nagi",
+   "text": "あとは、エナジーチャージっていう300個の当たりから入るのが、全体の約1%。",
+   "from": 2532,
+   "to": 2654,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-006",
+   "who": "baku",
+   "text": "入らんでも1500個は持って帰れる。これがでかいねん。300個で放り出される台に比べたら、次の勝負ができるで。",
+   "from": 2658,
+   "to": 2834,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-007",
+   "who": "nagi",
+   "text": "ただ、ヘソの賞球は1個。399を回しきるまでの投資は、そのぶん速いよ。",
+   "from": 2838,
+   "to": 2950,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "02_kihon-008",
+   "who": "baku",
+   "text": "そこは釘しだいや。回らん台で399を追うのが、いちばん財布に効くからな。",
+   "from": 2954,
+   "to": 3069,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "03_rush-001",
+   "who": "nagi",
+   "text": "RUSHは、1/98.5を、134回転のSTで抽選する。",
+   "from": 3157,
+   "to": 3247,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "03_rush-002",
+   "who": "baku",
+   "text": "STで75%か。ほんまに75あるか、RNC-01で見たろ。起動！",
+   "from": 3250,
+   "to": 3353,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "03_rush-003",
+   "who": "nagi",
+   "text": "134回のうちに当たる確率は、約75%。スペック表どおりだね。",
+   "from": 3627,
+   "to": 3726,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "03_rush-004",
+   "who": "nagi",
+   "text": "入ってからの当たりは、平均で3回くらい。",
+   "from": 3730,
+   "to": 3794,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "03_rush-005",
+   "who": "nagi",
+   "text": "ただ、1回も当たらずに終わるのも、4回に1回ある。",
+   "from": 3797,
+   "to": 3878,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "03_rush-006",
+   "who": "baku",
+   "text": "4回に1回はスルーするんか！",
+   "from": 3881,
+   "to": 3926,
+   "src": null,
+   "tsukkomi": true,
+   "hide": true
+  },
+  {
+   "id": "03_rush-007",
+   "who": "baku",
+   "text": "いや、体感はもっと多いで。スルーはな、来る日は3回続けて来んねん。",
+   "from": 3945,
+   "to": 4051,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "03_rush-008",
+   "who": "nagi",
+   "text": "体感は、データに入れられないから。",
+   "from": 4054,
+   "to": 4109,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-001",
+   "who": "nagi",
+   "text": "RUSH中の当たりは、1500個と4500個が、ほぼ半々。",
+   "from": 4196,
+   "to": 4289,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-002",
+   "who": "nagi",
+   "text": "4500個は、1500個の当たりを3回続けて消化する形。1回の当たりの上限が、1500個だからね。",
+   "from": 4293,
+   "to": 4450,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-003",
+   "who": "baku",
+   "text": "真ん中がないんや。4500引いたらな、その日はもう勝ったようなもんやで。",
+   "from": 4454,
+   "to": 4569,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-004",
+   "who": "nagi",
+   "text": "当たり1回の平均は、約3000個。",
+   "from": 4573,
+   "to": 4627,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-005",
+   "who": "nagi",
+   "text": "RUSHに入ってから出る量は、平均すると約8900個。",
+   "from": 4691,
+   "to": 4778,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-006",
+   "who": "baku",
+   "text": "9000近いんか！ ほな打つしかないやん。",
+   "from": 4781,
+   "to": 4849,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-007",
+   "who": "nagi",
+   "text": "でも、真ん中くらいの人は6000個。平均は、大きく出た人に引っ張られてる。",
+   "from": 4852,
+   "to": 4971,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "04_dedama-008",
+   "who": "baku",
+   "text": "あかん、平均で座るとこやった。ウチ、それで何回も痛い目見とるんや。",
+   "from": 4975,
+   "to": 5080,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-001",
+   "who": "nagi",
+   "text": "そして、超神ゲーBOOST。RUSH中の当たりの、約2%で付く。",
+   "from": 5168,
+   "to": 5271,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-002",
+   "who": "baku",
+   "text": "2%か。狭い入り口やけど、入ったら終わらんらしいやん。",
+   "from": 5274,
+   "to": 5361,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-003",
+   "who": "nagi",
+   "text": "4500個の当たりに、さらに上乗せが付く仕組み。",
+   "from": 5365,
+   "to": 5442,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-004",
+   "who": "nagi",
+   "text": "上乗せは、1500個が半分。3000個が約34%。",
+   "from": 5445,
+   "to": 5525,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-005",
+   "who": "nagi",
+   "text": "残りの約16%は、3000個か4500個を乗せたあとに、もう1回上乗せ。",
+   "from": 5529,
+   "to": 5645,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-006",
+   "who": "baku",
+   "text": "最低でも4500と1500で6000個か。で、そこからループするんやろ。",
+   "from": 5648,
+   "to": 5764,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-007",
+   "who": "nagi",
+   "text": "じゃあ、レンに100回まわしてもらおう。",
+   "from": 5767,
+   "to": 5831,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-008",
+   "who": "nagi",
+   "text": "100回BOOSTに入って、2回目の上乗せまで行ったのは16回。",
+   "from": 5913,
+   "to": 6016,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-009",
+   "who": "nagi",
+   "text": "3回目まで行ったのは、2回だけ。",
+   "from": 6019,
+   "to": 6071,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-010",
+   "who": "baku",
+   "text": "ほぼ1回で終わりやんか！",
+   "from": 6074,
+   "to": 6113,
+   "src": null,
+   "tsukkomi": true,
+   "hide": true
+  },
+  {
+   "id": "05_boost-011",
+   "who": "nagi",
+   "text": "何回続くかで言うと、ほぼ1回。",
+   "from": 6131,
+   "to": 6179,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-012",
+   "who": "nagi",
+   "text": "でもその1回で、平均約7300個。",
+   "from": 6183,
+   "to": 6238,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-013",
+   "who": "baku",
+   "text": "続かんでも、1回で7000超えるんか。それはそれでええな。",
+   "from": 6241,
+   "to": 6334,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-014",
+   "who": "nagi",
+   "text": "そもそもBOOSTに入るのは、RUSH18回に1回くらい。",
+   "from": 6338,
+   "to": 6431,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "05_boost-015",
+   "who": "baku",
+   "text": "そこは宝くじ枠やな。本命は、4500の半々のほうや。",
+   "from": 6434,
+   "to": 6518,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "06_waku-001",
+   "who": "nagi",
+   "text": "台は、サミーの新しいアクセル枠で、最初に出る機種。",
+   "from": 6606,
+   "to": 6686,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "06_waku-002",
+   "who": "nagi",
+   "text": "ハンドルが真ん中にあって、手を置けるハンドルレストも付いてる。",
+   "from": 6689,
+   "to": 6789,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "06_waku-003",
+   "who": "baku",
+   "text": "センターハンドルは助かるわ。ハンドルずっと握っとるとな、夕方には手首も肩もバキバキやねん。",
+   "from": 6792,
+   "to": 6937,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "06_waku-004",
+   "who": "nagi",
+   "text": "それから、押す・引く・振動の3つが入った、アクセルギア。",
+   "from": 6940,
+   "to": 7030,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "06_waku-005",
+   "who": "nagi",
+   "text": "エアーと手元の振動が来る、セブンエアーと手置きバイブ。それに、イヤホンジャック。",
+   "from": 7034,
+   "to": 7162,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "06_waku-006",
+   "who": "baku",
+   "text": "イヤホン付いたのはでかいで。隣の爆音を気にせんと、自分の音量で打てるからな。",
+   "from": 7166,
+   "to": 7288,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "06_waku-007",
+   "who": "nagi",
+   "text": "そのかわり、エアーが来たら、普段よりびっくりするかもね。",
+   "from": 7291,
+   "to": 7381,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "07_enshutsu-001",
+   "who": "nagi",
+   "text": "勝負どころは、ウェザエモンとリュカオーンのバトル。",
+   "from": 7469,
+   "to": 7549,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "07_enshutsu-002",
+   "who": "nagi",
+   "text": "ウェザエモンSPは、信頼度 約86%。赤タイトルなら約92%。リュカオーンSPは、約66%。",
+   "from": 7553,
+   "to": 7700,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "07_enshutsu-003",
+   "who": "baku",
+   "text": "ウェザエモンは原作でもいちばんの山場やからな。そこが本命なんは納得や。",
+   "from": 7704,
+   "to": 7816,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "07_enshutsu-004",
+   "who": "nagi",
+   "text": "カスタムは、先告知のイキナリサンラクカスタム。発生率は、40%、90%、EXから選べる。",
+   "from": 7820,
+   "to": 7961,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "07_enshutsu-005",
+   "who": "baku",
+   "text": "ウチは90%派や。告知が来るまでは、気楽に回しとけるからな。",
+   "from": 7964,
+   "to": 8061,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "07_enshutsu-006",
+   "who": "nagi",
+   "text": "RUSH中は、イキナリ神ゲーカスタム。オンにすると、神ゲーランプの点灯で当たりを教えてくれる。",
+   "from": 8064,
+   "to": 8215,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "07_enshutsu-007",
+   "who": "baku",
+   "text": "それはウチ、あえてオフや。STは最後まで煽られてなんぼやねん。",
+   "from": 8219,
+   "to": 8318,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-001",
+   "who": "nagi",
+   "text": "まとめ。図柄揃いは約1/399.9で、当たればどれも1500個。",
+   "from": 8406,
+   "to": 8508,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-002",
+   "who": "nagi",
+   "text": "RUSHは約75%継続で、当たりは1500個と4500個が、ほぼ半々。",
+   "from": 8512,
+   "to": 8624,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-003",
+   "who": "nagi",
+   "text": "超神ゲーBOOSTは、ほぼ1回で終わる。でもその1回で、平均約7300個。",
+   "from": 8628,
+   "to": 8747,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-004",
+   "who": "baku",
+   "text": "続く台やなくて、1回の当たりで塊を取る台やな。ハマっても、取り返す絵が見える。",
+   "from": 8750,
+   "to": 8875,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-005",
+   "who": "nagi",
+   "text": "そのかわり、4回に1回は、RUSHで1回も当たらない。出る日と出ない日の差は大きいよ。",
+   "from": 8879,
+   "to": 9017,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-006",
+   "who": "baku",
+   "text": "よっしゃ、ほな今から行って、4500ぶち抜いてくるわ。",
+   "from": 9021,
+   "to": 9107,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-007",
+   "who": "nagi",
+   "text": "ちなみに、通常時から4500個にたどり着くまで、平均で約1200回転かかるよ。",
+   "from": 9111,
+   "to": 9236,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-008",
+   "who": "baku",
+   "text": "1200回転か。ほな、まずは釘見てから決めるわ。",
+   "from": 9239,
+   "to": 9316,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-009",
+   "who": "nagi",
+   "text": "賢明だね。",
+   "from": 9320,
+   "to": 9356,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-010",
+   "who": "baku",
+   "text": "打った人は、4500を何回引けたか、コメントで教えてや。",
+   "from": 9384,
+   "to": 9474,
+   "src": null,
+   "tsukkomi": false
+  },
+  {
+   "id": "08_matome-011",
+   "who": "nagi",
+   "text": "BOOSTの上乗せを見た人も、待ってるね。",
+   "from": 9477,
+   "to": 9545,
+   "src": null,
+   "tsukkomi": false
+  }
+ ],
+ "subs": [
+  {
+   "who": "baku",
+   "text": "ナギ、シャンフロのスペック表見たか？\n RUSH中の当たり、",
+   "from": 18,
+   "to": 111,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "半分が4500個やで。",
+   "from": 111,
+   "to": 146,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "見たよ。そのかわり、\n継続率は約75%だね。",
+   "from": 150,
+   "to": 217,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "継続を削って出玉に全振りした台はな、\nハマっても一撃で全部返ってくんねん。",
+   "from": 221,
+   "to": 337,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "ウチは何回も見てきた。",
+   "from": 337,
+   "to": 372,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "返ってこなかった日の話は？",
+   "from": 375,
+   "to": 417,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "それはな、記憶から消しとる。\n打ち手はそうやって生きていくんや。",
+   "from": 421,
+   "to": 520,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "じゃあ、数字で確かめよう。\nこの台が神ゲーなのか、",
+   "from": 524,
+   "to": 601,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "クソゲーなのか。",
+   "from": 601,
+   "to": 626,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "eシャングリラ・フロンティア。\n2026年12月デビューの、",
+   "from": 1029,
+   "to": 1122,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "サミーのスマパチだね。",
+   "from": 1122,
+   "to": 1157,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "原作は、\nクソゲー好きの主人公サンラクが、",
+   "from": 1161,
+   "to": 1225,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "超人気の神ゲーに挑む話。\nネット小説から、",
+   "from": 1225,
+   "to": 1289,
+   "cont": true,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "漫画にもアニメにもなってる。",
+   "from": 1289,
+   "to": 1334,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "鳥のマスクかぶった半裸の男やろ。\nクソゲーで鍛えた腕で、",
+   "from": 1338,
+   "to": 1425,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "神ゲーの強敵をねじ伏せていくんや。",
+   "from": 1425,
+   "to": 1479,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "理不尽な台に揉まれてきたウチらと、\nやってることは一緒やな。",
+   "from": 1483,
+   "to": 1576,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "サンラクはバグをねじ伏せるけど、\nホールの釘はねじ伏せられないからね。",
+   "from": 1579,
+   "to": 1688,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "それは言わんといてや。\nせっかく気分上がってたのに。",
+   "from": 1692,
+   "to": 1772,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "原作の見どころは、\nユニークモンスターっていう強敵との、",
+   "from": 1776,
+   "to": 1862,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "ギリギリの戦い。台も、\nそこを勝負どころにしてる。",
+   "from": 1862,
+   "to": 1939,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "スペックは、\n図柄揃いが約1/399.9。",
+   "from": 2027,
+   "to": 2090,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "RUSH突入が約54%で、\n継続は約75%。",
+   "from": 2090,
+   "to": 2158,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "399で突入54%なら、\n今のラッキートリガーの中では、",
+   "from": 2162,
+   "to": 2249,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "入り口は広いほうやな。",
+   "from": 2249,
+   "to": 2284,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "図柄揃いの当たりは、\nどれも1500個。",
+   "from": 2288,
+   "to": 2350,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "そのうち約53%で、RUSHに入る。",
+   "from": 2350,
+   "to": 2406,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "7で揃えば直行。7以外で揃ったら、\nログインチャレンジに成功すればRUSH。",
+   "from": 2410,
+   "to": 2529,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "あとは、\nエナジーチャージっていう300個の当",
+   "from": 2532,
+   "to": 2603,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "たりから入るのが、全体の約1%。",
+   "from": 2603,
+   "to": 2654,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "入らんでも1500個は持って帰れる。\nこれがでかいねん。",
+   "from": 2658,
+   "to": 2744,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "300個で放り出される台に比べたら、\n次の勝負ができるで。",
+   "from": 2744,
+   "to": 2834,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "ただ、ヘソの賞球は1個。\n399を回しきるまでの投資は、",
+   "from": 2838,
+   "to": 2925,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "そのぶん速いよ。",
+   "from": 2925,
+   "to": 2950,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "そこは釘しだいや。\n回らん台で399を追うのが、",
+   "from": 2954,
+   "to": 3028,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "いちばん財布に効くからな。",
+   "from": 3028,
+   "to": 3069,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "RUSHは、1/98.5を、\n134回転のSTで抽選する。",
+   "from": 3157,
+   "to": 3247,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "STで75%か。ほんまに75あるか、\nRNC-01で見たろ。起動！",
+   "from": 3250,
+   "to": 3353,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "134回のうちに当たる確率は、\n約75%。スペック表どおりだね。",
+   "from": 3627,
+   "to": 3726,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "入ってからの当たりは、\n平均で3回くらい。",
+   "from": 3730,
+   "to": 3794,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "ただ、1回も当たらずに終わるのも、\n4回に1回ある。",
+   "from": 3797,
+   "to": 3878,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "4回に1回はスルーするんか！",
+   "from": 3881,
+   "to": 3926,
+   "cont": false,
+   "last": true,
+   "hide": true
+  },
+  {
+   "who": "baku",
+   "text": "いや、体感はもっと多いで。\nスルーはな、",
+   "from": 3945,
+   "to": 4007,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "来る日は3回続けて来んねん。",
+   "from": 4007,
+   "to": 4051,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "体感は、データに入れられないから。",
+   "from": 4054,
+   "to": 4109,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "RUSH中の当たりは、\n1500個と4500個が、ほぼ半々。",
+   "from": 4196,
+   "to": 4289,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "4500個は、\n1500個の当たりを3回続けて消化する形。",
+   "from": 4293,
+   "to": 4382,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "1回の当たりの上限が、\n1500個だからね。",
+   "from": 4382,
+   "to": 4450,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "真ん中がないんや。\n4500引いたらな、",
+   "from": 4454,
+   "to": 4516,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "その日はもう勝ったようなもんやで。",
+   "from": 4516,
+   "to": 4569,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "当たり1回の平均は、約3000個。",
+   "from": 4573,
+   "to": 4627,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "RUSHに入ってから出る量は、\n平均すると約8900個。",
+   "from": 4691,
+   "to": 4778,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "9000近いんか！\n ほな打つしかないやん。",
+   "from": 4781,
+   "to": 4849,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "でも、真ん中くらいの人は6000個。\n平均は、",
+   "from": 4852,
+   "to": 4924,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "大きく出た人に引っ張られてる。",
+   "from": 4924,
+   "to": 4971,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "あかん、平均で座るとこやった。ウチ、\nそれで何回も痛い目見とるんや。",
+   "from": 4975,
+   "to": 5080,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "そして、超神ゲーBOOST。\nRUSH中の当たりの、約2%で付く。",
+   "from": 5168,
+   "to": 5271,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "2%か。狭い入り口やけど、\n入ったら終わらんらしいやん。",
+   "from": 5274,
+   "to": 5361,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "4500個の当たりに、\nさらに上乗せが付く仕組み。",
+   "from": 5365,
+   "to": 5442,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "上乗せは、1500個が半分。\n3000個が約34%。",
+   "from": 5445,
+   "to": 5525,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "残りの約16%は、\n3000個か4500個を乗せたあとに、",
+   "from": 5529,
+   "to": 5619,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "もう1回上乗せ。",
+   "from": 5619,
+   "to": 5645,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "最低でも4500と1500で6000個か。\nで、そこからループするんやろ。",
+   "from": 5648,
+   "to": 5764,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "じゃあ、\nレンに100回まわしてもらおう。",
+   "from": 5767,
+   "to": 5831,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "100回BOOSTに入って、\n2回目の上乗せまで行ったのは16回。",
+   "from": 5913,
+   "to": 6016,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "3回目まで行ったのは、2回だけ。",
+   "from": 6019,
+   "to": 6071,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "ほぼ1回で終わりやんか！",
+   "from": 6074,
+   "to": 6113,
+   "cont": false,
+   "last": true,
+   "hide": true
+  },
+  {
+   "who": "nagi",
+   "text": "何回続くかで言うと、ほぼ1回。",
+   "from": 6131,
+   "to": 6179,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "でもその1回で、平均約7300個。",
+   "from": 6183,
+   "to": 6238,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "続かんでも、\n1回で7000超えるんか。",
+   "from": 6241,
+   "to": 6303,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "それはそれでええな。",
+   "from": 6303,
+   "to": 6334,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "そもそもBOOSTに入るのは、\nRUSH18回に1回くらい。",
+   "from": 6338,
+   "to": 6431,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "そこは宝くじ枠やな。本命は、\n4500の半々のほうや。",
+   "from": 6434,
+   "to": 6518,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "台は、サミーの新しいアクセル枠で、\n最初に出る機種。",
+   "from": 6606,
+   "to": 6686,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "ハンドルが真ん中にあって、\n手を置けるハンドルレストも付いてる。",
+   "from": 6689,
+   "to": 6789,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "センターハンドルは助かるわ。\nハンドルずっと握っとるとな、",
+   "from": 6792,
+   "to": 6883,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "夕方には手首も肩もバキバキやねん。",
+   "from": 6883,
+   "to": 6937,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "それから、\n押す・引く・振動の3つが入った、",
+   "from": 6940,
+   "to": 7008,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "アクセルギア。",
+   "from": 7008,
+   "to": 7030,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "エアーと手元の振動が来る、\nセブンエアーと手置きバイブ。それに、",
+   "from": 7034,
+   "to": 7133,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "イヤホンジャック。",
+   "from": 7133,
+   "to": 7162,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "イヤホン付いたのはでかいで。\n隣の爆音を気にせんと、",
+   "from": 7166,
+   "to": 7247,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "自分の音量で打てるからな。",
+   "from": 7247,
+   "to": 7288,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "そのかわり、エアーが来たら、\n普段よりびっくりするかもね。",
+   "from": 7291,
+   "to": 7381,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "勝負どころは、\nウェザエモンとリュカオーンのバトル。",
+   "from": 7469,
+   "to": 7549,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "ウェザエモンSPは、\n信頼度 約86%。",
+   "from": 7553,
+   "to": 7614,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "赤タイトルなら約92%。\nリュカオーンSPは、約66%。",
+   "from": 7614,
+   "to": 7700,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "ウェザエモンは原作でもいちばんの山場\nやからな。そこが本命なんは納得や。",
+   "from": 7704,
+   "to": 7816,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "カスタムは、\n先告知のイキナリサンラクカスタム。",
+   "from": 7820,
+   "to": 7893,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "発生率は、40%、90%、\nEXから選べる。",
+   "from": 7893,
+   "to": 7961,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "ウチは90%派や。告知が来るまでは、\n気楽に回しとけるからな。",
+   "from": 7964,
+   "to": 8061,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "RUSH中は、\nイキナリ神ゲーカスタム。",
+   "from": 8064,
+   "to": 8125,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "オンにすると、\n神ゲーランプの点灯で当たりを教えてくれる。",
+   "from": 8125,
+   "to": 8215,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "それはウチ、あえてオフや。\nSTは最後まで煽られてなんぼやねん。",
+   "from": 8219,
+   "to": 8318,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "まとめ。\n図柄揃いは約1/399.9で、",
+   "from": 8406,
+   "to": 8467,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "当たればどれも1500個。",
+   "from": 8467,
+   "to": 8508,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "RUSHは約75%継続で、\n当たりは1500個と4500個が、",
+   "from": 8512,
+   "to": 8608,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "ほぼ半々。",
+   "from": 8608,
+   "to": 8624,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "超神ゲーBOOSTは、\nほぼ1回で終わる。でもその1回で、",
+   "from": 8628,
+   "to": 8718,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "平均約7300個。",
+   "from": 8718,
+   "to": 8747,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "続く台やなくて、\n1回の当たりで塊を取る台やな。",
+   "from": 8750,
+   "to": 8825,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "ハマっても、取り返す絵が見える。",
+   "from": 8825,
+   "to": 8875,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "そのかわり、4回に1回は、\nRUSHで1回も当たらない。",
+   "from": 8879,
+   "to": 8966,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "出る日と出ない日の差は大きいよ。",
+   "from": 8966,
+   "to": 9017,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "よっしゃ、ほな今から行って、\n4500ぶち抜いてくるわ。",
+   "from": 9021,
+   "to": 9107,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "ちなみに、\n通常時から4500個にたどり着くまで、",
+   "from": 9111,
+   "to": 9189,
+   "cont": false,
+   "last": false,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "平均で約1200回転かかるよ。",
+   "from": 9189,
+   "to": 9236,
+   "cont": true,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "1200回転か。ほな、\nまずは釘見てから決めるわ。",
+   "from": 9239,
+   "to": 9316,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "賢明だね。",
+   "from": 9320,
+   "to": 9356,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "baku",
+   "text": "打った人は、4500を何回引けたか、\nコメントで教えてや。",
+   "from": 9384,
+   "to": 9474,
+   "cont": false,
+   "last": true,
+   "hide": false
+  },
+  {
+   "who": "nagi",
+   "text": "BOOSTの上乗せを見た人も、\n待ってるね。",
+   "from": 9477,
+   "to": 9545,
+   "cont": false,
+   "last": true,
+   "hide": false
+  }
+ ],
+ "events": [
+  {
+   "type": "song",
+   "from": 630,
+   "to": 9584
+  },
+  {
+   "type": "intro",
+   "who": "nagi",
+   "from": 630,
+   "to": 696
+  },
+  {
+   "type": "sfx",
+   "from": 631,
+   "to": 632,
+   "se": "slash",
+   "seVol": 0.5
+  },
+  {
+   "type": "intro",
+   "who": "baku",
+   "from": 696,
+   "to": 762
+  },
+  {
+   "type": "sfx",
+   "from": 697,
+   "to": 698,
+   "se": "slash",
+   "seVol": 0.5
+  },
+  {
+   "type": "logotitle",
+   "from": 762,
+   "logoTo": 834,
+   "to": 936
+  },
+  {
+   "type": "sfx",
+   "from": 765,
+   "to": 766,
+   "se": "slam",
+   "seVol": 0.8
+  },
+  {
+   "type": "sfx",
+   "from": 834,
+   "to": 835,
+   "se": "slash",
+   "seVol": 0.6
+  },
+  {
+   "type": "chapter",
+   "no": "01",
+   "title": "シャンフロってどんな台",
+   "from": 945,
+   "to": 1023
+  },
+  {
+   "type": "sfx",
+   "from": 945,
+   "to": 946,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 952,
+   "to": 953,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "chapter",
+   "no": "02",
+   "title": "スペックと初当たり",
+   "from": 1943,
+   "to": 2021
+  },
+  {
+   "type": "sfx",
+   "from": 1943,
+   "to": 1944,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 1950,
+   "to": 1951,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "show",
+   "kind": "data:spec",
+   "from": 2027,
+   "to": 2288
+  },
+  {
+   "type": "sfx",
+   "from": 2025,
+   "to": 2026,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 2048,
+   "to": 2049,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "show",
+   "kind": "donut:hatsu",
+   "from": 2288,
+   "to": 3073
+  },
+  {
+   "type": "sfx",
+   "from": 2285,
+   "to": 2286,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 2309,
+   "to": 2310,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "chapter",
+   "no": "03",
+   "title": "RUSHはどれくらい続く",
+   "from": 3073,
+   "to": 3151
+  },
+  {
+   "type": "sfx",
+   "from": 3073,
+   "to": 3074,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 3080,
+   "to": 3081,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "show",
+   "kind": "ren:rush",
+   "from": 3357,
+   "to": 3730
+  },
+  {
+   "type": "sfx",
+   "from": 3402,
+   "to": 3403,
+   "se": "boot",
+   "seVol": 0.6
+  },
+  {
+   "type": "sfx",
+   "from": 3375,
+   "to": 3376,
+   "se": "slam",
+   "seVol": 0.4
+  },
+  {
+   "type": "sfx",
+   "from": 3507,
+   "to": 3508,
+   "se": "scan",
+   "seVol": 0.45
+  },
+  {
+   "type": "sfx",
+   "from": 3540,
+   "to": 3541,
+   "se": "confirm",
+   "seVol": 0.7
+  },
+  {
+   "type": "sfx",
+   "from": 3618,
+   "to": 3619,
+   "se": "slam",
+   "seVol": 0.85
+  },
+  {
+   "type": "sfx",
+   "from": 3730,
+   "to": 3731,
+   "se": "holo_disappear",
+   "seVol": 0.4
+  },
+  {
+   "type": "sfx",
+   "from": 3878,
+   "to": 3879,
+   "se": "alarm",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 3881,
+   "to": 3882,
+   "se": "slash",
+   "seVol": 0.7
+  },
+  {
+   "type": "fx",
+   "kind": "alert",
+   "from": 3878,
+   "to": 3941,
+   "text": "4回に1回はスルーするんか！",
+   "face": "surprised"
+  },
+  {
+   "type": "chapter",
+   "no": "04",
+   "title": "RUSHの出玉",
+   "from": 4112,
+   "to": 4190
+  },
+  {
+   "type": "sfx",
+   "from": 4112,
+   "to": 4113,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 4120,
+   "to": 4121,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "show",
+   "kind": "bar:rushhit",
+   "from": 4196,
+   "to": 4631
+  },
+  {
+   "type": "sfx",
+   "from": 4194,
+   "to": 4195,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 4217,
+   "to": 4218,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "show",
+   "kind": "reel:rushavg",
+   "from": 4631,
+   "to": 5084
+  },
+  {
+   "type": "sfx",
+   "from": 4629,
+   "to": 4630,
+   "se": "scan",
+   "seVol": 0.6
+  },
+  {
+   "type": "sfx",
+   "from": 4694,
+   "to": 4695,
+   "se": "slam",
+   "seVol": 0.8
+  },
+  {
+   "type": "chapter",
+   "no": "05",
+   "title": "超神ゲーBOOST",
+   "from": 5084,
+   "to": 5162
+  },
+  {
+   "type": "sfx",
+   "from": 5084,
+   "to": 5085,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 5092,
+   "to": 5093,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "show",
+   "kind": "donut:boost",
+   "from": 5445,
+   "to": 5835
+  },
+  {
+   "type": "sfx",
+   "from": 5443,
+   "to": 5444,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 5466,
+   "to": 5467,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "show",
+   "kind": "sim:boost",
+   "from": 5835,
+   "to": 6183
+  },
+  {
+   "type": "sfx",
+   "from": 5833,
+   "to": 5834,
+   "se": "scan",
+   "seVol": 0.6
+  },
+  {
+   "type": "sfx",
+   "from": 5907,
+   "to": 5908,
+   "se": "confirm",
+   "seVol": 0.7
+  },
+  {
+   "type": "sfx",
+   "from": 6071,
+   "to": 6072,
+   "se": "slash",
+   "seVol": 0.75
+  },
+  {
+   "type": "fx",
+   "kind": "jack",
+   "from": 6071,
+   "to": 6128,
+   "word": "は！？",
+   "sub": "ほぼ1回で終わりやん！"
+  },
+  {
+   "type": "show",
+   "kind": "verdict:boostavg",
+   "from": 6183,
+   "to": 6338
+  },
+  {
+   "type": "sfx",
+   "from": 6191,
+   "to": 6192,
+   "se": "slam",
+   "seVol": 0.6
+  },
+  {
+   "type": "sfx",
+   "from": 6338,
+   "to": 6339,
+   "se": "holo_disappear",
+   "seVol": 0.4
+  },
+  {
+   "type": "chapter",
+   "no": "06",
+   "title": "新しいアクセル枠",
+   "from": 6522,
+   "to": 6600
+  },
+  {
+   "type": "sfx",
+   "from": 6522,
+   "to": 6523,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 6529,
+   "to": 6530,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "show",
+   "kind": "data:waku",
+   "from": 6606,
+   "to": 7385
+  },
+  {
+   "type": "sfx",
+   "from": 6603,
+   "to": 6604,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 6627,
+   "to": 6628,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "chapter",
+   "no": "07",
+   "title": "演出とカスタム",
+   "from": 7385,
+   "to": 7463
+  },
+  {
+   "type": "sfx",
+   "from": 7385,
+   "to": 7386,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 7392,
+   "to": 7393,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "show",
+   "kind": "data:reach",
+   "from": 7469,
+   "to": 7820
+  },
+  {
+   "type": "sfx",
+   "from": 7466,
+   "to": 7467,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 7490,
+   "to": 7491,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "show",
+   "kind": "data:custom",
+   "from": 7820,
+   "to": 8322
+  },
+  {
+   "type": "sfx",
+   "from": 7817,
+   "to": 7818,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 7841,
+   "to": 7842,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "chapter",
+   "no": "",
+   "title": "まとめ",
+   "from": 8322,
+   "to": 8400
+  },
+  {
+   "type": "sfx",
+   "from": 8322,
+   "to": 8323,
+   "se": "whoosh",
+   "seVol": 0.5
+  },
+  {
+   "type": "sfx",
+   "from": 8329,
+   "to": 8330,
+   "se": "slam",
+   "seVol": 0.45
+  },
+  {
+   "type": "show",
+   "kind": "data:matome",
+   "from": 8406,
+   "to": 9021
+  },
+  {
+   "type": "sfx",
+   "from": 8403,
+   "to": 8404,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 8427,
+   "to": 8428,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "sfx",
+   "from": 9021,
+   "to": 9022,
+   "se": "holo_disappear",
+   "seVol": 0.4
+  },
+  {
+   "type": "shutter",
+   "from": 9370,
+   "to": 9381
+  },
+  {
+   "type": "sfx",
+   "from": 9360,
+   "to": 9361,
+   "se": "whoosh",
+   "seVol": 0.5
+  }
+ ],
+ "ui": {
+  "data:spec": {
+   "title": "eシャングリラ・フロンティア",
+   "rows": [
+    {
+     "label": "図柄揃い確率",
+     "value": "約1/399.9"
+    },
+    {
+     "label": "RUSH突入率",
+     "value": "約54%"
+    },
+    {
+     "label": "RUSH継続率",
+     "value": "約75%"
+    },
+    {
+     "label": "RUSH",
+     "value": "ST134回・1/98.5"
+    }
+   ]
+  },
+  "donut:hatsu": {
+   "title": "通常時の当たり",
+   "center": [
+    "RUSH突入",
+    "約54%"
+   ],
+   "items": [
+    {
+     "label": "1500個＋RUSH",
+     "pct": 53,
+     "key": true
+    },
+    {
+     "label": "1500個のみ",
+     "pct": 46
+    },
+    {
+     "label": "300個＋RUSH",
+     "pct": 1
+    }
+   ]
+  },
+  "ren:rush": {
+   "spec": {
+    "title": "RUSH継続率の解析",
+    "st": {
+     "prob": 98.5,
+     "spins": 134
+    }
+   },
+   "smoke": false
+  },
+  "bar:rushhit": {
+   "title": "RUSH中の当たり",
+   "items": [
+    {
+     "label": "1500個",
+     "pct": 50
+    },
+    {
+     "label": "4500個",
+     "pct": 48,
+     "key": true
+    },
+    {
+     "label": "BOOST付",
+     "pct": 2
+    }
+   ]
+  },
+  "reel:rushavg": {
+   "label": "RUSH1回の平均出玉",
+   "digits": "8900",
+   "unit": "個",
+   "note": "入ってから（ナギバク計算）"
+  },
+  "donut:boost": {
+   "title": "超神ゲーBOOSTの上乗せ",
+   "center": [
+    "もう1回",
+    "約16%"
+   ],
+   "items": [
+    {
+     "label": "1500個",
+     "pct": 50,
+     "key": true
+    },
+    {
+     "label": "3000個",
+     "pct": 34
+    },
+    {
+     "label": "3000個＋もう1回",
+     "pct": 7
+    },
+    {
+     "label": "4500個＋もう1回",
+     "pct": 9
+    }
+   ]
+  },
+  "sim:boost": {
+   "title": "BOOSTに100回入ったら",
+   "counts": [
+    84,
+    14,
+    2
+   ],
+   "labels": [
+    "まわした回数",
+    "2回目の上乗せまで",
+    "3回目の上乗せまで"
+   ]
+  },
+  "verdict:boostavg": {
+   "label": "BOOST1回の平均",
+   "word": "約7300個",
+   "sub": "4500個＋上乗せ平均 約2800個"
+  },
+  "data:matome": {
+   "title": "まとめ",
+   "rows": [
+    {
+     "label": "図柄揃い",
+     "value": "約1/399.9"
+    },
+    {
+     "label": "RUSH継続率",
+     "value": "約75%"
+    },
+    {
+     "label": "RUSH中の4500個",
+     "value": "約50%"
+    },
+    {
+     "label": "BOOST1回の平均",
+     "value": "約7300個"
+    }
+   ]
+  },
+  "data:waku": {
+   "title": "サミー新筐体「アクセル枠」",
+   "rows": [
+    {
+     "label": "センターハンドル",
+     "value": "手首が楽"
+    },
+    {
+     "label": "アクセルギア",
+     "value": "押す・引く・振動"
+    },
+    {
+     "label": "セブンエアー",
+     "value": "＋手置きバイブ"
+    },
+    {
+     "label": "イヤホンジャック",
+     "value": "標準搭載"
+    }
+   ]
+  },
+  "data:reach": {
+   "title": "主要リーチの信頼度",
+   "rows": [
+    {
+     "label": "ウェザエモンSP",
+     "value": "約86%"
+    },
+    {
+     "label": "└ 赤タイトル",
+     "value": "約92%"
+    },
+    {
+     "label": "リュカオーンSP",
+     "value": "約66%"
+    }
+   ]
+  },
+  "data:custom": {
+   "title": "カスタム",
+   "rows": [
+    {
+     "label": "イキナリサンラク",
+     "value": "40%／90%／EX"
+    },
+    {
+     "label": "イキナリ神ゲー",
+     "value": "RUSH中・ON／OFF"
+    }
+   ]
+  }
+ },
+ "intro": {
+  "nagi": {
+   "name": "ナギ",
+   "role": "ナギバク研究所 解析担当",
+   "profile": [
+    "数字しか信じない。",
+    "だいたい眠い。"
+   ]
+  },
+  "baku": {
+   "name": "バク",
+   "role": "ナギバク研究所 メカニック（自称エース）",
+   "profile": [
+    "打った台の話は止まらない。",
+    "発明品は、たまに煙が出る。"
+   ]
+  }
+ },
+ "title": {
+  "machine": "eシャングリラ・フロンティア",
+  "title": "神ゲーか、クソゲーか",
+  "date": "2026.12 SAMMY"
+ }
+}
