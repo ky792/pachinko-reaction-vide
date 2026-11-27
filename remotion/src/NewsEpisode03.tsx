@@ -764,21 +764,22 @@ const AnalysisPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
   const frame = useCurrentFrame();
   const bars = data.bars as {k: string; sub: string; value: number; key?: boolean}[];
   const MAX = (data.max as number) ?? 100;
-  const TRACK = 560;
+  const TRACK = bars.length > 3 ? 400 : 560;
+  const many = bars.length > 3;
   return (
     <PanelFrame seg={seg} tag={`DATA｜${data.heading}`}>
-      <div style={{position: 'absolute', left: 70, right: 70, top: bars.length > 3 ? 30 : 60, display: 'flex', flexDirection: 'column', gap: bars.length > 3 ? 22 : 54}}>
+      <div style={{position: 'absolute', left: 70, right: 70, top: many ? 26 : 60, display: 'flex', flexDirection: 'column', gap: many ? 18 : 54}}>
         {bars.map((b, i) => {
           const on = mentionAt(seg, [String(b.value)], 0.35) ?? seg.from + 10 + i * 20;
           const p = interpolate(frame, [on, on + 28], [0, 1], {...clamp, easing: OUT});
           const c = b.key ? RED : BLUE;
           return (
-            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 30, opacity: frame >= on - 2 ? 1 : 0.25}}>
+            <div key={i} style={{display: 'flex', alignItems: 'center', gap: 26, opacity: frame >= on - 2 ? 1 : 0.25}}>
               <div style={{width: 250}}>
-                <div style={{fontSize: 40, fontWeight: 900, color: BLUE_DEEP}}>{b.k}</div>
-                <div style={{fontSize: 22, fontWeight: 700, color: '#6a7894', marginTop: 4}}>{b.sub}</div>
+                <div style={{fontSize: many ? 34 : 40, fontWeight: 900, color: BLUE_DEEP}}>{b.k}</div>
+                <div style={{fontSize: many ? 19 : 22, fontWeight: 700, color: '#6a7894', marginTop: 2, whiteSpace: 'nowrap'}}>{b.sub}</div>
               </div>
-              <div style={{position: 'relative', width: TRACK, height: 64, background: '#dfe7f6', borderRadius: 12, overflow: 'hidden'}}>
+              <div style={{position: 'relative', width: TRACK, height: many ? 50 : 64, background: '#dfe7f6', borderRadius: 12, overflow: 'hidden'}}>
                 <div
                   style={{
                     width: (TRACK * b.value * p) / MAX,
@@ -788,9 +789,9 @@ const AnalysisPanel: React.FC<{seg: Segment; data: any}> = ({seg, data}) => {
                   }}
                 />
               </div>
-              <div style={{fontSize: 70, fontWeight: 900, color: c, width: 190, textAlign: 'right', fontVariantNumeric: 'tabular-nums'}}>
+              <div style={{fontSize: many ? 54 : 70, fontWeight: 900, color: c, width: many ? 250 : 190, textAlign: 'right', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap'}}>
                 {(b.value * p).toFixed(data.decimals ?? (b.key ? 1 : 0))}
-                <span style={{fontSize: 36}}>{(data.unit as string) ?? '%'}</span>
+                <span style={{fontSize: many ? 30 : 36}}>{(data.unit as string) ?? '%'}</span>
               </div>
             </div>
           );
@@ -959,15 +960,16 @@ const EndingPanel: React.FC<{seg: Segment}> = ({seg}) => {
       <div style={{position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 20}}>
         <Img src={staticFile('logo.png')} style={{width: 560, scale: interpolate(s, [0, 1], [0.7, 1]), opacity: Math.min(1, s * 1.5)}} />
         <div style={{display: 'flex', gap: 24, alignItems: 'center'}}>
-          <div style={{fontSize: 34, fontWeight: 900, color: INK}}>{TITLE.ending_ask}</div>
+          <div style={{fontSize: 30, fontWeight: 900, color: INK, whiteSpace: 'nowrap'}}>{TITLE.ending_ask}</div>
           <div
             style={{
               background: RED,
               color: 'white',
-              fontSize: 36,
+              fontSize: 32,
               fontWeight: 900,
-              padding: '12px 30px',
+              padding: '10px 26px',
               borderRadius: 40,
+              whiteSpace: 'nowrap',
               scale: interpolate(btn, [0, 1], [0.6, 1]),
               opacity: Math.min(1, btn * 1.5),
             }}
@@ -1009,8 +1011,9 @@ const Panel: React.FC<{seg: Segment}> = ({seg}) => {
 const Panels: React.FC = () => {
   const frame = useCurrentFrame();
   const hidden = !!focusAt(frame);
+  const away = interpolate(frame, [FRONT_FROM - 10, FRONT_FROM + 8], [1, 0], clamp); // バクが正面に出る前にパネルを下げる
   return (
-    <AbsoluteFill style={{opacity: hidden ? 0 : 1}}>
+    <AbsoluteFill style={{opacity: hidden ? 0 : away}}>
       {SEGMENTS.map((seg, i) => (
         <Panel key={i} seg={seg} />
       ))}
