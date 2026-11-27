@@ -172,8 +172,8 @@ const Chara: React.FC<{who: Who}> = ({who}) => {
     lean = -40;
     tilt = -6;
   } else if (look === 'baku' && who === 'nagi') {
-    lean = 22;
-    tilt = 4;
+    lean = 46;
+    tilt = 8;
   } else if (look === 'self' && who === 'baku') {
     lean = -26;
     tilt = Math.sin(local / 5) * 3;
@@ -193,8 +193,8 @@ const Chara: React.FC<{who: Who}> = ({who}) => {
     scaleK = interpolate(p, [0, 1], [1, 1.16]);
     if (BOW && frame >= BOW.at) {
       const b = interpolate(frame, [BOW.at, BOW.at + 16, BOW.at + 70, BOW.at + 90], [0, 1, 1, 0.85], {...clamp, easing: Easing.inOut(Easing.quad)});
-      bowRot = b * 38;
-      bowDrop = b * 26;
+      bowRot = b;
+      bowDrop = b * 40;
     }
   }
   if (who === 'nagi' && BOW && frame >= FRONT_AT - 50) {
@@ -217,7 +217,6 @@ const Chara: React.FC<{who: Who}> = ({who}) => {
         alignItems: 'flex-end',
         translate: `${(1 - enter) * dir * 520 + lean * lookP}px ${-env * 10 + hopY + breathe + nod + bowDrop}px`,
         rotate: `${sway + tilt * lookP}deg`,
-        perspective: 900,
         scale: `${(speaking ? 1 : 0.965) * (1 + env * 0.015)}`,
         transformOrigin: '50% 100%',
         filter: speaking
@@ -227,7 +226,7 @@ const Chara: React.FC<{who: Who}> = ({who}) => {
     >
       <Img
         src={staticFile(`kyu/${who}_${face}.png`)}
-        style={{height: h, maxWidth: 760, objectFit: 'contain', rotate: `x ${-bowRot}deg`, transformOrigin: '50% 100%'}}
+        style={{height: h, maxWidth: 760, objectFit: 'contain', scale: `${1 + bowRot * 0.04} ${1 - bowRot * 0.24}`, transformOrigin: '50% 100%'}}
       />
     </div>
   );
@@ -1067,6 +1066,7 @@ const duckRanges: [number, number][] = [
   ...LINES.filter((l) => l.duck).map((l) => [l.start - 34, l.end + 10] as [number, number]),
   ...SILENTS.filter((s) => s.duck === '1').map((s) => [s.at - 6, s.at + s.len + 4] as [number, number]),
 ];
+const BED_LEN = 1107; // news_bed.wav（36.92秒）のフレーム数。loop の volume は曲の頭からのフレームになるため、Sequence を並べて全体のフレームで音量を決める
 const bedVolume = (f: number) => {
   const base = 0.11;
   if (BGM_ED !== null && f >= BGM_ED - 20) return interpolate(f, [BGM_ED - 20, BGM_ED], [base, 0], clamp);
@@ -1099,7 +1099,11 @@ export const LabNews03: React.FC = () => {
       <NewsTitle />
       <FadeOut />
 
-      <Audio src={staticFile('news_bed.wav')} loop volume={bedVolume} />
+      {Array.from({length: Math.ceil((BGM_ED ?? TOTAL) / BED_LEN) + 1}).map((_, k) => (
+        <Sequence key={`bed${k}`} from={k * BED_LEN} durationInFrames={BED_LEN}>
+          <Audio src={staticFile('news_bed.wav')} volume={(f) => bedVolume(f + k * BED_LEN)} />
+        </Sequence>
+      ))}
       {BGM_ED !== null && (
         <Sequence from={BGM_ED} durationInFrames={TOTAL - BGM_ED}>
           <Audio src={staticFile('news_open.wav')} volume={(f) => edVolume(f + BGM_ED)} />
