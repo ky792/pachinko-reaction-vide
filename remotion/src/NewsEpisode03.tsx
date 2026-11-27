@@ -460,7 +460,7 @@ const PanelFrame: React.FC<{seg: Segment; tag: string; children: React.ReactNode
 
 // 公式画像のクレジット（©HEIWA）
 const ImgCredit: React.FC = () => (
-  <div style={{position: 'absolute', right: 22, bottom: 10, fontSize: 18, fontWeight: 700, color: '#7a8aa6', fontFamily: JP}}>画像：©HEIWA（キュインPORTAL）</div>
+  <div style={{position: 'absolute', right: 26, top: -44, fontSize: 18, fontWeight: 700, color: 'rgba(255,255,255,0.88)', fontFamily: JP, letterSpacing: 1}}>画像：©HEIWA（キュインPORTAL）</div>
 );
 
 // 手描き風のマル
