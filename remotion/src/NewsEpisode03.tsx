@@ -260,7 +260,7 @@ const Ticker: React.FC = () => {
 // ───────────────────────── キャスター
 const CASTERS = {
   ナギ: {src: 'nagi.png', left: -10, height: 620, face: {x: 235, y: 760}},
-  バク: {src: 'baku.png', left: 1300, height: 600, face: {x: 1610, y: 770}},
+  バク: {src: 'baku_stand.png', left: 1318, height: 620, face: {x: 1625, y: 750}}, // 2026-11-28 新しい立ち絵（両耳あり）
 } as const;
 
 // 無言の間（前のセリフの終わり〜このセリフの頭）に相手・パネルを見る。dir：-1＝左（ナギ・パネル側）／+1＝右（バク側）
@@ -312,7 +312,7 @@ const Caster: React.FC<{who: 'ナギ' | 'バク'}> = ({who}) => {
         left: c.left,
         top: 1090 - c.height,
         height: c.height,
-        translate: `${(1 - enter) * (who === 'ナギ' ? -600 : 600) + look * 34 + stare * 30 + front * (960 - 1635)}px ${-env * 12 + hopY + breathe + bow * 40}px`,
+        translate: `${(1 - enter) * (who === 'ナギ' ? -600 : 600) + look * 34 + stare * 30 + front * (960 - 1599)}px ${-env * 12 + hopY + breathe + bow * 40}px`,
         rotate: `${look * 5 + stare * 4}deg`,
         scale: `${(1 + env * 0.015) * (1 + front * 0.12) * (1 + bow * 0.04)} ${(1 + env * 0.015) * (1 + front * 0.12) * (1 - bow * 0.22)}`,
         transformOrigin: '50% 100%',
