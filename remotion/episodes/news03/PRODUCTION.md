@@ -1,5 +1,11 @@
 # ニュース回#03 制作メモ（YOUTOPYA）
 
+> 2026-11-27 ユーザー指示「前回ニュース作ったやろ、それの画面にしろ」により、前回のニュース回（News02・キャッシュレス回）と同じ画面に組み直した。
+> 本番：`remotion/src/NewsEpisode03.tsx`（Composition `News03`）／台本 `remotion/episodes/news03s/`（パネル指定入り）／データ `src/data/news03s.json`（`scripts/build_episode.py` で生成）。
+> 画面：15秒OP（パチンコニュースロゴ）→スタジオ・報道台・白パネル・見出しバー・ティッカー・章アイキャッチ・寄りのカット。パネルは前回と同じ形式（keyword / spec_table / versus / analysis / flow）。
+> 追加したのは：VSの勝ち負けなし表示（neutral）、グラフの単位指定、無言の間の視線、エンディングのバク正面＆お辞儀、BGMの間の停止とエンディングBGM。
+> 下の「研究所ステージ版」の記述は最初に作った版（LabNews03.tsx、今は使っていない）のもの。
+
 - 完成動画：GitHub Release `news03-youtopya`（1080p・H.264・約11分52秒）／スマホ確認用720pは `outputs-news03` ブランチ
 - 構成：`remotion/src/LabNews03.tsx`（Composition `News03`）、データ生成 `remotion/scripts/build_news03.py`、演出入り台本 `remotion/episodes/news03/script/`
 - 声：`feat/news03-voice` の `episodes/news03/`（ナギ＝AivisSpeech コハク「ねむたい」速度0.95・抑揚0.65・音程−1.5半音／バク＝Irodori-TTS garo2_fix_s53＋squeeze）。Whisper照合の関門に全124行合格（例外4行は gate_override.json に根拠）
