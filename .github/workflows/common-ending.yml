@@ -1,0 +1,51 @@
+name: common ending preview
+
+on:
+  push:
+    branches: [feat/news03-youtopya]
+    paths:
+      - "remotion/src/common/**"
+      - "remotion/public/common/**"
+      - ".github/workflows/common-ending.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: common-ending
+  cancel-in-progress: true
+
+jobs:
+  ending:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render ending
+        run: |
+          mkdir -p out
+          npx remotion render NagibakuEnding out/ending_preview.mp4 --codec=h264 --crf=20
+          for f in 0 30 60 90 150; do npx remotion still NagibakuEnding "out/end_${f}.jpg" --frame=$((f+14)) --scale=0.5 --image-format=jpeg; done
+      - name: Save to outputs-common-ending branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-common-ending
+          git add -A
+          git commit -q -m "Ending ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-common-ending
