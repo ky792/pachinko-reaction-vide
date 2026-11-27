@@ -1,6 +1,8 @@
 {
- "episode": "episodes/news03probe",
+ "episode": "episodes/news03",
  "model": "large-v3-turbo",
  "trim": true,
- "_run": 4
+ "only": ["01_op-007", "07_muzu-003"],
+ "trim_only": ["01_op-007"],
+ "_run": 5
 }
