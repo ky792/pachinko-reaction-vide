@@ -1,12 +1,1 @@
-{
- "episode": "episodes/news03",
- "model": "large-v3-turbo",
- "trim": true,
- "only": [
-  "05_genjou-008"
- ],
- "trim_only": [
-  "05_genjou-008"
- ],
- "_run": 9
-}
+{"episode": "episodes/shanfro2", "model": "large-v3-turbo", "trim": true}
