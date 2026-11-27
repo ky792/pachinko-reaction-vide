@@ -27,6 +27,7 @@
       MK.LCD.draw(t);
       MK.Reels.draw();
       MK.Cabinet.update(dt, t);
+      MK.Game.tick();
       MK.Dev.Auto.update(dt);
       MK.Dev.update();
       // 液晶のみ表示：LCD＋小さなリールを 1920x1080 に合成

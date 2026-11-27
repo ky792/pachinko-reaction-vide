@@ -239,8 +239,13 @@
     } else {
       const c = grads[pal] || grads.gold;
       fill = ctx.createLinearGradient(0, y - h / 2, 0, y + h / 2);
-      fill.addColorStop(0, c[0]); fill.addColorStop(0.45, c[1]); fill.addColorStop(0.5, c[2]);
-      fill.addColorStop(0.75, c[3]); fill.addColorStop(1, c[4]);
+      if (size < 56) {
+        // 小さい文字は暗い帯を入れず、明るく読みやすく
+        fill.addColorStop(0, c[0]); fill.addColorStop(0.55, c[1]); fill.addColorStop(1, c[3]);
+      } else {
+        fill.addColorStop(0, c[0]); fill.addColorStop(0.45, c[1]); fill.addColorStop(0.5, c[2]);
+        fill.addColorStop(0.75, c[3]); fill.addColorStop(1, c[4]);
+      }
     }
     // 外側の光
     if (style.glow) {
@@ -251,7 +256,7 @@
     }
     const small = size < 56;
     ctx.strokeStyle = style.outer || '#120308';
-    ctx.lineWidth = size * (style.outerW || (small ? 0.16 : 0.26));
+    ctx.lineWidth = size * (style.outerW || (small ? 0.14 : 0.26));
     ctx.strokeText(text, x, y);
     ctx.strokeStyle = style.mid || (pal === 'blood' ? '#ffb347' : pal === 'violet' ? '#ffe08a' : '#ffffff');
     ctx.lineWidth = small ? 1.5 : size * 0.1;

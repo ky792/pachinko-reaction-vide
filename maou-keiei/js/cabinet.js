@@ -36,6 +36,7 @@
 
   let stage, topper, tctx, belly, bctx, segs = {}, stopBtns = [], lever, eye, plate, toastEl, toastTimer;
   let bellyT = 0;
+  let guideStep = 0, guideOn = true;
 
   function fit() {
     const vw = window.innerWidth, vh = window.innerHeight;
@@ -119,6 +120,12 @@
       stopBtns.forEach((b, i) => tap(b, () => MK.Game.stop(i)));
       tap($('#btnBet'), () => MK.Game.bet());
       tap($('#btnPush'), () => MK.Game.push());
+      // 経営判断：液晶の左半分／右半分をタップしても選べる
+      $('#lcd').addEventListener('pointerdown', (e) => {
+        const c = MK.Game.choice; if (!c) return;
+        const r = e.currentTarget.getBoundingClientRect();
+        c.done(e.clientX - r.left < r.width / 2 ? 0 : 1);
+      });
       // キーボード
       window.addEventListener('keydown', (e) => {
         if (e.repeat) return;
@@ -150,6 +157,18 @@
     showNavi(order) {
       order.forEach((reel, k) => { stopBtns[reel].querySelector('em').textContent = k + 1; stopBtns[reel].classList.add('navi'); });
     },
+    showChoice() {
+      [[0, '◀'], [2, '▶']].forEach(([i, ch]) => { stopBtns[i].querySelector('em').textContent = ch; stopBtns[i].classList.add('navi', 'next'); });
+    },
+    // 最初の1G：BET → レバー → 停止ボタン を順に点灯
+    guide(evt) {
+      if (!guideOn) return;
+      if (evt === 'bet' && guideStep === 0) guideStep = 1;
+      else if (evt === 'lever' && guideStep <= 1) guideStep = 2;
+      else if (evt && evt.startsWith('stop') && guideStep >= 2) guideStep++;
+      if (guideStep >= 5) guideOn = false;
+    },
+    guideOff() { guideOn = false; },
     hideNavi() { stopBtns.forEach((b) => { b.classList.remove('navi', 'next'); b.querySelector('em').textContent = ''; }); },
     stopLamp(i) { stopBtns[i].classList.remove('navi', 'next'); stopBtns[i].querySelector('em').textContent = ''; },
     toast(msg, ms = 2400) {
@@ -165,6 +184,16 @@
       drawSeg(segs.credit, Math.min(50, S.medals), 2, '#ff3a3a');
       drawSeg(segs.game, S.games % 10000, 4, '#ff3a3a');
       drawSeg(segs.pay, S.pay || 0, 2, '#ffb43a');
+      // 初回ガイドの点灯
+      if (guideOn && MK.Dev && MK.Dev.Auto.on) guideOn = false;
+      let gEl = null;
+      if (guideOn && !G.busy && !G.choice) {
+        if (guideStep === 0) gEl = $('#btnBet');
+        else if (guideStep === 1) gEl = lever;
+        else if (G.cur) { const nx = [0, 1, 2].find((i) => MK.Reels.isSpinning(i)); if (nx != null) gEl = stopBtns[nx]; }
+      }
+      document.querySelectorAll('.guide').forEach((el) => { if (el !== gEl) el.classList.remove('guide'); });
+      if (gEl) gEl.classList.add('guide');
       plate.textContent = MODE_NAMES[S.mode] || '';
       plate.style.whiteSpace = 'pre';
       $('#btnPush').classList.toggle('ready', !!C.pushReady);

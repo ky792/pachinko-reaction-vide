@@ -56,12 +56,18 @@
           <button data-j="upperQuick">上位AT（即）</button>
           <button data-j="ending">世界征服エンディング</button>
         </div>
+        <h3>撮影用の再現（本編と同じ計算）</h3>
+        <div class="row">
+          <button id="dvPayOk">決算最終G・金貨で給与支払い成功</button>
+          <button id="dvPayNg">決算最終G・支払い失敗（辞表提出）</button>
+          <button id="dvFollow">雇ったゴブリンの追撃で勇者撃破</button>
+        </div>
         <h3>次ゲームの成立役</h3>
         <div class="row"><select id="dvRole">${roles}</select><button id="dvForce">次Gに予約</button><button id="dvFix" class="${MK.Game.forceRole ? 'on' : ''}">固定</button></div>
         <h3>経営状態</h3>
         <div class="row">
           <button id="dvCastleDn">城Lv−</button><button id="dvCastleUp">城Lv＋</button>
-          <button id="dvGold">資金＋1000</button><button id="dvApproach">勇者接近99%</button>
+          <button id="dvGold">金庫＋金貨50</button><button id="dvApproach">勇者接近99%</button>
         </div>
         <div class="row" style="margin-top:4px"><select id="dvMon">${mons}</select><button id="dvHire">雇用</button><button id="dvLv">全員Lv＋2</button></div>
         <h3>オート / 撮影</h3>
@@ -82,11 +88,14 @@
       `;
       p.querySelectorAll('[data-j]').forEach((b) => b.onclick = () => { MK.Audio.unlock(); MK.Game.jump(b.dataset.j); });
       const $ = (id) => p.querySelector('#' + id);
+      $('dvPayOk').onclick = () => { MK.Audio.unlock(); MK.Game.devPayday(true); };
+      $('dvPayNg').onclick = () => { MK.Audio.unlock(); MK.Game.devPayday(false); };
+      $('dvFollow').onclick = () => { MK.Audio.unlock(); MK.Game.devFollowKill(); };
       $('dvForce').onclick = () => { MK.Game.forceNext.push($('dvRole').value); MK.Cabinet.toast('次G：' + MK.CFG.ROLES[$('dvRole').value].label); };
       $('dvFix').onclick = () => { MK.Game.forceRole = MK.Game.forceRole ? null : $('dvRole').value; Dev.render(); };
       $('dvCastleDn').onclick = () => { MK.S.castleLv = Math.max(1, MK.S.castleLv - 1); };
       $('dvCastleUp').onclick = () => { if (MK.S.castleLv < 5) MK.Game.castleUp(); };
-      $('dvGold').onclick = () => { MK.S.gold += 1000; };
+      $('dvGold').onclick = () => { MK.S.gold += 50; };
       $('dvApproach').onclick = () => { MK.S.approach = 99; };
       $('dvHire').onclick = () => { if (!MK.Game.hire($('dvMon').value)) MK.Cabinet.toast('雇用枠がいっぱいです（城Lvを上げてください）'); };
       $('dvLv').onclick = () => { MK.S.monsters.forEach((m) => { m.lv = Math.min(9, m.lv + 2); MK.LCD.call('levelup', m); }); MK.LCD.call('sync'); };
@@ -109,7 +118,8 @@
       el.textContent =
         `モード: ${S.mode}   総G: ${S.games}\n` +
         `仮想メダル: ${S.medals}  差枚: ${diff >= 0 ? '+' : ''}${diff}\n` +
-        `資金: ${Math.floor(S.gold)}G  城Lv${S.castleLv}  魔物${S.monsters.length}体\n` +
+        `金庫: 金貨${Math.floor(S.gold)}枚  給料${G.wages()}枚/期  給料日まで${G.payStatus().left}G\n` +
+        `城Lv${S.castleLv}  魔物${S.monsters.length}体（新人${G.recruits().length}）\n` +
         `軍戦力: ${G.armyPower().toFixed(1)}  勇者戦力: ${G.partyPower().toFixed(1)}\n` +
         `ジャッジ勝率: ${Math.round(G.judgeWinRate() * 100)}%  接近: ${Math.floor(S.approach)}%\n` +
         `直近の役: ${G.cur ? MK.CFG.ROLES[G.cur.role].label : '-'}`;

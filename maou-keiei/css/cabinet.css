@@ -165,3 +165,10 @@ body.lcdonly #lcdFull { display: block; }
 #devPanel .stat { font: 11px/1.5 monospace; color: #aaa; white-space: pre; }
 body.rec #devToggle, body.rec #devPanel { display: none !important; }
 body.rec { cursor: none; }
+
+/* ---- 初回ガイド（最初の1Gだけ、次に触るものを点灯） ---- */
+.guide { animation: guideRing .7s ease-in-out infinite; z-index: 5; }
+.guide::after { content: "▼"; position: absolute; left: 50%; top: -34px; transform: translateX(-50%); color: #ffe08a; font: 400 26px/1 "Dela Gothic One", sans-serif; text-shadow: 0 0 10px #ffb020, 0 2px 0 #5a2a00; animation: guideArrow .7s ease-in-out infinite; pointer-events: none; }
+.lever.guide::after { top: -30px; left: 47px; }
+@keyframes guideRing { 0%,100% { filter: brightness(1) drop-shadow(0 0 0 rgba(255,210,80,0)); } 50% { filter: brightness(1.5) drop-shadow(0 0 18px rgba(255,210,80,1)); } }
+@keyframes guideArrow { 0%,100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, 8px); } }

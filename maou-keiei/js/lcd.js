@@ -33,10 +33,11 @@
         const hh = (a.type === 'dragon' ? 150 : a.type === 'imp' ? 110 : 92) * a.s;
         const bx = a.x, by = a.y - hh - 6;
         ctx.save();
-        ctx.fillStyle = a.lv >= 7 ? '#ffcc33' : a.lv >= 4 ? '#c38bff' : '#7ad8ff';
-        ctx.font = 'bold 13px "Dela Gothic One", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.lineWidth = 4; ctx.strokeStyle = '#000'; ctx.strokeText('Lv' + a.lv, bx, by);
-        ctx.fillText('Lv' + a.lv, bx, by);
+        const txt = a.recruit ? '新人' + (a.lv > 1 ? ' Lv' + a.lv : '') : 'Lv' + a.lv;
+        ctx.fillStyle = a.recruit ? '#7dffb0' : a.lv >= 7 ? '#ffcc33' : a.lv >= 4 ? '#c38bff' : '#7ad8ff';
+        ctx.font = (a.recruit ? 'bold 16px ' : 'bold 13px ') + '"Dela Gothic One", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.lineWidth = 4; ctx.strokeStyle = '#000'; ctx.strokeText(txt, bx, by);
+        ctx.fillText(txt, bx, by);
         ctx.restore();
       }
     });
@@ -144,11 +145,11 @@
     ];
     let x = 20;
     items.forEach(([k, v]) => {
-      A.label(ctx, k, x, H - 18, 14, '#c9a65a');
-      ctx.font = 'bold 14px "Shippori Mincho B1", serif';
+      A.label(ctx, k, x, H - 20, 16, '#c9a65a');
+      ctx.font = 'bold 16px "Shippori Mincho B1", serif';
       const kw = ctx.measureText(k).width;
-      A.label(ctx, v, x + kw + 8, H - 18, 17, '#fff3d0');
-      ctx.font = 'bold 17px "Shippori Mincho B1", serif';
+      A.label(ctx, v, x + kw + 8, H - 20, 21, '#fff3d0');
+      ctx.font = 'bold 21px "Shippori Mincho B1", serif';
       x += kw + 8 + ctx.measureText(v).width + 26;
     });
   }
@@ -194,167 +195,301 @@
     stop() {}
   }
 
-  // ---------- 通常時：魔王城経営 ----------
-  const TICKER = [
-    'フハハ！今期も黒字で勇者を迎え撃つぞ！',
-    '人件費が…いや、福利厚生は大事だ。',
-    'スライム君、今日も笑顔で接客だ。',
-    '城の修繕費、経費で落ちるかな…',
-    '勇者め、アポなしで来るんじゃない！',
-    'ゴブリン部長、売上報告を頼む。',
-    '魔王たる者、赤字だけは許さん！',
-    '勇者を倒せ。赤字を出すな。それが我が社訓だ。',
-  ];
+  // ---------- 通常時：魔王城経営（断面図） ----------
+  const C = MK.Castle;
+  const ROOM_OF = { slime: 0, goblin: 1, skeleton: 2, imp: 3, dragon: 4 };
+  const CASTLE_GEO = { x: 480, y: 512, s: 1.2, floors: 3 };
+  const CASTLE_BOX = { x: 480, bottom: 512, h: 400, maxS: 1.25 };
+  const BAG = { x: 128, y: 528, s: 1.05 };
+  const FG = { x: 850, y: 532, s: 1.75 };
+  function roomOf(m) { const r = ROOM_OF[m.type]; return r == null || r > MK.S.castleLv ? 1 : r; }
+  function localToScreen(lx, ly, geo = CASTLE_GEO) { return [geo.x + lx * geo.s, geo.y + ly * geo.s]; }
+  // 選択肢カード
+  function choiceCards(ctx, t, choice) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(4,0,8,0.72)'; ctx.fillRect(0, 0, W, H);
+    A.label(ctx, '経営判断', W / 2, 46, 34, '#ffe08a', 'center', '"Dela Gothic One", sans-serif');
+    const cards = choice.opts;
+    cards.forEach((o, i) => {
+      const x = i ? W / 2 + 16 : 44, y = 86, w = W / 2 - 60, h = 330;
+      const pulse = 0.5 + 0.5 * Math.sin(t * 6 + i * Math.PI);
+      A.panel(ctx, x, y, w, h, { color: o.key === 'save' ? '#9fe8ff' : '#ffd34a', bg: ['rgba(40,12,30,0.95)', 'rgba(10,2,12,0.96)'] });
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.25 + 0.2 * pulse;
+      ctx.drawImage(FX.glow(o.key === 'save' ? 'rgba(120,200,255,0.6)' : 'rgba(255,200,80,0.6)', 128), x, y + 20, w, 200); ctx.restore();
+      // 絵
+      const cx = x + w / 2;
+      if (o.key === 'hire') A.monster(ctx, { type: o.type, x: cx, y: y + 190, s: o.type === 'dragon' ? 0.9 : 1.4, face: 1, anim: 'cheer', at: t, lv: 1 }, t);
+      else if (o.key === 'build') { ctx.save(); ctx.beginPath(); ctx.rect(x + 10, y + 10, w - 20, 200); ctx.clip(); C.section(ctx, { x: cx, y: y + 400, s: 0.42 }, Math.min(5, MK.S.castleLv + 1), t, { vault: MK.S.gold }); ctx.restore(); }
+      else { C.payBag(ctx, cx, y + 196, 1.0, 0.85, t, { glow: 0.5 }); }
+      A.label(ctx, o.title, cx, y + 232, 32, o.key === 'save' ? '#bfeaff' : '#ffe08a', 'center', '"Dela Gothic One", sans-serif');
+      o.lines.forEach((l, k) => A.label(ctx, l, cx, y + 270 + k * 28, 21, k === 0 ? '#ffffff' : '#ffd34a', 'center'));
+      A.label(ctx, i ? '右ボタン ▶' : '◀ 左ボタン', cx, y + h + 22, 17, '#e8c87a', 'center');
+    });
+    ctx.restore();
+  }
+
   class NormalScene extends Scene {
     enter() {
-      this.sync(true);
-      this.tick = 0; this.tickT = 0;
-      this.castleS = 0.7;
+      this.actors = [];
+      this.flash = {};
+      Object.assign(CASTLE_GEO, C.fitGeo(MK.S.castleLv, CASTLE_BOX));
+      this.fg = null;
+      this.bagFill = 0; this.bagShow = 0;
+      this.msg = null; this.msgUntil = 0;
+      this.sync();
       MK.Audio.bgm('normal');
     }
-    sync(reset) {
+    sync() {
       const S = MK.S;
       const ids = new Set(S.monsters.map((m) => m.id));
       this.actors = this.actors.filter((a) => ids.has(a.id));
-      S.monsters.forEach((m, i) => {
+      const perRoom = {};
+      S.monsters.forEach((m) => {
+        const room = roomOf(m);
+        perRoom[room] = (perRoom[room] || 0) + 1;
         let a = this.actors.find((x) => x.id === m.id);
+        const r = C.roomRect(room);
         if (!a) {
-          a = actor({ id: m.id, type: m.type, x: reset ? U.rand(80, 880) : 600, y: U.rand(452, 512), s: m.type === 'dragon' ? 0.7 : 0.8, face: U.pick([-1, 1]) });
-          if (!reset) a.tx = U.rand(80, 880);
+          a = actor({ id: m.id, type: m.type, s: m.type === 'dragon' ? 0.42 : 0.62, face: U.pick([-1, 1]) });
+          a.x = U.rand(r.x0 + 60, r.x1 - 60);
           this.actors.push(a);
         }
-        a.lv = m.lv; a.badge = true;
+        a.room = room; a.y = r.y1 - 3; a.lv = m.lv; a.badge = true; a.recruit = !!m.recruit;
+        if (a.x < r.x0 + 40 || a.x > r.x1 - 40) a.x = U.rand(r.x0 + 60, r.x1 - 60);
       });
     }
+    say(msg, sec = 2) { this.msg = msg; this.msgUntil = this.t + sec; }
     update(dt) {
       super.update(dt);
-      const t = this.t;
-      // 歩き回る
+      const S = MK.S;
       this.actors.forEach((a) => {
-        if (a.tx == null && a.anim === 'idle' && Math.random() < dt * 0.25) { a.tx = U.clamp(a.x + U.rand(-180, 180), 60, 900); a.speed = U.rand(40, 80); }
+        const r = C.roomRect(a.room);
+        if (a.tx == null && a.anim === 'idle' && Math.random() < dt * 0.3) { a.tx = U.clamp(a.x + U.rand(-120, 120), r.x0 + 40, r.x1 - 40); a.speed = U.rand(30, 60); }
+        // 所帯じみた仕事
+        if (a.anim === 'idle' && Math.random() < dt * 0.25) {
+          if (a.type === 'goblin') { setAnim(a, 'attack', 0.5); const [sx, sy] = localToScreen(a.x + a.face * 20, a.y - 18); setTimeout(() => FX.P.sparks(sx, sy, 5, '#ffd27a', 160), 200); }
+          else if (a.type === 'slime') setAnim(a, 'cheer', 0.6);
+          else if (a.type === 'dragon') { setAnim(a, 'attack', 0.8); const [sx, sy] = localToScreen(a.x + a.face * 40, a.y - 30); FX.P.fire(sx, sy, 6, 0.5); }
+        }
       });
-      // 松明
-      if (Math.random() < 0.8) { FX.P.fire(70, 410, 1, 0.8, 'back'); FX.P.fire(890, 410, 1, 0.8, 'back'); }
-      if (Math.random() < dt * 4) FX.P.embers(W, H, 1, 'rgba(255,110,40,0.9)', 'back');
-      if (MK.S.castleLv >= 5 && Math.random() < dt * 0.15) this.bolt = { t, seed: Math.random() * 999 };
-      this.tickT += dt;
-      if (this.tickT > 7) { this.tickT = 0; this.tick = (this.tick + 1) % TICKER.length; }
-      MK.S.goldShown += (MK.S.gold - MK.S.goldShown) * Math.min(1, dt * 6);
+      for (const k in this.flash) this.flash[k] = Math.max(0, this.flash[k] - dt * 0.8);
+      const g = C.fitGeo(S.castleLv, CASTLE_BOX);
+      CASTLE_GEO.s += (g.s - CASTLE_GEO.s) * Math.min(1, dt * 2.5); CASTLE_GEO.floors = g.floors;
+      // 給料袋
+      const ps = MK.Game.payStatus();
+      const show = ps.warn || (this.paydayAnim && this.bagShow > 0);
+      this.bagShow = U.clamp(this.bagShow + (show ? dt * 3 : -dt * 3), 0, 1);
+      const fillT = this.bagFillTarget != null ? this.bagFillTarget : U.clamp(S.gold / Math.max(1, ps.payroll), 0, 1);
+      this.bagFill += (fillT - this.bagFill) * Math.min(1, dt * 5);
+      // 辞表のゴブリン
+      if (ps.warn && !this.fg && !this.paydayAnim) this.enterRisk();
+      if (!ps.warn && this.fg && this.fg.state === 'hold' && !this.paydayAnim) this.pocket();
+      if (this.fg) {
+        updateActor(this.fg.a, dt);
+        this.fg.p += dt;
+        if (this.fg.state === 'out' && this.fg.a.tx == null) { this.unhide(this.fg.id); this.fg = null; }
+      }
+      if (Math.random() < 0.6) { FX.P.fire(60, 400, 1, 0.7, 'back'); FX.P.fire(900, 400, 1, 0.7, 'back'); }
+      if (Math.random() < dt * 3) FX.P.embers(W, H, 1, 'rgba(255,110,40,0.9)', 'back');
+      S.goldShown += (S.gold - S.goldShown) * Math.min(1, dt * 6);
+    }
+    unhide(id) { const a = this.actors.find((x) => x.id === id); if (a) a.hidden = false; }
+    enterRisk() {
+      const m = MK.Game.riskMonster();
+      if (!m) return;
+      const room = this.actors.find((x) => x.id === m.id);
+      if (room) room.hidden = true;
+      const a = actor({ id: m.id, type: m.type, lv: m.lv, x: W + 80, y: FG.y, s: FG.s, face: -1, speed: 160 });
+      a.tx = FG.x;
+      this.fg = { id: m.id, a, state: 'hold', p: 0 };
+    }
+    pocket() {
+      if (!this.fg) return;
+      this.fg.state = 'pocket'; this.fg.p = 0;
+      const f = this.fg;
+      setTimeout(() => { if (this.fg === f) { f.state = 'out'; f.a.tx = W + 120; f.a.speed = 120; } }, 1100 / MK.timeScale);
     }
     drawWorld(ctx, t) {
       A.background(ctx, W, H, 'normal', t);
-      if (this.bolt && t - this.bolt.t < 0.25) {
-        FX.lightning(ctx, U.rand(400, 800), 0, 600, 200, '#ffb0c0', 3, this.bolt.seed);
-      }
-      A.castle(ctx, 560, 430, this.castleS, MK.S.castleLv, t);
-      // 松明台
-      [70, 890].forEach((x) => { ctx.fillStyle = '#1a1014'; ctx.fillRect(x - 5, 410, 10, 70); ctx.fillStyle = '#3a2a20'; ctx.fillRect(x - 12, 404, 24, 10); });
+      [60, 900].forEach((x) => { ctx.fillStyle = '#1a1014'; ctx.fillRect(x - 5, 400, 10, 90); ctx.fillStyle = '#3a2a20'; ctx.fillRect(x - 12, 394, 24, 10); });
+      C.section(ctx, CASTLE_GEO, MK.S.castleLv, t, { vault: MK.S.goldShown, flash: this.flash, floors: CASTLE_GEO.floors });
       FX.drawLayer(ctx, 'back');
+      // 部屋の魔物（城ローカル座標）
+      ctx.save(); ctx.translate(CASTLE_GEO.x, CASTLE_GEO.y); ctx.scale(CASTLE_GEO.s, CASTLE_GEO.s);
       drawActors(ctx, this.actors, t);
-    }
-    drawHud(ctx, t) {
-      const S = MK.S;
-      goldHud(ctx, S);
-      approachHud(ctx, S, t);
-      bottomHud(ctx, S);
-      // 魔王のつぶやき
-      const msg = this.msg && t < this.msgUntil ? this.msg : TICKER[this.tick];
-      ctx.save();
-      const mw = 400;
-      ctx.fillStyle = 'rgba(10,2,12,0.75)';
-      ctx.beginPath(); ctx.roundRect(W / 2 - mw / 2, 104, mw, 34, 17); ctx.fill();
-      ctx.strokeStyle = 'rgba(217,166,64,0.6)'; ctx.lineWidth = 1.5; ctx.stroke();
-      A.label(ctx, '魔王「' + msg + '」', W / 2, 121, 15, '#ffe7c0', 'center');
       ctx.restore();
     }
-    say(msg, sec = 3) { this.msg = msg; this.msgUntil = this.t + sec; }
+    drawHud(ctx, t) {
+      const S = MK.S, ps = MK.Game.payStatus();
+      // 金庫
+      A.panel(ctx, 14, 12, 250, 92, { title: '金庫' });
+      A.coin(ctx, 40, 58, 14);
+      A.num(ctx, Math.round(S.goldShown), 62, 58, 38, 'gold');
+      ctx.font = '400 38px "Dela Gothic One", sans-serif';
+      const nw = ctx.measureText(String(Math.round(S.goldShown))).width;
+      A.label(ctx, '枚', 70 + nw, 64, 18, '#ffe08a');
+      A.label(ctx, '給料' + ps.payroll + '枚 ・ 給料日まで' + ps.left + 'G', 24, 90, 16, '#f3e2b0');
+      approachHud(ctx, S, t);
+      if (this.msg && this.t < this.msgUntil) {
+        ctx.save(); ctx.fillStyle = 'rgba(10,2,12,0.8)'; ctx.beginPath(); ctx.roundRect(W / 2 - 110, 112, 220, 32, 16); ctx.fill(); ctx.restore();
+        A.label(ctx, this.msg, W / 2, 128, 16, '#ffe7c0', 'center');
+      }
+      // 給料袋（決算前の3Gで足りないときだけ）
+      if (this.bagShow > 0.01) {
+        const k = U.ease.outBack(this.bagShow);
+        ctx.save(); ctx.globalAlpha = Math.min(1, this.bagShow * 1.5);
+        ctx.fillStyle = A.lg(ctx, 0, 300, 0, H, ['rgba(0,0,0,0)', 'rgba(0,0,0,0.6)']); ctx.fillRect(0, 300, 300, H - 300);
+        C.payBag(ctx, BAG.x, BAG.y, BAG.s * k, this.bagFill, t, { glow: this.bagGlow || 0, shake: this.bagShake });
+        if (!this.paydayAnim) {
+          const left = ps.left;
+          ctx.fillStyle = 'rgba(8,2,10,0.82)'; ctx.beginPath(); ctx.roundRect(12, 290, 290, 96, 12); ctx.fill();
+          ctx.strokeStyle = 'rgba(217,166,64,0.7)'; ctx.lineWidth = 2; ctx.stroke();
+          A.label(ctx, left <= 1 ? '今日が給料日' : '給料日まであと' + left + 'G', BAG.x + 30, 316, 26, '#ffffff', 'center', '"Dela Gothic One", sans-serif');
+          if (ps.need > 0) {
+            A.label(ctx, 'あと金貨' + ps.need + '枚', BAG.x + 30, 358, 38, '#ffd34a', 'center', '"Dela Gothic One", sans-serif');
+            // 1回で足りる役
+            const coin = MK.CFG.NORMAL.gold.coin;
+            const times = Math.ceil(ps.need / coin);
+            if (times <= 2) {
+              ctx.save(); ctx.translate(BAG.x + 118, 442); ctx.scale(0.62, 0.62); ctx.translate(-75, -41);
+              A.symbol(ctx, 'COIN', 150, 82); ctx.restore();
+              A.label(ctx, times === 1 ? '1回で足りる' : '2回で足りる', BAG.x + 118, 482, 17, '#ffe08a', 'center');
+            }
+          }
+        }
+        ctx.restore();
+      }
+      // 辞表のゴブリン（手前）
+      if (this.fg) this.drawRisk(ctx, t);
+      naviHud(ctx, t);
+      if (MK.Game.cur && MK.Game.cur.payNavi) A.label(ctx, '給料日ナビ', W / 2, H - 162, 18, '#7dffb0', 'center');
+      if (MK.Game.choice) choiceCards(ctx, t, MK.Game.choice);
+    }
+    drawRisk(ctx, t) {
+      const f = this.fg, a = f.a;
+      A.monster(ctx, a, t);
+      const hx = a.x - 26, hy = a.y - 58 * a.s;
+      if (f.state === 'hold') {
+        const p = U.ease.outBack(U.clamp(f.p / 0.5, 0, 1));
+        C.letter(ctx, hx, hy + Math.sin(t * 3) * 2, 1.1 * p, -0.15);
+      } else if (f.state === 'pocket') {
+        const p = U.clamp(f.p / 0.7, 0, 1);
+        C.letter(ctx, U.lerp(hx, a.x + 4, p), U.lerp(hy, a.y - 40 * a.s, p), 1.1 * (1 - p), U.lerp(-0.15, 1.2, p));
+        if (f.p > 0.6) A.label(ctx, '…', a.x, a.y - 130, 22, '#ffffff', 'center');
+      } else if (f.state === 'quit') {
+        const p = U.clamp(f.p / 0.45, 0, 1);
+        const e = U.ease.outBack(p);
+        ctx.save(); ctx.globalAlpha = 1 - U.seg(f.p, 1.6, 2.0);
+        C.letter(ctx, U.lerp(hx, W / 2, e), U.lerp(hy, 250, e), U.lerp(1.1, 5, e), U.lerp(-0.15, -0.05, e), { stamp: true });
+        ctx.restore();
+      }
+    }
     lever(info) {
       const r = MK.CFG.ROLES[info.role].rare || 0;
       const roll = Math.random();
       if (r >= 3 || (r >= 1 && roll < 0.35) || (r === 0 && roll < 0.04)) {
-        // 予告：魔物ざわめき
         this.actors.forEach((a) => { a.tx = null; setAnim(a, 'cheer', 0.8); });
-        this.actors.slice(0, 4).forEach((a) => {
-          FX.add({ dur: 0.9, layer: 'front', draw(ctx, p) { ctx.globalAlpha = 1 - U.seg(p, 0.7, 1); FX.fancyText(ctx, '!', a.x, topY(a) - 18 - E.outBack(U.seg(p, 0, 0.3)) * 10, 34, { palette: 'blood' }); } });
-        });
         MK.Audio.play('coin');
       }
       if (r >= 2 && (roll < 0.6 || r >= 3)) {
-        // 魔法陣予告
         MK.Audio.play('magic');
         FX.add({ dur: 1.4, layer: 'back', draw(ctx, p, age) {
           ctx.globalAlpha = Math.sin(p * Math.PI);
-          FX.magicCircle(ctx, W / 2, 470, 260, age * 2, r >= 3 ? 'rgba(255,60,80,1)' : 'rgba(160,110,255,1)', { tilt: 0.25 });
+          FX.magicCircle(ctx, W / 2, 480, 260, age * 2, r >= 3 ? 'rgba(255,60,80,1)' : 'rgba(160,110,255,1)', { tilt: 0.25 });
         } });
       }
-      if (r >= 3 && roll < 0.7) {
-        setTimeout(() => FX.cutin({ text: 'む…この気配は！？', size: 54, drawChar: (c, x, y, a) => A.maou(c, x, y, 0.9, a, 'shock'), dur: 1.3 }), 300);
-      }
+      if (r >= 3 && roll < 0.7) setTimeout(() => FX.cutin({ text: 'む…この気配は！？', size: 54, drawChar: (c, x, y, a) => A.maou(c, x, y, 0.9, a, 'shock'), dur: 1.3 }), 300);
       if (r >= 3) MK.Reels.setAllLight(0.25);
     }
     result(res) {
-      const S = MK.S;
       const gain = res.goldGain;
+      const toBag = this.bagShow > 0.3 || res.payday;
+      const [vx, vy] = localToScreen(-140, -40);
       if (gain > 0) {
-        FX.P.coins(W / 2, 300, 60, 62, Math.min(14, 2 + Math.floor(gain / 10)));
-        popNumber(170, 108, '+' + gain + 'G', { size: 26 });
-        setTimeout(() => MK.Audio.play('coin'), 500);
+        FX.P.coins(W / 2, 470, toBag ? BAG.x : vx, toBag ? BAG.y - 80 : vy, Math.min(12, 2 + gain * 2));
+        setTimeout(() => MK.Audio.play('coin'), 450);
+        popNumber(toBag ? BAG.x + 60 : vx, toBag ? 300 : vy - 30, '+' + gain + '枚', { size: 28 });
       }
       const label = MK.CFG.ROLES[res.role].rare ? MK.CFG.ROLES[res.role].label : null;
-      if (label) FX.slam(label + '!!', { size: 64, y: 230, palette: MK.CFG.ROLES[res.role].rare >= 3 ? 'blood' : 'gold', dur: 1.2, shake: 6 });
+      if (label) FX.slam(label + '!!', { size: 60, y: 220, palette: MK.CFG.ROLES[res.role].rare >= 3 ? 'blood' : 'gold', dur: 1.1, shake: 6 });
       MK.Reels.setAllLight(1);
     }
+    // 給料日の支払い（成立役と実際の収支に連動）
+    async payday(info) {
+      const wait = MK.wait;
+      if (!info.dramatic) {
+        // 余裕の回は短く
+        MK.Audio.play('coin');
+        FX.add({ dur: 1.1, layer: 'top', draw(ctx, p, age) {
+          ctx.globalAlpha = Math.min(1, age * 5) * (1 - U.seg(p, 0.75, 1));
+          A.panel(ctx, W / 2 - 150, 112, 300, 48, { color: info.ok ? '#7dffb0' : '#ff4040' });
+          A.label(ctx, info.ok ? '給料日　支払い完了　−' + info.wage + '枚' : '給料が払えない…', W / 2, 136, 18, '#ffffff', 'center');
+        } });
+        if (info.ok) { await wait(900); return; }
+      }
+      this.paydayAnim = true;
+      if (!this.fg) this.enterRisk();
+      this.bagShow = Math.max(this.bagShow, 0.6);
+      if (info.ok) {
+        // 給料袋が満ちる → 辞表をポケットへ
+        this.bagFillTarget = 1;
+        await wait(500);
+        this.bagGlow = 1;
+        MK.Audio.play('levelup');
+        FX.P.burst(BAG.x, BAG.y - 60, 30, 'rgba(255,220,100,0.9)', 260);
+        await wait(500);
+        this.pocket();
+        await wait(1300);
+        this.bagGlow = 0;
+      } else {
+        // 足りない → 本当に提出
+        this.bagFillTarget = Math.min(0.95, info.vault / Math.max(1, info.wage));
+        this.bagShake = true;
+        await wait(700);
+        this.bagShake = false;
+        if (this.fg) {
+          this.fg.state = 'quit'; this.fg.p = 0;
+          await wait(350);
+          MK.Audio.play('hit'); FX.shake(10);
+          await wait(1300);
+          this.fg.state = 'out'; this.fg.a.tx = W + 140; this.fg.a.speed = 110;
+          const m = MK.CFG.MONSTERS[this.fg.a.type];
+          this.say(m.name + '　退職', 2.5);
+          MK.Audio.play('lose');
+          await wait(900);
+        }
+      }
+      this.bagFillTarget = null;
+      this.paydayAnim = false;
+      this.bagShow = 0;
+    }
     hire(m) {
-      this.sync(false);
+      this.sync();
       const a = this.actors.find((x) => x.id === m.id);
       if (a) {
-        a.x = 560; a.y = 470; a.tx = U.rand(120, 840); a.speed = 90;
-        FX.P.burst(a.x, a.y - 40, 20, 'rgba(160,110,255,0.9)', 200);
+        const [sx, sy] = localToScreen(a.x, a.y - 30);
+        FX.P.burst(sx, sy, 24, 'rgba(160,110,255,0.9)', 200);
+        setAnim(a, 'cheer', 1.2);
       }
-      this.say(MK.CFG.MONSTERS[m.type].name + 'を雇用した！ よろしく頼むぞ。', 3);
-      FX.add({ dur: 1.8, layer: 'top', draw(ctx, p, age) {
+      FX.add({ dur: 1.6, layer: 'top', draw(ctx, p, age) {
         ctx.globalAlpha = Math.min(1, age * 4) * (1 - U.seg(p, 0.8, 1));
-        A.panel(ctx, W / 2 - 170, 160, 340, 60, { color: '#7ad8ff' });
-        A.label(ctx, '新規雇用', W / 2, 178, 14, '#9fe8ff', 'center');
-        A.label(ctx, MK.CFG.MONSTERS[m.type].name + '  人件費 ' + MK.CFG.MONSTERS[m.type].wage + 'G/期', W / 2, 202, 20, '#ffffff', 'center');
+        A.panel(ctx, W / 2 - 160, 150, 320, 56, { color: '#7dffb0' });
+        A.label(ctx, MK.CFG.MONSTERS[m.type].name + ' 入社　給料 ' + MK.CFG.MONSTERS[m.type].wage + '枚/期', W / 2, 178, 19, '#ffffff', 'center');
       } });
       MK.Audio.play('levelup');
     }
-    leave(m) {
-      const a = this.actors.find((x) => x.id === m.id);
-      if (a) { a.tx = a.x < W / 2 ? -100 : W + 100; a.speed = 160; a.leaving = true; setTimeout(() => this.sync(false), 1500); }
-      this.say(MK.CFG.MONSTERS[m.type].name + 'が給料未払いで辞めてしまった…', 3.5);
-    }
-    settle(info) {
-      MK.Audio.play(info.net >= 0 ? 'coin' : 'lose');
-      FX.add({ dur: 2.4, layer: 'top', draw(ctx, p, age) {
-        const k = E.outBack(U.seg(age, 0, 0.3));
-        ctx.globalAlpha = 1 - U.seg(p, 0.85, 1);
-        ctx.translate(W / 2, 270); ctx.scale(k, k);
-        A.panel(ctx, -200, -80, 400, 160, { color: info.net >= 0 ? '#ffd34a' : '#ff4040' });
-        A.label(ctx, '― 第' + info.term + '期 決算報告 ―', 0, -56, 18, '#e8c87a', 'center');
-        A.label(ctx, '売上', -150, -22, 17, '#c9a65a'); A.num(ctx, '+' + info.income + 'G', 150, -22, 24, 'gold', 'right');
-        A.label(ctx, '人件費', -150, 10, 17, '#c9a65a'); A.num(ctx, '-' + info.wage + 'G', 150, 10, 24, 'silver', 'right');
-        ctx.fillStyle = '#d9a640'; ctx.fillRect(-160, 28, 320, 2);
-        FX.fancyText(ctx, info.net >= 0 ? '黒字 +' + info.net + 'G' : '赤字 ' + info.net + 'G', 0, 54, 34, { palette: info.net >= 0 ? 'gold' : 'blood' });
-      } });
-      if (info.net < 0) { FX.shake(10); FX.flash('#ff0000', 0.35); this.say('ぐぬぬ…赤字だと！？', 3); }
-      else this.say(info.net > 60 ? 'フハハハ！大幅黒字だ！' : 'うむ、堅実な経営だ。', 3);
-    }
-    invest(kind, data) {
-      if (kind === 'castle') {
-        MK.Audio.play('build');
-        const S = MK.S;
-        FX.P.smoke(560, 420, 20, 2, 'rgba(120,100,120,0.6)', 'front');
-        FX.P.burst(560, 300, 40, 'rgba(200,140,255,0.9)', 400, 30);
-        FX.flash('#ffffff', 0.6);
-        FX.shake(12);
-        this.castleS = 0.6;
-        const self = this;
-        FX.add({ dur: 1, update(dt, o) { self.castleS = 0.6 + 0.1 * E.outElastic(o.age); }, draw() {} });
-        FX.slam('城 増築!!', { y: 210, size: 72, sub: 'Lv' + S.castleLv + '「' + MK.CFG.CASTLE.names[S.castleLv] + '」', palette: 'violet' });
-        this.say('見よ、この威容！ 勇者も震えるがよい！', 3);
-      }
+    invest(kind) {
+      if (kind !== 'castle') return;
+      const S = MK.S;
+      MK.Audio.play('build');
+      this.flash[S.castleLv] = 1.4;
+      const r = C.roomRect(S.castleLv);
+      const [sx, sy] = localToScreen(0, (r.y0 + r.y1) / 2);
+      FX.P.smoke(sx, sy + 20, 14, 1.5, 'rgba(160,140,150,0.6)', 'front');
+      FX.P.burst(sx, sy, 40, 'rgba(255,220,140,0.9)', 360, 26);
+      FX.flash('#ffffff', 0.5); FX.shake(10);
+      FX.slam(C.ROOMS[S.castleLv].name + ' 開設!!', { y: 200, size: 64, sub: '城Lv' + S.castleLv + '「' + MK.CFG.CASTLE.names[S.castleLv] + '」', palette: 'violet' });
+      setTimeout(() => this.sync(), 300);
     }
   }
 
@@ -363,81 +498,117 @@
     enter() {
       const S = MK.S;
       this.actors = [];
-      const sorted = S.monsters.slice().sort((a, b) => MK.CFG.MONSTERS[b.type].power - MK.CFG.MONSTERS[a.type].power).slice(0, 6);
-      sorted.forEach((m, i) => {
-        this.actors.push(actor({ id: m.id, type: m.type, lv: m.lv, x: 110 + (i % 3) * 95 + (i >= 3 ? 45 : 0), y: i >= 3 ? 500 : 455, s: m.type === 'dragon' ? 0.75 : 0.9, face: 1, badge: true }));
+      // 新人（経営判断で雇った魔物）は必ず並べる
+      const rec = S.monsters.filter((m) => m.recruit);
+      const rest = S.monsters.filter((m) => !m.recruit).sort((a, b) => MK.CFG.MONSTERS[b.type].power - MK.CFG.MONSTERS[a.type].power);
+      const line = rest.slice(0, Math.max(0, 6 - rec.length)).concat(rec).slice(0, 6);
+      line.forEach((m, i) => {
+        this.actors.push(actor({ id: m.id, type: m.type, lv: m.lv, x: 90 + (i % 3) * 100 + (i >= 3 ? 50 : 0), y: i >= 3 ? 510 : 462, s: m.type === 'dragon' ? 0.8 : 1.0, face: 1, badge: true, recruit: !!m.recruit }));
       });
-      this.hero = actor({ kind: 'hero', type: 'hero', x: 1050, y: 470, s: 1.25, face: -1, tx: 760, speed: 260 });
+      this.hero = actor({ kind: 'hero', type: 'hero', x: 1050, y: 480, s: 1.35, face: -1, tx: 740, speed: 260 });
       this.party = [
-        actor({ kind: 'hero', type: 'warrior', x: 1120, y: 430, s: 0.9, face: -1, tx: 860, speed: 240 }),
-        actor({ kind: 'hero', type: 'mage', x: 1160, y: 505, s: 0.9, face: -1, tx: 900, speed: 240 }),
+        actor({ kind: 'hero', type: 'warrior', x: 1120, y: 440, s: 0.95, face: -1, tx: 860, speed: 240 }),
+        actor({ kind: 'hero', type: 'mage', x: 1160, y: 515, s: 0.95, face: -1, tx: 900, speed: 240 }),
       ];
       this.actors.push(this.hero, ...this.party);
-      this.hpShown = S.cz.hp;
+      this.hpShown = S.cz.hp; this.hpT = S.cz.hp;
       MK.Audio.bgm('cz');
     }
     update(dt) {
       super.update(dt);
       if (Math.random() < dt * 14) FX.P.embers(W, H, 1, 'rgba(255,80,30,0.9)', 'back');
       if (Math.random() < dt * 3) FX.P.smoke(U.rand(0, W), H - 40, 1, 1.5, 'rgba(40,10,10,0.5)', 'back');
-      this.hpShown += (MK.S.cz.hp - this.hpShown) * Math.min(1, dt * 5);
+      if (!this.animating) this.hpT = MK.S.cz.hp;
+      this.hpShown += (this.hpT - this.hpShown) * Math.min(1, dt * 6);
+      if (Math.abs(this.hpT - this.hpShown) < 0.4) this.hpShown = this.hpT;
     }
     drawWorld(ctx, t) {
       A.background(ctx, W, H, 'cz', t);
-      A.castle(ctx, 210, 400, 0.42, MK.S.castleLv, t);
+      ctx.save(); ctx.globalAlpha = 0.85; C.section(ctx, { x: 150, y: 430, s: 0.4 }, MK.S.castleLv, t, { vault: MK.S.gold, floors: Math.min(6, MK.S.castleLv + 1) }); ctx.restore();
       FX.drawLayer(ctx, 'back');
       drawActors(ctx, this.actors, t);
     }
     drawHud(ctx, t) {
       const S = MK.S;
-      rushBanner(ctx, '勇者襲来', 'gold', t);
-      A.panel(ctx, 20, 76, 250, 66, { color: '#e04040' });
-      A.label(ctx, '残り', 36, 108, 18, '#ff9a9a');
-      A.num(ctx, Math.max(0, MK.CFG.CZ.games - S.cz.game + 1) + 'G', 84, 108, 40, 'gold');
-      A.label(ctx, '勇者を撃退せよ！', 256, 128, 13, '#ffd0d0', 'right');
-      // 勇者HP
-      A.panel(ctx, 560, 18, 384, 70, { color: '#7ad8ff' });
-      A.label(ctx, '勇者アルス', 578, 38, 16, '#bfe8ff');
-      A.label(ctx, 'HP', 578, 66, 16, '#bfe8ff');
-      A.bar(ctx, 610, 56, 310, 20, this.hpShown / S.cz.maxHp, ['#7aff9a', '#1a8a3a']);
-      A.num(ctx, Math.max(0, Math.ceil(S.cz.hp)), 926, 38, 20, 'silver', 'right');
-      // 戦力
-      A.label(ctx, '魔王軍 戦力 ' + MK.Game.armyPower().toFixed(1), 20, H - 18, 15, '#ffd34a');
+      // 主役：勇者の残りHP（上段中央・大）
+      const hpw = 600, hx = W / 2 - hpw / 2;
+      A.panel(ctx, hx - 14, 10, hpw + 28, 86, { color: '#ff6a5a' });
+      A.label(ctx, '勇者アルス', hx + 4, 32, 18, '#ffd0d0');
+      A.num(ctx, Math.max(0, Math.ceil(this.hpShown)), hx + hpw, 32, 30, 'gold', 'right');
+      const v = this.hpShown / S.cz.maxHp;
+      A.bar(ctx, hx, 54, hpw, 30, v, v < 0.25 ? ['#ffd04a', '#ff2020'] : ['#7aff9a', '#1a8a3a']);
+      // 残りG（左・大）
+      const left = Math.max(0, MK.CFG.CZ.games - S.cz.game + 1);
+      A.panel(ctx, 14, 108, 170, 92, { color: '#e04040' });
+      A.label(ctx, '残り', 30, 134, 18, '#ff9a9a');
+      A.num(ctx, left + 'G', 30, 172, 50, left <= 2 ? 'blood' : 'gold');
+      A.label(ctx, '勇者襲来', W - 24, 136, 30, '#ff8a7a', 'right', '"Dela Gothic One", sans-serif');
       naviHud(ctx, t);
     }
     lever(info) {
       const r = MK.CFG.ROLES[info.role].rare || 0;
       if (r >= 2) { MK.Audio.play('magic'); FX.add({ dur: 1.2, layer: 'back', draw(ctx, p, age) { ctx.globalAlpha = Math.sin(p * Math.PI); FX.magicCircle(ctx, 250, 480, 200, age * 3, 'rgba(255,60,60,1)', { tilt: 0.3 }); } }); }
-      this.hero.anim === 'idle' && setAnim(this.hero, 'attack', 0.5);
     }
-    async attack(res) {
-      const S = MK.S;
-      const list = this.actors.filter((a) => a.kind === 'monster');
-      if (!list.length) return;
-      const big = res.dmg >= 30;
-      const atk = big ? list.reduce((a, b) => (MK.CFG.MONSTERS[b.type].power > MK.CFG.MONSTERS[a.type].power ? b : a)) : U.pick(list);
-      const hx = this.hero.x, hy = this.hero.y - 60;
+    async strike(atk, dmg, big, color) {
+      const hx = this.hero.x, hy = this.hero.y - 70;
       if (atk.type === 'dragon') {
-        setAnim(atk, 'attack', 0.8);
-        breath(atk.x + 80, atk.y - 120, hx, hy);
-        await MK.wait(350);
+        setAnim(atk, 'attack', 0.8); breath(atk.x + 80, atk.y - 120, hx, hy); await MK.wait(350);
       } else if (atk.type === 'imp') {
-        setAnim(atk, 'attack', 0.5);
-        MK.Audio.play('magic');
+        setAnim(atk, 'attack', 0.5); MK.Audio.play('magic');
         await projectile(atk.x + 20, atk.y - 80, hx, hy, 'rgba(200,120,255,0.9)');
       } else {
-        const home = atk.x; atk.speed = 1100; atk.lockFace = true; atk.tx = hx - 70;
+        const home = atk.x; atk.speed = 1200; atk.lockFace = true; atk.tx = hx - 75;
         await until(() => atk.tx == null, 0.8);
-        setAnim(atk, 'attack', 0.5);
-        await MK.wait(160);
-        slashFx(hx, hy);
+        setAnim(atk, 'attack', 0.5); await MK.wait(150);
+        slashFx(hx, hy, color);
         atk._home = home;
       }
       hitFx(hx, hy, big);
       setAnim(this.hero, 'hurt', 0.45);
-      popNumber(hx, hy - 50, res.dmg + (res.crit ? '!!' : ''), { size: big ? 64 : 44, palette: res.crit ? 'blood' : 'gold' });
-      if (res.crit) FX.slam('CRITICAL!!', { y: 200, size: 60, palette: 'blood', dur: 0.9, sfx: false });
-      if (atk._home != null) { await MK.wait(250); atk.tx = atk._home; atk._home = null; await until(() => atk.tx == null, 1); atk.speed = 70; atk.lockFace = false; atk.face = 1; }
+    }
+    async back(atk) {
+      if (atk._home == null) return;
+      atk.tx = atk._home; atk._home = null;
+      await until(() => atk.tx == null, 1);
+      atk.speed = 70; atk.lockFace = false; atk.face = 1;
+    }
+    async attack(info) {
+      this.animating = true;
+      const list = this.actors.filter((a) => a.kind === 'monster' && !a.recruit);
+      const pool = list.length ? list : this.actors.filter((a) => a.kind === 'monster');
+      const big = info.dmg >= 30;
+      // 第3停止：味方の攻撃
+      if (pool.length && info.dmg > 0) {
+        const atk = big ? pool.reduce((a, b) => (MK.CFG.MONSTERS[b.type].power > MK.CFG.MONSTERS[a.type].power ? b : a)) : U.pick(pool);
+        await this.strike(atk, info.dmg, big);
+        this.hpT = info.hp1;
+        popNumber(this.hero.x, this.hero.y - 130, String(info.dmg) + (info.crit ? '!!' : ''), { size: big ? 64 : 46, palette: info.crit ? 'blood' : 'gold' });
+        if (info.crit) FX.slam('CRITICAL!!', { y: 230, size: 56, palette: 'blood', dur: 0.8, sfx: false });
+        this.back(atk);
+      }
+      // 一拍おいて、新人の追撃
+      if (info.follow) {
+        await MK.wait(info.follow.kill ? 650 : 420);
+        const nw = this.actors.find((a) => a.id === info.follow.id);
+        if (nw) {
+          FX.add({ dur: 0.5, layer: 'front', draw(ctx, p) { ctx.globalAlpha = 1 - p; FX.fancyText(ctx, '!', nw.x, nw.y - 130 * nw.s - p * 10, 40, { palette: 'gold' }); } });
+          MK.Audio.play('coin');
+          await MK.wait(180);
+          await this.strike(nw, info.follow.dmg, info.follow.kill, 'rgba(140,255,170,0.95)');
+          this.hpT = info.hp2;
+          popNumber(this.hero.x + 40, this.hero.y - 160, '追撃 ' + info.follow.dmg, { size: 40, palette: 'ice' });
+          if (info.follow.kill) {
+            // 追撃で倒し切ったときだけの専用カット
+            await MK.wait(250);
+            FX.cutin({ text: '新人の追撃!!', size: 74, palette: 'gold', color: '#1a6a3a', dur: 1.5,
+              drawChar: (c, x, y, a) => A.monster(c, { type: nw.type, x, y: y - 20, s: 3.0, face: 1, anim: 'attack', at: (a * 1.2) % 0.6, lv: nw.lv }, a) });
+            await MK.wait(1500);
+          }
+          this.back(nw);
+        }
+      }
+      await MK.wait(250);
+      this.animating = false;
     }
   }
 
@@ -445,9 +616,17 @@
   class ATScene extends Scene {
     enter(opt = {}) {
       this.actors = [];
+      this.geo = C.fitGeo(MK.S.castleLv, { x: 640, bottom: 470, h: 340, maxS: 0.95 });
+      this.flash = {};
       this.sync();
-      this.castleS = 0.68;
       MK.Audio.bgm('at');
+    }
+    // 今セットでいちばん育っている魔物
+    mvp() {
+      const S = MK.S, at = S.at;
+      let best = null, bx = -1;
+      S.monsters.forEach((m) => { const e = at.setExp[m.id] || 0; if (e > bx || (e === bx && m.recruit)) { bx = e; best = m; } });
+      return best;
     }
     sync() {
       const S = MK.S;
@@ -456,111 +635,123 @@
       S.monsters.forEach((m, i) => {
         let a = this.actors.find((x) => x.id === m.id);
         if (!a) {
-          a = actor({ id: m.id, type: m.type, x: U.rand(90, 870), y: U.rand(455, 505), s: m.type === 'dragon' ? 0.7 : 0.8, badge: true, face: U.pick([-1, 1]) });
+          a = actor({ id: m.id, type: m.type, x: U.rand(340, 900), y: U.rand(492, 520), s: m.type === 'dragon' ? 0.6 : 0.72, badge: true, face: U.pick([-1, 1]) });
           this.actors.push(a);
         }
-        a.lv = m.lv;
+        a.lv = m.lv; a.recruit = !!m.recruit;
       });
     }
     update(dt) {
       super.update(dt);
+      const g = C.fitGeo(MK.S.castleLv, { x: 640, bottom: 470, h: 340, maxS: 0.95 });
+      this.geo.s += (g.s - this.geo.s) * Math.min(1, dt * 2); this.geo.floors = g.floors;
+      for (const k in this.flash) this.flash[k] = Math.max(0, this.flash[k] - dt * 0.8);
+      const m = this.mvp();
       this.actors.forEach((a) => {
-        if (a.tx == null && a.anim === 'idle' && Math.random() < dt * 0.35) { a.tx = U.clamp(a.x + U.rand(-200, 200), 60, 900); a.speed = U.rand(60, 110); }
+        a.hidden = m && a.id === m.id;
+        if (a.tx == null && a.anim === 'idle' && Math.random() < dt * 0.35) { a.tx = U.clamp(a.x + U.rand(-160, 160), 330, 910); a.speed = U.rand(60, 110); }
       });
       if (Math.random() < dt * 8) FX.P.embers(W, H, 1, U.pick(['rgba(255,200,80,0.9)', 'rgba(200,120,255,0.9)']), 'back');
       MK.S.goldShown += (MK.S.gold - MK.S.goldShown) * Math.min(1, dt * 6);
     }
     drawWorld(ctx, t) {
       A.background(ctx, W, H, 'at', t);
-      FX.rays(ctx, 560, 230, 520, t * 0.15, 'rgba(255,200,255,0.12)', 16, 0.06);
-      A.castle(ctx, 560, 430, this.castleS, MK.S.castleLv, t);
+      FX.rays(ctx, 640, 200, 520, t * 0.15, 'rgba(255,200,255,0.12)', 16, 0.06);
+      C.section(ctx, this.geo, MK.S.castleLv, t, { vault: MK.S.goldShown, flash: this.flash, floors: this.geo.floors });
       FX.drawLayer(ctx, 'back');
       drawActors(ctx, this.actors, t);
     }
     drawHud(ctx, t) {
       const S = MK.S, at = S.at;
       rushBanner(ctx, '魔王経営RUSH', 'gold', t);
-      A.panel(ctx, 20, 76, 200, 42, { color: '#ffd34a' });
-      A.label(ctx, 'SET', 34, 97, 15, '#e8c87a'); A.num(ctx, at.set, 80, 97, 26, 'gold');
-      A.label(ctx, '撃退 ' + at.wins + '回', 206, 97, 15, '#ffe7c0', 'right');
+      A.label(ctx, 'SET ' + at.set + '　撃退 ' + at.wins + '回', 28, 90, 18, '#ffe7c0');
       // 残りG
-      A.panel(ctx, 744, 14, 200, 88, { color: '#ffd34a' });
-      A.label(ctx, '継続ジャッジまで', 760, 34, 14, '#e8c87a');
-      A.num(ctx, at.left, 900, 70, 50, 'gold', 'right');
-      A.label(ctx, 'G', 928, 76, 18, '#ffe08a', 'right');
+      A.panel(ctx, 744, 14, 200, 92, { color: '#ffd34a' });
+      A.label(ctx, '継続ジャッジまで', 760, 34, 15, '#e8c87a');
+      A.num(ctx, at.left, 900, 72, 54, 'gold', 'right');
+      A.label(ctx, 'G', 928, 80, 20, '#ffe08a', 'right');
+      // 主役：今セットで育っている魔物
+      const m = this.mvp();
+      if (m) {
+        const px = 16, py = 118, pw = 290, ph = 330;
+        A.panel(ctx, px, py, pw, ph, { color: '#ffd34a', bg: ['rgba(50,14,40,0.88)', 'rgba(10,2,14,0.92)'] });
+        A.label(ctx, '今セットの育成 No.1', px + pw / 2, py + 22, 17, '#ffe08a', 'center');
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        ctx.drawImage(FX.glow('rgba(255,200,90,0.55)', 128), px + 20, py + 40, pw - 40, 230);
+        FX.rays(ctx, px + pw / 2, py + 170, 160, t * 0.5, 'rgba(255,220,140,0.25)', 10, 0.08);
+        ctx.restore();
+        const d = MK.CFG.MONSTERS[m.type];
+        A.monster(ctx, { type: m.type, x: px + pw / 2, y: py + 246, s: m.type === 'dragon' ? 1.1 : 1.75, face: 1, anim: 'idle', lv: m.lv, seed: m.id }, t);
+        const lv0 = at.lvStart[m.id] || 1;
+        A.label(ctx, (m.recruit ? '新人 ' : '') + d.name, px + pw / 2, py + 270, 21, m.recruit ? '#7dffb0' : '#ffffff', 'center');
+        FX.fancyText(ctx, 'Lv' + lv0 + (m.lv > lv0 ? ' → Lv' + m.lv : ''), px + pw / 2, py + 302, 30, { palette: m.lv > lv0 ? 'gold' : 'silver' });
+      }
       // 戦力比較
       const army = MK.Game.armyPower(), party = MK.Game.partyPower();
-      A.panel(ctx, 600, 110, 344, 58, { color: '#c38bff' });
-      A.label(ctx, '魔王軍', 616, 128, 13, '#d7b4ff'); A.label(ctx, '勇者一行', 928, 128, 13, '#9fe8ff', 'right');
+      const bx = 330, by = 116, bw = 400;
+      A.label(ctx, '魔王軍 ' + army.toFixed(1), bx, by, 16, '#ffb0e0');
+      A.label(ctx, party.toFixed(1) + ' 勇者一行', bx + bw, by, 16, '#9fe8ff', 'right');
       const ratio = army / (army + party);
-      ctx.fillStyle = '#3ab8ff'; ctx.fillRect(616, 140, 312, 16);
-      ctx.fillStyle = A.lg(ctx, 0, 140, 0, 156, ['#ff9ad0', '#a01a6a']); ctx.fillRect(616, 140, 312 * ratio, 16);
-      ctx.fillStyle = '#fff'; ctx.fillRect(616 + 312 * ratio - 1, 136, 3, 24);
-      A.label(ctx, army.toFixed(1), 622, 148, 12, '#fff'); A.label(ctx, party.toFixed(1), 922, 148, 12, '#fff', 'right');
-      // 城の発展
-      A.label(ctx, '城の発展', 20, 140, 14, '#e8c87a');
-      A.bar(ctx, 90, 132, 130, 14, S.castleLv >= 5 ? 1 : at.dev / MK.CFG.AT.devToUpgrade, ['#e0c0ff', '#7a3ac8']);
-      // 獲得
-      bottomHud(ctx, S, [['獲得', U.fmt(at.totalWin) + '枚'], ['資金', U.fmt(S.goldShown) + 'G'], ['城', 'Lv' + S.castleLv], ['魔物', S.monsters.length + '体']]);
+      ctx.fillStyle = '#2a8ad8'; ctx.fillRect(bx, by + 12, bw, 14);
+      ctx.fillStyle = A.lg(ctx, 0, by + 12, 0, by + 26, ['#ff9ad0', '#a01a6a']); ctx.fillRect(bx, by + 12, bw * ratio, 14);
+      ctx.fillStyle = '#fff'; ctx.fillRect(bx + bw * ratio - 1, by + 8, 3, 22);
+      bottomHud(ctx, S, [['獲得', U.fmt(at.totalWin) + '枚'], ['金庫', U.fmt(S.goldShown) + '枚'], ['城', 'Lv' + S.castleLv], ['魔物', S.monsters.length + '体']]);
       naviHud(ctx, t);
     }
     lever(info) {
       const r = MK.CFG.ROLES[info.role].rare || 0;
       if (r >= 1) {
         MK.Audio.play('magic');
-        FX.add({ dur: 1.2, layer: 'back', draw(ctx, p, age) { ctx.globalAlpha = Math.sin(p * Math.PI); FX.magicCircle(ctx, W / 2, 470, 300, age * 3, r >= 3 ? 'rgba(255,200,60,1)' : 'rgba(200,120,255,1)', { tilt: 0.25 }); } });
+        FX.add({ dur: 1.2, layer: 'back', draw(ctx, p, age) { ctx.globalAlpha = Math.sin(p * Math.PI); FX.magicCircle(ctx, 620, 470, 300, age * 3, r >= 3 ? 'rgba(255,200,60,1)' : 'rgba(200,120,255,1)', { tilt: 0.25 }); } });
       }
     }
+    posOf(m) {
+      const mv = this.mvp();
+      if (mv && m.id === mv.id) return [16 + 145, 118 + 246, 1.75];
+      const a = this.actors.find((x) => x.id === m.id);
+      return a ? [a.x, a.y, a.s] : [W / 2, 500, 0.8];
+    }
     result(res) {
-      const S = MK.S;
-      if (res.pay > 0 && res.outcome === 'coin') {
-        FX.P.coins(W / 2, 330, 130, H - 20, 6);
-      }
-      // 経験値の光
+      if (res.pay > 0 && res.outcome === 'coin') FX.P.coins(W / 2, 330, 330, H - 20, 6);
       if (res.expTo) {
-        const a = this.actors.find((x) => x.id === res.expTo.id);
-        if (a) {
-          FX.P.rise(a.x, a.y - 20, 20, 6 + Math.min(20, res.exp), 'rgba(140,220,255,0.9)');
-          popNumber(a.x, topY(a) - 20, 'EXP+' + res.exp, { size: 20, palette: 'ice' });
-        }
+        const [x, y, s] = this.posOf(res.expTo);
+        FX.P.rise(x, y - 20, 24 * s, 6 + Math.min(20, res.exp), 'rgba(140,220,255,0.9)');
+        popNumber(x, y - 100 * s, 'EXP+' + res.exp, { size: 24, palette: 'ice' });
       }
       if (res.add) {
         FX.slam('+' + res.add + 'G', { y: 250, size: 110, palette: 'blood', sub: '継続ジャッジまでのG数 上乗せ', glow: 'rgba(255,60,30,0.8)' });
-        FX.P.burst(820, 60, 40, 'rgba(255,200,60,0.9)', 300);
+        FX.P.burst(840, 60, 40, 'rgba(255,200,60,0.9)', 300);
       } else if (MK.CFG.ROLES[res.role].rare) {
-        FX.slam(MK.CFG.ROLES[res.role].label + '!!', { size: 60, y: 240, dur: 1.0, shake: 5 });
+        FX.slam(MK.CFG.ROLES[res.role].label + '!!', { size: 60, y: 260, dur: 1.0, shake: 5 });
       }
     }
     levelup(m) {
       const a = this.actors.find((x) => x.id === m.id);
-      if (!a) return;
-      a.lv = m.lv;
-      setAnim(a, 'cheer', 1);
+      if (a) { a.lv = m.lv; setAnim(a, 'cheer', 1); }
+      const [x, y, s] = this.posOf(m);
       MK.Audio.play('levelup');
-      FX.P.rise(a.x, a.y, 30, 30, 'rgba(255,220,100,0.9)');
-      FX.add({ dur: 1.2, layer: 'front', draw(ctx, p, age) {
+      FX.P.rise(x, y, 30 * s, 30, 'rgba(255,220,100,0.9)');
+      FX.add({ dur: 1.2, layer: 'top', draw(ctx, p, age) {
         ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 1 - p;
-        ctx.drawImage(FX.glow('rgba(255,220,120,0.8)', 128), a.x - 70, a.y - 140, 140, 160);
+        ctx.drawImage(FX.glow('rgba(255,220,120,0.8)', 128), x - 80 * s, y - 150 * s, 160 * s, 170 * s);
         ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1 - U.seg(p, 0.7, 1);
-        FX.fancyText(ctx, 'LEVEL UP!', a.x, topY(a) - 30 - age * 20, 26, { palette: 'gold' });
+        FX.fancyText(ctx, 'LEVEL UP!', x, y - 120 * s - age * 20, 28, { palette: 'gold' });
       } });
     }
     hire(m) {
       this.sync();
       const a = this.actors.find((x) => x.id === m.id);
-      if (a) { a.x = 560; a.y = 470; a.tx = U.rand(120, 840); FX.P.burst(560, 430, 30, 'rgba(160,110,255,0.9)', 260); }
-      FX.slam(MK.CFG.MONSTERS[m.type].name + ' 入社!!', { y: 220, size: 56, palette: 'violet', dur: 1.3 });
+      if (a) { a.x = 640; a.y = 505; a.tx = U.rand(340, 900); FX.P.burst(640, 460, 30, 'rgba(160,110,255,0.9)', 260); }
+      FX.slam(MK.CFG.MONSTERS[m.type].name + ' 入社!!', { y: 240, size: 56, palette: 'violet', dur: 1.3 });
       MK.Audio.play('levelup');
     }
     invest(kind) {
       if (kind !== 'castle') return;
       MK.Audio.play('build');
-      FX.P.smoke(560, 420, 20, 2, 'rgba(160,120,180,0.6)', 'front');
-      FX.P.burst(560, 280, 50, 'rgba(255,200,255,0.9)', 420, 30);
-      FX.flash('#ffffff', 0.7); FX.shake(14);
-      const self = this; self.castleS = 0.58;
-      FX.add({ dur: 1, update(dt, o) { self.castleS = 0.58 + 0.1 * E.outElastic(o.age); }, draw() {} });
-      FX.slam('魔王城 発展!!', { y: 200, size: 72, sub: 'Lv' + MK.S.castleLv + '「' + MK.CFG.CASTLE.names[MK.S.castleLv] + '」', palette: 'violet' });
+      this.flash[MK.S.castleLv] = 1.4;
+      FX.P.burst(640, 280, 50, 'rgba(255,200,255,0.9)', 420, 30);
+      FX.flash('#ffffff', 0.6); FX.shake(12);
+      FX.slam(C.ROOMS[MK.S.castleLv].name + ' 開設!!', { y: 220, size: 64, sub: '城Lv' + MK.S.castleLv + '「' + MK.CFG.CASTLE.names[MK.S.castleLv] + '」', palette: 'violet' });
     }
   }
 
@@ -570,9 +761,10 @@
       const S = MK.S;
       this.variant = opt.variant || 'at'; // at | upper
       this.actors = [];
-      const ms = S.monsters.slice().sort((a, b) => MK.Game.monsterPower(b) - MK.Game.monsterPower(a)).slice(0, 5);
+      const mvp = this.variant === 'at' && MK.LCD.scenes.at.mvp ? MK.LCD.scenes.at.mvp() : null;
+      const ms = S.monsters.slice().sort((a, b) => (b === mvp) - (a === mvp) || MK.Game.monsterPower(b) - MK.Game.monsterPower(a)).slice(0, 5);
       ms.forEach((m, i) => {
-        this.actors.push(actor({ id: m.id, type: m.type, lv: m.lv, x: -80 - i * 60, tx: 90 + (i % 3) * 100 + (i >= 3 ? 50 : 0), y: i >= 3 ? 505 : 450, s: m.type === 'dragon' ? 0.75 : 0.9, speed: 300, face: 1, badge: true, side: 'm' }));
+        this.actors.push(actor({ id: m.id, type: m.type, lv: m.lv, recruit: !!m.recruit, x: -80 - i * 60, tx: 90 + (i % 3) * 100 + (i >= 3 ? 50 : 0), y: i >= 3 ? 505 : 450, s: m.type === 'dragon' ? 0.75 : 0.9, speed: 300, face: 1, badge: true, side: 'm' }));
       });
       const partyTypes = this.variant === 'upper' ? ['warrior', 'hero', 'warrior', 'priest'] : ['hero', 'warrior', 'mage', 'priest'];
       partyTypes.forEach((ty, i) => {
@@ -673,8 +865,16 @@
       if (win) {
         const best = ms[0];
         if (best) {
-          FX.cutin({ text: '魔王軍 総攻撃!!', size: 64, palette: 'violet', drawChar: (c, x, y, a) => A.maou(c, x, y, 0.95, a, 'laugh'), dur: 1.4 });
-          await MK.wait(1400);
+          // 今セットで育った魔物の見せ場
+          const mv = this.variant === 'at' && MK.LCD.scenes.at.mvp ? MK.LCD.scenes.at.mvp() : null;
+          if (mv) {
+            const d = MK.CFG.MONSTERS[mv.type];
+            FX.cutin({ text: d.name + ' Lv' + mv.lv + 'の一撃!!', sub: mv.recruit ? '新人' : null, size: 58, palette: 'gold', color: '#5a1a6a', dur: 1.5,
+              drawChar: (c, x, y, a) => A.monster(c, { type: mv.type, x, y: y - 20, s: mv.type === 'dragon' ? 1.8 : 3.0, face: 1, anim: 'attack', at: (a * 1.2) % 0.6, lv: mv.lv }, a) });
+          } else {
+            FX.cutin({ text: '魔王軍 総攻撃!!', size: 64, palette: 'violet', drawChar: (c, x, y, a) => A.maou(c, x, y, 0.95, a, 'laugh'), dur: 1.4 });
+          }
+          await MK.wait(1450);
           ms.forEach((m) => setAnim(m, 'attack', 0.6));
           FX.add({ dur: 0.9, layer: 'front', draw(ctx, p, age) { ctx.globalAlpha = 1 - p; FX.magicCircle(ctx, 780, 470, 160 + p * 120, age * 5, 'rgba(255,80,200,1)', { tilt: 0.35 }); } });
           hs.forEach((h, i) => setTimeout(() => { hitFx(h.x, h.y - 50, true); setAnim(h, 'down'); }, i * 140));
@@ -696,9 +896,12 @@
     [250, 230], [340, 180], [430, 220], [520, 170], [610, 210], [700, 180],
     [280, 320], [380, 300], [480, 330], [580, 300], [680, 320], [760, 270],
   ];
-  const REGION_NAMES = ['北の港町', '鉄鉱山', '学術都市', '王都', '聖堂', '大森林', '漁村', '穀倉地帯', '交易都市', '古戦場', '砂漠の砦', '東の関所'];
+  const REGION_NAMES = ['最初の村', '鉄鉱山', '学術都市', '穀倉地帯', '交易都市', '鉄壁要塞', '漁村', '聖堂', '大森林', '古戦場', '砂漠の砦', '王都'];
+  const SPECIAL_REGIONS = [0, 5, 11];
   class UpperScene extends Scene {
-    enter() {
+    enter(opt = {}) {
+      this.zoom = opt.intro ? 0 : 1;
+      this.popT = {};
       this.dragon = { x: -200, y: 140 };
       this.march = [];
       MK.Audio.bgm('upper');
@@ -713,6 +916,7 @@
     update(dt) {
       super.update(dt);
       this.dragon.x += dt * 120; if (this.dragon.x > W + 300) this.dragon.x = -300;
+      if (this.zoom < 1) this.zoom = Math.min(1, this.zoom + dt / 1.4);
       if (Math.random() < dt * 12) FX.P.embers(W, H, 1, U.pick(['rgba(255,120,40,0.9)', 'rgba(255,200,60,0.9)']), 'back');
       // 制圧済みの街から煙
       MK.S.upper.regions.forEach((v, i) => { if (v >= 100 && Math.random() < dt * 1.5) FX.P.smoke(REGION_POS[i][0], REGION_POS[i][1] - 10, 1, 0.5, 'rgba(40,10,10,0.5)', 'back'); });
@@ -720,6 +924,10 @@
     drawWorld(ctx, t) {
       A.background(ctx, W, H, 'upper', t);
       FX.rays(ctx, W / 2, 250, 700, t * 0.1, 'rgba(255,120,40,0.1)', 12, 0.08);
+      // 昇格直後：城門の前（地図の左端）からカメラが引く
+      const z = U.lerp(3.2, 1, E.inOutCubic(this.zoom));
+      ctx.save();
+      ctx.translate(160, 300); ctx.scale(z, z); ctx.translate(-160, -300);
       // 大陸
       ctx.save();
       ctx.beginPath(); this.shape.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.closePath();
@@ -762,12 +970,15 @@
           ctx.beginPath(); ctx.arc(0, -10, 32, 0, U.TAU); ctx.stroke();
         }
         ctx.restore();
-        A.label(ctx, REGION_NAMES[i], x, y + 14, 11, done ? '#ff8a8a' : '#f3e2b0', 'center');
+        if (done) { const pt = this.popT[i]; const pop = pt == null ? 1 : E.outElastic(U.clamp((t - pt) / 0.8, 0, 1)); C.flag(ctx, x + 6, y - 8, 1.1, t, pop); }
+        const sp = SPECIAL_REGIONS.includes(i);
+        A.label(ctx, REGION_NAMES[i], x, y + 16, sp ? 15 : 13, done ? '#ff8a8a' : sp ? '#ffe08a' : '#f3e2b0', 'center');
       });
       FX.drawLayer(ctx, 'back');
       // ドラゴン飛行
       ctx.save(); ctx.globalAlpha = 0.85;
       A.monster(ctx, { type: 'dragon', x: this.dragon.x, y: this.dragon.y + Math.sin(t * 2) * 10, s: 0.5, face: 1, anim: 'idle', lv: 9 }, t);
+      ctx.restore();
       ctx.restore();
       // 進軍する魔物
       const shown = MK.S.monsters.slice(0, 6);
@@ -799,14 +1010,20 @@
         FX.add({ dur: 1.2, layer: 'back', draw(ctx, p, age) { ctx.globalAlpha = Math.sin(p * Math.PI); FX.magicCircle(ctx, W / 2, 260, 240, age * 3, 'rgba(255,140,40,1)', { tilt: 0.5 }); } });
       }
     }
-    conquer(info) {
+    async conquer(info) {
       const [x, y] = REGION_POS[info.region];
       FX.P.fire(x, y, 6, 0.8);
       FX.P.sparks(x, y - 10, 8, '#ffb347', 300);
       popNumber(x, y - 40, '+' + info.gain + '%', { size: 24, palette: 'blood' });
-      if (info.captured) {
-        hitFx(x, y - 10, true);
-        FX.slam(REGION_NAMES[info.region] + ' 陥落!!', { size: 64, y: 260, palette: 'blood', glow: 'rgba(255,80,20,0.8)', dur: 1.4 });
+      if (!info.captured) return;
+      this.popT[info.region] = this.t;
+      MK.Audio.play('coin');
+      if (SPECIAL_REGIONS.includes(info.region)) {
+        await MK.wait(300);
+        await MK.Seq.regionSpecial(info.region);
+      } else {
+        FX.P.burst(x, y - 20, 24, 'rgba(255,90,60,0.9)', 220);
+        MK.Audio.play('hit');
       }
     }
   }
@@ -882,6 +1099,6 @@
       ctx.restore();
     },
   };
-  LCD.helpers = { actor, setAnim, until, popNumber, hitFx, slashFx, projectile, breath, topY, REGION_POS, REGION_NAMES };
+  LCD.helpers = { SPECIAL_REGIONS, actor, setAnim, until, popNumber, hitFx, slashFx, projectile, breath, topY, REGION_POS, REGION_NAMES };
   MK.LCD = LCD;
 })(window.MK);
