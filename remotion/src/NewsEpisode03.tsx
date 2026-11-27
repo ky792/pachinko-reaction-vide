@@ -12,7 +12,7 @@ import {
   useVideoConfig,
 } from 'remotion';
 import {Audio} from '@remotion/media';
-import {NewsOpening} from './NewsOpening';
+import {NewsOpening03} from './NewsOpening03'; // 2026-11-28 OP曲をユーザー提供の曲に差し替え
 import episode from './data/news03s.json';
 
 // ニュース回#03（YOUTOPYA）：前回のニュース回（News02）と同じ画面。台本・資料・音声だけ差し替え
@@ -1229,7 +1229,7 @@ export const NewsEpisode03: React.FC = () => {
   return (
     <AbsoluteFill lang="ja" style={{background: '#020816'}}>
       <Sequence durationInFrames={OP_FRAMES} name="OP">
-        <NewsOpening />
+        <NewsOpening03 />
       </Sequence>
 
       <Sequence from={OP_FRAMES} name="本編" layout="none">
@@ -1254,7 +1254,7 @@ export const NewsEpisode03: React.FC = () => {
         </Sequence>
       ))}
       <Sequence from={ED_BGM_AT} name="ED BGM">
-        <Audio src={staticFile('news_open.wav')} volume={(f) => edVolume(f + ED_BGM_AT)} />
+        <Audio src={staticFile('news_open_v2.wav')} volume={(f) => edVolume(f + ED_BGM_AT)} />
       </Sequence>
 
       {LINES.map((l) => (

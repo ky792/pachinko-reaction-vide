@@ -6,6 +6,7 @@ on:
     paths:
       - "remotion/**"
       - ".github/workflows/remotion-news03.yml"
+      - "!remotion/src/NewsThumb03.tsx"
   workflow_dispatch:
     inputs:
       full:

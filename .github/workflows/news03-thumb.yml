@@ -1,0 +1,50 @@
+name: news03 thumbnail
+
+on:
+  push:
+    branches: [feat/news03-youtopya]
+    paths:
+      - "remotion/src/NewsThumb03.tsx"
+      - ".github/workflows/news03-thumb.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: news03-thumb
+  cancel-in-progress: true
+
+jobs:
+  thumb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: remotion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install fonts
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+      - name: Install Remotion
+        run: npm install --no-audit --no-fund
+      - name: Render thumbnail
+        run: |
+          mkdir -p out
+          npx remotion still News03Thumb out/news03_thumb.png --image-format=png
+          npx remotion still News03Thumb out/news03_thumb.jpg --image-format=jpeg --jpeg-quality=92
+      - name: Save to outputs-news03-thumb branch
+        run: |
+          cd out
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -b outputs-news03-thumb
+          git add -A
+          git commit -q -m "Thumb ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" outputs-news03-thumb

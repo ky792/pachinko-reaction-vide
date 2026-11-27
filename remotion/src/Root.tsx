@@ -1,8 +1,9 @@
-import {Composition} from 'remotion';
+import {Composition, Still} from 'remotion';
 import {NewsOpening} from './NewsOpening';
 import {NewsEpisode, calculateEpisodeMetadata} from './NewsEpisode';
 import {KyukeiEpisode, calculateKyuMetadata} from './KyukeiEpisode';
 import {NewsEpisode03, calculateNews03sMetadata} from './NewsEpisode03';
+import {NewsThumb03} from './NewsThumb03';
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -45,6 +46,8 @@ export const RemotionRoot: React.FC = () => {
         height={1080}
         calculateMetadata={calculateNews03sMetadata}
       />
+      {/* ニュース回#03 のサムネイル（1280×720） */}
+      <Still id="News03Thumb" component={NewsThumb03} width={1280} height={720} />
     </>
   );
 };
