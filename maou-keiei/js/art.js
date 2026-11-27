@@ -758,7 +758,7 @@
     ctx.save();
     ctx.font = `bold ${size}px ${font || '"Shippori Mincho B1", "Yu Mincho", serif'}`;
     ctx.textAlign = align; ctx.textBaseline = 'middle';
-    ctx.lineWidth = size * 0.28; ctx.strokeStyle = '#0a0206'; ctx.lineJoin = 'round';
+    ctx.lineWidth = size * (font && font.includes('Dela') ? 0.14 : 0.28); ctx.strokeStyle = '#0a0206'; ctx.lineJoin = 'round';
     ctx.strokeText(text, x, y);
     ctx.fillStyle = color; ctx.fillText(text, x, y);
     ctx.restore();

@@ -204,28 +204,63 @@
   const FG = { x: 850, y: 532, s: 1.75 };
   function roomOf(m) { const r = ROOM_OF[m.type]; return r == null || r > MK.S.castleLv ? 1 : r; }
   function localToScreen(lx, ly, geo = CASTLE_GEO) { return [geo.x + lx * geo.s, geo.y + ly * geo.s]; }
-  // 選択肢カード
+  // 選択肢カード（2〜3枚）
+  function crown(ctx, x, y, k = 1) {
+    ctx.save(); ctx.translate(x, y); ctx.scale(k, k);
+    ctx.beginPath(); ctx.moveTo(-14, 6); ctx.lineTo(-16, -6); ctx.lineTo(-7, 0); ctx.lineTo(0, -10); ctx.lineTo(7, 0); ctx.lineTo(16, -6); ctx.lineTo(14, 6); ctx.closePath();
+    A.fillStroke(ctx, A.lg(ctx, 0, -10, 0, 6, ['#fff8c0', '#ffc020', '#8a5000']), 2);
+    ctx.restore();
+  }
+  function perkIcon(ctx, x, y, r, glyph, lit = true) {
+    A.ell(ctx, x, y, r, r);
+    ctx.fillStyle = lit ? A.rg(ctx, x - r * 0.3, y - r * 0.3, 1, x, y, r, ['#fff2b0', '#d9a020', '#6a3a00']) : '#2a2030'; ctx.fill();
+    ctx.lineWidth = Math.max(1.5, r * 0.12); ctx.strokeStyle = '#1a0a04'; ctx.stroke();
+    ctx.fillStyle = lit ? '#3a1600' : '#7a6a80'; ctx.font = `bold ${r * 1.1}px "Shippori Mincho B1", serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(glyph, x, y + r * 0.06);
+  }
   function choiceCards(ctx, t, choice) {
     ctx.save();
-    ctx.fillStyle = 'rgba(4,0,8,0.72)'; ctx.fillRect(0, 0, W, H);
-    A.label(ctx, '経営判断', W / 2, 46, 34, '#ffe08a', 'center', '"Dela Gothic One", sans-serif');
-    const cards = choice.opts;
+    ctx.fillStyle = 'rgba(4,0,8,0.74)'; ctx.fillRect(0, 0, W, H);
+    A.label(ctx, choice.title, W / 2, 40, 32, '#ffe08a', 'center', '"Dela Gothic One", sans-serif');
+    const cards = choice.opts, n = cards.length;
+    const gap = 16, w = n >= 3 ? 290 : 400, h = 340;
+    const x0 = (W - (w * n + gap * (n - 1))) / 2, y = 76;
+    const BTN = n >= 3 ? ['左ボタン', '中ボタン', '右ボタン'] : ['◀ 左ボタン', '右ボタン ▶'];
     cards.forEach((o, i) => {
-      const x = i ? W / 2 + 16 : 44, y = 86, w = W / 2 - 60, h = 330;
-      const pulse = 0.5 + 0.5 * Math.sin(t * 6 + i * Math.PI);
-      A.panel(ctx, x, y, w, h, { color: o.key === 'save' ? '#9fe8ff' : '#ffd34a', bg: ['rgba(40,12,30,0.95)', 'rgba(10,2,12,0.96)'] });
-      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.25 + 0.2 * pulse;
-      ctx.drawImage(FX.glow(o.key === 'save' ? 'rgba(120,200,255,0.6)' : 'rgba(255,200,80,0.6)', 128), x, y + 20, w, 200); ctx.restore();
+      const x = x0 + i * (w + gap), cx = x + w / 2;
+      const col = o.key === 'save' ? '#9fe8ff' : o.key === 'perk' ? '#ffb0e0' : o.key === 'leader' ? '#ff8a6a' : '#ffd34a';
+      const pulse = 0.5 + 0.5 * Math.sin(t * 6 + i * 2);
+      A.panel(ctx, x, y, w, h, { color: col, bg: ['rgba(40,12,30,0.95)', 'rgba(10,2,12,0.96)'] });
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = 0.2 + 0.15 * pulse;
+      ctx.drawImage(FX.glow('rgba(255,200,120,0.6)', 128), x, y + 20, w, 190); ctx.restore();
       // 絵
-      const cx = x + w / 2;
-      if (o.key === 'hire') A.monster(ctx, { type: o.type, x: cx, y: y + 190, s: o.type === 'dragon' ? 0.9 : 1.4, face: 1, anim: 'cheer', at: t, lv: 1 }, t);
-      else if (o.key === 'build') { ctx.save(); ctx.beginPath(); ctx.rect(x + 10, y + 10, w - 20, 200); ctx.clip(); C.section(ctx, { x: cx, y: y + 400, s: 0.42 }, Math.min(5, MK.S.castleLv + 1), t, { vault: MK.S.gold }); ctx.restore(); }
-      else { C.payBag(ctx, cx, y + 196, 1.0, 0.85, t, { glow: 0.5 }); }
-      A.label(ctx, o.title, cx, y + 232, 32, o.key === 'save' ? '#bfeaff' : '#ffe08a', 'center', '"Dela Gothic One", sans-serif');
-      o.lines.forEach((l, k) => A.label(ctx, l, cx, y + 270 + k * 28, 21, k === 0 ? '#ffffff' : '#ffd34a', 'center'));
-      A.label(ctx, i ? '右ボタン ▶' : '◀ 左ボタン', cx, y + h + 22, 17, '#e8c87a', 'center');
+      ctx.save(); ctx.beginPath(); ctx.rect(x + 6, y + 6, w - 12, 205); ctx.clip();
+      if (o.key === 'hire' || o.key === 'leader') {
+        A.monster(ctx, { type: o.type, x: cx, y: y + 196, s: o.type === 'dragon' ? 0.85 : 1.3, face: 1, anim: o.key === 'leader' ? 'attack' : 'cheer', at: (t * 0.8) % 0.6, lv: 1 }, t);
+        if (o.key === 'leader') crown(ctx, cx + 4, y + 62, 1.6);
+      } else if (o.key === 'build') { const lv2 = Math.min(5, MK.S.castleLv + 1); const g = C.fitGeo(lv2, { x: cx, bottom: y + 190, h: 175, maxS: 0.5 }); C.section(ctx, g, lv2, t, { vault: MK.S.gold, floors: g.floors, flash: { [lv2]: 0.5 + 0.3 * Math.sin(t * 5) } }); }
+      else if (o.key === 'train') { ['slime', 'goblin'].forEach((ty, k) => A.monster(ctx, { type: ty, x: cx - 50 + k * 100, y: y + 190, s: 1.0, face: k ? -1 : 1, anim: 'cheer', at: t + k * 0.3, lv: 1 }, t)); FX.fancyText(ctx, 'Lv UP', cx, y + 60, 40, { palette: 'gold' }); }
+      else if (o.key === 'insure') { ctx.beginPath(); ctx.moveTo(cx, y + 50); ctx.lineTo(cx + 60, y + 74); ctx.quadraticCurveTo(cx + 56, y + 160, cx, y + 190); ctx.quadraticCurveTo(cx - 56, y + 160, cx - 60, y + 74); ctx.closePath(); A.fillStroke(ctx, A.lg(ctx, 0, y + 50, 0, y + 190, ['#bfe8ff', '#3a7ab8', '#12305a']), 4); A.label(ctx, '保', cx, y + 124, 52, '#ffffff', 'center'); }
+      else if (o.key === 'perk') { perkIcon(ctx, cx, y + 116, 70, o.icon); }
+      else C.payBag(ctx, cx, y + 200, 1.0, 0.85, t, { glow: 0.5 });
+      ctx.restore();
+      A.label(ctx, o.title, cx, y + 236, n >= 3 ? 26 : 32, col, 'center', '"Dela Gothic One", sans-serif');
+      o.lines.forEach((l, k) => A.label(ctx, l, cx, y + 274 + k * 28, n >= 3 ? 18 : 21, k === 0 ? '#ffffff' : '#ffd34a', 'center'));
+      A.label(ctx, BTN[i], cx, y + h + 22, 17, '#e8c87a', 'center');
     });
     ctx.restore();
+  }
+  // 持っている撃破ボーナスの列
+  function perkRow(ctx, x, y) {
+    const S = MK.S;
+    let i = 0;
+    Object.entries(S.perks).forEach(([id, n]) => {
+      const p = MK.CFG.PERKS[id]; if (!p || !n) return;
+      perkIcon(ctx, x + i * 30, y, 13, p.icon);
+      if (n > 1) A.label(ctx, '×' + n, x + i * 30 + 12, y + 12, 11, '#ffffff');
+      i++;
+    });
+    if (S.insurance) { perkIcon(ctx, x + i * 30, y, 13, '保'); }
   }
 
   class NormalScene extends Scene {
@@ -363,7 +398,7 @@
       if (this.fg) this.drawRisk(ctx, t);
       naviHud(ctx, t);
       if (MK.Game.cur && MK.Game.cur.payNavi) A.label(ctx, '給料日ナビ', W / 2, H - 162, 18, '#7dffb0', 'center');
-      if (MK.Game.choice) choiceCards(ctx, t, MK.Game.choice);
+      perkRow(ctx, 30, 122);
     }
     drawRisk(ctx, t) {
       const f = this.fg, a = f.a;
@@ -430,6 +465,7 @@
       this.paydayAnim = true;
       if (!this.fg) this.enterRisk();
       this.bagShow = Math.max(this.bagShow, 0.6);
+      if (info.insured) this.say('魔物保険で支払い', 2.5);
       if (info.ok) {
         // 給料袋が満ちる → 辞表をポケットへ
         this.bagFillTarget = 1;
@@ -527,6 +563,7 @@
       ctx.save(); ctx.globalAlpha = 0.85; C.section(ctx, { x: 150, y: 430, s: 0.4 }, MK.S.castleLv, t, { vault: MK.S.gold, floors: Math.min(6, MK.S.castleLv + 1) }); ctx.restore();
       FX.drawLayer(ctx, 'back');
       drawActors(ctx, this.actors, t);
+      this.actors.forEach((a) => { if (a.leader && a.anim !== 'down') crown(ctx, a.x, a.y - (a.type === 'dragon' ? 150 : a.type === 'imp' ? 120 : 100) * a.s - 22, 1.1); });
     }
     drawHud(ctx, t) {
       const S = MK.S;
@@ -538,16 +575,29 @@
       const v = this.hpShown / S.cz.maxHp;
       A.bar(ctx, hx, 54, hpw, 30, v, v < 0.25 ? ['#ffd04a', '#ff2020'] : ['#7aff9a', '#1a8a3a']);
       // 残りG（左・大）
-      const left = Math.max(0, MK.CFG.CZ.games - S.cz.game + 1);
+      const left = Math.max(0, MK.Game.czGames() - S.cz.game + 1);
       A.panel(ctx, 14, 108, 170, 92, { color: '#e04040' });
       A.label(ctx, '残り', 30, 134, 18, '#ff9a9a');
       A.num(ctx, left + 'G', 30, 172, 50, left <= 2 ? 'blood' : 'gold');
       A.label(ctx, '勇者襲来', W - 24, 136, 30, '#ff8a7a', 'right', '"Dela Gothic One", sans-serif');
+      if (S.cz.leader) {
+        const L = MK.CFG.LEADERS[S.cz.leader];
+        A.panel(ctx, 14, 210, 250, 54, { color: '#ffd34a' });
+        crown(ctx, 36, 237, 0.9);
+        A.label(ctx, MK.CFG.MONSTERS[S.cz.leader].name + '隊長', 56, 228, 16, '#ffe08a');
+        A.label(ctx, L.text, 56, 250, 15, '#ffffff');
+      }
       naviHud(ctx, t);
     }
     lever(info) {
       const r = MK.CFG.ROLES[info.role].rare || 0;
       if (r >= 2) { MK.Audio.play('magic'); FX.add({ dur: 1.2, layer: 'back', draw(ctx, p, age) { ctx.globalAlpha = Math.sin(p * Math.PI); FX.magicCircle(ctx, 250, 480, 200, age * 3, 'rgba(255,60,60,1)', { tilt: 0.3 }); } }); }
+    }
+    setLeader(type) {
+      this.actors.forEach((a) => { a.leader = false; });
+      const a = this.actors.find((x) => x.kind === 'monster' && x.type === type && !x.recruit) || this.actors.find((x) => x.kind === 'monster' && x.type === type);
+      if (a) { a.leader = true; setAnim(a, 'cheer', 1); FX.P.burst(a.x, a.y - 60, 24, 'rgba(255,210,90,0.9)', 220); }
+      MK.Audio.play('levelup');
     }
     async strike(atk, dmg, big, color) {
       const hx = this.hero.x, hy = this.hero.y - 70;
@@ -579,7 +629,10 @@
       const big = info.dmg >= 30;
       // 第3停止：味方の攻撃
       if (pool.length && info.dmg > 0) {
-        const atk = big ? pool.reduce((a, b) => (MK.CFG.MONSTERS[b.type].power > MK.CFG.MONSTERS[a.type].power ? b : a)) : U.pick(pool);
+        const leader = this.actors.find((a) => a.leader);
+        const boosted = MK.Game.leaderMult(info.role, true) > 1 && leader;
+        const atk = boosted ? leader : big ? pool.reduce((a, b) => (MK.CFG.MONSTERS[b.type].power > MK.CFG.MONSTERS[a.type].power ? b : a)) : U.pick(pool);
+        if (boosted) FX.add({ dur: 0.8, layer: 'front', draw(ctx, p) { ctx.globalAlpha = 1 - p; FX.fancyText(ctx, '隊長!!', atk.x, atk.y - 140 * atk.s - p * 20, 30, { palette: 'gold' }); } });
         await this.strike(atk, info.dmg, big);
         this.hpT = info.hp1;
         popNumber(this.hero.x, this.hero.y - 130, String(info.dmg) + (info.crit ? '!!' : ''), { size: big ? 64 : 46, palette: info.crit ? 'blood' : 'gold' });
@@ -665,6 +718,7 @@
       const S = MK.S, at = S.at;
       rushBanner(ctx, '魔王経営RUSH', 'gold', t);
       A.label(ctx, 'SET ' + at.set + '　撃退 ' + at.wins + '回', 28, 90, 18, '#ffe7c0');
+      perkRow(ctx, 340, 160);
       // 残りG
       A.panel(ctx, 744, 14, 200, 92, { color: '#ffd34a' });
       A.label(ctx, '継続ジャッジまで', 760, 34, 15, '#e8c87a');
@@ -1089,6 +1143,7 @@
       ctx.save(); ctx.translate(sx * 1.5, sy * 1.5);
       FX.drawLayer(ctx, 'top');
       ctx.restore();
+      if (MK.Game.choice) choiceCards(ctx, t, MK.Game.choice);
       if (this.overlayDraw) this.overlayDraw(ctx, t);
       FX.drawFlash(ctx, W, H);
       // 液晶の質感（走査線＋周辺減光）

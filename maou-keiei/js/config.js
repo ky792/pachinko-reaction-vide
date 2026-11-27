@@ -123,6 +123,34 @@
     conquestBonus: 300, // 世界征服達成時の仮想メダル
   };
 
+  // ---- 勇者戦の隊長（CZ開始時に1体選ぶ。どの小役が強くなるかが変わる） ----
+  CFG.LEADERS = {
+    slime:    { role: 'replay',      mult: 3, text: 'リプレイの攻撃×3' },
+    goblin:   { role: 'coin',        mult: 2, text: '金貨揃いの攻撃×2' },
+    skeleton: { role: 'none',        mult: 3, text: 'ハズレでも攻撃×3' },
+    imp:      { role: 'crit',        mult: 1.5, text: '押し順正解のクリティカル×3' },
+    dragon:   { role: 'rare',        mult: 2, text: 'レア役の攻撃×2' },
+  };
+
+  // ---- 撃破ボーナス（勇者を倒すたびに3枚から1枚。ずっと効く。各最大2回） ----
+  CFG.PERKS = {
+    coinPlus:   { icon: '鍵', name: '金庫の合鍵',   text: '金貨揃いの収入＋1枚' },
+    replayPlus: { icon: '夜', name: '夜勤手当',     text: 'リプレイの収入＋1枚' },
+    wageCut:    { icon: '福', name: '福利厚生',     text: '給料−2枚/期' },
+    czAtk:      { icon: '鍛', name: '鍛錬場',       text: '勇者戦の攻撃＋20%' },
+    heroHp:     { icon: '罠', name: '城門の罠',     text: '勇者のHP−10' },
+    followPlus: { icon: '研', name: '新人研修',     text: '新人の追撃＋4' },
+    czLong:     { icon: '砦', name: '籠城の備え',   text: '勇者戦＋1G' },
+    judgeUp:    { icon: '絆', name: '魔物の絆',     text: '継続ジャッジ勝率＋5%' },
+  };
+  CFG.PERK_MAX = 2;
+
+  // ---- 経営カード（黒字の給料日ごとに、2枚＋「資金を残す」から1枚） ----
+  CFG.CARDS = {
+    trainCostPer: 2,  // 特訓：魔物1体あたりの費用（金貨）
+    insureCost: 4,    // 魔物保険：次の給料不足を1回だけ肩代わり
+  };
+
   CFG.START_MEDALS = 1000; // 仮想メダル（換金不可）
 
   MK.CFG = CFG;

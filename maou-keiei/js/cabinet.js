@@ -124,7 +124,8 @@
       $('#lcd').addEventListener('pointerdown', (e) => {
         const c = MK.Game.choice; if (!c) return;
         const r = e.currentTarget.getBoundingClientRect();
-        c.done(e.clientX - r.left < r.width / 2 ? 0 : 1);
+        const fx = (e.clientX - r.left) / r.width;
+        c.done(c.opts.length >= 3 ? Math.min(2, Math.floor(fx * 3)) : (fx < 0.5 ? 0 : 1));
       });
       // キーボード
       window.addEventListener('keydown', (e) => {
@@ -157,8 +158,9 @@
     showNavi(order) {
       order.forEach((reel, k) => { stopBtns[reel].querySelector('em').textContent = k + 1; stopBtns[reel].classList.add('navi'); });
     },
-    showChoice() {
-      [[0, '◀'], [2, '▶']].forEach(([i, ch]) => { stopBtns[i].querySelector('em').textContent = ch; stopBtns[i].classList.add('navi', 'next'); });
+    showChoice(n = 2) {
+      const marks = n >= 3 ? [[0, '1'], [1, '2'], [2, '3']] : [[0, '◀'], [2, '▶']];
+      marks.forEach(([i, ch]) => { stopBtns[i].querySelector('em').textContent = ch; stopBtns[i].classList.add('navi', 'next'); });
     },
     // 最初の1G：BET → レバー → 停止ボタン を順に点灯
     guide(evt) {

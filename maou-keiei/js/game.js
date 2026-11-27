@@ -6,6 +6,7 @@
   'use strict';
   const U = MK.U, CFG = MK.CFG;
   let uid = 1;
+  const C_ROOMS = () => MK.Castle.ROOMS.map((r) => r.name);
 
   function newState() {
     return {
@@ -15,7 +16,7 @@
       gold: CFG.NORMAL.startGold, goldShown: CFG.NORMAL.startGold,
       monsters: [mon('slime'), mon('goblin')],
       castleLv: 1, approach: 0, settleCount: 0, term: 1, periodIncome: 0, lastSettle: null,
-      firstBlack: false, lastChoiceTerm: -99,
+      firstBlack: false, lastChoiceTerm: -99, perks: {}, insurance: false,
       cz: { game: 1, hp: CFG.CZ.heroHp, maxHp: CFG.CZ.heroHp },
       at: newAT(0),
       upper: { set: 1, left: CFG.UPPER.setGames, regions: new Array(CFG.UPPER.regions).fill(0), target: 0, continent: 1, judgeGame: 0, judgeWin: false },
@@ -34,7 +35,10 @@
     reset() { MK.S = newState(); },
 
     // ---------- 計算 ----------
-    wages() { return MK.S.monsters.reduce((s, m) => s + CFG.MONSTERS[m.type].wage, 0); },
+    perk(id) { return MK.S.perks[id] || 0; },
+    wages() { return Math.max(0, MK.S.monsters.reduce((s, m) => s + CFG.MONSTERS[m.type].wage, 0) - 2 * G.perk('wageCut')); },
+    czGames() { return CFG.CZ.games + G.perk('czLong'); },
+    heroHp() { return Math.max(40, CFG.CZ.heroHp - 10 * G.perk('heroHp')); },
     monsterPower(m) { return CFG.MONSTERS[m.type].power * (1 + 0.3 * (m.lv - 1)); },
     armyPower() {
       const S = MK.S;
@@ -43,21 +47,33 @@
     partyPower() { return CFG.AT.partyBase + CFG.AT.partyPerSet * (MK.S.at.partyLv - 1); },
     judgeWinRate() {
       const c = CFG.AT;
-      return U.clamp(c.winBase + (G.armyPower() - G.partyPower()) * c.winPerPower, c.winMin, c.winMax);
+      return U.clamp(c.winBase + (G.armyPower() - G.partyPower()) * c.winPerPower + 0.05 * G.perk('judgeUp'), c.winMin, c.winMax);
     },
-    czMult() { const C = CFG.CZ; return U.clamp(C.multBase + G.armyPower() * C.multPerPower, C.multBase, C.multMax); },
+    czMult() { const C = CFG.CZ; return U.clamp(C.multBase + G.armyPower() * C.multPerPower, C.multBase, C.multMax) * (1 + 0.2 * G.perk('czAtk')); },
+    // 隊長の効果がこの役に乗るか
+    leaderMult(role, correct) {
+      const L = MK.S.cz && MK.S.cz.leader && CFG.LEADERS[MK.S.cz.leader];
+      if (!L) return 1;
+      const out = CFG.ROLE_OUTCOME[role];
+      if (L.role === 'replay' && role === 'replay') return L.mult;
+      if (L.role === 'coin' && (role === 'coin_common' || (role === 'coin_oshi' && correct))) return L.mult;
+      if (L.role === 'none' && role === 'none') return L.mult;
+      if (L.role === 'crit' && role === 'coin_oshi' && correct) return L.mult;
+      if (L.role === 'rare' && (CFG.ROLES[role].rare || 0) >= 1) return L.mult;
+      return 1;
+    },
     // 第3停止の味方攻撃（乱数なし）
     czDamage(role, correct) {
       const C = CFG.CZ;
       const base = C.dmg[role] == null ? C.dmg.none : C.dmg[role];
       if (base >= 100) return 999;
       const crit = role === 'coin_oshi' && correct;
-      return Math.round(base * (crit ? C.critBonus : 1) * G.czMult());
+      return Math.round(base * (crit ? C.critBonus : 1) * G.leaderMult(role, correct) * G.czMult());
     },
     // 経営判断で雇った魔物の追撃ダメージ
     followDmg(m) {
       const f = CFG.CZ.follow;
-      return Math.round((f.base + f.perLv * (m.lv - 1)) * Math.max(1, CFG.MONSTERS[m.type].power / 2));
+      return Math.round((f.base + f.perLv * (m.lv - 1)) * Math.max(1, CFG.MONSTERS[m.type].power / 2)) + 4 * G.perk('followPlus');
     },
     recruits() { return MK.S.monsters.filter((m) => m.recruit); },
     // 給料日の状況
@@ -129,7 +145,7 @@
       MK.bus.emit('lever', G.cur);
     },
     async stop(i) {
-      if (G.choice) { G.choice.done(i === 2 ? 1 : 0); return; }
+      if (G.choice) { const n = G.choice.opts.length; G.choice.done(n >= 3 ? i : (i === 2 ? 1 : 0)); return; }
       const c = G.cur;
       if (!c || G.busy || !MK.Reels.isSpinning(i)) return;
       c.pressed.push(i);
@@ -175,10 +191,10 @@
     },
 
     // ---------- 経営判断（二択） ----------
-    choose(opts) {
+    choose(opts, title) {
       return new Promise((res) => {
         G.choice = {
-          opts, t0: U.now(), focus: 0,
+          opts, title: title || '経営判断', t0: U.now(), focus: 0,
           done(i) {
             if (G.choice !== this) return;
             G.choice = null;
@@ -187,7 +203,7 @@
             res(U.clamp(i | 0, 0, opts.length - 1));
           },
         };
-        MK.Cabinet.showChoice();
+        MK.Cabinet.showChoice(opts.length);
         MK.Audio.play('coin');
       });
     },
@@ -232,27 +248,38 @@
       MK.LCD.call('invest', 'castle');
       return true;
     },
-    // 給料日後の経営判断（最初の黒字決算は必ず。以降は余裕がある重要な決算だけ）
+    // 給料日後の経営判断：最初の黒字は「雇う／残す」。以降は黒字のたびに経営カード
     async maybeChoice(info) {
-      const S = MK.S, N = CFG.NORMAL;
-      const keep = { key: 'save', title: '資金を残す', lines: ['給料は今のまま', '金貨' + G.wages() + '枚/期'] };
-      let opts = null;
+      const S = MK.S, CC = CFG.CARDS;
+      const keep = { key: 'save', title: '資金を残す', lines: ['何もしない', '金庫' + S.gold + '枚を守る'] };
+      let opts;
       if (!S.firstBlack) {
         S.firstBlack = true;
         const d = CFG.MONSTERS.goblin;
-        opts = [{ key: 'hire', type: 'goblin', title: 'ゴブリンを雇う', lines: ['次回から給料＋' + d.wage + '枚', '勇者戦で追撃'] }, keep];
-      } else if (info.term - S.lastChoiceTerm >= N.choiceEvery) {
+        opts = [{ key: 'hire', type: 'goblin', title: 'ゴブリンを雇う', lines: ['次回から給料＋' + d.wage + '枚', '勇者戦で追撃'] },
+          { key: 'save', title: '資金を残す', lines: ['給料は今のまま', '金貨' + G.wages() + '枚/期'] }];
+      } else {
+        const pool = [];
         const up = CFG.CASTLE.upgradeCost[S.castleLv + 1];
-        const t = G.bestHire();
-        if (S.castleLv < 5 && S.gold >= up) opts = [{ key: 'build', title: '増築する', lines: ['金貨−' + up + '枚', '新しい部屋・戦力UP'] }, keep];
-        else if (t && t !== 'goblin' && S.monsters.length < CFG.CASTLE.slots(S.castleLv)) {
-          const d = CFG.MONSTERS[t];
-          opts = [{ key: 'hire', type: t, title: d.name + 'を雇う', lines: ['契約金' + d.cost + '枚・給料＋' + d.wage + '枚', '勇者戦で追撃'] }, keep];
+        if (S.castleLv < 5 && S.gold >= up) pool.push({ key: 'build', title: '増築する', lines: ['金貨−' + up + '枚', C_ROOMS()[S.castleLv + 1] + 'を開設・戦力UP'] });
+        if (S.monsters.length < CFG.CASTLE.slots(S.castleLv)) {
+          const types = Object.keys(CFG.MONSTERS).filter((t) => t !== 'slime' && S.castleLv >= CFG.MONSTERS[t].minCastle && S.gold >= CFG.MONSTERS[t].cost);
+          if (types.length) {
+            const t = U.pick(types.slice(-2));
+            const d = CFG.MONSTERS[t];
+            pool.push({ key: 'hire', type: t, title: d.name + 'を雇う', lines: [(d.cost ? '契約金' + d.cost + '枚・' : '') + '給料＋' + d.wage + '枚', '勇者戦で追撃'] });
+          }
         }
+        const tc = CC.trainCostPer * S.monsters.length;
+        if (S.gold >= tc && S.monsters.some((m) => m.lv < 9)) pool.push({ key: 'train', title: '特訓する', lines: ['金貨−' + tc + '枚', '全員Lv＋1（戦力UP）'] });
+        if (!S.insurance && S.gold >= CC.insureCost) pool.push({ key: 'insure', title: '魔物保険', lines: ['金貨−' + CC.insureCost + '枚', '次の給料不足を1回肩代わり'] });
+        if (!pool.length) return;
+        // 2枚を選んで「資金を残す」を添える
+        for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+        opts = pool.slice(0, 2).concat([keep]);
       }
-      if (!opts) return;
       S.lastChoiceTerm = info.term;
-      const k = await G.choose(opts);
+      const k = await G.choose(opts, '経営カード');
       const o = opts[k];
       if (o.key === 'hire') {
         S.gold -= CFG.MONSTERS[o.type].cost;
@@ -262,10 +289,42 @@
         S.gold -= CFG.CASTLE.upgradeCost[S.castleLv + 1];
         G.castleUp();
         await MK.wait(1500);
+      } else if (o.key === 'train') {
+        S.gold -= CC.trainCostPer * S.monsters.length;
+        S.monsters.forEach((m) => { if (m.lv < 9) { m.lv++; m.exp = 0; MK.LCD.call('levelup', m); } });
+        MK.LCD.call('sync');
+        MK.LCD.call('say', '全員 Lv＋1');
+        await MK.wait(1100);
+      } else if (o.key === 'insure') {
+        S.gold -= CC.insureCost; S.insurance = true;
+        MK.LCD.call('say', '魔物保険に加入');
+        await MK.wait(600);
       } else {
         MK.LCD.call('say', '金庫を守った');
         await MK.wait(500);
       }
+    },
+    // 撃破ボーナス：ずっと効く強化を3枚から1枚
+    async perkChoice() {
+      const S = MK.S;
+      const ids = Object.keys(CFG.PERKS).filter((id) => G.perk(id) < CFG.PERK_MAX);
+      if (!ids.length) return;
+      for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+      const opts = ids.slice(0, 3).map((id) => { const p = CFG.PERKS[id]; return { key: 'perk', id, icon: p.icon, title: p.name, lines: [p.text, G.perk(id) ? '（2回目）' : 'ずっと効く'] }; });
+      const k = await G.choose(opts, '撃破ボーナス');
+      S.perks[opts[k].id] = G.perk(opts[k].id) + 1;
+      MK.Audio.play('levelup');
+      await MK.wait(300);
+    },
+    // CZの隊長：持っている魔物の種類から最大3体
+    async leaderChoice() {
+      const S = MK.S;
+      const types = [...new Set(S.monsters.map((m) => m.type))].sort((a, b) => CFG.MONSTERS[b].power - CFG.MONSTERS[a].power).slice(0, 3);
+      if (types.length <= 1) { S.cz.leader = types[0] || null; return; }
+      const opts = types.map((t) => ({ key: 'leader', type: t, title: CFG.MONSTERS[t].name + '隊長', lines: [CFG.LEADERS[t].text, '勇者戦のあいだ有効'] }));
+      const k = await G.choose(opts, '隊長を選べ');
+      S.cz.leader = opts[k].type;
+      MK.LCD.call('setLeader', S.cz.leader);
     },
   };
 
@@ -276,8 +335,9 @@
       S.gamesNormal++;
       // 実際の出目で収入が決まる
       let gain;
-      if (res.role === 'coin_oshi' || res.role === 'coin_common') gain = res.outcome === 'coin' ? N.gold.coin : N.gold.coinMiss;
+      if (res.role === 'coin_oshi' || res.role === 'coin_common') gain = res.outcome === 'coin' ? N.gold.coin + G.perk('coinPlus') : N.gold.coinMiss;
       else gain = N.gold[res.role] == null ? 0 : N.gold[res.role];
+      if (res.outcome === 'replay') gain += G.perk('replayPlus');
       const before = S.gold;
       S.gold += gain; S.periodIncome += gain;
       res.goldGain = gain;
@@ -290,14 +350,15 @@
       if (res.payday) {
         S.settleCount = 0;
         const wage = G.wages();
-        const ok = S.gold >= wage;
+        let ok = S.gold >= wage, insured = false;
+        if (!ok && S.insurance) { ok = true; insured = true; S.insurance = false; }
         const risk = G.riskMonster();
         const info = {
           term: S.term++, income: S.periodIncome, wage, vaultBefore: before, vault: S.gold, gain, ok,
-          risk: risk ? risk.id : null, dramatic: wage - before > 0, // 最終Gの前に足りていなかった
+          risk: risk ? risk.id : null, dramatic: wage - before > 0, insured, // 最終Gの前に足りていなかった
         };
         S.periodIncome = 0;
-        if (ok) S.gold -= wage; else S.gold = 0;
+        if (ok && !insured) S.gold -= wage; else S.gold = 0;
         S.lastSettle = info;
         await MK.wait(450);
         await MK.LCD.call('payday', info);
@@ -346,7 +407,7 @@
       await MK.LCD.call('attack', { dmg, crit, role: res.role, hp0, hp1, hp2: S.cz.hp, follow });
       if (S.cz.hp <= 0) { await czWin(); return; }
       S.cz.game++;
-      if (S.cz.game > C.games) {
+      if (S.cz.game > G.czGames()) {
         if (Math.random() < C.finalRescue) {
           await MK.Seq.maouRescue();
           S.cz.hp = 0;
@@ -404,6 +465,7 @@
       if (at.judgeWin) {
         await MK.Seq.judgeWin('at');
         at.wins++;
+        await G.perkChoice();
         const U2 = CFG.AT.upgrade;
         let p = U2.base + (S.castleLv >= 5 ? U2.castle5 : 0) + (at.chestInSet ? U2.chest3InSet : 0);
         if (at.wins >= U2.autoAtWins && S.castleLv >= U2.autoCastle) p = 1;
@@ -474,6 +536,7 @@
   async function czWin() {
     const S = MK.S;
     await MK.Seq.czWin();
+    await G.perkChoice();
     const reward = CFG.NORMAL.czReward;
     S.gold += reward;
     await MK.Seq.atEntry({ reward });
@@ -482,10 +545,12 @@
   async function startCZ(preset) {
     const S = MK.S;
     S.mode = 'cz';
-    S.cz = Object.assign({ game: 1, hp: CFG.CZ.heroHp, maxHp: CFG.CZ.heroHp }, preset || {});
+    const hp = G.heroHp();
+    S.cz = Object.assign({ game: 1, hp, maxHp: hp, leader: null }, preset || {});
     S.approach = 0;
     await MK.Seq.czEntry();
     MK.Cabinet.eyeLamp(false);
+    await G.leaderChoice();
   }
   function enterAT(keep) {
     const S = MK.S;
@@ -534,7 +599,7 @@
       if (mode === 'normal') backToNormal();
       else if (mode === 'title') { await MK.Seq.title(); }
       else if (mode === 'cz') await startCZ();
-      else if (mode === 'czLast') await startCZ({ game: CFG.CZ.games, hp: 40 });
+      else if (mode === 'czLast') await startCZ({ game: G.czGames(), hp: 40 });
       else if (mode === 'at') { await MK.Seq.atEntry({ reward: CFG.NORMAL.czReward }); enterAT(false); }
       else if (mode === 'atQuick') { enterAT(false); }
       else if (mode === 'judge') { if (S.mode !== 'at') enterAT(false); S.at.left = 0; S.at.judgeGame = 1; S.at.judgeWin = Math.random() < G.judgeWinRate(); S.mode = 'judge'; await MK.Seq.judgeStart('at'); }
@@ -569,15 +634,16 @@
     if (G.choice) G.choice.done(1);
     let r = S.monsters.find((m) => m.recruit && m.type === 'goblin');
     if (!r) { r = mon('goblin'); r.recruit = true; r.hiredTerm = S.term; S.monsters.push(r); }
-    // 追撃役をこのゴブリンにするため、より強い新人がいれば一時的に外さない（最も強い新人が追撃する仕様）
-    const top = G.recruits().reduce((a, b) => (G.followDmg(b) > G.followDmg(a) ? b : a));
-    const fd = G.followDmg(top);
-    const base = G.czDamage('replay', true);
     G.cur = null;
     MK.FX.reset();
     G.busy = true;
-    try { await startCZ({ game: 4, hp: base + fd }); } finally { G.busy = false; }
-    G.forceNext = ['replay'];
+    try { await startCZ({ game: 4 }); } finally { G.busy = false; }
+    // 隊長が決まってから、通常攻撃でHPが少し残り追撃でちょうど倒れるHPにする（同じ計算式）
+    const top = G.recruits().reduce((a, b) => (G.followDmg(b) > G.followDmg(a) ? b : a));
+    const hp = G.czDamage('none', true) + G.followDmg(top);
+    S.cz.hp = hp; S.cz.maxHp = Math.max(hp, S.cz.maxHp);
+    const sc = MK.LCD.scenes.cz; sc.hpShown = sc.hpT = hp;
+    G.forceNext = ['none'];
     MK.Cabinet.toast('再現：レバーを叩くと、HPが少し残って新人が追撃します');
   };
 
