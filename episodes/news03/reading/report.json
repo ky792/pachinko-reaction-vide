@@ -4,25 +4,12 @@
   "where": "",
   "expect": "",
   "level": "中",
-  "reason": "台本と文字起こしの一致が 40%（80% 未満）",
+  "reason": "台本と文字起こしの一致が 50%（80% 未満）",
   "id": "01_op-007",
   "who": "baku",
   "text": "ほう？",
   "asr": "ほぉ!",
-  "ratio": 0.4,
-  "audio": "episodes/news03/voices/01_op-007.wav"
- },
- {
-  "kind": "誤読",
-  "where": "ーウ",
-  "expect": "ーウ",
-  "reason": "台本は「ーウ」、聞こえたのは「ォ」",
-  "level": "低",
-  "id": "01_op-007",
-  "who": "baku",
-  "text": "ほう？",
-  "asr": "ほぉ!",
-  "ratio": 0.4,
+  "ratio": 0.5,
   "audio": "episodes/news03/voices/01_op-007.wav"
  }
 ]
