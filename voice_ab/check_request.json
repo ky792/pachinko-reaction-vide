@@ -2,5 +2,5 @@
  "episode": "episodes/news03",
  "model": "large-v3-turbo",
  "only": ["01_op-007"],
- "_run": 6
+ "_run": 7
 }
