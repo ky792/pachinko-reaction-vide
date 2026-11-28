@@ -10,8 +10,14 @@
  "speed": 0.95,
  "intonation": 0.65,
  "kana_only": false,
- "_run": 8,
+ "_run": 9,
  "only": [
-  "07_enshutsu-001"
+  "01_gensaku-005",
+  "07_enshutsu-001",
+  "07_enshutsu-003",
+  "07_enshutsu-004",
+  "07_enshutsu-006",
+  "07_enshutsu-008",
+  "08_matome-008"
  ]
 }
