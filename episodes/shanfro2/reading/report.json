@@ -14,19 +14,6 @@
  },
  {
   "kind": "脱落",
-  "where": "ビャクキュー",
-  "expect": "ビャクキュー",
-  "reason": "台本の「ビャクキュー」が聞こえない",
-  "level": "中",
-  "id": "02_kihon-009",
-  "who": "baku",
-  "text": "そこは釘見て座るしかないな。回らん台で399を追うのが、いちばん財布に効くねん。",
-  "asr": "そこは釘見て座るしかないな回らん台で39機を追うのが一番財布に効くねん",
-  "ratio": 0.931,
-  "audio": "episodes/shanfro2/voices/02_kihon-009.wav"
- },
- {
-  "kind": "脱落",
   "where": "イーエックス",
   "expect": "イーエックス",
   "reason": "台本の「イーエックス」が聞こえない",
@@ -63,19 +50,6 @@
   "asr": "でステク図柄揃いが399分の1でラッシュ突入は約54%",
   "ratio": 0.954,
   "audio": "episodes/shanfro2/voices/02_kihon-001.wav"
- },
- {
-  "kind": "誤読",
-  "where": "ワン",
-  "expect": "ワン",
-  "reason": "台本は「ワン」、聞こえたのは「イチ」",
-  "level": "低",
-  "id": "03_rush-002",
-  "who": "baku",
-  "text": "ST134回で75%か。ほんまにそんなあるか、RNC-01で見たろ。起動！",
-  "asr": "エスティ134回で75%かほんまにそんなあるかRNC01で見たろ起動",
-  "ratio": 0.947,
-  "audio": "episodes/shanfro2/voices/03_rush-002.wav"
  },
  {
   "kind": "誤読",

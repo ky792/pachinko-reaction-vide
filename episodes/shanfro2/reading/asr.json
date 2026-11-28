@@ -70,29 +70,29 @@
   "text": "でステク図柄揃いが399分の1でラッシュ突入は約54%"
  },
  "02_kihon-002": {
-  "sha1": "13a651da25d907836405aab8175d2d438bb76bc8",
-  "model": "large-v3-turbo",
-  "text": "399で半分以上入るんか今のラッキートリガーやったら入り口は広い方やな"
- },
- "02_kihon-003": {
   "sha1": "4307c472a38d6e637c6545088ac26cfaa2a7ca11",
   "model": "large-v3-turbo",
   "text": "しかも図柄が揃えばどれも1500個"
  },
- "02_kihon-004": {
+ "02_kihon-003": {
   "sha1": "5d9060a4573ca00d0fb6a723111b5af6ef050ec9",
   "model": "large-v3-turbo",
   "text": "7で揃えばそのままラッシュ"
  },
- "02_kihon-005": {
+ "02_kihon-004": {
   "sha1": "a10a936f64bbd15431a26e0b01290e9958498dc3",
   "model": "large-v3-turbo",
   "text": "それ以外はログインチャレンジに勝てばラッシュ"
  },
- "02_kihon-006": {
+ "02_kihon-005": {
   "sha1": "71882bbfa29b64779cd977b4a9f893badcf03153",
   "model": "large-v3-turbo",
-  "text": "負けても1500発は持って帰れるんやろ?それはデカいわ!"
+  "text": "負けても1500発は持って帰れるんやろ?それはでかいわ!"
+ },
+ "02_kihon-006": {
+  "sha1": "ad6fd54ec5cbe9a9d92ec59e796e884231b486ba",
+  "model": "large-v3-turbo",
+  "text": "300発で放り出されてまたサンドに1000円入れ直すのほんましんどいからな"
  },
  "02_kihon-007": {
   "sha1": "ad6fd54ec5cbe9a9d92ec59e796e884231b486ba",
@@ -110,29 +110,29 @@
   "text": "そこは釘見て座るしかないな回らん台で39機を追うのが一番財布に効くねん"
  },
  "03_rush-001": {
-  "sha1": "0be9e2f803d923bff497495afa87e2100fbb1a93",
+  "sha1": "cc0acc1a1be83abceb4f371c96e587656a5e8283",
   "model": "large-v3-turbo",
-  "text": "ダッシュは98分の1を134回転のST。"
+  "text": "ダッシュは98分の1を134回転のST。計測は約75%だね。"
  },
  "03_rush-002": {
-  "sha1": "5f3041691f4b172e423927ddd7c88c57164439a9",
+  "sha1": "10bd8713e22ac7e2fd193e8b91e5f0c816d53e7c",
   "model": "large-v3-turbo",
-  "text": "エスティ134回で75%かほんまにそんなあるかRNC01で見たろ起動"
+  "text": "ただ1回も当たらずに抜けるのも4回に1回ある"
  },
  "03_rush-003": {
-  "sha1": "16dc25d900615d0135d5aa72f4bd0e39688b4f8b",
+  "sha1": "01e87edd9465cde68da9fbf31bb13a3a381f2169",
   "model": "large-v3-turbo",
-  "text": "計算しても134回で当たるのは約75%狂気通りだね"
+  "text": "4回に1回はスルーするんか!"
  },
  "03_rush-004": {
-  "sha1": "2ef39dfcb1d5fb8aead74dd167ae7209aeae3205",
+  "sha1": "bfbedb798a116f85dccc94363f8f2a78b7531adb",
   "model": "large-v3-turbo",
-  "text": "入ったら平均で3回くらいは当たる"
+  "text": "いや体感はもっとあるでスルーする日はな3回続けてスルーすんねん"
  },
  "03_rush-005": {
-  "sha1": "ae2ea797ba008a4b7c48872b142db627b40e95b0",
+  "sha1": "c81e3aae03e0125e8642cd53423addf6a33ad513",
   "model": "large-v3-turbo",
-  "text": "3回も当たるんやったら4500も1回は来そうやな"
+  "text": "それタコン悪い日だけ覚えてるんだよ"
  },
  "03_rush-006": {
   "sha1": "10bd8713e22ac7e2fd193e8b91e5f0c816d53e7c",
