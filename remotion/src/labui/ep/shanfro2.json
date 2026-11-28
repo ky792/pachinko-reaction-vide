@@ -1,5 +1,5 @@
 {
- "frames": 10825,
+ "frames": 10658,
  "base": "ep/shanfro2",
  "song": {
   "src": "ep/shanfro/op_brass.wav",
@@ -10,7 +10,7 @@
   "src": "ep/shanfro/newmachine_matsuri.wav",
   "gain": 0.16,
   "from": 1174,
-  "to": 10825
+  "to": 10658
  },
  "lines": [
   {
@@ -176,20 +176,11 @@
    "tsukkomi": false
   },
   {
-   "id": "02_kihon-006",
-   "who": "baku",
-   "text": "300発で放り出されて、またサンドに千円入れ直すの、ほんましんどいからな。",
-   "from": 3033,
-   "to": 3195,
-   "src": "ep/shanfro2/v/02_kihon-006.wav",
-   "tsukkomi": false
-  },
-  {
    "id": "03_rush-001",
    "who": "nagi",
    "text": "RUSHは、1/98を134回転のST。継続は約75%だね。",
-   "from": 3283,
-   "to": 3498,
+   "from": 3117,
+   "to": 3332,
    "src": "ep/shanfro2/v/03_rush-001.wav",
    "tsukkomi": false
   },
@@ -197,8 +188,8 @@
    "id": "04_dedama-001",
    "who": "nagi",
    "text": "RUSH中の当たりは、1500個と4500個が、ほぼ半々。",
-   "from": 3502,
-   "to": 3641,
+   "from": 3336,
+   "to": 3475,
    "src": "ep/shanfro2/v/04_dedama-001.wav",
    "tsukkomi": false
   },
@@ -206,8 +197,8 @@
    "id": "04_dedama-002",
    "who": "baku",
    "text": "真ん中がないんや。4500引いた瞬間、今日はもう勝ちやな。",
-   "from": 3645,
-   "to": 3776,
+   "from": 3478,
+   "to": 3610,
    "src": "ep/shanfro2/v/04_dedama-002.wav",
    "tsukkomi": false
   },
@@ -215,8 +206,8 @@
    "id": "04_dedama-003",
    "who": "nagi",
    "text": "4500個は、1500個の当たりを3回続けて消化する形。1回の上限が、1500個だからね。",
-   "from": 3780,
-   "to": 4026,
+   "from": 3614,
+   "to": 3860,
    "src": "ep/shanfro2/v/04_dedama-003.wav",
    "tsukkomi": false
   },
@@ -224,8 +215,8 @@
    "id": "04_dedama-004",
    "who": "baku",
    "text": "3回ぶんか。消化中にトイレ行かれへんやん。",
-   "from": 4030,
-   "to": 4136,
+   "from": 3863,
+   "to": 3970,
    "src": "ep/shanfro2/v/04_dedama-004.wav",
    "tsukkomi": false
   },
@@ -233,8 +224,8 @@
    "id": "04_dedama-005",
    "who": "nagi",
    "text": "打つ前に行っときなよ。",
-   "from": 4140,
-   "to": 4185,
+   "from": 3973,
+   "to": 4019,
    "src": "ep/shanfro2/v/04_dedama-005.wav",
    "tsukkomi": false
   },
@@ -242,8 +233,8 @@
    "id": "04_dedama-006",
    "who": "nagi",
    "text": "RUSH1回で出る量は、平均すると約8900個。",
-   "from": 4248,
-   "to": 4374,
+   "from": 4082,
+   "to": 4208,
    "src": "ep/shanfro2/v/04_dedama-006.wav",
    "tsukkomi": false
   },
@@ -251,8 +242,8 @@
    "id": "04_dedama-007",
    "who": "baku",
    "text": "9000近いんか。ほな、ハマってても今日のうちに取り返せるやん。",
-   "from": 4378,
-   "to": 4523,
+   "from": 4212,
+   "to": 4357,
    "src": "ep/shanfro2/v/04_dedama-007.wav",
    "tsukkomi": false
   },
@@ -260,8 +251,8 @@
    "id": "04_dedama-008",
    "who": "nagi",
    "text": "でも、真ん中くらいの人は6000個。平均は、大勝ちした人に引っ張られてる。",
-   "from": 4527,
-   "to": 4705,
+   "from": 4361,
+   "to": 4538,
    "src": "ep/shanfro2/v/04_dedama-008.wav",
    "tsukkomi": false
   },
@@ -269,8 +260,8 @@
    "id": "04_dedama-009",
    "who": "baku",
    "text": "あかん、平均で座るとこやった。ウチ、それで何回も痛い目見とるわ。",
-   "from": 4708,
-   "to": 4853,
+   "from": 4542,
+   "to": 4687,
    "src": "ep/shanfro2/v/04_dedama-009.wav",
    "tsukkomi": false
   },
@@ -278,8 +269,8 @@
    "id": "05_boost-001",
    "who": "nagi",
    "text": "で、目玉の超神ゲーBOOST。RUSH中の当たりの、約2%で付く。",
-   "from": 4941,
-   "to": 5125,
+   "from": 4775,
+   "to": 4959,
    "src": "ep/shanfro2/v/05_boost-001.wav",
    "tsukkomi": false
   },
@@ -287,8 +278,8 @@
    "id": "05_boost-002",
    "who": "baku",
    "text": "2%か。入ったら終わらんって聞いたで。",
-   "from": 5128,
-   "to": 5224,
+   "from": 4962,
+   "to": 5058,
    "src": "ep/shanfro2/v/05_boost-002.wav",
    "tsukkomi": false
   },
@@ -296,8 +287,8 @@
    "id": "05_boost-003",
    "who": "nagi",
    "text": "4500個の当たりに、さらに上乗せが付く仕組み。",
-   "from": 5227,
-   "to": 5342,
+   "from": 5061,
+   "to": 5176,
    "src": "ep/shanfro2/v/05_boost-003.wav",
    "tsukkomi": false
   },
@@ -305,8 +296,8 @@
    "id": "05_boost-004",
    "who": "nagi",
    "text": "上乗せは、1500個が半分。3000個が約34%。",
-   "from": 5346,
-   "to": 5501,
+   "from": 5179,
+   "to": 5335,
    "src": "ep/shanfro2/v/05_boost-004.wav",
    "tsukkomi": false
   },
@@ -314,8 +305,8 @@
    "id": "05_boost-005",
    "who": "nagi",
    "text": "残りの約16%は、3000個か4500個を乗せて、もう1回。",
-   "from": 5505,
-   "to": 5680,
+   "from": 5339,
+   "to": 5514,
    "src": "ep/shanfro2/v/05_boost-005.wav",
    "tsukkomi": false
   },
@@ -323,8 +314,8 @@
    "id": "05_boost-006",
    "who": "baku",
    "text": "最低でも6000発か。ほんで、そっからループするんやろ？",
-   "from": 5684,
-   "to": 5805,
+   "from": 5517,
+   "to": 5639,
    "src": "ep/shanfro2/v/05_boost-006.wav",
    "tsukkomi": false
   },
@@ -332,8 +323,8 @@
    "id": "05_boost-007",
    "who": "nagi",
    "text": "じゃあ、レンに100回入ってもらおう。",
-   "from": 5809,
-   "to": 5879,
+   "from": 5643,
+   "to": 5713,
    "src": "ep/shanfro2/v/05_boost-007.wav",
    "tsukkomi": false
   },
@@ -341,8 +332,8 @@
    "id": "05_boost-008",
    "who": "nagi",
    "text": "100回入って、2回目まで行ったのが16回。3回目まで行ったのは、2回だけ。",
-   "from": 5961,
-   "to": 6146,
+   "from": 5794,
+   "to": 5980,
    "src": "ep/shanfro2/v/05_boost-008.wav",
    "tsukkomi": false
   },
@@ -350,8 +341,8 @@
    "id": "05_boost-009",
    "who": "baku",
    "text": "ほぼ1回で終わりやんか！",
-   "from": 6149,
-   "to": 6204,
+   "from": 5983,
+   "to": 6038,
    "src": "ep/shanfro2/v/05_boost-009.wav",
    "tsukkomi": true,
    "hide": true
@@ -360,8 +351,8 @@
    "id": "05_boost-010",
    "who": "nagi",
    "text": "続く台では、ないね。",
-   "from": 6223,
-   "to": 6279,
+   "from": 6057,
+   "to": 6113,
    "src": "ep/shanfro2/v/05_boost-010.wav",
    "tsukkomi": false
   },
@@ -369,8 +360,8 @@
    "id": "05_boost-011",
    "who": "nagi",
    "text": "でも、その1回で平均約7300個。",
-   "from": 6283,
-   "to": 6387,
+   "from": 6116,
+   "to": 6220,
    "src": "ep/shanfro2/v/05_boost-011.wav",
    "tsukkomi": false
   },
@@ -378,8 +369,8 @@
    "id": "05_boost-012",
    "who": "baku",
    "text": "続かんでも7000超えか。それはそれで、脳汁出るわ。",
-   "from": 6390,
-   "to": 6514,
+   "from": 6224,
+   "to": 6348,
    "src": "ep/shanfro2/v/05_boost-012.wav",
    "tsukkomi": false
   },
@@ -387,8 +378,8 @@
    "id": "05_boost-013",
    "who": "nagi",
    "text": "そもそも入るのは、RUSH18回に1回くらい。",
-   "from": 6518,
-   "to": 6622,
+   "from": 6352,
+   "to": 6456,
    "src": "ep/shanfro2/v/05_boost-013.wav",
    "tsukkomi": false
   },
@@ -396,8 +387,8 @@
    "id": "05_boost-014",
    "who": "baku",
    "text": "ほな、そこは宝くじ枠やな。本命は、4500の半々のほうや。",
-   "from": 6626,
-   "to": 6779,
+   "from": 6460,
+   "to": 6613,
    "src": "ep/shanfro2/v/05_boost-014.wav",
    "tsukkomi": false
   },
@@ -405,8 +396,8 @@
    "id": "06_waku-001",
    "who": "nagi",
    "text": "筐体は、サミーの新しいアクセル枠。この台が第1弾。",
-   "from": 6866,
-   "to": 7012,
+   "from": 6700,
+   "to": 6845,
    "src": "ep/shanfro2/v/06_waku-001.wav",
    "tsukkomi": false
   },
@@ -414,8 +405,8 @@
    "id": "06_waku-002",
    "who": "nagi",
    "text": "まず、ハンドルが真ん中にある。手を置くところも付いてる。",
-   "from": 7015,
-   "to": 7138,
+   "from": 6849,
+   "to": 6972,
    "src": "ep/shanfro2/v/06_waku-002.wav",
    "tsukkomi": false
   },
@@ -423,8 +414,8 @@
    "id": "06_waku-003",
    "who": "baku",
    "text": "これは助かるわ。ずっと握っとると、夕方には手首も肩もバキバキやからな。",
-   "from": 7142,
-   "to": 7313,
+   "from": 6975,
+   "to": 7147,
    "src": "ep/shanfro2/v/06_waku-003.wav",
    "tsukkomi": false
   },
@@ -432,8 +423,8 @@
    "id": "06_waku-004",
    "who": "nagi",
    "text": "それと、押す・引く・振動の3つが入った、アクセルギア。",
-   "from": 7317,
-   "to": 7444,
+   "from": 7151,
+   "to": 7277,
    "src": "ep/shanfro2/v/06_waku-004.wav",
    "tsukkomi": false
   },
@@ -441,8 +432,8 @@
    "id": "06_waku-005",
    "who": "baku",
    "text": "エアーも、手元のバイブも来るんか。急に来たら、絶対びくってなるわ。",
-   "from": 7447,
-   "to": 7587,
+   "from": 7281,
+   "to": 7421,
    "src": "ep/shanfro2/v/06_waku-005.wav",
    "tsukkomi": false
   },
@@ -450,8 +441,8 @@
    "id": "06_waku-006",
    "who": "nagi",
    "text": "あと、イヤホンジャックも付いた。",
-   "from": 7591,
-   "to": 7657,
+   "from": 7424,
+   "to": 7490,
    "src": "ep/shanfro2/v/06_waku-006.wav",
    "tsukkomi": false
   },
@@ -459,8 +450,8 @@
    "id": "06_waku-007",
    "who": "baku",
    "text": "これはでかいで。隣の爆音を気にせんと、自分の音量で打てるし。",
-   "from": 7660,
-   "to": 7802,
+   "from": 7494,
+   "to": 7636,
    "src": "ep/shanfro2/v/06_waku-007.wav",
    "tsukkomi": false
   },
@@ -468,8 +459,8 @@
    "id": "06_waku-008",
    "who": "nagi",
    "text": "そのぶん、エアーが来たときは、もっとびっくりするけどね。",
-   "from": 7806,
-   "to": 7926,
+   "from": 7639,
+   "to": 7760,
    "src": "ep/shanfro2/v/06_waku-008.wav",
    "tsukkomi": false
   },
@@ -477,8 +468,8 @@
    "id": "07_enshutsu-001",
    "who": "nagi",
    "text": "勝負どころは、ウェザエモンとリュカオーン。",
-   "from": 8013,
-   "to": 8095,
+   "from": 7847,
+   "to": 7929,
    "src": "ep/shanfro2/v/07_enshutsu-001.wav",
    "tsukkomi": false
   },
@@ -486,8 +477,8 @@
    "id": "07_enshutsu-002",
    "who": "baku",
    "text": "ウェザエモンは原作でもいちばんの山場やからな。そら熱いわ。",
-   "from": 8099,
-   "to": 8230,
+   "from": 7933,
+   "to": 8063,
    "src": "ep/shanfro2/v/07_enshutsu-002.wav",
    "tsukkomi": false
   },
@@ -495,8 +486,8 @@
    "id": "07_enshutsu-003",
    "who": "nagi",
    "text": "ウェザエモンSPは、信頼度 約86%。赤タイトルなら約92%。",
-   "from": 8233,
-   "to": 8448,
+   "from": 8067,
+   "to": 8282,
    "src": "ep/shanfro2/v/07_enshutsu-003.wav",
    "tsukkomi": false
   },
@@ -504,8 +495,8 @@
    "id": "07_enshutsu-004",
    "who": "nagi",
    "text": "リュカオーンSPは、約66%。",
-   "from": 8452,
-   "to": 8554,
+   "from": 8285,
+   "to": 8387,
    "src": "ep/shanfro2/v/07_enshutsu-004.wav",
    "tsukkomi": false
   },
@@ -513,8 +504,8 @@
    "id": "07_enshutsu-005",
    "who": "baku",
    "text": "66か。リュカオーンで外れたら、しばらく立ち直られへんな。",
-   "from": 8557,
-   "to": 8692,
+   "from": 8391,
+   "to": 8525,
    "src": "ep/shanfro2/v/07_enshutsu-005.wav",
    "tsukkomi": false
   },
@@ -522,8 +513,8 @@
    "id": "07_enshutsu-006",
    "who": "nagi",
    "text": "カスタムは、先告知のイキナリサンラク。40%、90%、EXから選べる。",
-   "from": 8695,
-   "to": 8919,
+   "from": 8529,
+   "to": 8752,
    "src": "ep/shanfro2/v/07_enshutsu-006.wav",
    "tsukkomi": false
   },
@@ -531,8 +522,8 @@
    "id": "07_enshutsu-007",
    "who": "baku",
    "text": "ウチは90%派や。告知が来るまでは、気楽に回しとけるからな。",
-   "from": 8922,
-   "to": 9066,
+   "from": 8756,
+   "to": 8899,
    "src": "ep/shanfro2/v/07_enshutsu-007.wav",
    "tsukkomi": false
   },
@@ -540,8 +531,8 @@
    "id": "07_enshutsu-008",
    "who": "nagi",
    "text": "RUSH中は、神ゲーランプで当たりを教えてくれるカスタムもある。",
-   "from": 9069,
-   "to": 9193,
+   "from": 8903,
+   "to": 9027,
    "src": "ep/shanfro2/v/07_enshutsu-008.wav",
    "tsukkomi": false
   },
@@ -549,8 +540,8 @@
    "id": "07_enshutsu-009",
    "who": "baku",
    "text": "それはオフや。STは最後まで煽られてなんぼやねん。",
-   "from": 9197,
-   "to": 9320,
+   "from": 9030,
+   "to": 9153,
    "src": "ep/shanfro2/v/07_enshutsu-009.wav",
    "tsukkomi": false
   },
@@ -558,8 +549,8 @@
    "id": "08_matome-001",
    "who": "nagi",
    "text": "まとめると、1/399で当たれば、どれも1500個。",
-   "from": 9407,
-   "to": 9565,
+   "from": 9241,
+   "to": 9399,
    "src": "ep/shanfro2/v/08_matome-001.wav",
    "tsukkomi": false
   },
@@ -567,8 +558,8 @@
    "id": "08_matome-002",
    "who": "nagi",
    "text": "RUSHは75%で、当たりの半分が4500個。",
-   "from": 9569,
-   "to": 9699,
+   "from": 9403,
+   "to": 9533,
    "src": "ep/shanfro2/v/08_matome-002.wav",
    "tsukkomi": false
   },
@@ -576,8 +567,8 @@
    "id": "08_matome-003",
    "who": "nagi",
    "text": "BOOSTはほぼ1回で終わるけど、その1回が平均約7300個。",
-   "from": 9703,
-   "to": 9858,
+   "from": 9537,
+   "to": 9692,
    "src": "ep/shanfro2/v/08_matome-003.wav",
    "tsukkomi": false
   },
@@ -585,8 +576,8 @@
    "id": "08_matome-004",
    "who": "baku",
    "text": "続く台やなくて、一発ででかいのを取る台やな。ハマっても、取り返せる絵が見える。",
-   "from": 9862,
-   "to": 10033,
+   "from": 9695,
+   "to": 9867,
    "src": "ep/shanfro2/v/08_matome-004.wav",
    "tsukkomi": false
   },
@@ -594,8 +585,8 @@
    "id": "08_matome-005",
    "who": "baku",
    "text": "よっしゃ、ほな今から打ってくるわ。4500ぶち抜いたる。",
-   "from": 10037,
-   "to": 10158,
+   "from": 9871,
+   "to": 9991,
    "src": "ep/shanfro2/v/08_matome-005.wav",
    "tsukkomi": false
   },
@@ -603,8 +594,8 @@
    "id": "08_matome-006",
    "who": "nagi",
    "text": "ちなみに、通常時から4500個に届くまで、平均で約1200回転かかるよ。",
-   "from": 10161,
-   "to": 10355,
+   "from": 9995,
+   "to": 10189,
    "src": "ep/shanfro2/v/08_matome-006.wav",
    "tsukkomi": false
   },
@@ -612,8 +603,8 @@
    "id": "08_matome-007",
    "who": "baku",
    "text": "1200回転か。ほな、まず釘見てからにするわ。",
-   "from": 10359,
-   "to": 10477,
+   "from": 10192,
+   "to": 10311,
    "src": "ep/shanfro2/v/08_matome-007.wav",
    "tsukkomi": false
   },
@@ -621,8 +612,8 @@
    "id": "08_matome-008",
    "who": "nagi",
    "text": "賢明だね。",
-   "from": 10481,
-   "to": 10507,
+   "from": 10315,
+   "to": 10341,
    "src": "ep/shanfro2/v/08_matome-008.wav",
    "tsukkomi": false
   },
@@ -630,8 +621,8 @@
    "id": "08_matome-009",
    "who": "baku",
    "text": "打った人は、4500を何回引けたか、ぜひコメントで教えてほしいわ。",
-   "from": 10535,
-   "to": 10691,
+   "from": 10368,
+   "to": 10524,
    "src": "ep/shanfro2/v/08_matome-009.wav",
    "tsukkomi": false
   },
@@ -639,8 +630,8 @@
    "id": "08_matome-010",
    "who": "nagi",
    "text": "BOOSTの上乗せを見た人も、待ってるね。",
-   "from": 10694,
-   "to": 10785,
+   "from": 10528,
+   "to": 10619,
    "src": "ep/shanfro2/v/08_matome-010.wav",
    "tsukkomi": false
   }
@@ -854,28 +845,10 @@
    "hide": false
   },
   {
-   "who": "baku",
-   "text": "300発で放り出されて、\nまたサンドに千円入れ直すの、",
-   "from": 3033,
-   "to": 3148,
-   "cont": false,
-   "last": false,
-   "hide": false
-  },
-  {
-   "who": "baku",
-   "text": "ほんましんどいからな。",
-   "from": 3148,
-   "to": 3195,
-   "cont": true,
-   "last": true,
-   "hide": false
-  },
-  {
    "who": "nagi",
    "text": "RUSHは、\n1/98を134回転のST。",
-   "from": 3283,
-   "to": 3428,
+   "from": 3117,
+   "to": 3262,
    "cont": false,
    "last": false,
    "hide": false
@@ -883,8 +856,8 @@
   {
    "who": "nagi",
    "text": "継続は約75%だね。",
-   "from": 3428,
-   "to": 3498,
+   "from": 3262,
+   "to": 3332,
    "cont": true,
    "last": true,
    "hide": false
@@ -892,8 +865,8 @@
   {
    "who": "nagi",
    "text": "RUSH中の当たりは、\n1500個と4500個が、ほぼ半々。",
-   "from": 3502,
-   "to": 3641,
+   "from": 3336,
+   "to": 3475,
    "cont": false,
    "last": true,
    "hide": false
@@ -901,8 +874,8 @@
   {
    "who": "baku",
    "text": "真ん中がないんや。\n4500引いた瞬間、",
-   "from": 3645,
-   "to": 3732,
+   "from": 3478,
+   "to": 3566,
    "cont": false,
    "last": false,
    "hide": false
@@ -910,8 +883,8 @@
   {
    "who": "baku",
    "text": "今日はもう勝ちやな。",
-   "from": 3732,
-   "to": 3776,
+   "from": 3566,
+   "to": 3610,
    "cont": true,
    "last": true,
    "hide": false
@@ -919,8 +892,8 @@
   {
    "who": "nagi",
    "text": "4500個は、\n1500個の当たりを3回続けて消化する形。",
-   "from": 3780,
-   "to": 3935,
+   "from": 3614,
+   "to": 3769,
    "cont": false,
    "last": false,
    "hide": false
@@ -928,8 +901,8 @@
   {
    "who": "nagi",
    "text": "1回の上限が、1500個だからね。",
-   "from": 3935,
-   "to": 4026,
+   "from": 3769,
+   "to": 3860,
    "cont": true,
    "last": true,
    "hide": false
@@ -937,8 +910,8 @@
   {
    "who": "baku",
    "text": "3回ぶんか。\n消化中にトイレ行かれへんやん。",
-   "from": 4030,
-   "to": 4136,
+   "from": 3863,
+   "to": 3970,
    "cont": false,
    "last": true,
    "hide": false
@@ -946,8 +919,8 @@
   {
    "who": "nagi",
    "text": "打つ前に行っときなよ。",
-   "from": 4140,
-   "to": 4185,
+   "from": 3973,
+   "to": 4019,
    "cont": false,
    "last": true,
    "hide": false
@@ -955,8 +928,8 @@
   {
    "who": "nagi",
    "text": "RUSH1回で出る量は、\n平均すると約8900個。",
-   "from": 4248,
-   "to": 4374,
+   "from": 4082,
+   "to": 4208,
    "cont": false,
    "last": true,
    "hide": false
@@ -964,8 +937,8 @@
   {
    "who": "baku",
    "text": "9000近いんか。ほな、\nハマってても今日のうちに取り返せるやん。",
-   "from": 4378,
-   "to": 4523,
+   "from": 4212,
+   "to": 4357,
    "cont": false,
    "last": true,
    "hide": false
@@ -973,8 +946,8 @@
   {
    "who": "nagi",
    "text": "でも、真ん中くらいの人は6000個。\n平均は、",
-   "from": 4527,
-   "to": 4634,
+   "from": 4361,
+   "to": 4468,
    "cont": false,
    "last": false,
    "hide": false
@@ -982,8 +955,8 @@
   {
    "who": "nagi",
    "text": "大勝ちした人に引っ張られてる。",
-   "from": 4634,
-   "to": 4705,
+   "from": 4468,
+   "to": 4538,
    "cont": true,
    "last": true,
    "hide": false
@@ -991,8 +964,8 @@
   {
    "who": "baku",
    "text": "あかん、平均で座るとこやった。ウチ、\nそれで何回も痛い目見とるわ。",
-   "from": 4708,
-   "to": 4853,
+   "from": 4542,
+   "to": 4687,
    "cont": false,
    "last": true,
    "hide": false
@@ -1000,8 +973,8 @@
   {
    "who": "nagi",
    "text": "で、目玉の超神ゲーBOOST。\nRUSH中の当たりの、約2%で付く。",
-   "from": 4941,
-   "to": 5125,
+   "from": 4775,
+   "to": 4959,
    "cont": false,
    "last": true,
    "hide": false
@@ -1009,8 +982,8 @@
   {
    "who": "baku",
    "text": "2%か。\n入ったら終わらんって聞いたで。",
-   "from": 5128,
-   "to": 5224,
+   "from": 4962,
+   "to": 5058,
    "cont": false,
    "last": true,
    "hide": false
@@ -1018,8 +991,8 @@
   {
    "who": "nagi",
    "text": "4500個の当たりに、\nさらに上乗せが付く仕組み。",
-   "from": 5227,
-   "to": 5342,
+   "from": 5061,
+   "to": 5176,
    "cont": false,
    "last": true,
    "hide": false
@@ -1027,8 +1000,8 @@
   {
    "who": "nagi",
    "text": "上乗せは、1500個が半分。\n3000個が約34%。",
-   "from": 5346,
-   "to": 5501,
+   "from": 5179,
+   "to": 5335,
    "cont": false,
    "last": true,
    "hide": false
@@ -1036,8 +1009,8 @@
   {
    "who": "nagi",
    "text": "残りの約16%は、\n3000個か4500個を乗せて、",
-   "from": 5505,
-   "to": 5651,
+   "from": 5339,
+   "to": 5485,
    "cont": false,
    "last": false,
    "hide": false
@@ -1045,8 +1018,8 @@
   {
    "who": "nagi",
    "text": "もう1回。",
-   "from": 5651,
-   "to": 5680,
+   "from": 5485,
+   "to": 5514,
    "cont": true,
    "last": true,
    "hide": false
@@ -1054,8 +1027,8 @@
   {
    "who": "baku",
    "text": "最低でも6000発か。ほんで、\nそっからループするんやろ？",
-   "from": 5684,
-   "to": 5805,
+   "from": 5517,
+   "to": 5639,
    "cont": false,
    "last": true,
    "hide": false
@@ -1063,8 +1036,8 @@
   {
    "who": "nagi",
    "text": "じゃあ、\nレンに100回入ってもらおう。",
-   "from": 5809,
-   "to": 5879,
+   "from": 5643,
+   "to": 5713,
    "cont": false,
    "last": true,
    "hide": false
@@ -1072,8 +1045,8 @@
   {
    "who": "nagi",
    "text": "100回入って、\n2回目まで行ったのが16回。",
-   "from": 5961,
-   "to": 6070,
+   "from": 5794,
+   "to": 5903,
    "cont": false,
    "last": false,
    "hide": false
@@ -1081,8 +1054,8 @@
   {
    "who": "nagi",
    "text": "3回目まで行ったのは、2回だけ。",
-   "from": 6070,
-   "to": 6146,
+   "from": 5903,
+   "to": 5980,
    "cont": true,
    "last": true,
    "hide": false
@@ -1090,8 +1063,8 @@
   {
    "who": "baku",
    "text": "ほぼ1回で終わりやんか！",
-   "from": 6149,
-   "to": 6204,
+   "from": 5983,
+   "to": 6038,
    "cont": false,
    "last": true,
    "hide": true
@@ -1099,8 +1072,8 @@
   {
    "who": "nagi",
    "text": "続く台では、ないね。",
-   "from": 6223,
-   "to": 6279,
+   "from": 6057,
+   "to": 6113,
    "cont": false,
    "last": true,
    "hide": false
@@ -1108,8 +1081,8 @@
   {
    "who": "nagi",
    "text": "でも、その1回で平均約7300個。",
-   "from": 6283,
-   "to": 6387,
+   "from": 6116,
+   "to": 6220,
    "cont": false,
    "last": true,
    "hide": false
@@ -1117,8 +1090,8 @@
   {
    "who": "baku",
    "text": "続かんでも7000超えか。\nそれはそれで、脳汁出るわ。",
-   "from": 6390,
-   "to": 6514,
+   "from": 6224,
+   "to": 6348,
    "cont": false,
    "last": true,
    "hide": false
@@ -1126,8 +1099,8 @@
   {
    "who": "nagi",
    "text": "そもそも入るのは、\nRUSH18回に1回くらい。",
-   "from": 6518,
-   "to": 6622,
+   "from": 6352,
+   "to": 6456,
    "cont": false,
    "last": true,
    "hide": false
@@ -1135,8 +1108,8 @@
   {
    "who": "baku",
    "text": "ほな、そこは宝くじ枠やな。本命は、\n4500の半々のほうや。",
-   "from": 6626,
-   "to": 6779,
+   "from": 6460,
+   "to": 6613,
    "cont": false,
    "last": true,
    "hide": false
@@ -1144,8 +1117,8 @@
   {
    "who": "nagi",
    "text": "筐体は、サミーの新しいアクセル枠。\nこの台が第1弾。",
-   "from": 6866,
-   "to": 7012,
+   "from": 6700,
+   "to": 6845,
    "cont": false,
    "last": true,
    "hide": false
@@ -1153,8 +1126,8 @@
   {
    "who": "nagi",
    "text": "まず、ハンドルが真ん中にある。\n手を置くところも付いてる。",
-   "from": 7015,
-   "to": 7138,
+   "from": 6849,
+   "to": 6972,
    "cont": false,
    "last": true,
    "hide": false
@@ -1162,8 +1135,8 @@
   {
    "who": "baku",
    "text": "これは助かるわ。ずっと握っとると、\n夕方には手首も肩もバキバキやからな。",
-   "from": 7142,
-   "to": 7313,
+   "from": 6975,
+   "to": 7147,
    "cont": false,
    "last": true,
    "hide": false
@@ -1171,8 +1144,8 @@
   {
    "who": "nagi",
    "text": "それと、\n押す・引く・振動の3つが入った、",
-   "from": 7317,
-   "to": 7412,
+   "from": 7151,
+   "to": 7245,
    "cont": false,
    "last": false,
    "hide": false
@@ -1180,8 +1153,8 @@
   {
    "who": "nagi",
    "text": "アクセルギア。",
-   "from": 7412,
-   "to": 7444,
+   "from": 7245,
+   "to": 7277,
    "cont": true,
    "last": true,
    "hide": false
@@ -1189,8 +1162,8 @@
   {
    "who": "baku",
    "text": "エアーも、手元のバイブも来るんか。\n急に来たら、絶対びくってなるわ。",
-   "from": 7447,
-   "to": 7587,
+   "from": 7281,
+   "to": 7421,
    "cont": false,
    "last": true,
    "hide": false
@@ -1198,8 +1171,8 @@
   {
    "who": "nagi",
    "text": "あと、イヤホンジャックも付いた。",
-   "from": 7591,
-   "to": 7657,
+   "from": 7424,
+   "to": 7490,
    "cont": false,
    "last": true,
    "hide": false
@@ -1207,8 +1180,8 @@
   {
    "who": "baku",
    "text": "これはでかいで。\n隣の爆音を気にせんと、",
-   "from": 7660,
-   "to": 7751,
+   "from": 7494,
+   "to": 7585,
    "cont": false,
    "last": false,
    "hide": false
@@ -1216,8 +1189,8 @@
   {
    "who": "baku",
    "text": "自分の音量で打てるし。",
-   "from": 7751,
-   "to": 7802,
+   "from": 7585,
+   "to": 7636,
    "cont": true,
    "last": true,
    "hide": false
@@ -1225,8 +1198,8 @@
   {
    "who": "nagi",
    "text": "そのぶん、エアーが来たときは、\nもっとびっくりするけどね。",
-   "from": 7806,
-   "to": 7926,
+   "from": 7639,
+   "to": 7760,
    "cont": false,
    "last": true,
    "hide": false
@@ -1234,8 +1207,8 @@
   {
    "who": "nagi",
    "text": "勝負どころは、\nウェザエモンとリュカオーン。",
-   "from": 8013,
-   "to": 8095,
+   "from": 7847,
+   "to": 7929,
    "cont": false,
    "last": true,
    "hide": false
@@ -1243,8 +1216,8 @@
   {
    "who": "baku",
    "text": "ウェザエモンは原作でもいちばんの山場\nやからな。そら熱いわ。",
-   "from": 8099,
-   "to": 8230,
+   "from": 7933,
+   "to": 8063,
    "cont": false,
    "last": true,
    "hide": false
@@ -1252,8 +1225,8 @@
   {
    "who": "nagi",
    "text": "ウェザエモンSPは、\n信頼度 約86%。",
-   "from": 8233,
-   "to": 8367,
+   "from": 8067,
+   "to": 8201,
    "cont": false,
    "last": false,
    "hide": false
@@ -1261,8 +1234,8 @@
   {
    "who": "nagi",
    "text": "赤タイトルなら約92%。",
-   "from": 8367,
-   "to": 8448,
+   "from": 8201,
+   "to": 8282,
    "cont": true,
    "last": true,
    "hide": false
@@ -1270,8 +1243,8 @@
   {
    "who": "nagi",
    "text": "リュカオーンSPは、約66%。",
-   "from": 8452,
-   "to": 8554,
+   "from": 8285,
+   "to": 8387,
    "cont": false,
    "last": true,
    "hide": false
@@ -1279,8 +1252,8 @@
   {
    "who": "baku",
    "text": "66か。リュカオーンで外れたら、\nしばらく立ち直られへんな。",
-   "from": 8557,
-   "to": 8692,
+   "from": 8391,
+   "to": 8525,
    "cont": false,
    "last": true,
    "hide": false
@@ -1288,8 +1261,8 @@
   {
    "who": "nagi",
    "text": "カスタムは、\n先告知のイキナリサンラク。40%、",
-   "from": 8695,
-   "to": 8844,
+   "from": 8529,
+   "to": 8677,
    "cont": false,
    "last": false,
    "hide": false
@@ -1297,8 +1270,8 @@
   {
    "who": "nagi",
    "text": "90%、EXから選べる。",
-   "from": 8844,
-   "to": 8919,
+   "from": 8677,
+   "to": 8752,
    "cont": true,
    "last": true,
    "hide": false
@@ -1306,8 +1279,8 @@
   {
    "who": "baku",
    "text": "ウチは90%派や。告知が来るまでは、\n気楽に回しとけるからな。",
-   "from": 8922,
-   "to": 9066,
+   "from": 8756,
+   "to": 8899,
    "cont": false,
    "last": true,
    "hide": false
@@ -1315,8 +1288,8 @@
   {
    "who": "nagi",
    "text": "RUSH中は、\n神ゲーランプで当たりを教えてくれるカ",
-   "from": 9069,
-   "to": 9166,
+   "from": 8903,
+   "to": 9000,
    "cont": false,
    "last": false,
    "hide": false
@@ -1324,8 +1297,8 @@
   {
    "who": "nagi",
    "text": "スタムもある。",
-   "from": 9166,
-   "to": 9193,
+   "from": 9000,
+   "to": 9027,
    "cont": true,
    "last": true,
    "hide": false
@@ -1333,8 +1306,8 @@
   {
    "who": "baku",
    "text": "それはオフや。\nSTは最後まで煽られてなんぼやねん。",
-   "from": 9197,
-   "to": 9320,
+   "from": 9030,
+   "to": 9153,
    "cont": false,
    "last": true,
    "hide": false
@@ -1342,8 +1315,8 @@
   {
    "who": "nagi",
    "text": "まとめると、1/399で当たれば、\nどれも1500個。",
-   "from": 9407,
-   "to": 9565,
+   "from": 9241,
+   "to": 9399,
    "cont": false,
    "last": true,
    "hide": false
@@ -1351,8 +1324,8 @@
   {
    "who": "nagi",
    "text": "RUSHは75%で、\n当たりの半分が4500個。",
-   "from": 9569,
-   "to": 9699,
+   "from": 9403,
+   "to": 9533,
    "cont": false,
    "last": true,
    "hide": false
@@ -1360,8 +1333,8 @@
   {
    "who": "nagi",
    "text": "BOOSTはほぼ1回で終わるけど、\nその1回が平均約7300個。",
-   "from": 9703,
-   "to": 9858,
+   "from": 9537,
+   "to": 9692,
    "cont": false,
    "last": true,
    "hide": false
@@ -1369,8 +1342,8 @@
   {
    "who": "baku",
    "text": "続く台やなくて、\n一発ででかいのを取る台やな。",
-   "from": 9862,
-   "to": 9960,
+   "from": 9695,
+   "to": 9793,
    "cont": false,
    "last": false,
    "hide": false
@@ -1378,8 +1351,8 @@
   {
    "who": "baku",
    "text": "ハマっても、取り返せる絵が見える。",
-   "from": 9960,
-   "to": 10033,
+   "from": 9793,
+   "to": 9867,
    "cont": true,
    "last": true,
    "hide": false
@@ -1387,8 +1360,8 @@
   {
    "who": "baku",
    "text": "よっしゃ、ほな今から打ってくるわ。\n4500ぶち抜いたる。",
-   "from": 10037,
-   "to": 10158,
+   "from": 9871,
+   "to": 9991,
    "cont": false,
    "last": true,
    "hide": false
@@ -1396,8 +1369,8 @@
   {
    "who": "nagi",
    "text": "ちなみに、\n通常時から4500個に届くまで、",
-   "from": 10161,
-   "to": 10276,
+   "from": 9995,
+   "to": 10110,
    "cont": false,
    "last": false,
    "hide": false
@@ -1405,8 +1378,8 @@
   {
    "who": "nagi",
    "text": "平均で約1200回転かかるよ。",
-   "from": 10276,
-   "to": 10355,
+   "from": 10110,
+   "to": 10189,
    "cont": true,
    "last": true,
    "hide": false
@@ -1414,8 +1387,8 @@
   {
    "who": "baku",
    "text": "1200回転か。ほな、\nまず釘見てからにするわ。",
-   "from": 10359,
-   "to": 10477,
+   "from": 10192,
+   "to": 10311,
    "cont": false,
    "last": true,
    "hide": false
@@ -1423,8 +1396,8 @@
   {
    "who": "nagi",
    "text": "賢明だね。",
-   "from": 10481,
-   "to": 10507,
+   "from": 10315,
+   "to": 10341,
    "cont": false,
    "last": true,
    "hide": false
@@ -1432,8 +1405,8 @@
   {
    "who": "baku",
    "text": "打った人は、4500を何回引けたか、\nぜひコメントで教えてほしいわ。",
-   "from": 10535,
-   "to": 10691,
+   "from": 10368,
+   "to": 10524,
    "cont": false,
    "last": true,
    "hide": false
@@ -1441,8 +1414,8 @@
   {
    "who": "nagi",
    "text": "BOOSTの上乗せを見た人も、\n待ってるね。",
-   "from": 10694,
-   "to": 10785,
+   "from": 10528,
+   "to": 10619,
    "cont": false,
    "last": true,
    "hide": false
@@ -1452,7 +1425,7 @@
   {
    "type": "song",
    "from": 859,
-   "to": 10825
+   "to": 10658
   },
   {
    "type": "intro",
@@ -1678,7 +1651,7 @@
    "type": "show",
    "kind": "photo:login",
    "from": 2812,
-   "to": 3199
+   "to": 3033
   },
   {
    "type": "sfx",
@@ -1691,93 +1664,93 @@
    "type": "chapter",
    "no": "03",
    "title": "RUSHの中身",
-   "from": 3199,
-   "to": 3277
+   "from": 3033,
+   "to": 3111
   },
   {
    "type": "sfx",
-   "from": 3199,
-   "to": 3200,
+   "from": 3033,
+   "to": 3034,
    "se": "whoosh",
    "seVol": 0.5
   },
   {
    "type": "sfx",
-   "from": 3207,
-   "to": 3208,
+   "from": 3040,
+   "to": 3041,
    "se": "slam",
    "seVol": 0.45
   },
   {
    "type": "show",
    "kind": "data:st",
-   "from": 3283,
-   "to": 3502
+   "from": 3117,
+   "to": 3336
   },
   {
    "type": "sfx",
-   "from": 3281,
-   "to": 3282,
+   "from": 3114,
+   "to": 3115,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "sfx",
-   "from": 3304,
-   "to": 3305,
+   "from": 3138,
+   "to": 3139,
    "se": "holo_data",
    "seVol": 0.35
   },
   {
    "type": "show",
    "kind": "bar:rushhit",
-   "from": 3502,
-   "to": 3780
+   "from": 3336,
+   "to": 3614
   },
   {
    "type": "sfx",
-   "from": 3500,
-   "to": 3501,
+   "from": 3333,
+   "to": 3334,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "sfx",
-   "from": 3523,
-   "to": 3524,
+   "from": 3357,
+   "to": 3358,
    "se": "holo_data",
    "seVol": 0.35
   },
   {
    "type": "show",
    "kind": "photo:kamige",
-   "from": 3780,
-   "to": 4188
+   "from": 3614,
+   "to": 4022
   },
   {
    "type": "sfx",
-   "from": 3778,
-   "to": 3779,
+   "from": 3611,
+   "to": 3612,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "reel:rushavg",
-   "from": 4188,
-   "to": 4857
+   "from": 4022,
+   "to": 4691
   },
   {
    "type": "sfx",
-   "from": 4186,
-   "to": 4187,
+   "from": 4020,
+   "to": 4021,
    "se": "scan",
    "seVol": 0.6
   },
   {
    "type": "sfx",
-   "from": 4251,
-   "to": 4252,
+   "from": 4085,
+   "to": 4086,
    "se": "slam",
    "seVol": 0.8
   },
@@ -1785,121 +1758,121 @@
    "type": "chapter",
    "no": "04",
    "title": "超神ゲーBOOST",
-   "from": 4857,
-   "to": 4935
+   "from": 4691,
+   "to": 4769
   },
   {
    "type": "sfx",
-   "from": 4857,
-   "to": 4858,
+   "from": 4691,
+   "to": 4692,
    "se": "whoosh",
    "seVol": 0.5
   },
   {
    "type": "sfx",
-   "from": 4865,
-   "to": 4866,
+   "from": 4698,
+   "to": 4699,
    "se": "slam",
    "seVol": 0.45
   },
   {
    "type": "show",
    "kind": "photo:boost",
-   "from": 4941,
-   "to": 5227
+   "from": 4775,
+   "to": 5061
   },
   {
    "type": "sfx",
-   "from": 4939,
-   "to": 4940,
+   "from": 4772,
+   "to": 4773,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "photo:uwanose",
-   "from": 5227,
-   "to": 5346
+   "from": 5061,
+   "to": 5179
   },
   {
    "type": "sfx",
-   "from": 5225,
-   "to": 5226,
+   "from": 5059,
+   "to": 5060,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "donut:boost",
-   "from": 5346,
-   "to": 5883
+   "from": 5179,
+   "to": 5716
   },
   {
    "type": "sfx",
-   "from": 5343,
-   "to": 5344,
+   "from": 5177,
+   "to": 5178,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "sfx",
-   "from": 5367,
-   "to": 5368,
+   "from": 5200,
+   "to": 5201,
    "se": "holo_data",
    "seVol": 0.35
   },
   {
    "type": "show",
    "kind": "sim:boost",
-   "from": 5883,
-   "to": 6283
+   "from": 5716,
+   "to": 6116
   },
   {
    "type": "sfx",
-   "from": 5880,
-   "to": 5881,
+   "from": 5714,
+   "to": 5715,
    "se": "scan",
    "seVol": 0.6
   },
   {
    "type": "sfx",
-   "from": 5955,
-   "to": 5956,
+   "from": 5788,
+   "to": 5789,
    "se": "confirm",
    "seVol": 0.7
   },
   {
    "type": "sfx",
-   "from": 6146,
-   "to": 6147,
+   "from": 5980,
+   "to": 5981,
    "se": "slash",
    "seVol": 0.75
   },
   {
    "type": "fx",
    "kind": "jack",
-   "from": 6146,
-   "to": 6219,
+   "from": 5980,
+   "to": 6053,
    "word": "は！？",
    "sub": "ほぼ1回で終わりやん！"
   },
   {
    "type": "show",
    "kind": "verdict:boostavg",
-   "from": 6283,
-   "to": 6518
+   "from": 6116,
+   "to": 6352
   },
   {
    "type": "sfx",
-   "from": 6290,
-   "to": 6291,
+   "from": 6124,
+   "to": 6125,
    "se": "slam",
    "seVol": 0.6
   },
   {
    "type": "sfx",
-   "from": 6518,
-   "to": 6519,
+   "from": 6352,
+   "to": 6353,
    "se": "holo_disappear",
    "seVol": 0.4
   },
@@ -1907,92 +1880,92 @@
    "type": "chapter",
    "no": "05",
    "title": "新しいアクセル枠",
-   "from": 6782,
-   "to": 6860
+   "from": 6616,
+   "to": 6694
   },
   {
    "type": "sfx",
-   "from": 6782,
-   "to": 6783,
+   "from": 6616,
+   "to": 6617,
    "se": "whoosh",
    "seVol": 0.5
   },
   {
    "type": "sfx",
-   "from": 6790,
-   "to": 6791,
+   "from": 6624,
+   "to": 6625,
    "se": "slam",
    "seVol": 0.45
   },
   {
    "type": "show",
    "kind": "imgdata:waku",
-   "from": 6866,
-   "to": 7015
+   "from": 6700,
+   "to": 6849
   },
   {
    "type": "sfx",
-   "from": 6864,
-   "to": 6865,
+   "from": 6698,
+   "to": 6699,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "sfx",
-   "from": 6887,
-   "to": 6888,
+   "from": 6721,
+   "to": 6722,
    "se": "holo_data",
    "seVol": 0.35
   },
   {
    "type": "show",
    "kind": "photo:handle",
-   "from": 7015,
-   "to": 7317
+   "from": 6849,
+   "to": 7151
   },
   {
    "type": "sfx",
-   "from": 7013,
-   "to": 7014,
+   "from": 6847,
+   "to": 6848,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "photo:gear",
-   "from": 7317,
-   "to": 7447
+   "from": 7151,
+   "to": 7281
   },
   {
    "type": "sfx",
-   "from": 7315,
-   "to": 7316,
+   "from": 7148,
+   "to": 7149,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "photo:air",
-   "from": 7447,
-   "to": 7591
+   "from": 7281,
+   "to": 7424
   },
   {
    "type": "sfx",
-   "from": 7445,
-   "to": 7446,
+   "from": 7279,
+   "to": 7280,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "photo:jack",
-   "from": 7591,
-   "to": 7929
+   "from": 7424,
+   "to": 7763
   },
   {
    "type": "sfx",
-   "from": 7588,
-   "to": 7589,
+   "from": 7422,
+   "to": 7423,
    "se": "holo_appear",
    "seVol": 0.55
   },
@@ -2000,66 +1973,66 @@
    "type": "chapter",
    "no": "06",
    "title": "演出とカスタム",
-   "from": 7929,
-   "to": 8007
+   "from": 7763,
+   "to": 7841
   },
   {
    "type": "sfx",
-   "from": 7929,
-   "to": 7930,
+   "from": 7763,
+   "to": 7764,
    "se": "whoosh",
    "seVol": 0.5
   },
   {
    "type": "sfx",
-   "from": 7937,
-   "to": 7938,
+   "from": 7771,
+   "to": 7772,
    "se": "slam",
    "seVol": 0.45
   },
   {
    "type": "show",
    "kind": "photo:wezaemon",
-   "from": 8013,
-   "to": 8452
+   "from": 7847,
+   "to": 8285
   },
   {
    "type": "sfx",
-   "from": 8011,
-   "to": 8012,
+   "from": 7845,
+   "to": 7846,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "photo:lycaon",
-   "from": 8452,
-   "to": 8695
+   "from": 8285,
+   "to": 8529
   },
   {
    "type": "sfx",
-   "from": 8449,
-   "to": 8450,
+   "from": 8283,
+   "to": 8284,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "show",
    "kind": "photo:custom",
-   "from": 8695,
-   "to": 9069
+   "from": 8529,
+   "to": 8903
   },
   {
    "type": "sfx",
-   "from": 8693,
-   "to": 8694,
+   "from": 8526,
+   "to": 8527,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "sfx",
-   "from": 9069,
-   "to": 9070,
+   "from": 8903,
+   "to": 8904,
    "se": "holo_disappear",
    "seVol": 0.4
   },
@@ -2067,59 +2040,59 @@
    "type": "chapter",
    "no": "",
    "title": "まとめ",
-   "from": 9323,
-   "to": 9401
+   "from": 9157,
+   "to": 9235
   },
   {
    "type": "sfx",
-   "from": 9323,
-   "to": 9324,
+   "from": 9157,
+   "to": 9158,
    "se": "whoosh",
    "seVol": 0.5
   },
   {
    "type": "sfx",
-   "from": 9331,
-   "to": 9332,
+   "from": 9164,
+   "to": 9165,
    "se": "slam",
    "seVol": 0.45
   },
   {
    "type": "show",
    "kind": "imgdata:matome",
-   "from": 9407,
-   "to": 10037
+   "from": 9241,
+   "to": 9871
   },
   {
    "type": "sfx",
-   "from": 9405,
-   "to": 9406,
+   "from": 9238,
+   "to": 9239,
    "se": "holo_appear",
    "seVol": 0.55
   },
   {
    "type": "sfx",
-   "from": 9428,
-   "to": 9429,
+   "from": 9262,
+   "to": 9263,
    "se": "holo_data",
    "seVol": 0.35
   },
   {
    "type": "sfx",
-   "from": 10037,
-   "to": 10038,
+   "from": 9871,
+   "to": 9872,
    "se": "holo_disappear",
    "seVol": 0.4
   },
   {
    "type": "shutter",
-   "from": 10521,
-   "to": 10532
+   "from": 10355,
+   "to": 10365
   },
   {
    "type": "sfx",
-   "from": 10511,
-   "to": 10512,
+   "from": 10344,
+   "to": 10345,
    "se": "whoosh",
    "seVol": 0.5
   }
