@@ -7,7 +7,7 @@ import {C, JP, MONO, SNAP, Tag, cham, clamp, ramp} from './tokens';
 
 export const CREDIT = '©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS ©Sammy';
 
-const BOX = {left: 470, top: 118, width: 980, height: 660};
+const BOX = {left: 450, top: 118, width: 900, height: 660};
 
 const Frame: React.FC<{from: number; children: React.ReactNode}> = ({from, children}) => {
   const f = useCurrentFrame();
@@ -84,7 +84,7 @@ const Cabinet: React.FC<{from: number; src: string; height: number; left: number
 };
 
 const Credit: React.FC<{o: number}> = ({o}) => (
-  <div style={{position: 'absolute', right: 40, bottom: 16, fontFamily: JP, fontSize: 15, color: C.muted, opacity: o}}>{CREDIT}</div>
+  <div style={{position: 'absolute', left: 44, bottom: 14, fontFamily: JP, fontSize: 14, color: C.muted, opacity: o, whiteSpace: 'nowrap'}}>{CREDIT}</div>
 );
 
 export const ImagePanel: React.FC<{from: number; src: string; label: string; title: string; lines: string[]}> = ({from, src, label, title, lines}) => {
@@ -92,17 +92,17 @@ export const ImagePanel: React.FC<{from: number; src: string; label: string; tit
   const body = ramp(f, from + 16, from + 26);
   return (
     <Frame from={from}>
-      <Cabinet from={from} src={src} height={590} left={70} top={36} />
-      <div style={{position: 'absolute', left: 430, top: 70, right: 50, opacity: body, translate: `${(1 - body) * 30}px 0`}}>
+      <Cabinet from={from} src={src} height={570} left={60} top={36} />
+      <div style={{position: 'absolute', left: 390, top: 80, right: 30, opacity: body, translate: `${(1 - body) * 30}px 0`}}>
         <Tag>{label}</Tag>
-        <div style={{fontFamily: JP, fontWeight: 900, fontSize: 50, color: C.white, lineHeight: 1.2, marginTop: 10}}>{title}</div>
+        <div style={{fontFamily: JP, fontWeight: 900, fontSize: 40, color: C.white, lineHeight: 1.2, marginTop: 10, whiteSpace: 'nowrap'}}>{title}</div>
         <div style={{marginTop: 26, display: 'flex', flexDirection: 'column', gap: 14}}>
           {lines.map((l, i) => {
             const o = ramp(f, from + 24 + i * 6, from + 32 + i * 6);
             return (
               <div key={l} style={{display: 'flex', alignItems: 'center', gap: 14, opacity: o, translate: `${(1 - o) * 24}px 0`}}>
                 <div style={{width: 10, height: 10, background: i === 0 ? C.orange : C.cyan, rotate: '45deg'}} />
-                <span style={{fontFamily: JP, fontWeight: 800, fontSize: 34, color: C.white}}>{l}</span>
+                <span style={{fontFamily: JP, fontWeight: 800, fontSize: 32, color: C.white, whiteSpace: 'nowrap'}}>{l}</span>
               </div>
             );
           })}
@@ -118,8 +118,8 @@ export const ImageDataPanel: React.FC<{from: number; src: string; title: string;
   const body = ramp(f, from + 16, from + 26);
   return (
     <Frame from={from}>
-      <Cabinet from={from} src={src} height={590} left={60} top={36} />
-      <div style={{position: 'absolute', left: 400, top: 44, right: 46, opacity: body}}>
+      <Cabinet from={from} src={src} height={570} left={50} top={36} />
+      <div style={{position: 'absolute', left: 370, top: 44, right: 40, opacity: body}}>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'baseline'}}>
           <Tag>DATA MONITOR</Tag>
           <span style={{fontFamily: MONO, fontSize: 16, letterSpacing: 3, color: C.muted, fontWeight: 700}}>CABINET</span>
