@@ -137,6 +137,15 @@ export const LabBackground: React.FC<{focus: number; chapter: ChapterInfo}> = ({
           }}
         />
       </AbsoluteFill>
+      {/* データ画面のとき：うっすら流れるグリッド */}
+      <AbsoluteFill
+        style={{
+          opacity: focus * 0.5,
+          backgroundImage: 'linear-gradient(rgba(53,214,255,0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(53,214,255,0.16) 1px, transparent 1px)',
+          backgroundSize: '80px 80px',
+          backgroundPosition: `${(f * 0.6) % 80}px ${(f * 0.9) % 80}px`,
+        }}
+      />
       {/* 漂うチリ（光の粒） */}
       <AbsoluteFill style={{pointerEvents: 'none', opacity: 1 - focus * 0.6}}>
         {Array.from({length: 22}, (_, i) => {
@@ -161,7 +170,7 @@ export const LabBackground: React.FC<{focus: number; chapter: ChapterInfo}> = ({
   );
 };
 
-export const LabChrome: React.FC<{mode: Mode; modeAt: number; chapter: ChapterInfo; machine: string}> = ({mode, modeAt, chapter, machine}) => {
+export const LabChrome: React.FC<{mode: Mode; modeAt: number; chapter: ChapterInfo; machine: string; voice: 'nagi' | 'baku' | null}> = ({mode, modeAt, chapter, machine, voice}) => {
   const f = useCurrentFrame();
   const o = ramp(f, 0, 12);
   const m = MODE[mode];
@@ -214,6 +223,16 @@ export const LabChrome: React.FC<{mode: Mode; modeAt: number; chapter: ChapterIn
           </div>
         </div>
       )}
+      {/* 右上の下：声の波形バー（誰かが話している間だけ動く） */}
+      <div style={{position: 'absolute', right: 52, top: 112, display: 'flex', alignItems: 'flex-end', gap: 4, height: 34}}>
+        <span style={{fontFamily: MONO, fontSize: 13, letterSpacing: 3, color: voice === 'baku' ? C.orange : voice === 'nagi' ? C.cyan : C.muted, fontWeight: 700, marginRight: 8, alignSelf: 'center'}}>
+          {voice === 'baku' ? 'VOICE ▸ BAKU' : voice === 'nagi' ? 'VOICE ▸ NAGI' : 'VOICE ▸ ---'}
+        </span>
+        {Array.from({length: 14}, (_, i) => {
+          const amp = voice ? 0.2 + 0.8 * Math.abs(Math.sin(f / (2.3 + (i % 4) * 0.7) + i * 1.9)) * (0.5 + 0.5 * random(`v${i}-${Math.floor(f / 3)}`)) : 0.08;
+          return <div key={i} style={{width: 5, height: `${amp * 100}%`, background: voice === 'baku' ? C.orange : C.cyan, opacity: voice ? 0.9 : 0.35}} />;
+        })}
+      </div>
       {/* 右上：モード */}
       <div
         style={{
@@ -229,6 +248,7 @@ export const LabChrome: React.FC<{mode: Mode; modeAt: number; chapter: ChapterIn
           borderRight: `6px solid ${m.color}`,
         }}
       >
+        <div style={{width: 12, height: 12, borderRadius: '50%', background: m.color, boxShadow: `0 0 10px ${m.color}`, opacity: 0.35 + 0.65 * (0.5 + 0.5 * Math.cos((f / 30) * Math.PI * 2))}} />
         <span style={{fontFamily: MONO, fontSize: 18, letterSpacing: 4, color: C.muted, fontWeight: 700}}>MODE</span>
         <span
           style={{
@@ -250,6 +270,7 @@ export const LabChrome: React.FC<{mode: Mode; modeAt: number; chapter: ChapterIn
 };
 
 type CharState = {
+  expr?: string; // 話しているキャラの表情（kyu/<who>_<expr>.png）。なければ通常の立ち絵
   nagiPose: 'body' | 'point';
   speaking: 'nagi' | 'baku' | null;
   lineFrom: number;
@@ -260,7 +281,7 @@ type CharState = {
 };
 
 /** キャラ：ナギ＝nagi.png（説明中は指し棒 nagi_point.png）、バク＝baku_stand.png（2026-11-28 の新しい立ち絵） */
-export const Characters: React.FC<CharState> = ({nagiPose, speaking, lineFrom, tsukkomi, dim, bakuHidden, enterAt}) => {
+export const Characters: React.FC<CharState> = ({expr, nagiPose, speaking, lineFrom, tsukkomi, dim, bakuHidden, enterAt}) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
   const breathe = (phase: number) => Math.sin((f + phase) / 22) * 3;
@@ -271,33 +292,46 @@ export const Characters: React.FC<CharState> = ({nagiPose, speaking, lineFrom, t
   };
   const enter = (d: number) => spring({frame: f - enterAt - d, fps, config: {damping: 16}});
   const look = (who: 'nagi' | 'baku') => (speaking && speaking !== who ? 1 : 0);
-  const filt = (who: 'nagi' | 'baku') =>
-    speaking === who
-      ? `drop-shadow(0 16px 30px rgba(0,20,80,0.45)) brightness(${1.03 - dim * 0.55})`
-      : `drop-shadow(0 16px 30px rgba(0,20,80,0.35)) brightness(${0.86 - dim * 0.45}) saturate(0.85)`;
+  // 話者フォーカス：話している方は明るく少し大きく、待っている方は暗く少し小さく（切り替えは数フレームでなめらかに）
+  const focusAmt = (who: 'nagi' | 'baku') => {
+    if (!speaking) return 0.5;
+    const k = interpolate(f - lineFrom, [0, 6], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+    return speaking === who ? 0.5 + 0.5 * k : 0.5 - 0.5 * k;
+  };
+  const scaleOf = (who: 'nagi' | 'baku') => 0.96 + 0.07 * focusAmt(who);
+  const filt = (who: 'nagi' | 'baku') => {
+    const a = focusAmt(who);
+    const b = 0.75 + 0.3 * a - dim * (a > 0.5 ? 0.15 : 0.45);
+    return `drop-shadow(0 16px 30px rgba(0,20,80,0.4)) brightness(${b}) saturate(${0.85 + 0.15 * a})`;
+  };
+  const exprSrc = (who: 'nagi' | 'baku') => (expr && speaking === who ? `kyu/${who}_${expr}.png` : null);
   const point = nagiPose === 'point';
+  const nagiExpr = exprSrc('nagi');
+  const bakuExpr = exprSrc('baku');
   return (
     <AbsoluteFill style={{pointerEvents: 'none'}}>
       <Img
-        src={staticFile(point ? 'labui/nagi_point.png' : 'nagi.png')}
+        src={staticFile(nagiExpr ?? (point ? 'labui/nagi_point.png' : 'nagi.png'))}
         style={{
           position: 'absolute',
-          left: point ? -70 : -10,
-          top: 1090 - (point ? 560 : 610),
-          height: point ? 560 : 610,
+          left: nagiExpr ? 10 : point ? -70 : -10,
+          top: 1090 - (nagiExpr ? 560 : point ? 560 : 610),
+          height: nagiExpr ? 560 : point ? 560 : 610,
           translate: `${(1 - enter(4)) * -600 + look('nagi') * 14}px ${breathe(0) - hop('nagi') + dim * 40}px`,
           rotate: `${look('nagi') * 2}deg`,
+          scale: `${scaleOf('nagi')}`,
           transformOrigin: '50% 100%',
           filter: filt('nagi'),
         }}
       />
       <Img
-        src={staticFile('baku_stand.png')}
+        src={staticFile(bakuExpr ?? 'baku_stand.png')}
         style={{
           position: 'absolute',
-          left: 1330,
-          top: 1090 - 610,
-          height: 610,
+          left: bakuExpr ? 1400 : 1330,
+          top: 1090 - (bakuExpr ? 560 : 610),
+          height: bakuExpr ? 560 : 610,
+          scale: `${scaleOf('baku')}`,
           translate: `${(1 - enter(10)) * 600 - look('baku') * 14}px ${breathe(11) - hop('baku') + dim * 40}px`,
           rotate: `${-look('baku') * 2}deg`,
           transformOrigin: '50% 100%',

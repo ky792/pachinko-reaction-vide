@@ -382,6 +382,36 @@
      "value": "約75%"
     }
    ]
+  },
+  "expr": {
+   "00_op-003": "smug",
+   "00_op-004": "smug",
+   "00_op-005": "sweat",
+   "01_gensaku-002": "happy",
+   "01_gensaku-004": "smug",
+   "01_gensaku-005": "smug",
+   "01_gensaku-006": "despair",
+   "02_kihon-005": "happy",
+   "02_kihon-007": "smug",
+   "03_rush-003": "excited",
+   "03_rush-006": "excited",
+   "05_boost-002": "confused",
+   "05_boost-006": "excited",
+   "05_boost-010": "smug",
+   "05_boost-012": "happy",
+   "05_boost-014": "smug",
+   "06_waku-003": "smug",
+   "06_waku-006": "smug",
+   "07_enshutsu-002": "smug",
+   "07_enshutsu-005": "sad",
+   "07_enshutsu-007": "happy",
+   "07_enshutsu-009": "smug",
+   "08_matome-004": "smug",
+   "08_matome-005": "excited",
+   "08_matome-007": "sweat",
+   "08_matome-008": "smug",
+   "08_matome-009": "happy",
+   "08_matome-010": "happy"
   }
  }
 }

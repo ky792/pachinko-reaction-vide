@@ -122,7 +122,7 @@ export const NagibakuEndCard: React.FC = () => {
 
   return (
     <AbsoluteFill style={{background: '#020816'}}>
-      <AbsoluteFill style={{opacity: fadeIn * fadeOut}}>
+      <AbsoluteFill style={{opacity: fadeIn * fadeOut, scale: `${interpolate(frame, [0, ENDING_CARD_FRAMES], [1, 1.04])}`, transformOrigin: '50% 45%'}}>
         <Img src={staticFile(SRC)} style={{width: 1920, height: 1080, objectFit: 'cover'}} />
 
         {/* 窓の星 */}

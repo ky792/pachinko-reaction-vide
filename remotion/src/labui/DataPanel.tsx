@@ -107,7 +107,7 @@ export const DataPanel: React.FC<Props> = ({from, title, rows, scan, result, hit
                     padding: '0 10px',
                   }}
                 >
-                  <span style={{fontFamily: JP, fontWeight: 700, fontSize: 32, color: C.muted}}>{r.label}</span>
+                  <span style={{fontFamily: JP, fontWeight: 700, fontSize: 40, color: '#b8c6e0'}}>{r.label}</span>
                   <span
                     style={{
                       fontFamily: r.pending && !done && scanY != null ? MONO : JP,

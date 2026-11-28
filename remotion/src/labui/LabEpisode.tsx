@@ -77,6 +77,42 @@ const During: React.FC<{from: number; to: number; pad?: number; children: React.
   return f >= from - 1 && f < to + pad ? <>{children}</> : null;
 };
 
+/** パネルが出た瞬間：CRTのように縦に開く光の帯＋青い走査線が上から下へ1回（0.35秒） */
+const ScanSweep: React.FC<{from: number}> = ({from}) => {
+  const f = useCurrentFrame();
+  const t = (f - from) / 11;
+  if (t < 0 || t > 1) return null;
+  const open = interpolate(t, [0, 0.45], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  return (
+    <AbsoluteFill style={{pointerEvents: 'none'}}>
+      <div
+        style={{
+          position: 'absolute',
+          left: 440,
+          width: 1040,
+          top: 450 - 340 * open,
+          height: 680 * open,
+          border: '2px solid rgba(53,214,255,0.55)',
+          background: 'rgba(53,214,255,0.06)',
+          opacity: 1 - t,
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          left: 440,
+          width: 1040,
+          top: 110 + 680 * t,
+          height: 4,
+          background: 'rgba(166,236,255,0.95)',
+          boxShadow: '0 0 24px rgba(53,214,255,0.9)',
+          opacity: 1 - t * 0.6,
+        }}
+      />
+    </AbsoluteFill>
+  );
+};
+
 export const LabEpisode: React.FC<{data: EpisodeData}> = ({data}) => {
   const f = useCurrentFrame();
   const at = (t: string) => data.events.filter((e) => e.type === t);
@@ -107,6 +143,7 @@ export const LabEpisode: React.FC<{data: EpisodeData}> = ({data}) => {
       <LabBackground focus={focus} chapter={chapter} />
       {!hideChars && (
         <Characters
+          expr={line ? data.ui?.expr?.[line.id] : undefined}
           nagiPose={nagiPose}
           speaking={line?.who ?? null}
           lineFrom={line?.from ?? 0}
@@ -119,6 +156,7 @@ export const LabEpisode: React.FC<{data: EpisodeData}> = ({data}) => {
       {at('show').map((ev, i) => (
         <During key={`s${i}`} from={ev.from} to={ev.to} pad={2}>
           <Panel ev={ev} ui={data.ui} hitAt={hitFor(ev)} />
+          <ScanSweep from={ev.from} />
         </During>
       ))}
       {at('keyword').map((ev, i) => (
@@ -134,7 +172,7 @@ export const LabEpisode: React.FC<{data: EpisodeData}> = ({data}) => {
           <AlertCut key={`f${i}`} from={ev.from} to={ev.to} mode={ev.kind === 'alert' ? 'alert' : 'tsukkomi'} lead={ev.lead} text={ev.text} face={ev.face ?? 'angry'} />
         ),
       )}
-      {!full && <LabChrome mode={mode} modeAt={modeAt} chapter={chapter} machine={data.title.machine} />}
+      {!full && <LabChrome mode={mode} modeAt={modeAt} chapter={chapter} machine={data.title.machine} voice={line?.who ?? null} />}
       {data.subs.map((s, i) => (s.hide ? null : <Subtitle key={`t${i}`} {...s} />))}
       {at('chapter').map((ev, i) => (
         <ChapterCard key={`c${i}`} from={ev.from} to={ev.to - 10} no={ev.no} year={ev.year} title={ev.title} />

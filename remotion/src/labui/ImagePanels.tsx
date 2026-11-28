@@ -143,7 +143,7 @@ export const ImageDataPanel: React.FC<{from: number; src: string; title: string;
                 }}
               >
                 <span style={{fontFamily: JP, fontWeight: 900, fontSize: 38, color: C.cyan}}>{r.label}</span>
-                <span style={{fontFamily: JP, fontWeight: 700, fontSize: 28, color: C.white, marginTop: 2}}>{r.value}</span>
+                <span style={{fontFamily: JP, fontWeight: 700, fontSize: 32, color: C.white, marginTop: 2}}>{r.value}</span>
               </div>
             );
           })}
