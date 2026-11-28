@@ -1784,6 +1784,33 @@
    "seVol": 0.45
   },
   {
+   "type": "show",
+   "kind": "image:cab",
+   "from": 1324,
+   "to": 1808
+  },
+  {
+   "type": "sfx",
+   "from": 1321,
+   "to": 1322,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 1345,
+   "to": 1346,
+   "se": "holo_data",
+   "seVol": 0.35
+  },
+  {
+   "type": "sfx",
+   "from": 1808,
+   "to": 1809,
+   "se": "holo_disappear",
+   "seVol": 0.4
+  },
+  {
    "type": "chapter",
    "no": "02",
    "title": "スペックと初当たり",
@@ -2115,7 +2142,7 @@
   },
   {
    "type": "show",
-   "kind": "data:waku",
+   "kind": "imgdata:waku",
    "from": 9552,
    "to": 10647
   },
@@ -2217,7 +2244,7 @@
   },
   {
    "type": "show",
-   "kind": "data:matome",
+   "kind": "imgdata:matome",
    "from": 12175,
    "to": 13181
   },
@@ -2448,6 +2475,60 @@
      "value": "RUSH中・ON／OFF"
     }
    ]
+  },
+  "image:cab": {
+   "src": "ep/shanfro2/img/cab.png",
+   "label": "NEW MACHINE ▸ SAMMY",
+   "title": "eシャングリラ・フロンティア",
+   "lines": [
+    "2026年12月デビュー",
+    "サミーのスマパチ（LT3.0プラス）",
+    "新筐体「アクセル枠」の第1弾"
+   ]
+  },
+  "imgdata:waku": {
+   "src": "ep/shanfro2/img/cab.png",
+   "title": "新筐体「アクセル枠」",
+   "rows": [
+    {
+     "label": "センターハンドル",
+     "value": "手首が楽・ハンドルレスト付き"
+    },
+    {
+     "label": "アクセルギア",
+     "value": "押す・引く・振動"
+    },
+    {
+     "label": "セブンエアー",
+     "value": "＋手置きバイブ"
+    },
+    {
+     "label": "イヤホンジャック",
+     "value": "標準搭載"
+    }
+   ]
+  },
+  "imgdata:matome": {
+   "src": "ep/shanfro2/img/cab.png",
+   "title": "まとめ",
+   "rows": [
+    {
+     "label": "図柄揃い 約1/399.9",
+     "value": "当たればどれも1500個"
+    },
+    {
+     "label": "RUSH継続 約75%",
+     "value": "1500個と4500個がほぼ半々"
+    },
+    {
+     "label": "超神ゲーBOOST",
+     "value": "ほぼ1回・平均 約7300個"
+    },
+    {
+     "label": "RUSHスルー",
+     "value": "4回に1回"
+    }
+   ]
   }
  },
  "intro": {
@@ -2471,6 +2552,7 @@
  "title": {
   "machine": "eシャングリラ・フロンティア",
   "title": "神ゲーか、クソゲーか",
-  "date": "2026.12 SAMMY"
+  "date": "2026.12 SAMMY",
+  "cab": "ep/shanfro2/img/cab.png"
  }
 }

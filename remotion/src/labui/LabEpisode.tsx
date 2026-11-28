@@ -15,6 +15,7 @@ import {ChapterCard, Shutter} from './Transitions';
 import {LabTransition} from './LabTransition';
 import {RenAnalysis, RenSpec} from './RenAnalysis';
 import {BoostSim} from './BoostSim';
+import {ImageDataPanel, ImagePanel} from './ImagePanels';
 import {IntroCard, IntroData, LogoTitle} from './Opening';
 import {C, ramp} from './tokens';
 
@@ -30,7 +31,7 @@ export type EpisodeData = {
   events: EpEvent[];
   ui: Record<string, any>;
   intro: Record<'nagi' | 'baku', IntroData>;
-  title: {machine: string; title: string; date: string};
+  title: {machine: string; title: string; date: string; cab?: string};
 };
 
 const FULL = new Set(['chapter', 'intro', 'logotitle']); // 画面を全部使う場面
@@ -51,6 +52,10 @@ const Panel: React.FC<{ev: EpEvent; ui: any; hitAt?: number}> = ({ev, ui, hitAt}
       return <VersusPanel from={ev.from} title={d.title} metric={d.metric} left={d.left} right={d.right} />;
     case 'ren':
       return <RenAnalysis from={ev.from} spec={d.spec as RenSpec} smoke={!!d.smoke} />;
+    case 'image':
+      return <ImagePanel from={ev.from} src={d.src} label={d.label} title={d.title} lines={d.lines} />;
+    case 'imgdata':
+      return <ImageDataPanel from={ev.from} src={d.src} title={d.title} rows={d.rows} />;
     case 'sim':
       return <BoostSim from={ev.from} title={d.title} counts={d.counts} labels={d.labels} />;
     case 'reel':

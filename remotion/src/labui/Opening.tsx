@@ -88,13 +88,14 @@ export const IntroCard: React.FC<{from: number; to: number; who: 'nagi' | 'baku'
 };
 
 /** 新台解説ロゴ → タイトル */
-export const LogoTitle: React.FC<{from: number; logoTo: number; to: number; machine: string; title: string; date: string}> = ({
+export const LogoTitle: React.FC<{from: number; logoTo: number; to: number; machine: string; title: string; date: string; cab?: string}> = ({
   from,
   logoTo,
   to,
   machine,
   title,
   date,
+  cab,
 }) => {
   const f = useCurrentFrame();
   const {fps} = useVideoConfig();
@@ -140,6 +141,36 @@ export const LogoTitle: React.FC<{from: number; logoTo: number; to: number; mach
             }}
           />
           <Img src={staticFile('ep/shanfro/newmachine.png')} style={{position: 'absolute', left: 70, top: 40, width: 420, opacity: mm}} />
+          {cab && (
+            <>
+              <div
+                style={{
+                  position: 'absolute',
+                  right: 60,
+                  top: 140,
+                  width: 560,
+                  height: 860,
+                  background: 'radial-gradient(ellipse at 50% 60%, rgba(53,214,255,0.35), rgba(53,214,255,0) 65%)',
+                  opacity: mm,
+                }}
+              />
+              <Img
+                src={staticFile(cab)}
+                style={{
+                  position: 'absolute',
+                  right: 150,
+                  top: 150,
+                  height: 840,
+                  translate: `${(1 - mm) * 300}px ${Math.sin(t / 26) * 6}px`,
+                  opacity: mm,
+                  filter: 'drop-shadow(0 24px 40px rgba(0,0,0,0.6))',
+                }}
+              />
+              <div style={{position: 'absolute', right: 40, bottom: 14, fontFamily: JP, fontSize: 15, color: C.muted, opacity: mm}}>
+                ©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS ©Sammy
+              </div>
+            </>
+          )}
           <AbsoluteFill style={{transform: 'rotate(-4deg)'}}>
             <div style={{position: 'absolute', left: 230, top: 390, opacity: mm, transform: `translateX(${(1 - mm) * -60}px)`}}>
               <span style={{fontFamily: MONO, fontSize: 26, letterSpacing: 8, color: C.cyan, fontWeight: 700}}>NEW MACHINE ▸ {date}</span>

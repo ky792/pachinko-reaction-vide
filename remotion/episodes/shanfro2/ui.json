@@ -15,7 +15,8 @@
  "title": {
   "machine": "eシャングリラ・フロンティア",
   "title": "神ゲーか、クソゲーか",
-  "date": "2026.12 SAMMY"
+  "date": "2026.12 SAMMY",
+  "cab": "ep/shanfro2/img/cab.png"
  },
  "intro": {
   "nagi": {
@@ -226,6 +227,60 @@
     {
      "label": "イキナリ神ゲー",
      "value": "RUSH中・ON／OFF"
+    }
+   ]
+  },
+  "image:cab": {
+   "src": "ep/shanfro2/img/cab.png",
+   "label": "NEW MACHINE ▸ SAMMY",
+   "title": "eシャングリラ・フロンティア",
+   "lines": [
+    "2026年12月デビュー",
+    "サミーのスマパチ（LT3.0プラス）",
+    "新筐体「アクセル枠」の第1弾"
+   ]
+  },
+  "imgdata:waku": {
+   "src": "ep/shanfro2/img/cab.png",
+   "title": "新筐体「アクセル枠」",
+   "rows": [
+    {
+     "label": "センターハンドル",
+     "value": "手首が楽・ハンドルレスト付き"
+    },
+    {
+     "label": "アクセルギア",
+     "value": "押す・引く・振動"
+    },
+    {
+     "label": "セブンエアー",
+     "value": "＋手置きバイブ"
+    },
+    {
+     "label": "イヤホンジャック",
+     "value": "標準搭載"
+    }
+   ]
+  },
+  "imgdata:matome": {
+   "src": "ep/shanfro2/img/cab.png",
+   "title": "まとめ",
+   "rows": [
+    {
+     "label": "図柄揃い 約1/399.9",
+     "value": "当たればどれも1500個"
+    },
+    {
+     "label": "RUSH継続 約75%",
+     "value": "1500個と4500個がほぼ半々"
+    },
+    {
+     "label": "超神ゲーBOOST",
+     "value": "ほぼ1回・平均 約7300個"
+    },
+    {
+     "label": "RUSHスルー",
+     "value": "4回に1回"
     }
    ]
   }
