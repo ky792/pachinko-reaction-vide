@@ -1,19 +1,6 @@
 [
  {
   "kind": "誤読",
-  "where": "ウェザエ",
-  "expect": "ウェザエ",
-  "reason": "台本は「ウェザエ」、聞こえたのは「ジョーサワ」",
-  "level": "中",
-  "id": "07_enshutsu-001",
-  "who": "nagi",
-  "text": "で、本命のリーチは、バクの言ったとおりウェザエモン。",
-  "asr": "ねっ本命のリーチは馬鹿の言った通り上沢もん",
-  "ratio": 0.731,
-  "audio": "episodes/shanfro2/voices/07_enshutsu-001.wav"
- },
- {
-  "kind": "誤読",
   "where": "ーシャ",
   "expect": "ーシャ",
   "reason": "台本は「ーシャ」、聞こえたのは「サ」",
@@ -63,19 +50,6 @@
   "asr": "じゃあ、年に100回入ってもらおう",
   "ratio": 0.895,
   "audio": "episodes/shanfro2/voices/05_boost-007.wav"
- },
- {
-  "kind": "誤読",
-  "where": "デ",
-  "expect": "デ",
-  "reason": "台本は「デ」、聞こえたのは「ネッ」",
-  "level": "低",
-  "id": "07_enshutsu-001",
-  "who": "nagi",
-  "text": "で、本命のリーチは、バクの言ったとおりウェザエモン。",
-  "asr": "ねっ本命のリーチは馬鹿の言った通り上沢もん",
-  "ratio": 0.731,
-  "audio": "episodes/shanfro2/voices/07_enshutsu-001.wav"
  },
  {
   "kind": "脱落",
