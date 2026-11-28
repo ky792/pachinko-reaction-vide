@@ -3,7 +3,7 @@
 - 本番：Composition `Shanfro2`（`src/labui/ShanfroEpisode2.tsx` → `LabEpisode.tsx`）。データ `src/labui/ep/shanfro2.json` は `scripts/build_labui_episode.py episodes/shanfro2 public/ep/shanfro2 src/labui/ep/shanfro2.json` で作る
 - 台本：ユーザー提供台本を監査して直したもの（`AUDIT.md`）。画面の中身は `ui.json`
 - 背景：ユーザー指定の新台解説の背景（`public/labui/shinkai_bg.png`、2026-11-28）。絵の中の大型モニター（章名・波形・棒グラフ・章の進み具合）と実機の液晶（色が回り、章が変わるとフラッシュ）にUIを重ね、天井リング・脳タンクの光の呼吸と光の粒で動かす。データ画面のときは寄って暗く・ぼかす
-- 研究所UI（LAB OS）：上の中央に章レール、左上に研究所タグ＋解析中の機種、右上にモード表示。パネル（表・円グラフ・横棒）、レン（RNC-01）の継続率解析、BOOSTシミュレーター、リール・判定スタンプ、警告割り込み、画面ジャック
+- 研究所UI（LAB OS）：上の中央に章レール、左上に研究所タグ＋解析中の機種、右上にモード表示。パネル（表・円グラフ・横棒）、BOOSTシミュレーター、リール・判定スタンプ、警告割り込み、画面ジャック
 - キャラ：ナギ＝nagi.png（説明中は指し棒）、バク＝baku_stand.png（2026-11-28 の新しい立ち絵）。割り込みの顔は両耳ありの表情（kyu/）
 - 声：`feat/shanfro2-voice` の `episodes/shanfro2/`（ナギ＝AivisSpeech コハク「ねむたい」0.95/0.65・−1.5半音、バク＝Irodori-TTS v4.1-Small-MF garo2_fix_s53＋squeeze）。voice-check（trim）の関門に全77行合格 → `sync_voices.py --tempo 1.1` で取り込み（新台解説は1.1倍）。セリフの間は声なし
 - 効果音：パネルが出る音はホログラムB2（holo_appear／holo_data／holo_disappear）
@@ -26,3 +26,4 @@
 ## 3回目の修正（2026-11-28）
 - 削除：RUSH中の平均当たり回数のくだり、54%は入口が広いという会話、ヘソ賞球1個とバクの「399」の行（計5行）。残りの声は検査済みのものを新しい行IDに付け替え（gate.json に記録、声は変えていない）
 - 原作紹介にTVアニメの画像（第1弾キービジュアル・3rd seasonキービジュアル・PVの場面写真、アニメハック掲載）を追加
+- レン（RNC-01）の継続率解析を削除（シンプルなSTには出さない・ユーザー指示）。03章は継続率の表（data:st）に。03_rush-001 は「継続は約75%だね」を足して作り直し → 関門に全75行合格

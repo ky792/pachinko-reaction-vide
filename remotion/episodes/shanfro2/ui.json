@@ -80,16 +80,6 @@
     }
    ]
   },
-  "ren:rush": {
-   "spec": {
-    "title": "RUSH継続率の解析",
-    "st": {
-     "prob": 98.5,
-     "spins": 134
-    }
-   },
-   "smoke": false
-  },
   "bar:rushhit": {
    "title": "RUSH中の当たり",
    "items": [
@@ -379,6 +369,23 @@
    "caption": "原作はネット小説→マガジンで漫画化",
    "sub": "TVアニメ 3rd season キービジュアル",
    "credit": "©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS"
+  },
+  "data:st": {
+   "title": "RUSH「神ゲー SHANGRI-LA FRONTIER」",
+   "rows": [
+    {
+     "label": "RUSH中の確率",
+     "value": "約1/98.5"
+    },
+    {
+     "label": "ST回数",
+     "value": "134回"
+    },
+    {
+     "label": "継続率",
+     "value": "約75%"
+    }
+   ]
   }
  }
 }
