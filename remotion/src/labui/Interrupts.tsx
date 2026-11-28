@@ -37,7 +37,8 @@ export const BakuJack: React.FC<{from: number; to: number; word: string; sub?: s
           top: 200,
           fontFamily: JP,
           fontWeight: 900,
-          fontSize: 300,
+          // 長い言葉は入る大きさまで縮める（右側のバクの顔にかからない幅 約1250px）
+          fontSize: Math.min(300, Math.floor(1250 / Math.max(1, [...String(word)].reduce((a, ch) => a + (/[\x00-\x7F]/.test(ch) ? 0.62 : 1), 0)))),
           lineHeight: 1,
           color: C.navy,
           transform: `scale(${interpolate(s, [0, 1], [1.8, 1])}) rotate(-6deg)`,
