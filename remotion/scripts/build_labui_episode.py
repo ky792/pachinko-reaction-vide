@@ -46,9 +46,19 @@ def wav_len(p):
     return n
 
 
+VER = pubdir / 'v' / '_verified.json'
+VERIFIED = json.loads(VER.read_text(encoding='utf-8'))['files'] if VER.exists() else None
+
+
 def voice(lid, text):
     src = epdir / 'voices' / f'{lid}.wav'
     dst = pubdir / 'v' / f'{lid}.wav'
+    if VERIFIED is not None:
+        # sync_voices.py で関門合格の声だけを取り込んだ回：取り込み済みの声をそのまま使う（ここでは声を作らない・変えない）
+        import hashlib
+        if lid not in VERIFIED or not dst.exists() or hashlib.sha1(dst.read_bytes()).hexdigest() != VERIFIED[lid]:
+            raise SystemExit(f'{lid}: 関門を通った声が無い／取り込み後に変わっている（sync_voices.py をやり直す）')
+        return wav_len(dst), f'{pub_rel}/v/{lid}.wav'
     if src.exists():
         if not dst.exists() or dst.stat().st_mtime < src.stat().st_mtime:
             subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', str(src), '-af', f'atempo={TEMPO}', '-ar', '48000', '-ac', '1', str(dst)], check=True)
