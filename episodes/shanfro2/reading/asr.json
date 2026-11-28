@@ -1,0 +1,357 @@
+{
+ "00_op-001": {
+  "sha1": "7d6222954fab8ae96b0c4317f1d8a6012dd7247d",
+  "model": "large-v3-turbo",
+  "text": "なあナギ、シャンフロのスペック見た?ラッシュ中のあたり半分が4500発やで"
+ },
+ "00_op-002": {
+  "sha1": "8ddfcbafd9519e1c5eff669cb924d1c9e356e9b3",
+  "model": "large-v3-turbo",
+  "text": "見た見たその代わり計測は75%だけどね"
+ },
+ "00_op-003": {
+  "sha1": "b29dfd57513acc9b59c575e7e020185d2f5c3b90",
+  "model": "large-v3-turbo",
+  "text": "75でええねんこういう出玉に振った台はなハマっても一発で全部取り返せんねん"
+ },
+ "00_op-004": {
+  "sha1": "1c42f2a9d7f0e8be809d437810f4c1f1e488f02f",
+  "model": "large-v3-turbo",
+  "text": "取り返せなかった日は?"
+ },
+ "00_op-005": {
+  "sha1": "7ec04cf5682afc8262e6b3773385f3190889c909",
+  "model": "large-v3-turbo",
+  "text": "そんな日は記憶から消しとるわうちてはみんなそうやろ"
+ },
+ "00_op-006": {
+  "sha1": "71b4360c1f170b041759fa567fb2c97280ce28f7",
+  "model": "large-v3-turbo",
+  "text": "じゃあちゃんと数字で見てみようか神ゲーなのかクソゲーなのか"
+ },
+ "01_gensaku-001": {
+  "sha1": "b9fd728b312c31ea2d093b9ffdc0d93ddc523115",
+  "model": "large-v3-turbo",
+  "text": "い、サングリラフロンティア、2026年12月デビューのサミーのスマパチだね"
+ },
+ "01_gensaku-002": {
+  "sha1": "107667a6347fac5ad9121101e6d3d5efd4a4ce8f",
+  "model": "large-v3-turbo",
+  "text": "アニメのシャンフロやろ?鳥のかぶりもんした半裸の兄ちゃんがクソゲーで鍛えた腕で暴れるやつ"
+ },
+ "01_gensaku-003": {
+  "sha1": "bdbe0c6eb3894539f28b8f626a6937026a334da8",
+  "model": "large-v3-turbo",
+  "text": "そうクソゲー好きの主人公が超人気の神ゲーに挑む話"
+ },
+ "01_gensaku-004": {
+  "sha1": "cd919adf4a291946164b27f1f19b97b4910b5182",
+  "model": "large-v3-turbo",
+  "text": "ハンケンモンはな原作で一番熱い場面がそのまま本命のリーチになんねんシャンフロやったら絶対ウェザエモンや"
+ },
+ "01_gensaku-005": {
+  "sha1": "4721670f53f7db8e7c803df94ab338bbdd7c6015",
+  "model": "large-v3-turbo",
+  "text": "三落はバグをねじ伏せるけど、こっちは毎回国に負けてるからね。"
+ },
+ "01_gensaku-006": {
+  "sha1": "c8707e71fe338c2fbbb7c56a55149e8e6d1d681a",
+  "model": "large-v3-turbo",
+  "text": "それ言うたら全部終わりやんやめてや"
+ },
+ "02_kihon-001": {
+  "sha1": "9a04e7b02b325bc2397d3d0f9bb50e06bedc59e1",
+  "model": "large-v3-turbo",
+  "text": "で、ステック。図柄揃いが399分の1で、ナッシュ突入は約54%。"
+ },
+ "02_kihon-002": {
+  "sha1": "d182ae32dd79ab58bc6e4276d9751f115438d2d2",
+  "model": "large-v3-turbo",
+  "text": "しかも図柄が揃えばどれも1500個"
+ },
+ "02_kihon-003": {
+  "sha1": "311d84cdf9291c7c079f54ba082459bbbf29cd55",
+  "model": "large-v3-turbo",
+  "text": "7で揃えばそのままラッシュ"
+ },
+ "02_kihon-004": {
+  "sha1": "228a2c6bf1524eb12948bc4adb7ec00e809469d6",
+  "model": "large-v3-turbo",
+  "text": "それ以外はログインチャレンジに勝てばラッシュ"
+ },
+ "02_kihon-005": {
+  "sha1": "b8c3b47fd32f7d4ac6272f9d8a89c85d18fc6f68",
+  "model": "large-v3-turbo",
+  "text": "負けても1500発は持って帰れるんやろ?それはでかいわ!"
+ },
+ "02_kihon-006": {
+  "sha1": "d07679175e2a7eaf6c2f564596dbae72840aafbd",
+  "model": "large-v3-turbo",
+  "text": "でもなチャレンジに負けた日の1500発ってなんか軽いねん7で揃った1500発とは重さが全然ちゃう"
+ },
+ "02_kihon-007": {
+  "sha1": "9f8ed698868ba109010caee3df8cc7bcc2c97ff9",
+  "model": "large-v3-turbo",
+  "text": "中身は同じ1500個だけどね"
+ },
+ "03_rush-001": {
+  "sha1": "26484409f73e6a00c5edcf9312553f55fc4195e5",
+  "model": "large-v3-turbo",
+  "text": "ダッシュは98分の1を134回転のST。継続は約75%だね。"
+ },
+ "03_rush-002": {
+  "sha1": "393027a257d5a2041197f47607bcb4646e758692",
+  "model": "large-v3-turbo",
+  "text": "ラッシュ中のあたりは1500個と4500個がほぼ半々。"
+ },
+ "03_rush-003": {
+  "sha1": "ce111b51d3cfd8ff312a1d4e549319a122fba3bf",
+  "model": "large-v3-turbo",
+  "text": "真ん中がないんや4500引いた瞬間今日はもう勝ちやな"
+ },
+ "03_rush-004": {
+  "sha1": "5a39f0733d27706b92274e89f041003c8fca5ff5",
+  "model": "large-v3-turbo",
+  "text": "4500個は1500個の当たりを3回続けて消化する形1回の上限は1500個だからね"
+ },
+ "03_rush-005": {
+  "sha1": "b4b88fb57aa38a9e68e7a56fb9b20ab44ab885d2",
+  "model": "large-v3-turbo",
+  "text": "3回分か、消火中にトイレ行かれへんやん"
+ },
+ "03_rush-006": {
+  "sha1": "38dbc7f155704510c16d928b6867774fa2b80f08",
+  "model": "large-v3-turbo",
+  "text": "撃つ前にいっときなよ"
+ },
+ "03_rush-007": {
+  "sha1": "b7be2b23b25792c0193feac8f525d0e4f8d6adec",
+  "model": "large-v3-turbo",
+  "text": "ダッシュ1回で出る量は平均すると約8900個。"
+ },
+ "03_rush-008": {
+  "sha1": "24b7e616728a24b43c4aca73a97f96bd5d5245e7",
+  "model": "large-v3-turbo",
+  "text": "9センチコインかほなハマってても今日のうちに取り返せるやん"
+ },
+ "03_rush-009": {
+  "sha1": "be1fff889b32c1f53a50bb718191568f71e006be",
+  "model": "large-v3-turbo",
+  "text": "でも真ん中くらいの人は6000個平均はどい価値した人に引っ張られてる"
+ },
+ "03_rush-010": {
+  "sha1": "049b47ac7a8f9ce4d233fc54c8d5788a5cd5c994",
+  "model": "large-v3-turbo",
+  "text": "あかん平均で座るとこやった平均はな偽のポップと一緒でええとこしか言わへんねん"
+ },
+ "05_boost-001": {
+  "sha1": "ef4dcf5748cab6dda3fd02ba99c4b69a28b98c79",
+  "model": "large-v3-turbo",
+  "text": "で、目玉の超神ゲーブースト、ナッシュ中のあたりの約2%でつく。"
+ },
+ "05_boost-002": {
+  "sha1": "a6974a4349534f2b3cef549385c77cbcaf371df9",
+  "model": "large-v3-turbo",
+  "text": "2%か入ったら終わらんって聞いたで"
+ },
+ "05_boost-003": {
+  "sha1": "c47d5b056fd3ce28c1a44144f0ead830ad8c86f1",
+  "model": "large-v3-turbo",
+  "text": "4500個のあたりにさらに上乗せがつく仕組み"
+ },
+ "05_boost-004": {
+  "sha1": "674da17e676a7886811209e9b75b8b780cba8f55",
+  "model": "large-v3-turbo",
+  "text": "上乗せは1500個が半満、3000個が約34%。"
+ },
+ "05_boost-005": {
+  "sha1": "c54ecdb3c6e9a3532d64e755aa43dfe1f6ddbc48",
+  "model": "large-v3-turbo",
+  "text": "残りの約16%は3000個か4500個を乗せてもう一回"
+ },
+ "05_boost-006": {
+  "sha1": "eeb2a1123f0e9bddfd706ba6688700f4567cf197",
+  "model": "large-v3-turbo",
+  "text": "最低でも6000発かほんでそっからループするんやろ?"
+ },
+ "05_boost-007": {
+  "sha1": "4f14f78535ff813e3e83197069ecce7b9c62256a",
+  "model": "large-v3-turbo",
+  "text": "じゃあ、年に100回入ってもらおう"
+ },
+ "05_boost-008": {
+  "sha1": "7fa3c3590fb6259f59cd82555a5a6399e5ff5dd9",
+  "model": "large-v3-turbo",
+  "text": "100回入って2回目まで行ったのが16回3回目まで行ったのは2回だけ?"
+ },
+ "05_boost-009": {
+  "sha1": "f0362bf08d2144d5df217afd8dbc269fd5f7bc3a",
+  "model": "large-v3-turbo",
+  "text": "ほぼ一回で終わりやんか"
+ },
+ "05_boost-010": {
+  "sha1": "a95ad544ef6020795642c77083e23403153006e9",
+  "model": "large-v3-turbo",
+  "text": "続く代ではないね"
+ },
+ "05_boost-011": {
+  "sha1": "a9d0117a41bb081a438fc6282360b06857db7f13",
+  "model": "large-v3-turbo",
+  "text": "でもその1回で平均約7300個"
+ },
+ "05_boost-012": {
+  "sha1": "e3556fc00f8af98919e5fad86f8d98db0ff2f45b",
+  "model": "large-v3-turbo",
+  "text": "つづかんでも7000超えかそれはそれで脳汁出るわ"
+ },
+ "05_boost-013": {
+  "sha1": "02ecb2cfeead307705e8a76b0e256e41624105da",
+  "model": "large-v3-turbo",
+  "text": "そもそも入るのはダッシュ上破壊に1回くらい"
+ },
+ "05_boost-014": {
+  "sha1": "d9712e0502cdcb075d8af78fa50179265ecb5cc0",
+  "model": "large-v3-turbo",
+  "text": "こういう上の上乗せはな、狙って打つもんちゃうねん引けたらラッキーくらいで打つのが一番負けへん"
+ },
+ "06_waku-001": {
+  "sha1": "834edf773a6e40a8236a9e45c3151ba3e1ac4bc4",
+  "model": "large-v3-turbo",
+  "text": "状態はサミーの新しいアクセル枠。この台が第一弾。"
+ },
+ "06_waku-002": {
+  "sha1": "c5f60c2068b06156d5259c202a94f6809bb9e9ff",
+  "model": "large-v3-turbo",
+  "text": "まずハンドルが真ん中にある手を置くところもついてる"
+ },
+ "06_waku-003": {
+  "sha1": "35c05e4848a561cdbe7a669d6b08adabca651c92",
+  "model": "large-v3-turbo",
+  "text": "これは助かるわずっと握っとると夕方には手首も肩もバキバキやからな"
+ },
+ "06_waku-004": {
+  "sha1": "e850a833955bd50fc786a0a327cbf7fcb5205f28",
+  "model": "large-v3-turbo",
+  "text": "それと押す引く振動の3つが入ったアクセルギア"
+ },
+ "06_waku-005": {
+  "sha1": "9ea967b497316aad95aea658b586d1203536f6a8",
+  "model": "large-v3-turbo",
+  "text": "新しいボタンはな最初の1ヶ月は全員が全力で押すホールの台すぐテカテカになるで"
+ },
+ "06_waku-006": {
+  "sha1": "c8f4d5c47b2f33cbfa831c38861c7f8110eeffdf",
+  "model": "large-v3-turbo",
+  "text": "あとはセブンエアと手元のバイブ"
+ },
+ "06_waku-007": {
+  "sha1": "08a4e70a5b1f0c4974c47e5587f2efcdf27dbc90",
+  "model": "large-v3-turbo",
+  "text": "それにイヤホンジャックもついた"
+ },
+ "06_waku-008": {
+  "sha1": "7d9b6116e522e94fa22fa0f1c4c1bb5a0d057d64",
+  "model": "large-v3-turbo",
+  "text": "イヤホンはでかいで隣のおっちゃんのダイパンも機関で済むからな"
+ },
+ "06_waku-009": {
+  "sha1": "e841a49dc69fab02241adbc0ec0234e104a51e87",
+  "model": "large-v3-turbo",
+  "text": "その分エアが来た時はもっとびっくりするけどね"
+ },
+ "07_enshutsu-001": {
+  "sha1": "7c5c917de2737e65a17a8370a00201066b6981e5",
+  "model": "large-v3-turbo",
+  "text": "ねっ本命のリーチは馬鹿の言った通り上沢もん"
+ },
+ "07_enshutsu-002": {
+  "sha1": "5b69ac2c7a0251801bd71238abc7e361fc153e8d",
+  "model": "large-v3-turbo",
+  "text": "ほらな、うち、判件の予想だけは外さへんねん"
+ },
+ "07_enshutsu-003": {
+  "sha1": "00aa6e4624ebd47d5bd3a22519811471ccef4484",
+  "model": "large-v3-turbo",
+  "text": "ウェザーモンスペシャルは信頼度約86%赤タイトルなら約92%"
+ },
+ "07_enshutsu-004": {
+  "sha1": "651b4fa087d438df15b228647c3c079616f9f9fa",
+  "model": "large-v3-turbo",
+  "text": "旅館スペシャルは約66%"
+ },
+ "07_enshutsu-005": {
+  "sha1": "ba55cf8e8b0956905728994ddf7e3d751e8449e1",
+  "model": "large-v3-turbo",
+  "text": "64区間旅館音で外れたらしばらく立ち直られへんな"
+ },
+ "07_enshutsu-006": {
+  "sha1": "df54f767a3dfdb94889c65d9553a740771080327",
+  "model": "large-v3-turbo",
+  "text": "カスタムは先告知のいきなり算落。40%、90%、EXから選べる。"
+ },
+ "07_enshutsu-007": {
+  "sha1": "64bfe84738989751e3668f5fa4b4cfd57814e6ec",
+  "model": "large-v3-turbo",
+  "text": "うちは90%早告知が来るまでは気楽に回しとけるからな"
+ },
+ "07_enshutsu-008": {
+  "sha1": "537b933554f8dafd50b9bb70190c54f51a844194",
+  "model": "large-v3-turbo",
+  "text": "脱出中は髪毛ランプで当たりを教えてくれるカスタムもある"
+ },
+ "07_enshutsu-009": {
+  "sha1": "2079e6ae7c09f7878bdb0f471ff6a5b3c9dca83a",
+  "model": "large-v3-turbo",
+  "text": "それはオフや!エスティは最後まで煽られてなんぼやねん!"
+ },
+ "08_matome-001": {
+  "sha1": "d1b71433693dab45ee45d032414314433e85ce49",
+  "model": "large-v3-turbo",
+  "text": "まとめると399分の1で当たればどれも1500個"
+ },
+ "08_matome-002": {
+  "sha1": "5c174ae96fb957e08daff4db14a5b6ecef2cf491",
+  "model": "large-v3-turbo",
+  "text": "ダッシュは75%で当たりの半分が4500個。"
+ },
+ "08_matome-003": {
+  "sha1": "a3e55dc7f0a9f8e3a90aaebdb20cabdfca5ec9c3",
+  "model": "large-v3-turbo",
+  "text": "ブーストはほぼ1回で終わるけど、その1回が平均約7300個。"
+ },
+ "08_matome-004": {
+  "sha1": "bdfa60c7762fd3a11a9cdddbea24975c70498517",
+  "model": "large-v3-turbo",
+  "text": "続く台やなくて一発ででかいのを撮る台やなハマっても取り返せる絵が見える"
+ },
+ "08_matome-005": {
+  "sha1": "2a747b5d557ab70beb0d01d6f3ae7e0096efdf33",
+  "model": "large-v3-turbo",
+  "text": "よっしゃ!ほな今から売ってくるわ!4500ぶち抜いたる!"
+ },
+ "08_matome-006": {
+  "sha1": "2e5271e48c46c125cd47cd373be3988f4de99197",
+  "model": "large-v3-turbo",
+  "text": "ちなみに通常時から4500個に届くまで平均で約1200回転かかるよ"
+ },
+ "08_matome-007": {
+  "sha1": "62c6e29a82abc4107d5fa4f5d5cc0083b8fc251a",
+  "model": "large-v3-turbo",
+  "text": "1200回転かほな、まず釘見てからにするわ"
+ },
+ "08_matome-008": {
+  "sha1": "9a1c8957d2ccecb352c65916e95c8b0441cf1029",
+  "model": "large-v3-turbo",
+  "text": "賢明だね 国には毎回負けてるもんね"
+ },
+ "08_matome-009": {
+  "sha1": "024c6f5eb4c0e020e97fdd9890e2cfdad64d6c1e",
+  "model": "large-v3-turbo",
+  "text": "撃った人は4500を何回引けたかぜひコメントで教えてほしいわ"
+ },
+ "08_matome-010": {
+  "sha1": "89cfa2f9374dee978a412ddba789922d0cbb5ef3",
+  "model": "large-v3-turbo",
+  "text": "ブーストの上乗せを見た人も待ってるね"
+ }
+}
