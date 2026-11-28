@@ -1,0 +1,40 @@
+name: shanfro2 fetch images
+
+# シャンフロ回 v2 の画像（筐体・ロゴ・アクセル枠・液晶演出）を取り込む。ユーザー指示「画像調べて入れて」（2026-11-28）
+on:
+  push:
+    branches: [feat/shanfro-v2]
+    paths:
+      - ".github/workflows/shanfro2-fetch-images.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          D=remotion/public/ep/shanfro2/img; mkdir -p $D
+          get() { curl -fsSL -A "Mozilla/5.0" -e "$3" -o "$D/$1" "$2" && echo "ok $1 $(stat -c %s "$D/$1")" || echo "NG $1"; }
+          PT=https://p-town.dmm.com/machines/5107
+          E="https://cdn.p-town.dmm.com/webp/cp_editor/%E3%83%91%E3%83%81%E3%83%B3%E3%82%B3/159_%E3%82%B7%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AA%E3%83%A9%E3%83%95%E3%83%AD%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2"
+          get cab_gb.jpg   "https://web-greenbelt.jp/wordpress/wp-content/uploads/2026/09/e-shangri-la-frontier-cabinet.jpg" https://web-greenbelt.jp/post-117814/
+          get cab_pt.webp  "https://cdn.p-town.dmm.com/machines/5107/filters:format(webp):no_upscale()/image.jpg" $PT
+          get cab_p7.webp  "https://contents.pachiseven.jp/imgs/s/machine/6aa263fd-03fc-485c-91ff-4cbbac1f02cb.webp" https://pachiseven.jp/machines/7480
+          get logo.jpg     "https://p-town.dmm.com/upload/machines/5107/sub_image.jpg" $PT
+          get copyright.png "https://web-greenbelt.jp/wordpress/wp-content/uploads/2026/09/e-shangri-la-frontier-copyright-840x50.png" https://web-greenbelt.jp/post-117814/
+          for i in 01 02 03 04 05 06; do get sgf_$i.webp "$E/sgf_01_$i.jpg" $PT; done
+          sudo apt-get install -y webp >/dev/null 2>&1 || true
+          for f in $D/*.webp; do [ -e "$f" ] || continue; if dwebp -quiet "$f" -o "${f%.webp}.png"; then rm "$f"; else ffmpeg -v error -y -i "$f" "${f%.webp}.png" && rm "$f"; fi; done
+          ls -la $D
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898699+github-actions[bot]@users.noreply.github.com"
+          git add remotion/public/ep/shanfro2/img
+          git commit -m "shanfro2：筐体・ロゴ・アクセル枠・液晶演出の画像を取り込み [skip ci]" || exit 0
+          for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 5; done
