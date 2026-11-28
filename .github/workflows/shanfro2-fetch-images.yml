@@ -22,9 +22,12 @@ jobs:
           true; get() { curl -fsSL -A "Mozilla/5.0" -e "$3" -o "$D/$1" "$2" && echo "ok $1 $(stat -c %s "$D/$1")" || echo "NG $1"; }
           PT=https://p-town.dmm.com/machines/5107
           E="https://cdn.p-town.dmm.com/webp/cp_editor/%E3%83%91%E3%83%81%E3%83%B3%E3%82%B3/159_%E3%82%B7%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AA%E3%83%A9%E3%83%95%E3%83%AD%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2"
-          # 3回目（2026-11-28「画像もっと入れて」）：ちょんぼりすたの記事の画像
-          CB=https://chonborista.com/wp-content/uploads/2026/11
-          for n in gimmick_01 gimmick_02 gimmick_03 gimmick_04 custom_01 wezaemon_sp_01 lycaon_sp_01 sf_bonus_01 login_bonus_01 boost_01 boost_uwanose_01 kamige_bonus_01 chimei_bonus_01 wezaemon_battle_01 shinka_01 kakushi_lamp_01 climax_route_01; do get $n.webp "$CB/e_shanfro_$n.webp" https://chonborista.com/pachinko/sammy/269797/; done
+          # 4回目（2026-11-28「シャンフロのアニメか原作の画像も入れてな紹介の時に」）：アニメのキービジュアル（アニメハック）
+          tryi() { n=$1; shift; for u in "$@"; do curl -fsSL -A "Mozilla/5.0" -e https://anime.eiga.com/ -o "$D/$n" "$u" && { echo "ok $n $u"; return; }; done; echo "NG $n"; }
+          M=https://media.eiga.com/images/anime/news
+          tryi anime_kv1.jpg "$M/118188/photo/c3da4fdce7ac9376/1280.jpg" "$M/118188/photo/c3da4fdce7ac9376/640.jpg" "$M/118188/photo/c3da4fdce7ac9376/320.jpg"
+          tryi anime_kv3.jpg "$M/127482/photo/348c4f408e75d0e5/1280.jpg" "$M/127482/photo/348c4f408e75d0e5/640.jpg"
+          tryi anime_pv1.jpg "$M/118188/photo/3f8d200eb3e93ad4/1280.jpg" "$M/118188/photo/3f8d200eb3e93ad4/640.jpg" "$M/118188/photo/3f8d200eb3e93ad4/320.jpg"
           sudo apt-get install -y webp >/dev/null 2>&1 || true
           for f in $D/*.webp; do [ -e "$f" ] || continue; if dwebp -quiet "$f" -o "${f%.webp}.png"; then rm "$f"; else ffmpeg -v error -y -i "$f" "${f%.webp}.png" && rm "$f"; fi; done
           ls -la $D
