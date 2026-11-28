@@ -34,7 +34,7 @@
   body[data-mode=stream] #stage { gap: 3%; background: radial-gradient(ellipse at 40% 50%, #0d1318 0%, #020304 70%); }
   body[data-mode=stream], body[data-mode=machine] { cursor: none; }
   body[data-mode=stream] #brand { display: block; }
-  #brand { display: none; position: absolute; left: 2%; top: 3%; font: 800 1.6vh "Rajdhani", sans-serif; letter-spacing: .3em; color: rgba(160,200,220,.45); }
+  #brand { display: none; z-index: 5; position: absolute; left: 2%; top: 3%; font: 800 1.6vh "Rajdhani", sans-serif; letter-spacing: .3em; color: rgba(160,200,220,.45); }
 
   /* 起動画面 */
   #boot { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: radial-gradient(ellipse at 50% 40%, #0e1820, #000 70%); transition: opacity .8s; }

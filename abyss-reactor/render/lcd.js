@@ -283,7 +283,18 @@
       g.fillStyle = gr; g.fillRect(x - 18, H - h, 36, h);
     }
     g.restore();
-    BG.core(g, t * 1.5, s); g.fillStyle = rush ? 'rgba(80,0,10,0.45)' : 'rgba(0,10,20,0.45)'; g.fillRect(0, 0, W, H);
+    // 回転する放射光とリング
+    g.save(); g.translate(480, 300); g.globalCompositeOperation = 'lighter';
+    g.rotate(t * 0.25);
+    for (let i = 0; i < 16; i++) { g.rotate(TAU / 16); g.fillStyle = rush ? 'rgba(255,60,80,0.06)' : 'rgba(255,190,80,0.06)'; g.beginPath(); g.moveTo(0, 0); g.lineTo(-40, -700); g.lineTo(40, -700); g.closePath(); g.fill(); }
+    g.restore();
+    g.save(); g.translate(480, 300);
+    for (let i = 0; i < 4; i++) { g.save(); g.rotate(t * (i % 2 ? -0.6 : 0.4) * (1 + i * 0.3)); g.strokeStyle = rush ? `rgba(255,80,90,${0.35 - i * 0.06})` : `rgba(255,200,90,${0.35 - i * 0.06})`; g.lineWidth = 6 - i; for (let k = 0; k < 8; k++) { g.beginPath(); g.arc(0, 0, 90 + i * 46, (k * TAU) / 8, (k * TAU) / 8 + 0.5); g.stroke(); } g.restore(); }
+    const cg = g.createRadialGradient(0, 0, 0, 0, 0, 90); cg.addColorStop(0, '#fff'); cg.addColorStop(0.3, rush ? 'rgba(255,90,100,0.8)' : 'rgba(255,200,90,0.8)'); cg.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = cg; g.beginPath(); g.arc(0, 0, 90 + 6 * Math.sin(t * 6), 0, TAU); g.fill();
+    g.restore();
+    // 走査光
+    const sy = ((t * 160) % (H + 200)) - 100; const sg = g.createLinearGradient(0, sy - 40, 0, sy + 40); sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(0.5, 'rgba(255,255,255,0.06)'); sg.addColorStop(1, 'rgba(255,255,255,0)'); g.fillStyle = sg; g.fillRect(0, sy - 40, W, 80);
   };
 
   BG.judge = (g, t, s) => {

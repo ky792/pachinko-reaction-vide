@@ -50,8 +50,33 @@
         // 下部の警告帯（控えめ）
         g.fillStyle = 'rgba(255,170,40,0.06)';
         for (let x = 300; x < 600; x += 22) { g.beginPath(); g.moveTo(x, 940); g.lineTo(x + 11, 940); g.lineTo(x + 1, 960); g.lineTo(x - 10, 960); g.fill(); }
-        // 右ルート表示
-        g.fillStyle = 'rgba(255,60,60,0.12)'; g.font = '800 30px sans-serif'; g.fillText('▼', 784, 560);
+        // エネルギー導管（印刷）：下部から左右へ立ち上がる
+        g.save(); g.lineCap = 'round';
+        for (const sx of [-1, 1]) {
+          const path = () => { g.beginPath(); g.moveTo(450 + sx * 40, 990); g.bezierCurveTo(450 + sx * 260, 960, 450 + sx * 360, 820, 450 + sx * 330, 600); g.bezierCurveTo(450 + sx * 310, 430, 450 + sx * 250, 300, 450 + sx * 120, 226); };
+          path(); g.strokeStyle = 'rgba(0,0,0,0.5)'; g.lineWidth = 30; g.stroke();
+          path(); g.strokeStyle = 'rgba(40,120,150,0.16)'; g.lineWidth = 22; g.stroke();
+          path(); g.strokeStyle = 'rgba(120,230,255,0.16)'; g.lineWidth = 3; g.stroke();
+          path(); g.setLineDash([2, 18]); g.strokeStyle = 'rgba(200,250,255,0.35)'; g.lineWidth = 6; g.stroke(); g.setLineDash([]);
+        }
+        g.restore();
+        // 六角パネル（下部）
+        g.save(); g.strokeStyle = 'rgba(120,200,230,0.07)'; g.lineWidth = 1;
+        for (let row = 0; row < 7; row++) for (let col = 0; col < 18; col++) {
+          const x = 110 + col * 40 + (row % 2) * 20, y = 800 + row * 34;
+          g.beginPath(); for (let i = 0; i < 6; i++) { const a2 = Math.PI / 6 + (i * TAU) / 6; g.lineTo(x + Math.cos(a2) * 19, y + Math.sin(a2) * 19); } g.closePath(); g.stroke();
+        }
+        g.restore();
+        // 大型刻印
+        g.save(); g.font = '900 120px "Orbitron", "Arial Black", sans-serif'; g.textAlign = 'center'; g.fillStyle = 'rgba(120,200,230,0.035)'; g.fillText('ABYSS', 450, 935); g.restore();
+        // ヘソ周りのターゲットリング
+        g.save(); g.strokeStyle = 'rgba(255,200,80,0.18)'; g.lineWidth = 2; g.beginPath(); g.arc(450, 802, 34, 0, TAU); g.stroke(); g.setLineDash([4, 6]); g.beginPath(); g.arc(450, 802, 46, 0, TAU); g.stroke(); g.restore();
+        // ワープ表示
+        g.save(); g.font = '700 9px "Rajdhani", sans-serif'; g.fillStyle = 'rgba(255,170,60,0.45)'; g.fillText('WARP ▶', 108, 528); g.restore();
+        // 右ルート表示（シェブロン）
+        g.save(); g.strokeStyle = 'rgba(255,70,70,0.22)'; g.lineWidth = 4;
+        for (let i = 0; i < 4; i++) { const y = 560 + i * 26; g.beginPath(); g.moveTo(800, y); g.lineTo(812, y + 12); g.lineTo(824, y); g.stroke(); }
+        g.restore();
         g.restore();
         // 粒状感
         g.save(); g.beginPath(); g.arc(O.x, O.y, O.r, 0, TAU); g.clip(); g.fillStyle = Mat.grain(g, 128, 128, 0.04); g.fillRect(B.x, B.y, B.w, B.h); g.restore();
@@ -550,16 +575,27 @@
     }
 
     drawTray(g, s) {
-      // 上皿の玉（持ち玉量に応じて山を描く）
-      const n = Math.min(260, Math.floor((s.ballCount || 0) / 4));
+      // 上皿の玉（持ち玉量に応じて自然な山を描く）
+      const n = Math.min(320, Math.floor((s.ballCount || 0) / 3));
       const sp = this.assets.image('ball');
       g.save(); g.beginPath(); g.moveTo(92, 1112); g.lineTo(328, 1112); g.quadraticCurveTo(338, 1160, 318, 1178); g.lineTo(112, 1178); g.quadraticCurveTo(82, 1150, 92, 1112); g.clip();
+      g.fillStyle = 'rgba(0,0,0,0.6)'; g.fillRect(90, 1110, 250, 70);
+      if (!this.trayPts) { // 山形の配置を一度だけ生成（右側の玉送り口へ寄る）
+        const rng = new NB.RNG(31); this.trayPts = [];
+        for (let i = 0; i < 320; i++) {
+          const layer = Math.floor(i / 34), u = rng.next();
+          const x = 104 + u * 214, hmax = 58 * (0.55 + 0.45 * Math.sin(u * Math.PI * 0.9 + 0.3));
+          const y = 1172 - Math.min(hmax, layer * 6.2) + rng.range(-2, 2);
+          this.trayPts.push([x + rng.range(-2, 2), y, layer]);
+        }
+      }
       for (let i = 0; i < n; i++) {
-        const row = Math.floor(i / 21), col = i % 21;
-        const x = 104 + col * 10.5 + (row % 2) * 5, y = 1170 - row * 8.5;
-        if (y < 1112) break;
+        const [x, y, layer] = this.trayPts[i];
+        g.globalAlpha = 0.55 + Math.min(0.45, layer * 0.05);
         g.drawImage(sp, x - 6, y - 6, 12, 12);
       }
+      g.globalAlpha = 1;
+      const tg = g.createLinearGradient(0, 1110, 0, 1180); tg.addColorStop(0, 'rgba(0,0,0,0.55)'); tg.addColorStop(0.4, 'rgba(0,0,0,0)'); g.fillStyle = tg; g.fillRect(90, 1110, 250, 70);
       g.restore();
       // 持ち玉表示（7seg 風）
       g.save(); Mat.roundRect(g, 120, 1206, 180, 28, 4); g.fillStyle = '#050606'; g.fill(); g.strokeStyle = 'rgba(255,255,255,0.1)'; g.stroke();
@@ -594,7 +630,7 @@
         if (lit) { g.globalCompositeOperation = 'lighter'; const k = 0.5 + 0.5 * Math.sin(t * 14); g.globalAlpha = 0.35 + 0.35 * k; const og = g.createRadialGradient(0, 0, 60, 0, 0, 120); og.addColorStop(0, col); og.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = og; g.beginPath(); g.arc(0, 0, 120, 0, TAU); g.fill(); }
       }
       g.restore();
-      if (lit) { g.save(); g.font = '900 20px "Noto Sans JP", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fff'; g.shadowColor = '#ff2a2a'; g.shadowBlur = 12; g.fillText('PUSH', cx, cy + 128); g.restore(); }
+      if (lit) { g.save(); g.font = '900 20px "Noto Sans JP", sans-serif'; g.textAlign = 'center'; g.fillStyle = '#fff'; g.shadowColor = '#ff2a2a'; g.shadowBlur = 12; g.fillText('PUSH', cx, cy + 62); g.restore(); }
     }
 
     drawHandle(g, h, t) {
