@@ -50,9 +50,9 @@
   "text": "ハンケンモンはな原作で一番熱い場面がそのまま本命のリーチになんねんシャンフロやったら絶対ウェザエモンや"
  },
  "01_gensaku-005": {
-  "sha1": "4721670f53f7db8e7c803df94ab338bbdd7c6015",
+  "sha1": "7947b0b75ff65ed2573aea2491b29456df302b9c",
   "model": "large-v3-turbo",
-  "text": "三落はバグをねじ伏せるけど、こっちは毎回国に負けてるからね。"
+  "text": "三落はパグをねじ伏せるけど、こっちは毎回釘に負けてるからね。"
  },
  "01_gensaku-006": {
   "sha1": "c8707e71fe338c2fbbb7c56a55149e8e6d1d681a",
@@ -115,24 +115,24 @@
   "text": "4500個は1500個の当たりを3回続けて消化する形1回の上限は1500個だからね"
  },
  "03_rush-005": {
-  "sha1": "b4b88fb57aa38a9e68e7a56fb9b20ab44ab885d2",
-  "model": "large-v3-turbo",
-  "text": "3回分か、消火中にトイレ行かれへんやん"
- },
- "03_rush-006": {
-  "sha1": "38dbc7f155704510c16d928b6867774fa2b80f08",
-  "model": "large-v3-turbo",
-  "text": "撃つ前にいっときなよ"
- },
- "03_rush-007": {
   "sha1": "b7be2b23b25792c0193feac8f525d0e4f8d6adec",
   "model": "large-v3-turbo",
   "text": "ダッシュ1回で出る量は平均すると約8900個。"
  },
- "03_rush-008": {
+ "03_rush-006": {
   "sha1": "24b7e616728a24b43c4aca73a97f96bd5d5245e7",
   "model": "large-v3-turbo",
   "text": "9センチコインかほなハマってても今日のうちに取り返せるやん"
+ },
+ "03_rush-007": {
+  "sha1": "be1fff889b32c1f53a50bb718191568f71e006be",
+  "model": "large-v3-turbo",
+  "text": "でも真ん中くらいの人は6000個平均はどい価値した人に引っ張られてる"
+ },
+ "03_rush-008": {
+  "sha1": "049b47ac7a8f9ce4d233fc54c8d5788a5cd5c994",
+  "model": "large-v3-turbo",
+  "text": "あかん平均で座るとこやった平均はな偽のポップと一緒でええとこしか言わへんねん"
  },
  "03_rush-009": {
   "sha1": "be1fff889b32c1f53a50bb718191568f71e006be",
@@ -220,29 +220,29 @@
   "text": "状態はサミーの新しいアクセル枠。この台が第一弾。"
  },
  "06_waku-002": {
-  "sha1": "c5f60c2068b06156d5259c202a94f6809bb9e9ff",
-  "model": "large-v3-turbo",
-  "text": "まずハンドルが真ん中にある手を置くところもついてる"
- },
- "06_waku-003": {
-  "sha1": "35c05e4848a561cdbe7a669d6b08adabca651c92",
-  "model": "large-v3-turbo",
-  "text": "これは助かるわずっと握っとると夕方には手首も肩もバキバキやからな"
- },
- "06_waku-004": {
   "sha1": "e850a833955bd50fc786a0a327cbf7fcb5205f28",
   "model": "large-v3-turbo",
   "text": "それと押す引く振動の3つが入ったアクセルギア"
  },
- "06_waku-005": {
+ "06_waku-003": {
   "sha1": "9ea967b497316aad95aea658b586d1203536f6a8",
   "model": "large-v3-turbo",
   "text": "新しいボタンはな最初の1ヶ月は全員が全力で押すホールの台すぐテカテカになるで"
  },
- "06_waku-006": {
-  "sha1": "c8f4d5c47b2f33cbfa831c38861c7f8110eeffdf",
+ "06_waku-004": {
+  "sha1": "08a4e70a5b1f0c4974c47e5587f2efcdf27dbc90",
   "model": "large-v3-turbo",
-  "text": "あとはセブンエアと手元のバイブ"
+  "text": "それにイヤホンジャックもついた"
+ },
+ "06_waku-005": {
+  "sha1": "7d9b6116e522e94fa22fa0f1c4c1bb5a0d057d64",
+  "model": "large-v3-turbo",
+  "text": "イヤホンはでかいで隣のおっちゃんのダイパンも機関で済むからな"
+ },
+ "06_waku-006": {
+  "sha1": "e841a49dc69fab02241adbc0ec0234e104a51e87",
+  "model": "large-v3-turbo",
+  "text": "その分エアが来た時はもっとびっくりするけどね"
  },
  "06_waku-007": {
   "sha1": "08a4e70a5b1f0c4974c47e5587f2efcdf27dbc90",
@@ -260,9 +260,9 @@
   "text": "その分エアが来た時はもっとびっくりするけどね"
  },
  "07_enshutsu-001": {
-  "sha1": "11f0a32b6de60997e00fbd825c9eda12e400c795",
+  "sha1": "df75813c499b6ecf18326605f293acc53d4a6144",
   "model": "large-v3-turbo",
-  "text": "本命のリーチはマクが言ってた通りうざいもんだったね。"
+  "text": "本命のリーチはバカが言ってた通りメサイモンだったね"
  },
  "07_enshutsu-002": {
   "sha1": "5b69ac2c7a0251801bd71238abc7e361fc153e8d",
@@ -270,22 +270,22 @@
   "text": "ほらな、うち、判件の予想だけは外さへんねん"
  },
  "07_enshutsu-003": {
-  "sha1": "00aa6e4624ebd47d5bd3a22519811471ccef4484",
+  "sha1": "79700923447c09db8696cac37c86d4af8e165fb1",
   "model": "large-v3-turbo",
-  "text": "ウェザーモンスペシャルは信頼度約86%赤タイトルなら約92%"
+  "text": "ウェザエモンスペシャルは信頼度約86%赤タイトルなら約92%"
  },
  "07_enshutsu-004": {
-  "sha1": "651b4fa087d438df15b228647c3c079616f9f9fa",
+  "sha1": "8e4530313eb5dfdd8e9d6861a5d56000fccba8b8",
   "model": "large-v3-turbo",
-  "text": "旅館スペシャルは約66%"
+  "text": "旅行スペシャルは約66%"
  },
  "07_enshutsu-005": {
-  "sha1": "ba55cf8e8b0956905728994ddf7e3d751e8449e1",
+  "sha1": "be2759d29fee9bccf0fccc076dee5cccb92419cd",
   "model": "large-v3-turbo",
-  "text": "64区間旅館音で外れたらしばらく立ち直られへんな"
+  "text": "66か。旅館音で外れたらしばらく立ち直られへんな。"
  },
  "07_enshutsu-006": {
-  "sha1": "df54f767a3dfdb94889c65d9553a740771080327",
+  "sha1": "5b70c17e8f5e81af20db03f5d0a74af37f050605",
   "model": "large-v3-turbo",
   "text": "カスタムは先告知のいきなり算落。40%、90%、EXから選べる。"
  },
@@ -295,9 +295,9 @@
   "text": "うちは90%早告知が来るまでは気楽に回しとけるからな"
  },
  "07_enshutsu-008": {
-  "sha1": "537b933554f8dafd50b9bb70190c54f51a844194",
+  "sha1": "34b4b138e8448c7b8e8cf5dfe9e1c0750b934875",
   "model": "large-v3-turbo",
-  "text": "脱出中は髪毛ランプで当たりを教えてくれるカスタムもある"
+  "text": "脱出は神絵ランプで当たりを教えてくれるカスタムもある"
  },
  "07_enshutsu-009": {
   "sha1": "2079e6ae7c09f7878bdb0f471ff6a5b3c9dca83a",
@@ -340,9 +340,9 @@
   "text": "1200回転かほな、まず釘見てからにするわ"
  },
  "08_matome-008": {
-  "sha1": "9a1c8957d2ccecb352c65916e95c8b0441cf1029",
+  "sha1": "53f66a2acda86975a24a5b9ff3a8a25ab1a3fd5f",
   "model": "large-v3-turbo",
-  "text": "賢明だね 国には毎回負けてるもんね"
+  "text": "賢明だね、釘には毎回負けてるもんね"
  },
  "08_matome-009": {
   "sha1": "024c6f5eb4c0e020e97fdd9890e2cfdad64d6c1e",
