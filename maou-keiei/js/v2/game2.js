@@ -18,10 +18,11 @@
       dignity: 3, relics: {}, fac: { furnace: 0, eyeRoom: 0, barrack: 0 },
       tier: 0, cleared: [], bet: 1, eyes: 0, eyeBlocked: 0, auto: !!(MK.v2Auto),
       tutorial: 0, hints: {}, battle: null, choice: null, overlay: null, burnMode: false,
+      unlock: { map: false, mood: false, bet: false, eye: false, build: false }, seen: {},
       log: [], lastResult: null, payday: null, oldest: [],
     };
     S.eyes = maxEyes();
-    hint('lever', 'レバーを叩いて、謎の台を回せ');
+
   }
   const maxMana = () => D.BASE.mana + 2 * S.fac.furnace + (S.relics.mana ? 3 : 0);
   const maxEyes = () => D.BASE.eye + S.fac.eyeRoom + (S.relics.eye ? 1 : 0);
@@ -32,6 +33,7 @@
   const shardNeed = () => (S.relics.shard2 ? 2 : 3);
   const wages = () => M.monsters().reduce((s, t) => s + D.TILES[t.type].wage, 0);
   function hint(key, text) { if (S.hints[key]) return; S.hints[key] = true; S.hint = { text, t: U.now() }; }
+  function unlockCard(key, title, lines, icon) { S.overlay = { kind: 'unlock', key, title, lines, icon, t: U.now() }; MK.Audio.play('levelup'); }
 
   // ---------- UIボタン ----------
   let buttons = [], offY = 0;
@@ -62,7 +64,7 @@
 
   // ---------- 回転 ----------
   let spinning = false;
-  const spinCost = () => (S.phase === 'battle' ? S.bet - 1 : S.bet);
+  const spinCost = () => { if (!S.unlock.bet) S.bet = 1; return S.phase === 'battle' ? S.bet - 1 : S.bet; };
   function canSpin() {
     if (spinning || S.choice || S.overlay) return false;
     if (S.phase === 'battle') return S.battle && S.battle.spins > 0 && S.mana >= spinCost();
@@ -86,7 +88,7 @@
     M.start();
     S.stopsLeft = 3;
     S.autoStopAt = U.now() + (S.auto || S.omakase ? 0.5 : 3.0);
-    hint('stop', '下のリールをタップして止める（放っておいても止まる）');
+
   }
   function forcedRow() {
     // チュートリアル：最初の1回は欠片が3つ揃う
@@ -103,7 +105,7 @@
   }
   function afterStop() {
     if (S.tutorial === 0) S.tutorial = 1;
-    if (S.eyes > 0 && !S.eyeBlocked && !S.auto) { S.eyePhase = true; hint('eye', '魔眼：▲▼で止まったリールを1コマずらせる'); }
+    if (S.unlock.eye && S.eyes > 0 && !S.eyeBlocked && !S.auto) { S.eyePhase = true; }
     else resolve();
   }
   async function useEye(i, d) {
@@ -137,6 +139,7 @@
       if (t.asleep) { ev.push({ k, label: 'zzz' }); return; }
       const d = T(t);
       let a = (d.atk || 0) + t.bonus + (d.atk ? t.lv - 1 : 0), g = d.gold || 0, sh = d.shard || 0;
+      if (inBattle && t.type === 'shard') { a += 1; sh = 0; } // 戦闘中のクリスタルは魂の弾になる
       if (t.type === 'coin' && S.relics.coinAtk) a += 1;
       if (t.type === 'slime' && S.relics.split) a += 1;
       let label = '';
@@ -172,6 +175,7 @@
     let atk = 0, gold = 0, shard = 0;
     lines.forEach((l) => { atk += l.atk; gold += l.gold; shard += l.shard; });
     atk *= mult; gold *= mult; shard *= (M.mood === 3 ? 2 : 1); // 欠片はBETで増えない
+    if (S.tutorial === 1 && !S.seen.firstSummon) shard = Math.min(shard, shardNeed());
     const res = { lines, atk, gold, shard, mult, ctxR };
     S.lastResult = { res, t: U.now() };
     // 表示
@@ -207,7 +211,7 @@
       S.shards -= shardNeed();
       await summon();
     }
-    if (S.mana <= 0) hint('nomana', '魔力が尽きた。「出陣」で勇者の土地へ攻め込もう');
+
   }
   function candidates() {
     const pool = D.SUMMONABLE.filter((t) => !(D.TILES[t].unique && M.allTiles().some((x) => x.type === t)));
@@ -236,12 +240,12 @@
       MK.Audio.play('levelup');
       floatText(RX[reel] + RW / 2, RY - 10, D.TILES[type].name + ' 入隊', '#9affd8');
       S.joined = { type, t: U.now() };
-      hint('joined', '揃うほど働く。同じ魔物3つで進化、同じ種族3つで共鳴');
+      if (!S.seen.firstSummon) { S.seen.firstSummon = true; S.unlock.map = true; }
     } else floatText(W / 2, RY - 10, 'リールがいっぱい', '#ff9a9a');
   }
 
   // ---------- 侵攻 ----------
-  function goMap() { if (spinning || S.choice) return; S.phase = 'map'; S.burnMode = false; hint('map', '光っている土地を選んで攻め込む'); }
+  function goMap() { if (spinning || S.choice || !S.unlock.map) return; S.phase = 'map'; S.burnMode = false; }
   function startBattle(node) {
     S.phase = 'battle';
     S.battle = {
@@ -252,7 +256,7 @@
     M.allTiles().forEach((t) => { t.sealed = 0; t.asleep = false; });
     MK.Audio.play('alarm');
     sceneFx(() => FX.slam(node.name + ' 侵攻!!', { y: 230, size: 64, palette: 'blood', dur: 1.4 }));
-    hint('battle', '勇者の頭上は「次の行動」。8回転以内に倒せ。BET2以上は魔力を使う');
+
   }
   function intentOf(f) { const p = f.pattern[f.step % f.pattern.length]; return { kind: p[0], n: p[1] }; }
   async function battleResolve(res) {
@@ -345,7 +349,15 @@
     M.allTiles().forEach((t) => { t.sealed = 0; t.asleep = false; });
     S.battle = null;
     S.phase = 'day';
+    S.unlock.build = true;
     if (S.night % D.PAYDAY_EVERY === 0) payday();
+    else if (S.cleared.length >= 1 && !S.unlock.mood) {
+      S.unlock.mood = true; S.unlock.bet = true;
+      unlockCard('mood', '新しい力：台の気配', ['台の上の★が多いほど「暴走」（大当たり）が近い', '★が多いときは BET を上げて魔力をつぎ込め'], '★');
+    } else if (S.cleared.length >= 2 && !S.unlock.eye) {
+      S.unlock.eye = true;
+      unlockCard('eye', '新しい力：魔眼', ['リールが止まったあと ▲▼ で1コマずらせる', '惜しいときに使え（回数に限りあり）'], '眼');
+    }
   }
 
   // ---------- 昼：魔王城 ----------
@@ -364,6 +376,7 @@
     MK.Audio.play(ok ? 'coin' : 'lose');
   }
   function buildFac(id) {
+    S.seen.day = true;
     const f = D.FACILITIES[id], lv = S.fac[id];
     if (lv >= f.cost.length || S.gold < f.cost[lv]) return;
     S.gold -= f.cost[lv]; S.fac[id]++;
@@ -371,6 +384,7 @@
     sceneFx(() => { FX.flash('#fff', 0.4); FX.slam(f.name + ' 再建!!', { y: 200, size: 54, palette: 'violet', sub: '設定 ' + setting(), dur: 1.3 }); });
   }
   function nextNight() {
+    S.seen.day = true;
     S.night++;
     S.phase = 'night';
     S.mana = maxMana();
@@ -409,30 +423,23 @@
   function boomFx() {
     MK.Audio.play('fanfare', 'at');
     sceneFx(() => { FX.flash('#ffffff', 1, 2); FX.shake(20); FX.slam('暴 走 !!', { y: 280, size: 120, palette: 'rainbow', glow: 'rgba(255,80,40,0.8)', sub: '全ライン有効・効果2倍', dur: 1.8 }); FX.P.burst(W / 2, 300, 80, 'rgba(255,150,60,0.9)', 800, 40); });
-    hint('boom', '暴走中は上中下すべてのラインが有効。勝負どころ');
+
   }
 
   // ---------- 描画：状態バー ----------
   function drawTop(t) {
     ctx.fillStyle = '#0e0814'; ctx.fillRect(0, 0, W, SY);
     ctx.fillStyle = '#2a1a30'; ctx.fillRect(0, SY - 3, W, 3);
-    // 魔力
-    body('魔力', 18, 22, 16, '#c8a8ff');
-    const mm = maxMana();
-    for (let i = 0; i < mm; i++) {
-      const x = 18 + i * 17, on = i < S.mana;
-      ctx.beginPath(); ctx.moveTo(x + 6, 36); ctx.lineTo(x + 12, 46); ctx.lineTo(x + 6, 58); ctx.lineTo(x, 46); ctx.closePath();
-      ctx.fillStyle = on ? '#b070ff' : '#2a2034'; ctx.fill(); ctx.strokeStyle = '#0a0610'; ctx.lineWidth = 1.5; ctx.stroke();
-    }
-    A.coin(ctx, 330, 46, 13); txt(String(S.gold), 350, 47, 24, '#ffe08a');
-    // 欠片
-    body('魂', 420, 22, 16, '#9fe8ff');
-    for (let i = 0; i < shardNeed(); i++) { ctx.fillStyle = i < S.shards ? '#7ad8ff' : '#1e2a34'; ctx.beginPath(); ctx.moveTo(430 + i * 22, 36); ctx.lineTo(438 + i * 22, 46); ctx.lineTo(430 + i * 22, 58); ctx.lineTo(422 + i * 22, 46); ctx.closePath(); ctx.fill(); }
-    // 威厳
-    body('威厳', 530, 22, 16, '#ff9ab0');
-    for (let i = 0; i < 3; i++) txt('♥', 530 + i * 24, 47, 22, i < S.dignity ? '#ff4060' : '#3a2030');
-    txt('夜' + S.night, 702, 47, 22, '#ffe7c0', 'right');
-    body('設定' + setting(), 702, 20, 14, '#c9a65a', 'right');
+    // 魔力（回せる回数）
+    ctx.beginPath(); ctx.moveTo(30, 22); ctx.lineTo(42, 40); ctx.lineTo(30, 58); ctx.lineTo(18, 40); ctx.closePath();
+    ctx.fillStyle = '#b070ff'; ctx.fill(); ctx.strokeStyle = '#0a0610'; ctx.lineWidth = 2; ctx.stroke();
+    txt(S.mana + ' / ' + maxMana(), 52, 42, 28, '#e0c8ff');
+    body('魔力', 52, 16, 13, '#a890c8');
+    A.coin(ctx, 230, 42, 15); txt(String(S.gold), 252, 42, 28, '#ffe08a');
+    body('金貨', 252, 16, 13, '#c9a65a');
+    for (let i = 0; i < 3; i++) txt('♥', 400 + i * 30, 42, 28, i < S.dignity ? '#ff4060' : '#3a2030');
+    body('残りの命', 400, 16, 13, '#ff9ab0');
+    txt('夜 ' + S.night, 702, 42, 28, '#ffe7c0', 'right');
   }
 
   // ---------- 描画：場面 ----------
@@ -464,11 +471,17 @@
       const x = g.x + (r.x0 + 60 + (i >> 1) * 110 + (i % 2) * 40) * g.s, y = g.y + (r.y1 - 3) * g.s;
       A2.unit(ctx, m.type, x, y, 0.55 * g.s / 0.95, t, { seed: m.id, face: i % 2 ? -1 : 1, anim: (Math.sin(t * 0.7 + m.id) > 0.85) ? 'cheer' : 'idle', at: t });
     });
-    A2.maou(ctx, 120, 560, 0.85, t, form(), S.joined && U.now() - S.joined.t < 2 ? 'happy' : '');
-    txt(ph === 'day' ? '昼 ・ 魔王城' : '夜' + S.night + ' ・ 召喚の刻', 20, 30, 26, ph === 'day' ? '#ffe08a' : '#c8a8ff');
-    if (ph === 'night') {
-      body('給料日まで ' + (D.PAYDAY_EVERY - ((S.night - 1) % D.PAYDAY_EVERY)) + '夜 ・ 給料 ' + wages() + '枚', 20, 62, 17, '#f3e2b0');
-    } else {
+    const happy = S.joined && U.now() - S.joined.t < 2.5;
+    A2.maou(ctx, 150, 575, 1.15, t, form(), happy ? 'happy' : '');
+    // 魔王のひと言
+    const say = ph === 'day' ? '金貨で城を建て直すぞ' : !S.seen.firstSummon ? 'この台…叩くと何か出るのか？' : happy ? 'フハハ！魔物が出たぞ！' : S.unlock.map && S.cleared.length === 0 ? '仲間がいれば勇者の村も落とせる' : 'もっと仲間を集めねば';
+    ctx.save(); ctx.textAlign = 'left'; ctx.font = 'bold 20px "Shippori Mincho B1", serif';
+    const sw = ctx.measureText(say).width + 36;
+    ctx.fillStyle = '#fff8ec'; ctx.beginPath(); ctx.roundRect(40, 300, sw, 48, 18); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(120, 346); ctx.lineTo(140, 372); ctx.lineTo(150, 346); ctx.fill();
+    ctx.fillStyle = '#2a1020'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(say, 58, 325); ctx.restore();
+    if (ph === 'night') drawGoal(t);
+    else {
       // 施設
       const keys = Object.keys(D.FACILITIES);
       keys.forEach((id, i) => {
@@ -479,6 +492,27 @@
       btn(20, 60, 200, 44, S.burnMode ? '焼却をやめる' : '札を焼く（' + D.BURN_COST + '枚）', () => { S.burnMode = !S.burnMode; }, { size: 17, on: S.burnMode });
       if (S.burnMode) drawStrips(t);
     }
+  }
+  // 目標バナー（いま何をすればいいか）
+  function drawGoal(t) {
+    let goal, sub = '';
+    if (!S.seen.firstSummon) { goal = '青いクリスタルを3つ集めて、魔物を呼べ'; }
+    else if (S.cleared.length === 0) { goal = '「出陣」して、最初の村を攻め落とせ'; sub = 'クリスタルが3つたまると、また仲間が増える'; }
+    else { goal = '王都を攻め落とせ（あと' + (D.MAP.length - S.cleared.length) + 'か所）'; sub = 'クリスタルで仲間を増やし、準備ができたら出陣'; }
+    ctx.fillStyle = 'rgba(8,2,14,0.85)'; ctx.beginPath(); ctx.roundRect(14, 12, W - 28, sub ? 128 : 104, 16); ctx.fill();
+    ctx.strokeStyle = '#ffe08a'; ctx.lineWidth = 2; ctx.stroke();
+    body('目標', 34, 34, 15, '#ffe08a');
+    txt(goal, 34, 64, 23, '#ffffff');
+    // クリスタル
+    const need = shardNeed();
+    for (let i = 0; i < need; i++) {
+      const x = W - 40 - (need - 1 - i) * 40, y = 36;
+      ctx.beginPath(); ctx.moveTo(x, y - 16); ctx.lineTo(x + 11, y); ctx.lineTo(x, y + 16); ctx.lineTo(x - 11, y); ctx.closePath();
+      ctx.fillStyle = i < S.shards ? '#7ad8ff' : '#1e2a34'; ctx.fill(); ctx.strokeStyle = '#bff0ff'; ctx.lineWidth = 1.5; ctx.stroke();
+    }
+    body('仲間まで', W - 40 - need * 40 - 4, 36, 14, '#9fe8ff', 'right');
+    if (sub) body(sub, 34, 100, 16, '#c9b8e0');
+    if (sub) {} else body('レバーを押すとリールが回る', 34, 92, 15, '#c9b8e0');
   }
   function drawStrips(t) {
     ctx.fillStyle = 'rgba(6,2,10,0.88)'; ctx.fillRect(0, 110, W, SH - 230);
@@ -509,7 +543,7 @@
       if (done) C.flag(ctx, x + 2, y + 14, 1.1, t, 1);
       else n.foes.slice(0, 2).forEach((f, i) => { const e = D.ENEMIES[f]; A.hero(ctx, { type: e.art, x: x - 10 + i * 20, y: y + 22, s: 0.32, face: -1, anim: 'idle' }, t); });
       body(n.name, x, y + r + 16, 17, done ? '#ff9a9a' : avail ? '#ffffff' : '#9a8aa8', 'center');
-      if (avail) buttons.push({ x: x - r, y: y - r + SY, w: r * 2, h: r * 2 + 30, fn: () => startBattle(n) });
+      if (avail) buttons.push({ x: x - r, y: y - r + SY, w: r * 2, h: r * 2 + 30, fn: () => { S.seen.map = true; startBattle(n); } });
     }));
     btn(W - 180, 60, 160, 44, '城へ戻る', () => { S.phase = 'night'; }, { size: 18 });
   }
@@ -573,8 +607,10 @@
     g.addColorStop(0, '#1e1626'); g.addColorStop(1, '#08060c');
     ctx.fillStyle = g; ctx.fillRect(0, y0, W, H - y0);
     ctx.fillStyle = '#5a1a2a'; ctx.fillRect(0, y0, W, 4);
-    // 台の気配
+    // 台の気配（解放後）
+    if (!S.unlock.mood) { txt('謎のスロット台', W / 2, y0 + 50, 30, '#c9a65a', 'center'); }
     const sg = M.signs();
+    if (S.unlock.mood) {
     const lampCol = { dim: '#3a3040', violet: '#a060ff', red: '#ff2a3a', fake: '#ff4aa8', boom: `hsl(${(t * 300) % 360},90%,60%)` }[sg.lamp];
     const pulse = sg.lamp === 'dim' ? 0.3 : 0.6 + 0.4 * Math.sin(t * (sg.lamp === 'red' || sg.lamp === 'fake' ? 10 : 5));
     ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = pulse;
@@ -584,9 +620,12 @@
     body('台の気配', 84, y0 + 30, 16, '#c9a65a');
     for (let i = 0; i < 5; i++) txt('★', 84 + i * 30, y0 + 62, 28, i < sg.stars ? (sg.stars >= 4 ? '#ff5a4a' : '#ffd34a') : '#2a2430');
     if (M.mood === 3) txt('暴走 残り' + M.boomLeft, 250, y0 + 62, 26, '#ff9a4a');
-    // BET
-    body('魔力投入', 420, y0 + 24, 15, '#c8a8ff');
-    [1, 2, 3].forEach((b) => btn(420 + (b - 1) * 96, y0 + 40, 86, 52, 'BET' + b, () => { if (!spinning) { S.bet = b; MK.Audio.play('bet'); } }, { on: S.bet === b, size: 20, disabled: !spinning && S.mana < (S.phase === 'battle' ? b - 1 : b) }));
+    }
+    // BET（解放後）
+    if (S.unlock.bet) {
+      body('魔力投入', 420, y0 + 24, 15, '#c8a8ff');
+      [1, 2, 3].forEach((b) => btn(420 + (b - 1) * 96, y0 + 40, 86, 52, 'BET' + b, () => { if (!spinning) { S.bet = b; MK.Audio.play('bet'); } }, { on: S.bet === b, size: 20, disabled: !spinning && S.mana < (S.phase === 'battle' ? b - 1 : b) }));
+    }
     // リール
     ctx.fillStyle = '#c9a23a'; ctx.fillRect(RX[0] - 8, RY - 8, RX[2] + RW - RX[0] + 16, CELL * 3 + 16);
     ctx.fillStyle = '#0a0606'; ctx.fillRect(RX[0] - 4, RY - 4, RX[2] + RW - RX[0] + 8, CELL * 3 + 8);
@@ -640,27 +679,49 @@
     }
     // 操作部
     const cy = 1050;
-    body('魔眼 ' + S.eyes + (S.eyeBlocked ? '（封じられている）' : ''), 24, cy + 16, 17, S.eyeBlocked ? '#ff9ad0' : '#9fc8ff');
-    btn(24, cy + 40, 160, 50, S.omakase ? 'おまかせ停止\nON' : 'おまかせ停止\nOFF', () => { S.omakase = !S.omakase; }, { size: 15, on: S.omakase });
-    if (S.phase === 'night') btn(24, cy + 104, 160, 60, '出陣', () => goMap(), { color: ['#c0302a', '#5a0a10'], size: 24, pulse: S.mana <= 0, disabled: spinning });
-    if (S.phase === 'day') btn(24, cy + 104, 160, 60, '夜を迎える', () => nextNight(), { color: ['#5a3ab8', '#1e0a4a'], size: 20, pulse: true });
+    if (S.unlock.eye) body('魔眼 あと' + S.eyes + '回' + (S.eyeBlocked ? '（封じられている）' : ''), 24, cy + 6, 17, S.eyeBlocked ? '#ff9ad0' : '#9fc8ff');
+    const side = S.unlock.map || S.phase === 'day';
+    if (S.phase === 'night' && S.unlock.map) btn(24, cy + 28, 200, 170, '出陣', () => goMap(), { color: ['#c0302a', '#5a0a10'], size: 36, r: 24, pulse: S.mana <= 0, disabled: spinning });
+    if (S.phase === 'day') btn(24, cy + 28, 200, 170, '夜を\n迎える', () => nextNight(), { color: ['#5a3ab8', '#1e0a4a'], size: 30, r: 24, pulse: true });
     // レバー（大）
-    const lx = 470, ly = cy + 28, lw = 226, lh = 170;
+    const lx = side ? 250 : 130, ly = cy + 28, lw = side ? 446 : 460, lh = 170;
+    S.leverRect = { x: lx, y: ly, w: lw, h: lh };
     if (S.eyePhase) btn(lx, ly, lw, lh, '決定', () => confirmEye(), { color: ['#3a8ad8', '#0a2a5a'], size: 40, r: 24 });
-    else {
+    else if (S.phase === 'night' || S.phase === 'battle') {
       const can = canSpin();
       const cost = spinCost();
-      btn(lx, ly, lw, lh, can ? (cost > 0 ? 'レバー\n（魔力' + cost + '）' : 'レバー') : spinning ? '停止して' : S.phase === 'night' ? '魔力切れ' : S.phase === 'battle' ? '—' : '—', () => lever(), { color: ['#e03a4a', '#5a0010'], size: 30, r: 24, disabled: !can, pulse: can && S.hints.lever && !S.leverUsed });
+      const label = can ? (S.phase === 'battle' ? (cost > 0 ? '攻撃！\n（魔力' + cost + '）' : '攻撃！') : '回す\n（魔力' + cost + '）') : spinning ? 'リールをタップで止める' : S.phase === 'night' ? '魔力切れ → 出陣しよう' : '—';
+      btn(lx, ly, lw, lh, label, () => lever(), { color: ['#e03a4a', '#5a0010'], size: can ? 40 : 24, r: 24, disabled: !can });
     }
-    // チュートリアル的ヒント
-    if (S.hint && U.now() - S.hint.t < 6) {
-      const a = Math.min(1, (U.now() - S.hint.t) * 4) * (1 - U.seg(U.now() - S.hint.t, 5.4, 6));
-      ctx.save(); ctx.globalAlpha = a;
-      ctx.fillStyle = 'rgba(20,8,30,0.92)'; ctx.beginPath(); ctx.roundRect(200, cy + 104, 260, 96, 12); ctx.fill();
-      ctx.strokeStyle = '#ffe08a'; ctx.lineWidth = 2; ctx.stroke();
-      wrap(S.hint.text, 330, cy + 128, 240, 17, '#ffe7c0');
-      ctx.restore();
-    }
+  }
+  // コーチ：次に触る場所を矢印で示す
+  function coach(t) {
+    if (S.auto || S.overlay) return;
+    let r = null, text = '';
+    const reels = { x: RX[0], y: RY, w: RX[2] + RW - RX[0], h: CELL * 3 };
+    if (S.choice && S.choice.mode === 'reel') { r = reels; text = '入れるリールをタップ'; }
+    else if (S.choice) return;
+    else if (S.eyePhase) { r = S.leverRect; text = 'ずらさないなら「決定」'; }
+    else if (spinning && M.anySpinning()) { r = reels; text = 'リールをタップして止める'; }
+    else if (S.phase === 'night' && !S.seen.firstSummon) { r = S.leverRect; text = 'ここを押して回す'; }
+    else if (S.phase === 'night' && S.cleared.length === 0 && S.unlock.map && (S.mana <= 4 || M.monsters().length >= 2)) { r = { x: 24, y: 1078, w: 200, h: 170 }; text = '出陣！'; }
+    else if (S.phase === 'map' && !S.seen.map) { r = { x: W / 2 - 40, y: SY + SH - 120, w: 80, h: 80 }; text = '光っている村をタップ'; }
+    else if (S.phase === 'battle' && S.battle && S.battle.spins === D.BATTLE_SPINS) { r = S.leverRect; text = '回すと、揃った魔物が勇者を攻撃'; }
+    else if (S.phase === 'day' && !S.seen.day) { r = { x: 16, y: SY + SH - 112, w: 688, h: 96 }; text = '金貨で施設を建てる（建てなくてもOK）'; }
+    if (!r) return;
+    const bob = Math.sin(t * 6) * 8;
+    const ax = r.x + r.w / 2, ay = r.y - 10 + bob;
+    ctx.save();
+    ctx.strokeStyle = '#ffe08a'; ctx.lineWidth = 4; ctx.setLineDash([10, 8]); ctx.lineDashOffset = -t * 30;
+    ctx.beginPath(); ctx.roundRect(r.x - 4, r.y - 4, r.w + 8, r.h + 8, 16); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#ffe08a';
+    ctx.beginPath(); ctx.moveTo(ax - 22, ay - 30); ctx.lineTo(ax + 22, ay - 30); ctx.lineTo(ax, ay); ctx.closePath(); ctx.fill();
+    ctx.font = 'bold 22px "Shippori Mincho B1", serif'; ctx.textAlign = 'left';
+    const tw = ctx.measureText(text).width + 32;
+    const bx = U.clamp(ax - tw / 2, 10, W - tw - 10), by = ay - 80;
+    ctx.fillStyle = '#ffe08a'; ctx.beginPath(); ctx.roundRect(bx, by, tw, 46, 14); ctx.fill();
+    ctx.fillStyle = '#2a1006'; ctx.textBaseline = 'middle'; ctx.fillText(text, bx + 16, by + 24);
+    ctx.restore();
   }
   function wrap(text, cx, y, maxW, size, color) {
     ctx.font = `bold ${size}px "Shippori Mincho B1", serif`;
@@ -687,7 +748,7 @@
       return;
     }
     ctx.fillStyle = 'rgba(4,0,8,0.82)'; ctx.fillRect(0, SY, W, SH);
-    txt(c.title, W / 2, SY + 40, 34, '#ffe08a', 'center');
+    txt(c.title === '召喚陣' ? '仲間にする魔物を1体えらぶ' : c.title, W / 2, SY + 40, 32, '#ffe08a', 'center');
     const n = c.opts.length, cw = n >= 4 ? 166 : 218, gap = 10;
     const x0 = (W - (cw * n + gap * (n - 1))) / 2, y = SY + 76, ch = 470;
     c.opts.forEach((o, i) => {
@@ -720,6 +781,19 @@
   function drawOverlay(t) {
     const o = S.overlay;
     if (!o) return;
+    if (o.kind === 'unlock') {
+      const age = U.now() - o.t, k = E.outBack(U.clamp(age / 0.35, 0, 1));
+      ctx.fillStyle = 'rgba(4,0,8,0.82)'; ctx.fillRect(0, 0, W, H);
+      ctx.save(); ctx.translate(W / 2, 560); ctx.scale(k, k);
+      A.panel(ctx, -300, -260, 600, 520, { color: '#ffe08a', bg: ['rgba(40,16,40,0.98)', 'rgba(10,4,14,0.98)'] });
+      txt(o.title, 0, -200, 36, '#ffe08a', 'center');
+      A.ell(ctx, 0, -70, 80, 80); ctx.fillStyle = A.rg(ctx, -24, -94, 2, 0, -70, 80, ['#fff2b0', '#d9a020', '#6a3a00']); ctx.fill();
+      txt(o.icon, 0, -66, 80, '#3a1600', 'center', '"Shippori Mincho B1", serif');
+      o.lines.forEach((l, i) => { ctx.font = 'bold 22px "Shippori Mincho B1", serif'; wrap(l, 0, 50 + i * 72, 520, 22, i ? '#ffd34a' : '#ffffff'); });
+      ctx.restore();
+      btn(W / 2 - 120, 860, 240, 70, 'わかった', () => { S.overlay = null; }, { pulse: age > 0.8, size: 28 });
+      return;
+    }
     if (o.kind === 'payday') {
       const age = U.now() - o.t;
       ctx.fillStyle = 'rgba(4,0,8,0.8)'; ctx.fillRect(0, SY, W, SH);
@@ -814,6 +888,7 @@
     drawChoice(t);
     drawOverlay(t);
     drawFloats(dt);
+    coach(t);
     requestAnimationFrame(frame);
   }
   function boot() {

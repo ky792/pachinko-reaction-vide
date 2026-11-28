@@ -199,9 +199,10 @@
     const D = MK.D.TILES[type];
     const tr = MK.D.TRIBES[D.tribe] || MK.D.TRIBES.none;
     const bgc = g.createLinearGradient(0, 0, 0, h);
-    bgc.addColorStop(0, tr.color); bgc.addColorStop(1, '#0c0810');
+    bgc.addColorStop(0, '#f6eedc'); bgc.addColorStop(1, '#d6c6a4');
     g.fillStyle = bgc; g.fillRect(0, 0, w, h);
-    g.strokeStyle = 'rgba(255,255,255,0.08)'; g.lineWidth = 1; g.strokeRect(0.5, 0.5, w - 1, h - 1);
+    if (D.tribe !== 'none') { g.fillStyle = tr.color; g.fillRect(0, 0, 10, h); }
+    g.strokeStyle = 'rgba(60,40,20,0.35)'; g.lineWidth = 1; g.strokeRect(0.5, 0.5, w - 1, h - 1);
     const cx = w / 2;
     if (type === 'stone') {
       g.save(); g.translate(cx, h * 0.62);
@@ -209,18 +210,21 @@
       fs(g, lg(g, 0, -18, 0, 8, ['#8a8494', '#4a4652']), 2.5);
       g.strokeStyle = 'rgba(0,0,0,0.3)'; g.beginPath(); g.moveTo(-6, -14); g.lineTo(0, -2); g.lineTo(8, -8); g.stroke();
       g.restore();
+      g.font = 'bold 13px "Shippori Mincho B1", serif'; g.fillStyle = 'rgba(60,40,30,0.7)'; g.textAlign = 'left'; g.textBaseline = 'top'; g.fillText('はずれ', 6, 4);
     } else if (type === 'coin') {
       A.coin(g, cx, h / 2, h * 0.3);
+      g.font = 'bold 13px "Shippori Mincho B1", serif'; g.fillStyle = 'rgba(80,50,0,0.85)'; g.textAlign = 'left'; g.textBaseline = 'top'; g.fillText('金貨', 6, 4);
     } else if (type === 'shard') {
       g.save(); g.translate(cx, h / 2);
-      g.globalCompositeOperation = 'lighter'; g.drawImage(MK.FX.glow('rgba(120,220,255,0.7)', 64), -34, -34, 68, 68); g.globalCompositeOperation = 'source-over';
+      
       g.beginPath(); g.moveTo(0, -24); g.lineTo(13, -4); g.lineTo(6, 22); g.lineTo(-8, 18); g.lineTo(-13, -6); g.closePath();
-      fs(g, lg(g, -13, 0, 13, 0, ['#2a6ab8', '#bff0ff', '#3a8ad8']), 2);
+      fs(g, lg(g, -13, 0, 13, 0, ['#1a5ab8', '#8ae0ff', '#2a7ad8']), 2.5);
       g.restore();
+      g.font = 'bold 13px "Shippori Mincho B1", serif'; g.fillStyle = 'rgba(10,50,90,0.85)'; g.textAlign = 'left'; g.textBaseline = 'top'; g.fillText('クリスタル', 6, 4);
     } else {
       const sc = type === 'dragon' ? 0.4 : type === 'knight' ? 0.66 : 0.74;
       unit(g, type, cx, h - 3, sc, 0.8, { seed: 1 });
-      g.font = 'bold 12px "Shippori Mincho B1", serif'; g.fillStyle = 'rgba(255,255,255,0.75)'; g.textAlign = 'left'; g.textBaseline = 'top'; g.fillText(D.name, 6, 4);
+      g.font = 'bold 12px "Shippori Mincho B1", serif'; g.fillStyle = 'rgba(60,30,10,0.8)'; g.textAlign = 'left'; g.textBaseline = 'top'; g.fillText(D.name, 6, 4);
     }
     tileCache[key] = c;
     return c;

@@ -22,7 +22,7 @@
   D.TILES = {
     stone:     { name: '石ころ', tribe: 'none', wage: 0, desc: '何もしない。焼却炉で捨てられる' },
     coin:      { name: '金貨', tribe: 'none', wage: 0, gold: 1, desc: '金貨＋1' },
-    shard:     { name: '魂の欠片', tribe: 'none', wage: 0, shard: 1, desc: '欠片＋1。3つで召喚' },
+    shard:     { name: '魂の欠片', tribe: 'none', wage: 0, shard: 1, desc: '欠片＋1。3つで召喚。戦闘中は攻撃1' },
     slime:     { name: 'スライム', tribe: 'swarm', wage: 1, atk: 1, rarity: 1, desc: '攻撃1。3揃いで分裂して1枚増える' },
     bombslime: { name: 'ボムスライム', tribe: 'swarm', wage: 1, rarity: 2, desc: '自爆して攻撃6。その戦闘中は眠る' },
     goblin:    { name: 'ゴブリン', tribe: 'labor', wage: 1, atk: 1, gold: 1, rarity: 1, desc: '攻撃1・金貨＋1。給料が安い' },
