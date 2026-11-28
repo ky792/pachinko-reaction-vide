@@ -1,0 +1,20 @@
+<!doctype html><html><body style="margin:0;background:#111"><canvas id=c width=900 height=1100></canvas>
+<script src="../../engine/core.js"></script><script src="../../machines/abyss-reactor/layout.js"></script><script src="../../engine/physics.js"></script>
+<script>
+const L=NB.machines['abyss-reactor'].layout; const q=new URLSearchParams(location.search);
+const power=+(q.get('p')||0.3), n=+(q.get('n')||40), open=q.get('open')==='1';
+const ctx=c.getContext('2d'); const trails=[]; const ends=[];
+const ph=new NB.Physics(L,{seed:3,onEvent:(t,e)=>{ if(t==='remove') ends.push([e.ball.x,e.ball.y,e.reason]); }});
+ph.gates.denchu=open; ph.gates.attacker=open;
+let t=0,l=0; const tr=new Map();
+while((l<n||ph.balls.length)&&t<200){ if(l<n&&t>=l*0.6){ph.launch(power);l++;} ph.step(NB.Physics.STEP);t+=NB.Physics.STEP;
+ for(const b of ph.balls){ if(!tr.has(b.id)) tr.set(b.id,[]); const a=tr.get(b.id); if(a.length%4===0||true) a.push([b.x,b.y]); } }
+ctx.strokeStyle='#555';ctx.beginPath();ctx.arc(L.outer.x,L.outer.y,L.outer.r,0,7);ctx.stroke();
+for(const s of ph.segs){ctx.strokeStyle={frame:'#0aa',stage:'#a0a',rail:'#aa0',gate:'#f80'}[s.tag]||'#0f0';ctx.beginPath();ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);ctx.stroke();}
+ctx.fillStyle='#ddd';for(const nl of L.nails){ctx.beginPath();ctx.arc(nl.x,nl.y,2.2,0,7);ctx.fill();}
+for(const w of L.windmills){ctx.strokeStyle='#fff';ctx.beginPath();ctx.arc(w.x,w.y,w.r,0,7);ctx.stroke();}
+ctx.globalAlpha=0.25;for(const a of tr.values()){ctx.strokeStyle='hsl('+(Math.random()*360)+',80%,60%)';ctx.beginPath();a.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1]));ctx.stroke();}
+ctx.globalAlpha=1;for(const e of ends){ctx.fillStyle={heso:'#f00',out:'#888',lost:'#ff0',foul:'#0ff',denchu:'#f0f',attacker:'#0f0'}[e[2]]||'#fff';ctx.fillRect(e[0]-3,e[1]-3,6,6);}
+ctx.fillStyle='#fff';ctx.font='20px sans-serif';ctx.fillText('p='+power,20,1080);
+document.title='done';
+</script></body></html>

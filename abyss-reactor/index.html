@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>P 深淵機関 ABYSS REACTOR — NAGIBAKU LAB NBL-001</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&family=Noto+Sans+JP:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --metal: #1b1f24; --edge: #0a0c0e; --hi: rgba(255,255,255,.14); --cyan: #4fd8ff; --red: #ff3a4a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #000; color: #cfd8e0; overflow: hidden; font-family: "Noto Sans JP", sans-serif; -webkit-user-select: none; user-select: none; touch-action: manipulation; }
+  body { background: radial-gradient(ellipse at 50% 35%, #12181e 0%, #050607 55%, #000 100%); }
+  #stage { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; gap: 28px; }
+  #wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  #machine { display: block; filter: drop-shadow(0 30px 60px rgba(0,0,0,.9)); touch-action: none; }
+  #counter { display: block; filter: drop-shadow(0 20px 40px rgba(0,0,0,.8)); }
+
+  /* 操作パネル：筐体と同じ素材感のハードウェア帯 */
+  #panel { display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: 12px; flex-wrap: wrap; justify-content: center;
+    background: linear-gradient(180deg, #2a3037 0%, #15181c 55%, #1e2328 100%); box-shadow: inset 0 1px 0 var(--hi), inset 0 -2px 0 rgba(0,0,0,.6), 0 10px 30px rgba(0,0,0,.8); border: 1px solid #000; }
+  #panel button { font: 800 12px/1 "Rajdhani", "Noto Sans JP", sans-serif; letter-spacing: .08em; color: #9fb2c2; padding: 9px 11px 8px; border-radius: 7px; cursor: pointer;
+    background: linear-gradient(180deg, #3a424b, #1a1e23); border: 1px solid #050607; box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 0 #000; text-shadow: 0 -1px 0 #000; }
+  #panel button:active { transform: translateY(1px); box-shadow: inset 0 1px 0 rgba(255,255,255,.1); }
+  #panel button.on { color: #001018; background: linear-gradient(180deg, #8af0ff, #1aa8d8); text-shadow: none; box-shadow: 0 0 14px rgba(79,216,255,.6), inset 0 1px 0 #fff; }
+  #panel button.red.on { background: linear-gradient(180deg, #ff9090, #d8202a); box-shadow: 0 0 14px rgba(255,58,74,.6), inset 0 1px 0 #fff; color: #200; }
+  #panel .grp { display: flex; align-items: center; gap: 6px; padding: 0 6px; border-right: 1px solid rgba(0,0,0,.6); box-shadow: 1px 0 0 rgba(255,255,255,.06); }
+  #panel .grp:last-child { border: 0; box-shadow: none; }
+  #panel label { font: 700 10px "Rajdhani", sans-serif; letter-spacing: .14em; color: #6f808f; }
+  #panel input[type=range] { width: 110px; accent-color: var(--cyan); }
+  #p-push { color: #fff !important; background: radial-gradient(circle at 40% 35%, #ff8a8a, #c0101c 60%, #400008) !important; border-radius: 50% !important; width: 46px; height: 46px; padding: 0 !important; font-size: 11px !important; }
+
+  body[data-mode=stream] #panel, body[data-mode=machine] #panel, body[data-mode=machine] #counter { display: none !important; }
+  body[data-mode=stream] #stage { gap: 3%; background: radial-gradient(ellipse at 40% 50%, #0d1318 0%, #020304 70%); }
+  body[data-mode=stream], body[data-mode=machine] { cursor: none; }
+  body[data-mode=stream] #brand { display: block; }
+  #brand { display: none; position: absolute; left: 2%; top: 3%; font: 800 1.6vh "Rajdhani", sans-serif; letter-spacing: .3em; color: rgba(160,200,220,.45); }
+
+  /* 起動画面 */
+  #boot { position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; background: radial-gradient(ellipse at 50% 40%, #0e1820, #000 70%); transition: opacity .8s; }
+  #boot.gone { opacity: 0; pointer-events: none; }
+  #boot .lab { font: 700 13px "Rajdhani", sans-serif; letter-spacing: .5em; color: #6f8a9a; }
+  #boot h1 { margin: 0; font: 900 clamp(28px, 6vw, 64px) "Orbitron", sans-serif; letter-spacing: .08em; background: linear-gradient(180deg, #fff 0%, #9aa8b6 45%, #2a323a 52%, #c8d4de 70%, #fff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 4px 0 #000) drop-shadow(0 0 22px rgba(79,216,255,.35)); }
+  #boot h2 { margin: 0; font: 900 clamp(16px, 2.6vw, 24px) "Noto Sans JP", sans-serif; letter-spacing: .6em; color: #8fdcff; }
+  #boot .bar { width: 280px; height: 3px; background: #111; } #boot .bar i { display: block; height: 100%; width: 0; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+  #boot .start { margin-top: 18px; font: 800 16px "Rajdhani", sans-serif; letter-spacing: .4em; padding: 16px 36px; color: #001018; background: linear-gradient(180deg, #a8f2ff, #18a0d0); border: 0; border-radius: 4px; cursor: pointer; box-shadow: 0 0 30px rgba(79,216,255,.5); }
+  #boot .note { font-size: 11px; color: #5a6a76; max-width: 520px; text-align: center; line-height: 1.7; }
+
+  /* 開発者パネル */
+  #dev { position: fixed; right: 0; top: 0; bottom: 0; width: min(440px, 100vw); z-index: 40; background: rgba(8,10,12,.94); border-left: 1px solid #1e2a33; transform: translateX(100%); transition: transform .25s; display: flex; flex-direction: column; font-size: 12px; backdrop-filter: blur(6px); }
+  #dev.show { transform: none; }
+  #dev header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #1e2a33; font-family: "Rajdhani", sans-serif; letter-spacing: .12em; }
+  #dev header b { color: #ff5a3a; } #dev header span { color: #5a7080; flex: 1; } #dev header button { background: none; border: 0; color: #aaa; font-size: 20px; cursor: pointer; }
+  #dev .body { overflow-y: auto; padding: 8px 12px 40px; }
+  #dev section { margin: 10px 0 14px; } #dev h3 { margin: 0 0 6px; font: 800 12px "Noto Sans JP"; color: #4fd8ff; letter-spacing: .1em; border-bottom: 1px solid #13202a; padding-bottom: 4px; }
+  #dev .row { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0; align-items: center; }
+  #dev button { background: #18212a; color: #c8d8e4; border: 1px solid #263644; border-radius: 4px; padding: 5px 8px; font-size: 11px; cursor: pointer; }
+  #dev button:hover { background: #22303c; } #dev button.hot { border-color: #a03040; color: #ffb0b0; }
+  #dev .lab { min-width: 92px; color: #8aa0b0; } #dev .num { width: 70px; background: #0d1318; color: #fff; border: 1px solid #263644; padding: 4px; }
+  #dev .sl { display: grid; grid-template-columns: 130px 1fr 44px; align-items: center; gap: 6px; margin: 3px 0; color: #9ab; } #dev .sl b { color: #fff; font-weight: 600; text-align: right; }
+  #dev pre.log { background: #05080a; border: 1px solid #13202a; padding: 6px; margin: 4px 0; max-height: 220px; overflow: auto; font: 11px/1.45 ui-monospace, Menlo, monospace; color: #b8c8d4; white-space: pre-wrap; }
+  #dev pre.tall { max-height: 320px; }
+  #dev .assets { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  #dev .asset { background: #0b1014; border: 1px solid #1b262e; padding: 4px; display: flex; gap: 4px; align-items: center; font-size: 10px; white-space: pre-wrap; word-break: break-all; }
+  #dev .asset.loaded { border-color: #2a6a3a; } #dev .asset canvas { width: 36px; height: 36px; flex: none; }
+  @media (max-width: 700px) { #panel { gap: 4px; padding: 6px; } #panel input[type=range] { width: 80px; } #panel .grp { padding: 0 3px; } }
+</style>
+</head>
+<body data-mode="play">
+<div id="boot">
+  <div class="lab">NAGIBAKU LAB · ORIGINAL PACHINKO No.001</div>
+  <h1>ABYSS REACTOR</h1>
+  <h2>P 深淵機関</h2>
+  <div class="bar"><i></i></div>
+  <button class="start" hidden>REACTOR IGNITION ▶</button>
+  <div class="note">架空機種のシミュレーターです。実際の金銭・換金機能はありません。<br>Space：発射　←→：強さ　R：右打ち　Enter：ボタン　A：オート　S：表示モード　D：開発者　F：全画面</div>
+</div>
+<div id="brand">NAGIBAKU LAB · NBL-001</div>
+<div id="stage">
+  <div id="wrap">
+    <canvas id="machine" width="900" height="1560"></canvas>
+    <div id="panel">
+      <div class="grp"><button id="p-fire" class="red">発射</button><label>POWER</label><input id="p-power" type="range" min="0" max="1" step="0.01"><button id="p-right" class="red">右打ち</button></div>
+      <div class="grp"><button id="p-push">PUSH</button></div>
+      <div class="grp"><button id="p-auto">AUTO</button><button id="p-autobtn">AUTO BTN</button></div>
+      <div class="grp"><button id="p-mode">表示</button><button id="p-full">全画面</button><button id="p-mute">消音</button><button id="p-dev">DEV</button></div>
+    </div>
+  </div>
+  <canvas id="counter" width="520" height="1000"></canvas>
+</div>
+<div id="dev"></div>
+
+<!-- engine -->
+<script src="engine/core.js"></script>
+<script src="engine/lottery.js"></script>
+<script src="engine/physics.js"></script>
+<script src="engine/timeline.js"></script>
+<script src="engine/gimmick.js"></script>
+<script src="engine/audio.js"></script>
+<script src="engine/assets.js"></script>
+<script src="engine/director.js"></script>
+<script src="engine/game.js"></script>
+<!-- render -->
+<script src="render/materials.js"></script>
+<script src="render/sprites.js"></script>
+<script src="render/reels.js"></script>
+<script src="render/lcd.js"></script>
+<script src="render/machine.js"></script>
+<script src="render/gimmick.js"></script>
+<!-- machine pack: 機種ごとに差し替え -->
+<script src="machines/abyss-reactor/spec.js"></script>
+<script src="machines/abyss-reactor/layout.js"></script>
+<script src="machines/abyss-reactor/performance.js"></script>
+<script src="machines/abyss-reactor/sound.js"></script>
+<script src="machines/abyss-reactor/assets.js"></script>
+<!-- ui -->
+<script src="ui/datacounter.js"></script>
+<script src="ui/devtools.js"></script>
+<script src="ui/main.js"></script>
+</body>
+</html>
