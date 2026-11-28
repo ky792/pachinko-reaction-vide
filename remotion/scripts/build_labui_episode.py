@@ -149,7 +149,7 @@ for sc in sorted((epdir / 'script').glob('*.txt')):
                 cur_show = {'type': 'show', 'kind': arg, 'from': F(t), 'to': None}
                 events.append(cur_show)
                 # ホログラムが出る音はB2セット（2026-11-27 ユーザー決定）
-                se = {'image': 'holo_appear', 'imgdata': 'holo_appear', 'data': 'holo_appear', 'donut': 'holo_appear', 'bar': 'holo_appear', 'versus': 'holo_appear', 'ren': 'boot', 'sim': 'scan', 'reel': 'scan', 'verdict': 'slam', 'result': 'slam'}[kind]
+                se = {'photo': 'holo_appear', 'image': 'holo_appear', 'imgdata': 'holo_appear', 'data': 'holo_appear', 'donut': 'holo_appear', 'bar': 'holo_appear', 'versus': 'holo_appear', 'ren': 'boot', 'sim': 'scan', 'reel': 'scan', 'verdict': 'slam', 'result': 'slam'}[kind]
                 sfx(t + {'ren': 1.5, 'verdict': 0.25, 'result': 0.2}.get(kind, -0.08), se, 0.55 if se.startswith('holo') else 0.6)
                 if kind in ('data', 'donut', 'bar', 'image', 'imgdata'):
                     sfx(t + 0.7, 'holo_data', 0.35)

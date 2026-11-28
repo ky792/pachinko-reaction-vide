@@ -153,3 +153,43 @@ export const ImageDataPanel: React.FC<{from: number; src: string; title: string;
     </Frame>
   );
 };
+
+/** 写真パネル：実機の写真・液晶の画面（横長）を大きく見せる。走査線で描き出してゆっくり寄る */
+export const PhotoPanel: React.FC<{from: number; src: string; label: string; caption: string; sub?: string}> = ({from, src, label, caption, sub}) => {
+  const f = useCurrentFrame();
+  const body = ramp(f, from + 14, from + 24);
+  const reveal = interpolate(f, [from + 12, from + 32], [0, 1], {...clamp, easing: SNAP});
+  const zoom = 1 + Math.min(1, Math.max(0, (f - from) / 300)) * 0.06;
+  return (
+    <Frame from={from}>
+      <div style={{position: 'absolute', left: 40, top: 26, right: 40, display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', opacity: body}}>
+        <Tag>{label}</Tag>
+        <span style={{fontFamily: MONO, fontSize: 16, letterSpacing: 3, color: C.muted, fontWeight: 700}}>IMAGE</span>
+      </div>
+      <div
+        style={{
+          position: 'absolute',
+          left: 40,
+          top: 64,
+          width: 820,
+          height: 460,
+          overflow: 'hidden',
+          background: '#020814',
+          border: `2px solid ${C.line}`,
+          clipPath: `inset(0 ${(1 - reveal) * 100}% 0 0)`,
+        }}
+      >
+        <Img src={staticFile(src)} style={{position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', scale: `${zoom}`}} />
+        {reveal < 1 && <div style={{position: 'absolute', top: 0, bottom: 0, left: `${reveal * 100}%`, width: 3, background: C.cyanSoft, boxShadow: `0 0 18px ${C.cyan}`}} />}
+      </div>
+      <div style={{position: 'absolute', left: 44, top: 540, right: 40, opacity: body, translate: `${(1 - body) * 24}px 0`}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
+          <div style={{width: 12, height: 12, background: C.orange, rotate: '45deg'}} />
+          <span style={{fontFamily: JP, fontWeight: 900, fontSize: 40, color: C.white, whiteSpace: 'nowrap'}}>{caption}</span>
+        </div>
+        {sub && <div style={{fontFamily: JP, fontWeight: 700, fontSize: 26, color: C.cyanSoft, marginTop: 6, marginLeft: 26, whiteSpace: 'nowrap'}}>{sub}</div>}
+      </div>
+      <Credit o={body} />
+    </Frame>
+  );
+};

@@ -284,6 +284,80 @@
      "value": "4回に1回"
     }
    ]
+  },
+  "photo:wbattle": {
+   "src": "ep/shanfro2/img/wezaemon_battle_01.png",
+   "label": "RUSH ▸ BATTLE",
+   "caption": "RUSH中のウェザエモンバトル"
+  },
+  "photo:sfbonus": {
+   "src": "ep/shanfro2/img/sf_bonus_01.png",
+   "label": "BONUS ▸ 7揃い",
+   "caption": "シャングリラ・フロンティアボーナス",
+   "sub": "1500個 → そのままRUSH"
+  },
+  "photo:login": {
+   "src": "ep/shanfro2/img/login_bonus_01.png",
+   "label": "BONUS ▸ 7以外",
+   "caption": "ログインチャレンジボーナス",
+   "sub": "1500個 → 成功でRUSH"
+  },
+  "photo:kamige": {
+   "src": "ep/shanfro2/img/kamige_bonus_01.png",
+   "label": "RUSH ▸ BONUS",
+   "caption": "神ゲーボーナス",
+   "sub": "4500個＝1500個×3回"
+  },
+  "photo:boost": {
+   "src": "ep/shanfro2/img/boost_01.png",
+   "label": "RUSH ▸ BOOST",
+   "caption": "超神ゲーBOOST",
+   "sub": "RUSH中の当たりの約2%"
+  },
+  "photo:uwanose": {
+   "src": "ep/shanfro2/img/boost_uwanose_01.png",
+   "label": "BOOST ▸ 上乗せ",
+   "caption": "上乗せは1500・3000・4500個"
+  },
+  "photo:handle": {
+   "src": "ep/shanfro2/img/gimmick_02.png",
+   "label": "ACCEL FRAME ▸ 01",
+   "caption": "センターハンドル",
+   "sub": "真ん中にあって手首が楽"
+  },
+  "photo:gear": {
+   "src": "ep/shanfro2/img/gimmick_01.png",
+   "label": "ACCEL FRAME ▸ 02",
+   "caption": "アクセルギア",
+   "sub": "押す・引く・振動"
+  },
+  "photo:air": {
+   "src": "ep/shanfro2/img/gimmick_03.png",
+   "label": "ACCEL FRAME ▸ 03",
+   "caption": "セブンエアー＋手置きバイブ"
+  },
+  "photo:jack": {
+   "src": "ep/shanfro2/img/gimmick_04.png",
+   "label": "ACCEL FRAME ▸ 04",
+   "caption": "イヤホンジャック"
+  },
+  "photo:wezaemon": {
+   "src": "ep/shanfro2/img/wezaemon_sp_01.png",
+   "label": "REACH ▸ SP",
+   "caption": "ウェザエモンSP",
+   "sub": "信頼度 約86%（赤タイトル 約92%）"
+  },
+  "photo:lycaon": {
+   "src": "ep/shanfro2/img/lycaon_sp_01.png",
+   "label": "REACH ▸ SP",
+   "caption": "リュカオーンSP",
+   "sub": "信頼度 約66%"
+  },
+  "photo:custom": {
+   "src": "ep/shanfro2/img/custom_01.png",
+   "label": "CUSTOM",
+   "caption": "遊技カスタム",
+   "sub": "イキナリサンラク 40%／90%／EX"
   }
  }
 }

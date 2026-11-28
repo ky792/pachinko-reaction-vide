@@ -15,7 +15,7 @@ import {ChapterCard, Shutter} from './Transitions';
 import {LabTransition} from './LabTransition';
 import {RenAnalysis, RenSpec} from './RenAnalysis';
 import {BoostSim} from './BoostSim';
-import {ImageDataPanel, ImagePanel} from './ImagePanels';
+import {ImageDataPanel, ImagePanel, PhotoPanel} from './ImagePanels';
 import {IntroCard, IntroData, LogoTitle} from './Opening';
 import {C, ramp} from './tokens';
 
@@ -54,6 +54,8 @@ const Panel: React.FC<{ev: EpEvent; ui: any; hitAt?: number}> = ({ev, ui, hitAt}
       return <RenAnalysis from={ev.from} spec={d.spec as RenSpec} smoke={!!d.smoke} />;
     case 'image':
       return <ImagePanel from={ev.from} src={d.src} label={d.label} title={d.title} lines={d.lines} />;
+    case 'photo':
+      return <PhotoPanel from={ev.from} src={d.src} label={d.label} caption={d.caption} sub={d.sub} />;
     case 'imgdata':
       return <ImageDataPanel from={ev.from} src={d.src} title={d.title} rows={d.rows} />;
     case 'sim':
