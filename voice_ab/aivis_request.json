@@ -10,9 +10,8 @@
  "speed": 0.95,
  "intonation": 0.65,
  "kana_only": false,
- "_run": 4,
+ "_run": 5,
  "only": [
-  "01_gensaku-007",
-  "05_boost-005"
+  "03_rush-001"
  ]
 }
