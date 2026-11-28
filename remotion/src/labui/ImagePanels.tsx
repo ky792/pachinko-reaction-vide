@@ -95,7 +95,7 @@ export const ImagePanel: React.FC<{from: number; src: string; label: string; tit
       <Cabinet from={from} src={src} height={570} left={60} top={36} />
       <div style={{position: 'absolute', left: 390, top: 80, right: 30, opacity: body, translate: `${(1 - body) * 30}px 0`}}>
         <Tag>{label}</Tag>
-        <div style={{fontFamily: JP, fontWeight: 900, fontSize: 40, color: C.white, lineHeight: 1.2, marginTop: 10, whiteSpace: 'nowrap'}}>{title}</div>
+        <div style={{fontFamily: JP, fontWeight: 900, fontSize: 33, color: C.white, lineHeight: 1.2, marginTop: 10, whiteSpace: 'nowrap'}}>{title}</div>
         <div style={{marginTop: 26, display: 'flex', flexDirection: 'column', gap: 14}}>
           {lines.map((l, i) => {
             const o = ramp(f, from + 24 + i * 6, from + 32 + i * 6);
