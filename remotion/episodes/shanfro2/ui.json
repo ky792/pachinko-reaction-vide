@@ -3,13 +3,13 @@
  "voice_tempo": 1.1,
  "gap": 0.12,
  "chapter_dur": 2.6,
- "bgm": "ep/shanfro/newmachine_matsuri.wav",
- "bgm_gain": 0.16,
+ "bgm": "music/shinkai_loop.wav",
+ "bgm_gain": 0.11,
  "op": {
-  "song": "ep/shanfro/op_brass.wav",
-  "song_gain": 0.6,
+  "song": "music/shinkai_op_short.wav",
+  "song_gain": 0.68,
   "intro": 2.2,
-  "logo": 2.4,
+  "logo": 2.22,
   "title": 3.4
  },
  "title": {

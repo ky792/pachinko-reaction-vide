@@ -37,47 +37,52 @@ def grid(bpm):
 # ① オープニング
 # =====================================================================
 OP_BPM = 145
-OP_BARS = 7          # 最後の小節の頭（7小節目の頭＝0始まりで bar 7）でロゴの一撃
 OP_TAIL = 3.0        # 一撃のあとの余韻（秒）
 
 
-def make_op():
+def make_op(boot_bars=2, groove_bars=4, name='shinkai_op.wav', tail=OP_TAIL):
+    """boot_bars＝起動の小節数、groove_bars＝本編の小節数（4＝モチーフ＋答え、2＝モチーフだけ）。
+    そのあと1小節のビルド → 一撃。動画のOPの長さに合わせて小節数を変えられる"""
     s16, bar = grid(OP_BPM)
-    hit = OP_BARS * bar                      # ロゴの一撃（約11.6秒）
-    total = hit + OP_TAIL
+    B0 = boot_bars
+    BUILD = B0 + groove_bars
+    hit = (BUILD + 1) * bar                  # ロゴの一撃
+    OP_TAIL_ = tail
+    total = hit + OP_TAIL_
     n = int(total * S.SR) + S.SR
     T = {k: S.Track(n, k) for k in ['drums', 'bass', 'lead', 'chords', 'fx', 'sub']}
     chords = {0: ([62, 65, 69, 72], 38), 1: ([62, 65, 70, 74], 46), 2: ([64, 67, 72, 76], 48), 3: ([61, 64, 69, 73], 45)}
 
     # --- 0〜2小節：起動（サブの立ち上がり・起動音のアルペジオ・ライザー） ---
-    T['sub'].add(0.0, S.impact(0.5, 2.4) * np.linspace(0.2, 1, int(2.4 * S.SR)), 0.5)
+    bl = B0 * bar
+    T['sub'].add(0.0, S.impact(0.5, bl) * np.linspace(0.2, 1, int(bl * S.SR)), 0.5)
     arp = [50, 57, 62, 65, 69, 74, 77, 81]
     k = 0
     t = 0.15
-    while t < 2 * bar - s16:
-        acc = 1 - 0.55 * (t / (2 * bar))           # だんだん速く
-        T['fx'].add(t, S.blip(arp[k % len(arp)] + 12 * ((k // 8) % 2), 0.35 + 0.3 * t / (2 * bar)), 0.5, pan=0.6 * np.sin(k))
+    while t < bl - s16:
+        acc = 1 - 0.55 * (t / bl)           # だんだん速く
+        T['fx'].add(t, S.blip(arp[k % len(arp)] + 12 * ((k // 8) % 2), 0.35 + 0.3 * t / bl), 0.5, pan=0.6 * np.sin(k))
         k += 1
         t += s16 * 2 * acc
-    T['fx'].add(0.0, S.riser(2 * bar, 150, 8000, 0.5), 0.6)
+    T['fx'].add(0.0, S.riser(bl, 150, 8000, 0.5), 0.6)
     # パワーアップのうなり（ピッチが上がる saw）
-    nn = int(2 * bar * S.SR)
+    nn = int(bl * S.SR)
     tt = np.arange(nn) / S.SR
-    up = S.saw(55 * 2 ** (tt / (2 * bar) * 3), nn)
-    up = S.lp24(up, 300 + 4000 * (tt / (2 * bar)) ** 2) * (tt / (2 * bar)) ** 1.5
+    up = S.saw(55 * 2 ** (tt / bl * 3), nn)
+    up = S.lp24(up, 300 + 4000 * (tt / bl) ** 2) * (tt / bl) ** 1.5
     T['fx'].add(0.0, (up * 0.35, up * 0.35))
     # 2小節目後半：スネアのフィル
     for i in range(8):
-        T['drums'].add(bar + 8 * s16 + i * s16, S.snare(0.25 + 0.09 * i), 0.8)
-    T['drums'].add(2 * bar - s16 * 2, S.tom(140, 0.8), 0.7, pan=-0.3)
-    T['drums'].add(2 * bar - s16, S.tom(100, 0.9), 0.7, pan=0.3)
+        T['drums'].add(bl - 8 * s16 + i * s16, S.snare(0.25 + 0.09 * i), 0.8)
+    T['drums'].add(bl - s16 * 2, S.tom(140, 0.8), 0.7, pan=-0.3)
+    T['drums'].add(bl - s16, S.tom(100, 0.9), 0.7, pan=0.3)
 
     # --- 2〜6小節：本編（4つ打ち・リースベース・リード） ---
     kicks = []
-    for b in range(2, 6):
+    for b in range(B0, BUILD):
         t0 = b * bar
-        ch, root = chords[(b - 2) % 4]
-        if b == 2:
+        ch, root = chords[(b - B0) % 4]
+        if b == B0:
             T['drums'].add(t0, S.crash(0.7, 2.0), 0.55)
         for q in range(4):
             T['drums'].add(t0 + q * 4 * s16, S.kick(1.0, 1.0, 0.4), 1.0)
@@ -97,14 +102,14 @@ def make_op():
         for q in range(4):
             T['chords'].add(t0 + q * 4 * s16 + 2 * s16, S.pad(ch, s16 * 1.2, 0.5, 3500), 0.55)
     # リード：2〜3小節＝モチーフ、4〜5小節＝答え（1オクターブ上がった気分で）
-    for phrase, b0 in ((MOTIF, 2), (ANSWER, 4)):
+    for phrase, b0 in ((MOTIF, B0), (ANSWER, B0 + 2))[:max(1, groove_bars // 2)]:
         prev = None
         for st, m, ln in phrase:
             T['lead'].add(b0 * bar + st * s16, S.lead(m, ln * s16 * 0.95, 0.75, 5000, glide_from=prev if prev and abs(prev - m) <= 2 and ln >= 2 else None), 0.6)
             prev = m
 
     # --- 6小節目：ビルド（スネアロール・ライザー・ベースが上がる） ---
-    t0 = 6 * bar
+    t0 = BUILD * bar
     for i in range(16):
         v = 0.25 + 0.6 * i / 15
         T['drums'].add(t0 + i * s16, S.snare(v), 0.7)
@@ -150,8 +155,8 @@ def make_op():
     fade[-int(0.6 * S.SR):] = np.linspace(1, 0, int(0.6 * S.SR)) ** 2
     L, R = L[:m] * fade, R[:m] * fade
     OUT.mkdir(parents=True, exist_ok=True)
-    S.write_wav(OUT / 'shinkai_op.wav', L, R)
-    print(f'shinkai_op.wav  {total:.2f}秒  ロゴの一撃 {hit:.2f}秒')
+    S.write_wav(OUT / name, L, R)
+    print(f'{name}  {total:.2f}秒  ロゴの一撃 {hit:.2f}秒')
     return hit
 
 
@@ -278,5 +283,7 @@ if __name__ == '__main__':
     which = sys.argv[1] if len(sys.argv) > 1 else 'all'
     if which in ('all', 'op'):
         make_op()
+        # 動画のOP用の短い版：起動1小節＋モチーフ2小節＋ビルド1小節 → 4小節目の頭（6.62秒）で一撃、タイトル表示ぶんの余韻
+        make_op(1, 2, 'shinkai_op_short.wav', tail=3.7)
     if which in ('all', 'loop'):
         make_loop()
