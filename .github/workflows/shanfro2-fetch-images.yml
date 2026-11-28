@@ -19,15 +19,15 @@ jobs:
       - name: Download
         run: |
           D=remotion/public/ep/shanfro2/img; mkdir -p $D
-          get() { curl -fsSL -A "Mozilla/5.0" -e "$3" -o "$D/$1" "$2" && echo "ok $1 $(stat -c %s "$D/$1")" || echo "NG $1"; }
+          true; get() { curl -fsSL -A "Mozilla/5.0" -e "$3" -o "$D/$1" "$2" && echo "ok $1 $(stat -c %s "$D/$1")" || echo "NG $1"; }
           PT=https://p-town.dmm.com/machines/5107
           E="https://cdn.p-town.dmm.com/webp/cp_editor/%E3%83%91%E3%83%81%E3%83%B3%E3%82%B3/159_%E3%82%B7%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AA%E3%83%A9%E3%83%95%E3%83%AD%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2"
-          get cab_gb.jpg   "https://web-greenbelt.jp/wordpress/wp-content/uploads/2026/09/e-shangri-la-frontier-cabinet.jpg" https://web-greenbelt.jp/post-117814/
-          get cab_pt.webp  "https://cdn.p-town.dmm.com/machines/5107/filters:format(webp):no_upscale()/image.jpg" $PT
-          get cab_p7.webp  "https://contents.pachiseven.jp/imgs/s/machine/6aa263fd-03fc-485c-91ff-4cbbac1f02cb.webp" https://pachiseven.jp/machines/7480
-          get logo.jpg     "https://p-town.dmm.com/upload/machines/5107/sub_image.jpg" $PT
-          get copyright.png "https://web-greenbelt.jp/wordpress/wp-content/uploads/2026/09/e-shangri-la-frontier-copyright-840x50.png" https://web-greenbelt.jp/post-117814/
-          for i in 01 02 03 04 05 06; do get sgf_$i.webp "$E/sgf_01_$i.jpg" $PT; done
+          # 2回目：p-town は形式を変えて取り直す
+          UA="Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1"
+          try() { n=$1; shift; for u in "$@"; do curl -fsSL -A "$UA" -e "$PT" -H "Accept: image/avif,image/webp,image/*,*/*" -o "$D/$n" "$u" && { echo "ok $n $u"; return; }; done; echo "NG $n"; }
+          E2="https://cdn.p-town.dmm.com/cp_editor/%E3%83%91%E3%83%81%E3%83%B3%E3%82%B3/159_%E3%82%B7%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AA%E3%83%A9%E3%83%95%E3%83%AD%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2"
+          try logo.jpg "https://p-town.dmm.com/upload/machines/5107/sub_image.jpg?t=1795828847" "https://cdn.p-town.dmm.com/upload/machines/5107/sub_image.jpg"
+          for i in 01 02 03 04 05 06; do try sgf_$i.jpg "$E/sgf_01_$i.jpg?t=1794739175" "$E2/sgf_01_$i.jpg" "https://p-town.dmm.com/upload/cp_editor/%E3%83%91%E3%83%81%E3%83%B3%E3%82%B3/159_%E3%82%B7%E3%83%A3%E3%83%B3%E3%82%B0%E3%83%AA%E3%83%A9%E3%83%95%E3%83%AD%E3%83%B3%E3%83%86%E3%82%A3%E3%82%A2/sgf_01_$i.jpg"; done
           sudo apt-get install -y webp >/dev/null 2>&1 || true
           for f in $D/*.webp; do [ -e "$f" ] || continue; if dwebp -quiet "$f" -o "${f%.webp}.png"; then rm "$f"; else ffmpeg -v error -y -i "$f" "${f%.webp}.png" && rm "$f"; fi; done
           ls -la $D
