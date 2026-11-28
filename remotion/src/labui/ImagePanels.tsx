@@ -172,7 +172,7 @@ export const PhotoPanel: React.FC<{from: number; src: string; label: string; cap
           left: 40,
           top: 64,
           width: 820,
-          height: 460,
+          height: 440,
           overflow: 'hidden',
           background: '#020814',
           border: `2px solid ${C.line}`,
@@ -182,14 +182,14 @@ export const PhotoPanel: React.FC<{from: number; src: string; label: string; cap
         <Img src={staticFile(src)} style={{position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', scale: `${zoom}`}} />
         {reveal < 1 && <div style={{position: 'absolute', top: 0, bottom: 0, left: `${reveal * 100}%`, width: 3, background: C.cyanSoft, boxShadow: `0 0 18px ${C.cyan}`}} />}
       </div>
-      <div style={{position: 'absolute', left: 44, top: 540, right: 40, opacity: body, translate: `${(1 - body) * 24}px 0`}}>
+      <div style={{position: 'absolute', left: 44, top: 548, right: 40, opacity: body, translate: `${(1 - body) * 24}px 0`}}>
         <div style={{display: 'flex', alignItems: 'center', gap: 14}}>
           <div style={{width: 12, height: 12, background: C.orange, rotate: '45deg'}} />
           <span style={{fontFamily: JP, fontWeight: 900, fontSize: 40, color: C.white, whiteSpace: 'nowrap'}}>{caption}</span>
         </div>
         {sub && <div style={{fontFamily: JP, fontWeight: 700, fontSize: 26, color: C.cyanSoft, marginTop: 6, marginLeft: 26, whiteSpace: 'nowrap'}}>{sub}</div>}
       </div>
-      <Credit o={body} />
+      <div style={{position: 'absolute', right: 40, top: 510, fontFamily: JP, fontSize: 13, color: C.muted, opacity: body, whiteSpace: 'nowrap'}}>{CREDIT}</div>
     </Frame>
   );
 };
