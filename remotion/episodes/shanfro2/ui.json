@@ -358,6 +358,27 @@
    "label": "CUSTOM",
    "caption": "遊技カスタム",
    "sub": "イキナリサンラク 40%／90%／EX"
+  },
+  "photo:pv1": {
+   "src": "ep/shanfro2/img/anime_pv1.jpg",
+   "label": "ORIGINAL ▸ TV ANIME",
+   "caption": "TVアニメ「シャングリラ・フロンティア」",
+   "sub": "主人公サンラク（鳥の被りもの）",
+   "credit": "©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS"
+  },
+  "photo:kv1": {
+   "src": "ep/shanfro2/img/anime_kv1.jpg",
+   "label": "ORIGINAL ▸ TV ANIME",
+   "caption": "クソゲーハンター、神ゲーに挑まんとす",
+   "sub": "TVアニメ 第1弾キービジュアル",
+   "credit": "©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS"
+  },
+  "photo:kv3": {
+   "src": "ep/shanfro2/img/anime_kv3.jpg",
+   "label": "ORIGINAL ▸ TV ANIME",
+   "caption": "原作はネット小説→マガジンで漫画化",
+   "sub": "TVアニメ 3rd season キービジュアル",
+   "credit": "©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS"
   }
  }
 }

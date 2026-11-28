@@ -155,7 +155,7 @@ export const ImageDataPanel: React.FC<{from: number; src: string; title: string;
 };
 
 /** 写真パネル：実機の写真・液晶の画面（横長）を大きく見せる。走査線で描き出してゆっくり寄る */
-export const PhotoPanel: React.FC<{from: number; src: string; label: string; caption: string; sub?: string}> = ({from, src, label, caption, sub}) => {
+export const PhotoPanel: React.FC<{from: number; src: string; label: string; caption: string; sub?: string; credit?: string}> = ({from, src, label, caption, sub, credit}) => {
   const f = useCurrentFrame();
   const body = ramp(f, from + 14, from + 24);
   const reveal = interpolate(f, [from + 12, from + 32], [0, 1], {...clamp, easing: SNAP});
@@ -189,7 +189,7 @@ export const PhotoPanel: React.FC<{from: number; src: string; label: string; cap
         </div>
         {sub && <div style={{fontFamily: JP, fontWeight: 700, fontSize: 26, color: C.cyanSoft, marginTop: 6, marginLeft: 26, whiteSpace: 'nowrap'}}>{sub}</div>}
       </div>
-      <div style={{position: 'absolute', right: 40, top: 510, fontFamily: JP, fontSize: 13, color: C.muted, opacity: body, whiteSpace: 'nowrap'}}>{CREDIT}</div>
+      <div style={{position: 'absolute', right: 40, top: 510, fontFamily: JP, fontSize: 13, color: C.muted, opacity: body, whiteSpace: 'nowrap'}}>{credit ?? CREDIT}</div>
     </Frame>
   );
 };

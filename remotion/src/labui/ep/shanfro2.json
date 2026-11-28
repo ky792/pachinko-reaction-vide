@@ -1696,9 +1696,48 @@
    "seVol": 0.35
   },
   {
-   "type": "sfx",
+   "type": "show",
+   "kind": "photo:pv1",
    "from": 1453,
-   "to": 1454,
+   "to": 1648
+  },
+  {
+   "type": "sfx",
+   "from": 1451,
+   "to": 1452,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "show",
+   "kind": "photo:kv1",
+   "from": 1648,
+   "to": 1925
+  },
+  {
+   "type": "sfx",
+   "from": 1645,
+   "to": 1646,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "show",
+   "kind": "photo:kv3",
+   "from": 1925,
+   "to": 2089
+  },
+  {
+   "type": "sfx",
+   "from": 1923,
+   "to": 1924,
+   "se": "holo_appear",
+   "seVol": 0.55
+  },
+  {
+   "type": "sfx",
+   "from": 2089,
+   "to": 2090,
    "se": "holo_disappear",
    "seVol": 0.4
   },
@@ -2632,6 +2671,27 @@
    "label": "CUSTOM",
    "caption": "遊技カスタム",
    "sub": "イキナリサンラク 40%／90%／EX"
+  },
+  "photo:pv1": {
+   "src": "ep/shanfro2/img/anime_pv1.jpg",
+   "label": "ORIGINAL ▸ TV ANIME",
+   "caption": "TVアニメ「シャングリラ・フロンティア」",
+   "sub": "主人公サンラク（鳥の被りもの）",
+   "credit": "©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS"
+  },
+  "photo:kv1": {
+   "src": "ep/shanfro2/img/anime_kv1.jpg",
+   "label": "ORIGINAL ▸ TV ANIME",
+   "caption": "クソゲーハンター、神ゲーに挑まんとす",
+   "sub": "TVアニメ 第1弾キービジュアル",
+   "credit": "©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS"
+  },
+  "photo:kv3": {
+   "src": "ep/shanfro2/img/anime_kv3.jpg",
+   "label": "ORIGINAL ▸ TV ANIME",
+   "caption": "原作はネット小説→マガジンで漫画化",
+   "sub": "TVアニメ 3rd season キービジュアル",
+   "credit": "©硬梨菜・不二涼介・講談社／「シャングリラ・フロンティア」製作委員会・MBS"
   }
  },
  "intro": {

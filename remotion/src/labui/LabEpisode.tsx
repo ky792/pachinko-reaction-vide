@@ -55,7 +55,7 @@ const Panel: React.FC<{ev: EpEvent; ui: any; hitAt?: number}> = ({ev, ui, hitAt}
     case 'image':
       return <ImagePanel from={ev.from} src={d.src} label={d.label} title={d.title} lines={d.lines} />;
     case 'photo':
-      return <PhotoPanel from={ev.from} src={d.src} label={d.label} caption={d.caption} sub={d.sub} />;
+      return <PhotoPanel from={ev.from} src={d.src} label={d.label} caption={d.caption} sub={d.sub} credit={d.credit} />;
     case 'imgdata':
       return <ImageDataPanel from={ev.from} src={d.src} title={d.title} rows={d.rows} />;
     case 'sim':
